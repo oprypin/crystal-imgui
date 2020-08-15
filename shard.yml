@@ -1,0 +1,12 @@
+name: imgui
+version: 0.1.0
+
+authors:
+  - Oleh Prypin <oleh@pryp.in>
+
+description: |
+  Crystal bindings to ImGui
+
+license: MIT
+
+crystal: 0.25.1

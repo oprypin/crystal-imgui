@@ -1,0 +1,10 @@
+/docs/
+/lib/
+/bin/
+/.shards/
+/.crystal/
+*.o
+*.obj
+*.so
+*.lib
+imgui.ini
