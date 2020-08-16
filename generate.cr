@@ -49,10 +49,10 @@ class CType
     "double" => "Float64",
   }
 
-  def self.native?(type : String, context : Context) : String?
+  def self.native?(type : String, ctx : Context) : String?
     if type =~ /^Im(S|(U))(\d+)$/
       "#{$2?}Int#{$3}"
-    elsif context.ext?
+    elsif ctx.ext?
       NativeCr[type]? || NativeLib[type]?
     else
       NativeLib[type]?
@@ -72,22 +72,22 @@ class CType
     self.new(String.new(pull))
   end
 
-  def name(context : Context = :lib) : String
-    self.base_name(context)
+  def name(ctx : Context = :lib) : String
+    self.base_name(ctx)
   end
 
-  def base_name(context : Context) : String
+  def base_name(ctx : Context) : String
     name = self.c_name.gsub(/\bconst | const\b/, "").lchop("struct ")
     name = name.sub("[]", "*")
     name = name.sub(/[\w ]+/) do |s|
-      CType.native?(s, context) || s
+      CType.native?(s, ctx) || s
     end
-    name = "ImGui::#{name}" if context.lib? && name =~ /^Im[A-Z]/
+    name = "ImGui::#{name}" if ctx.lib? && name =~ /^Im[A-Z]/
     name
   end
 
-  def internal_name(context : Context): String
-    self.name(context)
+  def internal_name(ctx : Context): String
+    self.name(ctx)
   end
 end
 
@@ -97,13 +97,13 @@ class CTemplateType < CType
   def initialize(@c_name, @template)
   end
 
-  def name(context : Context) : String
-    sub = context.lib? ? "Void\\2" : "\\1(#{self.template.name(context)})\\2"
+  def name(ctx : Context) : String
+    sub = ctx.lib? ? "Void\\2" : "\\1(#{self.template.name(ctx)})\\2"
     super.sub(/^(.+)\b([^a-zA-Z]*)$/, sub)
   end
 
-  def internal_name(context : Context): String
-    base_name(context) + "Internal"
+  def internal_name(ctx : Context): String
+    base_name(ctx) + "Internal"
   end
 end
 
@@ -120,15 +120,15 @@ class CUnion < CType
 
   getter members : Array(CStructMember)
 
-  def render(context : Context, &block : String->)
-    return unless context.ext?
+  def render(ctx : Context, &block : String->)
+    return unless ctx.ext?
 
     yield %()
     yield %(@[Extern(union: true)])
     yield %(struct #{self.name})
     self.each do |member|
-      yield %(property #{member.name(context)} : #{member.type.name(context)})
-      yield %(@#{member.name(context)} = uninitialized #{member.type.name(context)})
+      yield %(property #{member.name(ctx)} : #{member.type.name(ctx)})
+      yield %(@#{member.name(ctx)} = uninitialized #{member.type.name(ctx)})
     end
     yield %(end)
   end
@@ -147,9 +147,9 @@ class CFunctionType < CType
     end
   end
 
-  def name(context : Context = :lib) : String
-    args = self.args.map { |arg| arg.type.name(context) }
-    "(#{args.join(", ")}) -> #{self.type.name(context)}"
+  def name(ctx : Context = :lib) : String
+    args = self.args.map { |arg| arg.type.name(ctx) }
+    "(#{args.join(", ")}) -> #{self.type.name(ctx)}"
   end
 
   getter type : CType
@@ -161,7 +161,7 @@ class CArg
   include JSON::Serializable
 
   getter name : String
-  def name(context : Context) : String
+  def name(ctx : Context) : String
     self.name == "..." ? "" : self.name
   end
 
@@ -257,16 +257,16 @@ class COverload
     self.location == "internal" || (self.funcname || "").starts_with?("_")
   end
 
-  def render(context, &block)
-    return unless context.lib?
+  def render(ctx, &block)
+    return unless ctx.lib?
     return if self.templated? || self.internal?
     return if self.args.any? { |arg| arg.type.c_name == "va_list" }
 
     args = self.args.map do |arg|
       next "..." if arg.type.c_name == "..."
-      "#{arg.name(context)} : #{arg.type.name(context)}"
+      "#{arg.name(ctx)} : #{arg.type.name(ctx)}"
     end
-    ret = self.ret.try &.name(context)
+    ret = self.ret.try &.name(ctx)
     yield %(fun #{c_name}(#{args.join(", ")})#{" : #{ret}" if ret})
   end
 end
@@ -274,8 +274,8 @@ end
 class CDefinition
   def_map_from_json(overloads : Array(COverload), parent)
 
-  def render(context, &block : String->)
-    self.overloads.each &.render(context, &block)
+  def render(ctx, &block : String->)
+    self.overloads.each &.render(ctx, &block)
   end
 end
 
@@ -288,7 +288,7 @@ class CStructMember
 
   @[JSON::Field(key: "name")]
   getter c_name : String
-  def name(context : Context) : String
+  def name(ctx : Context) : String
     self.c_name.partition("[")[0].underscore.presence || "val"
   end
 
@@ -318,16 +318,16 @@ class CStructMember
     self.c_name.starts_with?("_")
   end
 
-  def render(context : Context, &block : String->)
-    return unless context.ext?
-    varname = self.name(context)
+  def render(ctx : Context, &block : String->)
+    return unless ctx.ext?
+    varname = self.name(ctx)
 
     if (u = self.type.as?(CUnion))
-      u.render(context, &block)
+      u.render(ctx, &block)
     end
     if (t = self.type.as?(CTemplateType))
-      typename = t.name(context)
-      typeinternal = t.internal_name(context)
+      typename = t.name(ctx)
+      typeinternal = t.internal_name(ctx)
       yield %(@#{varname} : #{typeinternal})
       return if self.internal?
       yield %(def #{varname} : #{typename})
@@ -337,7 +337,7 @@ class CStructMember
       yield %(pointerof(@#{varname}).value = #{varname}.as(#{typeinternal}*).value)
       yield %(end)
     else
-      yield %(#{self.internal? ? "@" : "property "}#{varname} : #{self.type.name(context)})
+      yield %(#{self.internal? ? "@" : "property "}#{varname} : #{self.type.name(ctx)})
     end
   end
 end
@@ -345,8 +345,8 @@ end
 class CStruct
   def_map_from_json(members : Array(CStructMember), parent)
 
-  def render(context : Context, &block : String->)
-    return unless context.ext?
+  def render(ctx : Context, &block : String->)
+    return unless ctx.ext?
 
     if self.internal?
       yield %(alias #{self.name} = Void)
@@ -357,9 +357,9 @@ class CStruct
     yield %(@[Extern])
     yield %(struct #{self.name})
     self.each do |member|
-      member.render(context, &block)
+      member.render(ctx, &block)
     end
-    args = self.map { |member| "@#{member.name(context)} : #{member.type.internal_name(context)}" }
+    args = self.map { |member| "@#{member.name(ctx)} : #{member.type.internal_name(ctx)}" }
     yield %(def initialize(#{args.join(", ")}))
     yield %(end)
     yield %(end)
@@ -406,8 +406,8 @@ class CEnum
     previous_def.rchop("_")
   end
 
-  def render(context : Context, &block : String->)
-    return unless context.ext?
+  def render(ctx : Context, &block : String->)
+    return unless ctx.ext?
 
     return if self.name.ends_with?("Private")
 
@@ -441,12 +441,12 @@ end
 class CTypedef
   def_map_from_json(type : CType)
 
-  def render(context : Context, &block : String->)
-    return unless context.ext?
-    return if CType.native?(self.name, context)
+  def render(ctx : Context, &block : String->)
+    return unless ctx.ext?
+    return if CType.native?(self.name, ctx)
     return unless self.name[0].ascii_uppercase?
     return if AllEnums.has_key?(self.name + "_")
-    type_name = self.type.name(context)
+    type_name = self.type.name(ctx)
     if self.name == type_name
       return if AllStructs.has_key?(self.name)
       yield %(alias #{self.name} = Void)
@@ -462,8 +462,8 @@ AllTypedefs = Hash(String, String).from_json(
   {k, CTypedef.new(k, CType.new(v.rchop(";")))}
 }.to_h
 
-def render(context : Context, &block : String->)
-  if context.lib?
+def render(ctx : Context, &block : String->)
+  if ctx.lib?
     yield %(require "./custom")
     yield %(require "./types")
     yield %()
@@ -473,10 +473,10 @@ def render(context : Context, &block : String->)
     yield %(module ImGui)
   end
 
-  AllEnums.each_value &.render(context, &block)
-  AllTypedefs.each_value &.render(context, &block)
-  AllStructs.each_value &.render(context, &block)
-  AllDefinitions.each_value &.render(context, &block)
+  AllEnums.each_value &.render(ctx, &block)
+  AllTypedefs.each_value &.render(ctx, &block)
+  AllStructs.each_value &.render(ctx, &block)
+  AllDefinitions.each_value &.render(ctx, &block)
 
   yield %(end)
 end
