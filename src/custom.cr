@@ -7,14 +7,12 @@ module ImGui
     def initialize(@size, @capacity, @data)
     end
   end
+end
 
-  @[Extern]
-  private struct ImVectorInternal
-    @size : Int32
-    @capacity : Int32
-    @data : Void*
-
-    def initialize(@size, @capacity, @data)
-    end
+lib LibImGui
+  struct ImVectorInternal
+    size : Int32
+    capacity : Int32
+    data : Void*
   end
 end
