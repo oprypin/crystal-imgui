@@ -689,31 +689,6 @@ module ImGui
   end
 
   @[Extern]
-  struct ImFont
-    @index_advance_x : LibImGui::ImVectorInternal
-    property fallback_advance_x : Float32
-    property font_size : Float32
-    @index_lookup : LibImGui::ImVectorInternal
-    @glyphs : LibImGui::ImVectorInternal
-    property fallback_glyph : ImFontGlyph*
-    property display_offset : ImVec2
-    property container_atlas : LibImGui::ImFontAtlas*
-    property config_data : LibImGui::ImFontConfig*
-    property config_data_count : Int16
-    property fallback_char : ImWchar
-    property ellipsis_char : ImWchar
-    property dirty_lookup_tables : Bool
-    property scale : Float32
-    property ascent : Float32
-    property descent : Float32
-    property metrics_total_surface : Int32
-    property used4k_pages_map : UInt8[2]
-
-    def initialize(@index_advance_x : LibImGui::ImVectorInternal, @fallback_advance_x : Float32, @font_size : Float32, @index_lookup : LibImGui::ImVectorInternal, @glyphs : LibImGui::ImVectorInternal, @fallback_glyph : ImFontGlyph*, @display_offset : ImVec2, @container_atlas : LibImGui::ImFontAtlas*, @config_data : LibImGui::ImFontConfig*, @config_data_count : Int16, @fallback_char : ImWchar, @ellipsis_char : ImWchar, @dirty_lookup_tables : Bool, @scale : Float32, @ascent : Float32, @descent : Float32, @metrics_total_surface : Int32, @used4k_pages_map : UInt8[2])
-    end
-  end
-
-  @[Extern]
   struct ImFontGlyph
     property codepoint : UInt32
     property visible : UInt32

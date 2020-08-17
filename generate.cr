@@ -509,7 +509,7 @@ class CStruct
   end
 
   def class? : Bool
-    !%(ImVector ImVec2 ImVec4 ImColor ImDrawVert ImFontGlyph ImGuiTextRange).includes?(self.name)
+    !%w[ImVector ImVec2 ImVec4 ImColor ImDrawVert ImFontGlyph ImGuiTextRange].includes?(self.name)
   end
 end
 

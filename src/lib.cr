@@ -69,6 +69,27 @@ lib LibImGui
     _channels : ImVectorInternal
   end
 
+  struct ImFont
+    index_advance_x : ImVectorInternal
+    fallback_advance_x : LibC::Float
+    font_size : LibC::Float
+    index_lookup : ImVectorInternal
+    glyphs : ImVectorInternal
+    fallback_glyph : ImGui::ImFontGlyph*
+    display_offset : ImGui::ImVec2
+    container_atlas : ImFontAtlas*
+    config_data : ImFontConfig*
+    config_data_count : LibC::Short
+    fallback_char : ImWchar
+    ellipsis_char : ImWchar
+    dirty_lookup_tables : Bool
+    scale : LibC::Float
+    ascent : LibC::Float
+    descent : LibC::Float
+    metrics_total_surface : LibC::Int
+    used4k_pages_map : UInt8[2]
+  end
+
   struct ImFontAtlas
     locked : Bool
     flags : ImGui::ImFontAtlasFlags
@@ -95,7 +116,7 @@ lib LibImGui
     glyph_id : LibC::UInt
     glyph_advance_x : LibC::Float
     glyph_offset : ImGui::ImVec2
-    font : ImGui::ImFont*
+    font : ImFont*
   end
 
   struct ImFontConfig
@@ -117,7 +138,7 @@ lib LibImGui
     rasterizer_multiply : LibC::Float
     ellipsis_char : ImWchar
     name : LibC::Char[40]
-    dst_font : ImGui::ImFont*
+    dst_font : ImFont*
   end
 
   struct ImFontGlyphRangesBuilder
@@ -150,7 +171,7 @@ lib LibImGui
     fonts : ImFontAtlas*
     font_global_scale : LibC::Float
     font_allow_user_scaling : Bool
-    font_default : ImGui::ImFont*
+    font_default : ImFont*
     display_framebuffer_scale : ImGui::ImVec2
     mouse_draw_cursor : Bool
     config_mac_osx_behaviors : Bool
@@ -378,7 +399,7 @@ lib LibImGui
   fun ImDrawList_AddRectFilled(self : ImDrawList*, p_min : ImGui::ImVec2, p_max : ImGui::ImVec2, col : UInt32, rounding : LibC::Float, rounding_corners : ImGui::ImDrawCornerFlags)
   fun ImDrawList_AddRectFilledMultiColor(self : ImDrawList*, p_min : ImGui::ImVec2, p_max : ImGui::ImVec2, col_upr_left : UInt32, col_upr_right : UInt32, col_bot_right : UInt32, col_bot_left : UInt32)
   fun ImDrawList_AddTextVec2(self : ImDrawList*, pos : ImGui::ImVec2, col : UInt32, text_begin : LibC::Char*, text_end : LibC::Char*)
-  fun ImDrawList_AddTextFontPtr(self : ImDrawList*, font : ImGui::ImFont*, font_size : LibC::Float, pos : ImGui::ImVec2, col : UInt32, text_begin : LibC::Char*, text_end : LibC::Char*, wrap_width : LibC::Float, cpu_fine_clip_rect : ImGui::ImVec4*)
+  fun ImDrawList_AddTextFontPtr(self : ImDrawList*, font : ImFont*, font_size : LibC::Float, pos : ImGui::ImVec2, col : UInt32, text_begin : LibC::Char*, text_end : LibC::Char*, wrap_width : LibC::Float, cpu_fine_clip_rect : ImGui::ImVec4*)
   fun ImDrawList_AddTriangle(self : ImDrawList*, p1 : ImGui::ImVec2, p2 : ImGui::ImVec2, p3 : ImGui::ImVec2, col : UInt32, thickness : LibC::Float)
   fun ImDrawList_AddTriangleFilled(self : ImDrawList*, p1 : ImGui::ImVec2, p2 : ImGui::ImVec2, p3 : ImGui::ImVec2, col : UInt32)
   fun ImDrawList_ChannelsMerge(self : ImDrawList*)
@@ -412,14 +433,14 @@ lib LibImGui
   fun ImDrawList_PushTextureID(self : ImDrawList*, texture_id : ImTextureID)
   fun ImFontAtlasCustomRect_ImFontAtlasCustomRect : ImFontAtlasCustomRect*
   fun ImFontAtlasCustomRect_IsPacked(self : ImFontAtlasCustomRect*) : Bool
-  fun ImFontAtlas_AddCustomRectFontGlyph(self : ImFontAtlas*, font : ImGui::ImFont*, id : ImWchar, width : LibC::Int, height : LibC::Int, advance_x : LibC::Float, offset : ImGui::ImVec2) : LibC::Int
+  fun ImFontAtlas_AddCustomRectFontGlyph(self : ImFontAtlas*, font : ImFont*, id : ImWchar, width : LibC::Int, height : LibC::Int, advance_x : LibC::Float, offset : ImGui::ImVec2) : LibC::Int
   fun ImFontAtlas_AddCustomRectRegular(self : ImFontAtlas*, width : LibC::Int, height : LibC::Int) : LibC::Int
-  fun ImFontAtlas_AddFont(self : ImFontAtlas*, font_cfg : ImFontConfig*) : ImGui::ImFont*
-  fun ImFontAtlas_AddFontDefault(self : ImFontAtlas*, font_cfg : ImFontConfig*) : ImGui::ImFont*
-  fun ImFontAtlas_AddFontFromFileTTF(self : ImFontAtlas*, filename : LibC::Char*, size_pixels : LibC::Float, font_cfg : ImFontConfig*, glyph_ranges : ImWchar*) : ImGui::ImFont*
-  fun ImFontAtlas_AddFontFromMemoryCompressedBase85TTF(self : ImFontAtlas*, compressed_font_data_base85 : LibC::Char*, size_pixels : LibC::Float, font_cfg : ImFontConfig*, glyph_ranges : ImWchar*) : ImGui::ImFont*
-  fun ImFontAtlas_AddFontFromMemoryCompressedTTF(self : ImFontAtlas*, compressed_font_data : Void*, compressed_font_size : LibC::Int, size_pixels : LibC::Float, font_cfg : ImFontConfig*, glyph_ranges : ImWchar*) : ImGui::ImFont*
-  fun ImFontAtlas_AddFontFromMemoryTTF(self : ImFontAtlas*, font_data : Void*, font_size : LibC::Int, size_pixels : LibC::Float, font_cfg : ImFontConfig*, glyph_ranges : ImWchar*) : ImGui::ImFont*
+  fun ImFontAtlas_AddFont(self : ImFontAtlas*, font_cfg : ImFontConfig*) : ImFont*
+  fun ImFontAtlas_AddFontDefault(self : ImFontAtlas*, font_cfg : ImFontConfig*) : ImFont*
+  fun ImFontAtlas_AddFontFromFileTTF(self : ImFontAtlas*, filename : LibC::Char*, size_pixels : LibC::Float, font_cfg : ImFontConfig*, glyph_ranges : ImWchar*) : ImFont*
+  fun ImFontAtlas_AddFontFromMemoryCompressedBase85TTF(self : ImFontAtlas*, compressed_font_data_base85 : LibC::Char*, size_pixels : LibC::Float, font_cfg : ImFontConfig*, glyph_ranges : ImWchar*) : ImFont*
+  fun ImFontAtlas_AddFontFromMemoryCompressedTTF(self : ImFontAtlas*, compressed_font_data : Void*, compressed_font_size : LibC::Int, size_pixels : LibC::Float, font_cfg : ImFontConfig*, glyph_ranges : ImWchar*) : ImFont*
+  fun ImFontAtlas_AddFontFromMemoryTTF(self : ImFontAtlas*, font_data : Void*, font_size : LibC::Int, size_pixels : LibC::Float, font_cfg : ImFontConfig*, glyph_ranges : ImWchar*) : ImFont*
   fun ImFontAtlas_Build(self : ImFontAtlas*) : Bool
   fun ImFontAtlas_CalcCustomRectUV(self : ImFontAtlas*, rect : ImFontAtlasCustomRect*, out_uv_min : ImGui::ImVec2*, out_uv_max : ImGui::ImVec2*)
   fun ImFontAtlas_Clear(self : ImFontAtlas*)
@@ -450,24 +471,24 @@ lib LibImGui
   fun ImFontGlyphRangesBuilder_GetBit(self : ImFontGlyphRangesBuilder*, n : LibC::SizeT) : Bool
   fun ImFontGlyphRangesBuilder_ImFontGlyphRangesBuilder : ImFontGlyphRangesBuilder*
   fun ImFontGlyphRangesBuilder_SetBit(self : ImFontGlyphRangesBuilder*, n : LibC::SizeT)
-  fun ImFont_AddGlyph(self : ImGui::ImFont*, c : ImWchar, x0 : LibC::Float, y0 : LibC::Float, x1 : LibC::Float, y1 : LibC::Float, u0 : LibC::Float, v0 : LibC::Float, u1 : LibC::Float, v1 : LibC::Float, advance_x : LibC::Float)
-  fun ImFont_AddRemapChar(self : ImGui::ImFont*, dst : ImWchar, src : ImWchar, overwrite_dst : Bool)
-  fun ImFont_BuildLookupTable(self : ImGui::ImFont*)
-  fun ImFont_CalcTextSizeA(pOut : ImGui::ImVec2*, self : ImGui::ImFont*, size : LibC::Float, max_width : LibC::Float, wrap_width : LibC::Float, text_begin : LibC::Char*, text_end : LibC::Char*, remaining : LibC::Char**)
-  fun ImFont_CalcWordWrapPositionA(self : ImGui::ImFont*, scale : LibC::Float, text : LibC::Char*, text_end : LibC::Char*, wrap_width : LibC::Float) : LibC::Char*
-  fun ImFont_ClearOutputData(self : ImGui::ImFont*)
-  fun ImFont_FindGlyph(self : ImGui::ImFont*, c : ImWchar) : ImGui::ImFontGlyph*
-  fun ImFont_FindGlyphNoFallback(self : ImGui::ImFont*, c : ImWchar) : ImGui::ImFontGlyph*
-  fun ImFont_GetCharAdvance(self : ImGui::ImFont*, c : ImWchar) : LibC::Float
-  fun ImFont_GetDebugName(self : ImGui::ImFont*) : LibC::Char*
-  fun ImFont_GrowIndex(self : ImGui::ImFont*, new_size : LibC::Int)
-  fun ImFont_ImFont : ImGui::ImFont*
-  fun ImFont_IsGlyphRangeUnused(self : ImGui::ImFont*, c_begin : LibC::UInt, c_last : LibC::UInt) : Bool
-  fun ImFont_IsLoaded(self : ImGui::ImFont*) : Bool
-  fun ImFont_RenderChar(self : ImGui::ImFont*, draw_list : ImDrawList*, size : LibC::Float, pos : ImGui::ImVec2, col : UInt32, c : ImWchar)
-  fun ImFont_RenderText(self : ImGui::ImFont*, draw_list : ImDrawList*, size : LibC::Float, pos : ImGui::ImVec2, col : UInt32, clip_rect : ImGui::ImVec4, text_begin : LibC::Char*, text_end : LibC::Char*, wrap_width : LibC::Float, cpu_fine_clip : Bool)
-  fun ImFont_SetFallbackChar(self : ImGui::ImFont*, c : ImWchar)
-  fun ImFont_SetGlyphVisible(self : ImGui::ImFont*, c : ImWchar, visible : Bool)
+  fun ImFont_AddGlyph(self : ImFont*, c : ImWchar, x0 : LibC::Float, y0 : LibC::Float, x1 : LibC::Float, y1 : LibC::Float, u0 : LibC::Float, v0 : LibC::Float, u1 : LibC::Float, v1 : LibC::Float, advance_x : LibC::Float)
+  fun ImFont_AddRemapChar(self : ImFont*, dst : ImWchar, src : ImWchar, overwrite_dst : Bool)
+  fun ImFont_BuildLookupTable(self : ImFont*)
+  fun ImFont_CalcTextSizeA(pOut : ImGui::ImVec2*, self : ImFont*, size : LibC::Float, max_width : LibC::Float, wrap_width : LibC::Float, text_begin : LibC::Char*, text_end : LibC::Char*, remaining : LibC::Char**)
+  fun ImFont_CalcWordWrapPositionA(self : ImFont*, scale : LibC::Float, text : LibC::Char*, text_end : LibC::Char*, wrap_width : LibC::Float) : LibC::Char*
+  fun ImFont_ClearOutputData(self : ImFont*)
+  fun ImFont_FindGlyph(self : ImFont*, c : ImWchar) : ImGui::ImFontGlyph*
+  fun ImFont_FindGlyphNoFallback(self : ImFont*, c : ImWchar) : ImGui::ImFontGlyph*
+  fun ImFont_GetCharAdvance(self : ImFont*, c : ImWchar) : LibC::Float
+  fun ImFont_GetDebugName(self : ImFont*) : LibC::Char*
+  fun ImFont_GrowIndex(self : ImFont*, new_size : LibC::Int)
+  fun ImFont_ImFont : ImFont*
+  fun ImFont_IsGlyphRangeUnused(self : ImFont*, c_begin : LibC::UInt, c_last : LibC::UInt) : Bool
+  fun ImFont_IsLoaded(self : ImFont*) : Bool
+  fun ImFont_RenderChar(self : ImFont*, draw_list : ImDrawList*, size : LibC::Float, pos : ImGui::ImVec2, col : UInt32, c : ImWchar)
+  fun ImFont_RenderText(self : ImFont*, draw_list : ImDrawList*, size : LibC::Float, pos : ImGui::ImVec2, col : UInt32, clip_rect : ImGui::ImVec4, text_begin : LibC::Char*, text_end : LibC::Char*, wrap_width : LibC::Float, cpu_fine_clip : Bool)
+  fun ImFont_SetFallbackChar(self : ImFont*, c : ImWchar)
+  fun ImFont_SetGlyphVisible(self : ImFont*, c : ImWchar, visible : Bool)
   fun ImGuiIO_AddInputCharacter(self : ImGuiIO*, c : LibC::UInt)
   fun ImGuiIO_AddInputCharacterUTF16(self : ImGuiIO*, c : ImWchar16)
   fun ImGuiIO_AddInputCharactersUTF8(self : ImGuiIO*, str : LibC::Char*)
@@ -630,7 +651,7 @@ lib LibImGui
   fun igGetDragDropPayload : ImGuiPayload*
   fun igGetDrawData : ImDrawData*
   fun igGetDrawListSharedData : ImDrawListSharedData*
-  fun igGetFont : ImGui::ImFont*
+  fun igGetFont : ImFont*
   fun igGetFontSize : LibC::Float
   fun igGetFontTexUvWhitePixel(pOut : ImGui::ImVec2*)
   fun igGetForegroundDrawListNil : ImDrawList*
@@ -760,7 +781,7 @@ lib LibImGui
   fun igPushAllowKeyboardFocus(allow_keyboard_focus : Bool)
   fun igPushButtonRepeat(repeat : Bool)
   fun igPushClipRect(clip_rect_min : ImGui::ImVec2, clip_rect_max : ImGui::ImVec2, intersect_with_current_clip_rect : Bool)
-  fun igPushFont(font : ImGui::ImFont*)
+  fun igPushFont(font : ImFont*)
   fun igPushIDStr(str_id : LibC::Char*)
   fun igPushIDStrStr(str_id_begin : LibC::Char*, str_id_end : LibC::Char*)
   fun igPushIDPtr(ptr_id : Void*)

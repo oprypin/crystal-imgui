@@ -304,7 +304,7 @@ module ImGui
       LibImGui.ImDrawList_AddTextVec2(self, pos, col, text_begin, text_end)
     end
 
-    def add_text(font : ImFont*, font_size : Float32, pos : ImVec2, col : UInt32, text_begin : String, text_end : String? = nil, wrap_width : Float32 = 0.0, cpu_fine_clip_rect : ImVec4*? = nil) : Void
+    def add_text(font : ImFont, font_size : Float32, pos : ImVec2, col : UInt32, text_begin : String, text_end : String? = nil, wrap_width : Float32 = 0.0, cpu_fine_clip_rect : ImVec4*? = nil) : Void
       LibImGui.ImDrawList_AddTextFontPtr(self, font, font_size, pos, col, text_begin, text_end, wrap_width, cpu_fine_clip_rect)
     end
 
@@ -470,31 +470,151 @@ module ImGui
     include StructType
   end
 
-  struct ImFont
-    include StructType
+  class ImFont
+    include ClassType(LibImGui::ImFont)
 
     def index_advance_x : LibImGui::ImVector(Float32)
-      pointerof(@index_advance_x).as(LibImGui::ImVector(Float32)*).value
+      @this.index_advance_x.value
     end
 
     def index_advance_x=(index_advance_x : LibImGui::ImVector(Float32))
-      pointerof(@index_advance_x).value = index_advance_x.as(LibImGui::ImVectorInternal*).value
+      @this.index_advance_x = index_advance_x
+    end
+
+    def fallback_advance_x : Float32
+      @this.fallback_advance_x
+    end
+
+    def fallback_advance_x=(fallback_advance_x : Float32)
+      @this.fallback_advance_x = fallback_advance_x
+    end
+
+    def font_size : Float32
+      @this.font_size
+    end
+
+    def font_size=(font_size : Float32)
+      @this.font_size = font_size
     end
 
     def index_lookup : LibImGui::ImVector(ImWchar)
-      pointerof(@index_lookup).as(LibImGui::ImVector(ImWchar)*).value
+      @this.index_lookup.value
     end
 
     def index_lookup=(index_lookup : LibImGui::ImVector(ImWchar))
-      pointerof(@index_lookup).value = index_lookup.as(LibImGui::ImVectorInternal*).value
+      @this.index_lookup = index_lookup
     end
 
     def glyphs : LibImGui::ImVector(ImFontGlyph)
-      pointerof(@glyphs).as(LibImGui::ImVector(ImFontGlyph)*).value
+      @this.glyphs.value
     end
 
     def glyphs=(glyphs : LibImGui::ImVector(ImFontGlyph))
-      pointerof(@glyphs).value = glyphs.as(LibImGui::ImVectorInternal*).value
+      @this.glyphs = glyphs
+    end
+
+    def fallback_glyph : ImFontGlyph*
+      @this.fallback_glyph.value
+    end
+
+    def fallback_glyph=(fallback_glyph : ImFontGlyph*)
+      @this.fallback_glyph = fallback_glyph
+    end
+
+    def display_offset : ImVec2
+      @this.display_offset.value
+    end
+
+    def display_offset=(display_offset : ImVec2)
+      @this.display_offset = display_offset
+    end
+
+    def container_atlas : ImFontAtlas
+      ImFontAtlas.new(@this.container_atlas)
+    end
+
+    def container_atlas=(container_atlas : ImFontAtlas)
+      @this.container_atlas = container_atlas
+    end
+
+    def config_data : ImFontConfig
+      ImFontConfig.new(@this.config_data)
+    end
+
+    def config_data=(config_data : ImFontConfig)
+      @this.config_data = config_data
+    end
+
+    def config_data_count : Int16
+      @this.config_data_count
+    end
+
+    def config_data_count=(config_data_count : Int16)
+      @this.config_data_count = config_data_count
+    end
+
+    def fallback_char : ImWchar
+      @this.fallback_char
+    end
+
+    def fallback_char=(fallback_char : ImWchar)
+      @this.fallback_char = fallback_char
+    end
+
+    def ellipsis_char : ImWchar
+      @this.ellipsis_char
+    end
+
+    def ellipsis_char=(ellipsis_char : ImWchar)
+      @this.ellipsis_char = ellipsis_char
+    end
+
+    def dirty_lookup_tables : Bool
+      @this.dirty_lookup_tables
+    end
+
+    def dirty_lookup_tables=(dirty_lookup_tables : Bool)
+      @this.dirty_lookup_tables = dirty_lookup_tables
+    end
+
+    def scale : Float32
+      @this.scale
+    end
+
+    def scale=(scale : Float32)
+      @this.scale = scale
+    end
+
+    def ascent : Float32
+      @this.ascent
+    end
+
+    def ascent=(ascent : Float32)
+      @this.ascent = ascent
+    end
+
+    def descent : Float32
+      @this.descent
+    end
+
+    def descent=(descent : Float32)
+      @this.descent = descent
+    end
+
+    def metrics_total_surface : Int32
+      @this.metrics_total_surface
+    end
+
+    def metrics_total_surface=(metrics_total_surface : Int32)
+      @this.metrics_total_surface = metrics_total_surface
+    end
+
+    def used4k_pages_map : UInt8[2]
+      @this.used4k_pages_map
+    end
+
+    def used4k_pages_map=(used4k_pages_map : UInt8[2])
+      @this.used4k_pages_map = used4k_pages_map
     end
 
     def add_glyph(c : ImWchar, x0 : Float32, y0 : Float32, x1 : Float32, y1 : Float32, u0 : Float32, v0 : Float32, u1 : Float32, v1 : Float32, advance_x : Float32) : Void
@@ -548,7 +668,7 @@ module ImGui
 
     def self.new : ImFont
       result = LibImGui.ImFont_ImFont
-      result.value
+      ImFont.new(result)
     end
 
     def is_glyph_range_unused(c_begin : UInt32, c_last : UInt32) : Bool
@@ -667,11 +787,11 @@ module ImGui
       @this.tex_uv_white_pixel = tex_uv_white_pixel
     end
 
-    def fonts : LibImGui::ImVector(ImFont*)
+    def fonts : LibImGui::ImVector(ImFont)
       @this.fonts.value
     end
 
-    def fonts=(fonts : LibImGui::ImVector(ImFont*))
+    def fonts=(fonts : LibImGui::ImVector(ImFont))
       @this.fonts = fonts
     end
 
@@ -699,7 +819,7 @@ module ImGui
       @this.custom_rect_ids = custom_rect_ids
     end
 
-    def add_custom_rect_font_glyph(font : ImFont*, id : ImWchar, width : Int32, height : Int32, advance_x : Float32, offset : ImVec2 = ImVec2.new(0, 0)) : Int32
+    def add_custom_rect_font_glyph(font : ImFont, id : ImWchar, width : Int32, height : Int32, advance_x : Float32, offset : ImVec2 = ImVec2.new(0, 0)) : Int32
       LibImGui.ImFontAtlas_AddCustomRectFontGlyph(self, font, id, width, height, advance_x, offset)
     end
 
@@ -709,32 +829,32 @@ module ImGui
 
     def add_font(font_cfg : ImFontConfig) : ImFont
       result = LibImGui.ImFontAtlas_AddFont(self, font_cfg)
-      result.value
+      ImFont.new(result)
     end
 
     def add_font_default(font_cfg : ImFontConfig? = nil) : ImFont
       result = LibImGui.ImFontAtlas_AddFontDefault(self, font_cfg)
-      result.value
+      ImFont.new(result)
     end
 
     def add_font_from_file_ttf(filename : String, size_pixels : Float32, font_cfg : ImFontConfig? = nil, glyph_ranges : ImWchar*? = nil) : ImFont
       result = LibImGui.ImFontAtlas_AddFontFromFileTTF(self, filename, size_pixels, font_cfg, glyph_ranges)
-      result.value
+      ImFont.new(result)
     end
 
     def add_font_from_memory_compressed_base85_ttf(compressed_font_data_base85 : String, size_pixels : Float32, font_cfg : ImFontConfig? = nil, glyph_ranges : ImWchar*? = nil) : ImFont
       result = LibImGui.ImFontAtlas_AddFontFromMemoryCompressedBase85TTF(self, compressed_font_data_base85, size_pixels, font_cfg, glyph_ranges)
-      result.value
+      ImFont.new(result)
     end
 
     def add_font_from_memory_compressed_ttf(compressed_font_data : Void*, compressed_font_size : Int32, size_pixels : Float32, font_cfg : ImFontConfig? = nil, glyph_ranges : ImWchar*? = nil) : ImFont
       result = LibImGui.ImFontAtlas_AddFontFromMemoryCompressedTTF(self, compressed_font_data, compressed_font_size, size_pixels, font_cfg, glyph_ranges)
-      result.value
+      ImFont.new(result)
     end
 
     def add_font_from_memory_ttf(font_data : Void*, font_size : Int32, size_pixels : Float32, font_cfg : ImFontConfig? = nil, glyph_ranges : ImWchar*? = nil) : ImFont
       result = LibImGui.ImFontAtlas_AddFontFromMemoryTTF(self, font_data, font_size, size_pixels, font_cfg, glyph_ranges)
-      result.value
+      ImFont.new(result)
     end
 
     def build : Bool
@@ -887,11 +1007,11 @@ module ImGui
       @this.glyph_offset = glyph_offset
     end
 
-    def font : ImFont*
-      @this.font.value
+    def font : ImFont
+      ImFont.new(@this.font)
     end
 
-    def font=(font : ImFont*)
+    def font=(font : ImFont)
       @this.font = font
     end
 
@@ -1052,11 +1172,11 @@ module ImGui
       @this.name = name
     end
 
-    def dst_font : ImFont*
-      @this.dst_font.value
+    def dst_font : ImFont
+      ImFont.new(@this.dst_font)
     end
 
-    def dst_font=(dst_font : ImFont*)
+    def dst_font=(dst_font : ImFont)
       @this.dst_font = dst_font
     end
 
@@ -1151,11 +1271,11 @@ module ImGui
       @this.style = style
     end
 
-    def font : ImFont*
-      @this.font.value
+    def font : ImFont
+      ImFont.new(@this.font)
     end
 
-    def font=(font : ImFont*)
+    def font=(font : ImFont)
       @this.font = font
     end
 
@@ -1607,11 +1727,11 @@ module ImGui
       @this.style_modifiers = style_modifiers
     end
 
-    def font_stack : LibImGui::ImVector(ImFont*)
+    def font_stack : LibImGui::ImVector(ImFont)
       @this.font_stack.value
     end
 
-    def font_stack=(font_stack : LibImGui::ImVector(ImFont*))
+    def font_stack=(font_stack : LibImGui::ImVector(ImFont))
       @this.font_stack = font_stack
     end
 
@@ -2279,11 +2399,11 @@ module ImGui
       @this.input_text_state = input_text_state
     end
 
-    def input_text_password_font : ImFont
-      @this.input_text_password_font.value
+    def input_text_password_font : LibImGui::ImFont
+      ImFont.new(@this.input_text_password_font)
     end
 
-    def input_text_password_font=(input_text_password_font : ImFont)
+    def input_text_password_font=(input_text_password_font : LibImGui::ImFont)
       @this.input_text_password_font = input_text_password_font
     end
 
@@ -2731,11 +2851,11 @@ module ImGui
       @this.font_allow_user_scaling = font_allow_user_scaling
     end
 
-    def font_default : ImFont*
-      @this.font_default.value
+    def font_default : ImFont
+      ImFont.new(@this.font_default)
     end
 
-    def font_default=(font_default : ImFont*)
+    def font_default=(font_default : ImFont)
       @this.font_default = font_default
     end
 
@@ -4523,7 +4643,7 @@ module ImGui
 
   def self.get_font : ImFont
     result = LibImGui.igGetFont
-    result.value
+    ImFont.new(result)
   end
 
   def self.get_font_size : Float32
@@ -5061,7 +5181,7 @@ module ImGui
     LibImGui.igPushClipRect(clip_rect_min, clip_rect_max, intersect_with_current_clip_rect)
   end
 
-  def self.push_font(font : ImFont*) : Void
+  def self.push_font(font : ImFont) : Void
     LibImGui.igPushFont(font)
   end
 
