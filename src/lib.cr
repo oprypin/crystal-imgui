@@ -14,7 +14,7 @@ lib LibImGui
   alias ImWchar = ImWchar16
   alias ImWchar16 = LibC::UShort
   alias ImWchar32 = LibC::UInt
-  alias ImBitVector = Void
+  type ImBitVector = Void*
 
   struct ImDrawChannel
     _cmd_buffer : ImVectorInternal
@@ -42,7 +42,7 @@ lib LibImGui
     framebuffer_scale : ImGui::ImVec2
   end
 
-  alias ImDrawDataBuilder = Void
+  type ImDrawDataBuilder = Void*
 
   struct ImDrawList
     cmd_buffer : ImVectorInternal
@@ -61,7 +61,7 @@ lib LibImGui
     _splitter : ImDrawListSplitter
   end
 
-  alias ImDrawListSharedData = Void
+  type ImDrawListSharedData = Void*
 
   struct ImDrawListSplitter
     _current : LibC::Int
@@ -145,13 +145,13 @@ lib LibImGui
     used_chars : ImVectorInternal
   end
 
-  alias ImGuiColorMod = Void
-  alias ImGuiColumnData = Void
-  alias ImGuiColumns = Void
-  alias ImGuiContext = Void
-  alias ImGuiDataTypeInfo = Void
-  alias ImGuiDataTypeTempStorage = Void
-  alias ImGuiGroupData = Void
+  type ImGuiColorMod = Void*
+  type ImGuiColumnData = Void*
+  type ImGuiColumns = Void*
+  type ImGuiContext = Void*
+  type ImGuiDataTypeInfo = Void*
+  type ImGuiDataTypeTempStorage = Void*
+  type ImGuiGroupData = Void*
 
   struct ImGuiIO
     config_flags : ImGui::ImGuiConfigFlags
@@ -251,8 +251,8 @@ lib LibImGui
     selection_end : LibC::Int
   end
 
-  alias ImGuiInputTextState = Void
-  alias ImGuiItemHoveredDataBackup = Void
+  type ImGuiInputTextState = Void*
+  type ImGuiItemHoveredDataBackup = Void*
 
   struct ImGuiListClipper
     display_start : LibC::Int
@@ -263,10 +263,10 @@ lib LibImGui
     start_pos_y : LibC::Float
   end
 
-  alias ImGuiMenuColumns = Void
-  alias ImGuiNavMoveResult = Void
-  alias ImGuiNextItemData = Void
-  alias ImGuiNextWindowData = Void
+  type ImGuiMenuColumns = Void*
+  type ImGuiNavMoveResult = Void*
+  type ImGuiNextItemData = Void*
+  type ImGuiNextWindowData = Void*
 
   struct ImGuiOnceUponAFrame
     ref_frame : LibC::Int
@@ -283,10 +283,10 @@ lib LibImGui
     delivery : Bool
   end
 
-  alias ImGuiPopupData = Void
-  alias ImGuiPtrOrIndex = Void
-  alias ImGuiSettingsHandler = Void
-  alias ImGuiShrinkWidthItem = Void
+  type ImGuiPopupData = Void*
+  type ImGuiPtrOrIndex = Void*
+  type ImGuiSettingsHandler = Void*
+  type ImGuiShrinkWidthItem = Void*
 
   struct ImGuiSizeCallbackData
     user_data : Void*
@@ -299,7 +299,7 @@ lib LibImGui
     data : ImVectorInternal
   end
 
-  alias ImGuiStoragePair = Void
+  type ImGuiStoragePair = Void*
 
   struct ImGuiStyle
     alpha : LibC::Float
@@ -341,9 +341,9 @@ lib LibImGui
     colors : ImGui::ImVec4[48]
   end
 
-  alias ImGuiStyleMod = Void
-  alias ImGuiTabBar = Void
-  alias ImGuiTabItem = Void
+  type ImGuiStyleMod = Void*
+  type ImGuiTabBar = Void*
+  type ImGuiTabItem = Void*
 
   struct ImGuiTextBuffer
     buf : ImVectorInternal
@@ -355,13 +355,13 @@ lib LibImGui
     count_grep : LibC::Int
   end
 
-  alias ImGuiTextRange = Void
-  alias ImGuiWindow = Void
-  alias ImGuiWindowSettings = Void
-  alias ImGuiWindowTempData = Void
-  alias ImRect = Void
-  alias ImVec1 = Void
-  alias ImVec2ih = Void
+  type ImGuiTextRange = Void*
+  type ImGuiWindow = Void*
+  type ImGuiWindowSettings = Void*
+  type ImGuiWindowTempData = Void*
+  type ImRect = Void*
+  type ImVec1 = Void*
+  type ImVec2ih = Void*
   fun ImColor_HSV(pOut : ImGui::ImColor*, self : ImGui::ImColor*, h : LibC::Float, s : LibC::Float, v : LibC::Float, a : LibC::Float)
   fun ImColor_ImColorNil : ImGui::ImColor*
   fun ImColor_ImColorInt(r : LibC::Int, g : LibC::Int, b : LibC::Int, a : LibC::Int) : ImGui::ImColor*

@@ -1,6 +1,8 @@
 require "./lib"
 
 module ImGui
+  alias ImBitVector = LibImGui::ImBitVector
+
   struct ImColor
     include StructType
 
@@ -40,66 +42,66 @@ module ImGui
   end
 
   class ImDrawChannel
-    include ClassType(LibImGui::ImDrawChannel)
+    include DirectClassType(LibImGui::ImDrawChannel)
   end
 
-  class ImDrawCmd
-    include ClassType(LibImGui::ImDrawCmd)
+  struct ImDrawCmd
+    include StructClassType(LibImGui::ImDrawCmd)
 
     def clip_rect : ImVec4
-      @this.clip_rect.value
+      @this.value.clip_rect.value
     end
 
     def clip_rect=(clip_rect : ImVec4)
-      @this.clip_rect = clip_rect
+      @this.value.clip_rect = clip_rect
     end
 
     def texture_id : ImTextureID
-      @this.texture_id
+      @this.value.texture_id
     end
 
     def texture_id=(texture_id : ImTextureID)
-      @this.texture_id = texture_id
+      @this.value.texture_id = texture_id
     end
 
     def vtx_offset : UInt32
-      @this.vtx_offset
+      @this.value.vtx_offset
     end
 
     def vtx_offset=(vtx_offset : UInt32)
-      @this.vtx_offset = vtx_offset
+      @this.value.vtx_offset = vtx_offset
     end
 
     def idx_offset : UInt32
-      @this.idx_offset
+      @this.value.idx_offset
     end
 
     def idx_offset=(idx_offset : UInt32)
-      @this.idx_offset = idx_offset
+      @this.value.idx_offset = idx_offset
     end
 
     def elem_count : UInt32
-      @this.elem_count
+      @this.value.elem_count
     end
 
     def elem_count=(elem_count : UInt32)
-      @this.elem_count = elem_count
+      @this.value.elem_count = elem_count
     end
 
     def user_callback : ImDrawCallback
-      @this.user_callback
+      @this.value.user_callback
     end
 
     def user_callback=(user_callback : ImDrawCallback)
-      @this.user_callback = user_callback
+      @this.value.user_callback = user_callback
     end
 
     def user_callback_data : Void*
-      @this.user_callback_data
+      @this.value.user_callback_data
     end
 
     def user_callback_data=(user_callback_data : Void*)
-      @this.user_callback_data = user_callback_data
+      @this.value.user_callback_data = user_callback_data
     end
 
     def self.new : ImDrawCmd
@@ -108,71 +110,71 @@ module ImGui
     end
   end
 
-  class ImDrawData
-    include ClassType(LibImGui::ImDrawData)
+  struct ImDrawData
+    include StructClassType(LibImGui::ImDrawData)
 
     def valid : Bool
-      @this.valid
+      @this.value.valid
     end
 
     def valid=(valid : Bool)
-      @this.valid = valid
+      @this.value.valid = valid
     end
 
     def cmd_lists : Slice(ImDrawList)
-      Slice(ImDrawList).new(@this.cmd_lists, @this.cmd_lists_count)
+      Slice(ImDrawList).new(@this.value.cmd_lists, @this.value.cmd_lists_count)
     end
 
     def cmd_lists=(cmd_lists : Slice(ImDrawList))
-      @this.cmd_lists = cmd_lists
+      @this.value.cmd_lists = cmd_lists
     end
 
     def cmd_lists_count : Int32
-      @this.cmd_lists_count
+      @this.value.cmd_lists_count
     end
 
     def cmd_lists_count=(cmd_lists_count : Int32)
-      @this.cmd_lists_count = cmd_lists_count
+      @this.value.cmd_lists_count = cmd_lists_count
     end
 
     def total_idx_count : Int32
-      @this.total_idx_count
+      @this.value.total_idx_count
     end
 
     def total_idx_count=(total_idx_count : Int32)
-      @this.total_idx_count = total_idx_count
+      @this.value.total_idx_count = total_idx_count
     end
 
     def total_vtx_count : Int32
-      @this.total_vtx_count
+      @this.value.total_vtx_count
     end
 
     def total_vtx_count=(total_vtx_count : Int32)
-      @this.total_vtx_count = total_vtx_count
+      @this.value.total_vtx_count = total_vtx_count
     end
 
     def display_pos : ImVec2
-      @this.display_pos.value
+      @this.value.display_pos.value
     end
 
     def display_pos=(display_pos : ImVec2)
-      @this.display_pos = display_pos
+      @this.value.display_pos = display_pos
     end
 
     def display_size : ImVec2
-      @this.display_size.value
+      @this.value.display_size.value
     end
 
     def display_size=(display_size : ImVec2)
-      @this.display_size = display_size
+      @this.value.display_size = display_size
     end
 
     def framebuffer_scale : ImVec2
-      @this.framebuffer_scale.value
+      @this.value.framebuffer_scale.value
     end
 
     def framebuffer_scale=(framebuffer_scale : ImVec2)
-      @this.framebuffer_scale = framebuffer_scale
+      @this.value.framebuffer_scale = framebuffer_scale
     end
 
     def clear : Void
@@ -193,39 +195,41 @@ module ImGui
     end
   end
 
-  class ImDrawList
-    include ClassType(LibImGui::ImDrawList)
+  alias ImDrawDataBuilder = LibImGui::ImDrawDataBuilder
+
+  struct ImDrawList
+    include StructClassType(LibImGui::ImDrawList)
 
     def cmd_buffer : LibImGui::ImVector(LibImGui::ImDrawCmd)
-      @this.cmd_buffer.value
+      @this.value.cmd_buffer.value
     end
 
     def cmd_buffer=(cmd_buffer : LibImGui::ImVector(LibImGui::ImDrawCmd))
-      @this.cmd_buffer = cmd_buffer
+      @this.value.cmd_buffer = cmd_buffer
     end
 
     def idx_buffer : LibImGui::ImVector(ImDrawIdx)
-      @this.idx_buffer.value
+      @this.value.idx_buffer.value
     end
 
     def idx_buffer=(idx_buffer : LibImGui::ImVector(ImDrawIdx))
-      @this.idx_buffer = idx_buffer
+      @this.value.idx_buffer = idx_buffer
     end
 
     def vtx_buffer : LibImGui::ImVector(ImDrawVert)
-      @this.vtx_buffer.value
+      @this.value.vtx_buffer.value
     end
 
     def vtx_buffer=(vtx_buffer : LibImGui::ImVector(ImDrawVert))
-      @this.vtx_buffer = vtx_buffer
+      @this.value.vtx_buffer = vtx_buffer
     end
 
     def flags : ImDrawListFlags
-      @this.flags
+      @this.value.flags
     end
 
     def flags=(flags : ImDrawListFlags)
-      @this.flags = flags
+      @this.value.flags = flags
     end
 
     def add_bezier_curve(p1 : ImVec2, p2 : ImVec2, p3 : ImVec2, p4 : ImVec2, col : UInt32, thickness : Float32, num_segments : Int32 = 0) : Void
@@ -437,8 +441,10 @@ module ImGui
     end
   end
 
+  alias ImDrawListSharedData = LibImGui::ImDrawListSharedData
+
   class ImDrawListSplitter
-    include ClassType(LibImGui::ImDrawListSplitter)
+    include DirectClassType(LibImGui::ImDrawListSplitter)
 
     def clear : Void
       LibImGui.ImDrawListSplitter_Clear(self)
@@ -471,7 +477,7 @@ module ImGui
   end
 
   class ImFont
-    include ClassType(LibImGui::ImFont)
+    include DirectClassType(LibImGui::ImFont)
 
     def index_advance_x : LibImGui::ImVector(Float32)
       @this.index_advance_x.value
@@ -697,7 +703,7 @@ module ImGui
   end
 
   class ImFontAtlas
-    include ClassType(LibImGui::ImFontAtlas)
+    include DirectClassType(LibImGui::ImFontAtlas)
 
     def locked : Bool
       @this.locked
@@ -949,7 +955,7 @@ module ImGui
   end
 
   class ImFontAtlasCustomRect
-    include ClassType(LibImGui::ImFontAtlasCustomRect)
+    include DirectClassType(LibImGui::ImFontAtlasCustomRect)
 
     def width : UInt16
       @this.width
@@ -1026,7 +1032,7 @@ module ImGui
   end
 
   class ImFontConfig
-    include ClassType(LibImGui::ImFontConfig)
+    include DirectClassType(LibImGui::ImFontConfig)
 
     def font_data : Void*
       @this.font_data
@@ -1191,7 +1197,7 @@ module ImGui
   end
 
   class ImFontGlyphRangesBuilder
-    include ClassType(LibImGui::ImFontGlyphRangesBuilder)
+    include DirectClassType(LibImGui::ImFontGlyphRangesBuilder)
 
     def used_chars : LibImGui::ImVector(UInt32)
       @this.used_chars.value
@@ -1236,2123 +1242,655 @@ module ImGui
     end
   end
 
-  class ImGuiContext
-    include ClassType(LibImGui::ImGuiContext)
-
-    def initialized : Bool
-      @this.initialized
-    end
-
-    def initialized=(initialized : Bool)
-      @this.initialized = initialized
-    end
-
-    def font_atlas_owned_by_context : Bool
-      @this.font_atlas_owned_by_context
-    end
-
-    def font_atlas_owned_by_context=(font_atlas_owned_by_context : Bool)
-      @this.font_atlas_owned_by_context = font_atlas_owned_by_context
-    end
-
-    def io : LibImGui::ImGuiIO
-      ImGuiIO.new(@this.io)
-    end
-
-    def io=(io : LibImGui::ImGuiIO)
-      @this.io = io
-    end
-
-    def style : LibImGui::ImGuiStyle
-      ImGuiStyle.new(@this.style)
-    end
-
-    def style=(style : LibImGui::ImGuiStyle)
-      @this.style = style
-    end
-
-    def font : ImFont
-      ImFont.new(@this.font)
-    end
-
-    def font=(font : ImFont)
-      @this.font = font
-    end
-
-    def font_size : Float32
-      @this.font_size
-    end
-
-    def font_size=(font_size : Float32)
-      @this.font_size = font_size
-    end
-
-    def font_base_size : Float32
-      @this.font_base_size
-    end
-
-    def font_base_size=(font_base_size : Float32)
-      @this.font_base_size = font_base_size
-    end
-
-    def draw_list_shared_data : LibImGui::ImDrawListSharedData
-      ImDrawListSharedData.new(@this.draw_list_shared_data)
-    end
-
-    def draw_list_shared_data=(draw_list_shared_data : LibImGui::ImDrawListSharedData)
-      @this.draw_list_shared_data = draw_list_shared_data
-    end
-
-    def time : Float64
-      @this.time
-    end
-
-    def time=(time : Float64)
-      @this.time = time
-    end
-
-    def frame_count : Int32
-      @this.frame_count
-    end
-
-    def frame_count=(frame_count : Int32)
-      @this.frame_count = frame_count
-    end
-
-    def frame_count_ended : Int32
-      @this.frame_count_ended
-    end
-
-    def frame_count_ended=(frame_count_ended : Int32)
-      @this.frame_count_ended = frame_count_ended
-    end
-
-    def frame_count_rendered : Int32
-      @this.frame_count_rendered
-    end
-
-    def frame_count_rendered=(frame_count_rendered : Int32)
-      @this.frame_count_rendered = frame_count_rendered
-    end
-
-    def within_frame_scope : Bool
-      @this.within_frame_scope
-    end
-
-    def within_frame_scope=(within_frame_scope : Bool)
-      @this.within_frame_scope = within_frame_scope
-    end
-
-    def within_frame_scope_with_implicit_window : Bool
-      @this.within_frame_scope_with_implicit_window
-    end
-
-    def within_frame_scope_with_implicit_window=(within_frame_scope_with_implicit_window : Bool)
-      @this.within_frame_scope_with_implicit_window = within_frame_scope_with_implicit_window
-    end
-
-    def within_end_child : Bool
-      @this.within_end_child
-    end
-
-    def within_end_child=(within_end_child : Bool)
-      @this.within_end_child = within_end_child
-    end
-
-    def test_engine_hook_items : Bool
-      @this.test_engine_hook_items
-    end
-
-    def test_engine_hook_items=(test_engine_hook_items : Bool)
-      @this.test_engine_hook_items = test_engine_hook_items
-    end
-
-    def test_engine_hook_id_info : ImGuiID
-      @this.test_engine_hook_id_info
-    end
-
-    def test_engine_hook_id_info=(test_engine_hook_id_info : ImGuiID)
-      @this.test_engine_hook_id_info = test_engine_hook_id_info
-    end
-
-    def test_engine : Void*
-      @this.test_engine
-    end
-
-    def test_engine=(test_engine : Void*)
-      @this.test_engine = test_engine
-    end
-
-    def windows : LibImGui::ImVector(ImGuiWindow)
-      @this.windows.value
-    end
-
-    def windows=(windows : LibImGui::ImVector(ImGuiWindow))
-      @this.windows = windows
-    end
-
-    def windows_focus_order : LibImGui::ImVector(ImGuiWindow)
-      @this.windows_focus_order.value
-    end
-
-    def windows_focus_order=(windows_focus_order : LibImGui::ImVector(ImGuiWindow))
-      @this.windows_focus_order = windows_focus_order
-    end
-
-    def windows_temp_sort_buffer : LibImGui::ImVector(ImGuiWindow)
-      @this.windows_temp_sort_buffer.value
-    end
-
-    def windows_temp_sort_buffer=(windows_temp_sort_buffer : LibImGui::ImVector(ImGuiWindow))
-      @this.windows_temp_sort_buffer = windows_temp_sort_buffer
-    end
-
-    def current_window_stack : LibImGui::ImVector(ImGuiWindow)
-      @this.current_window_stack.value
-    end
-
-    def current_window_stack=(current_window_stack : LibImGui::ImVector(ImGuiWindow))
-      @this.current_window_stack = current_window_stack
-    end
-
-    def windows_by_id : LibImGui::ImGuiStorage
-      ImGuiStorage.new(@this.windows_by_id)
-    end
-
-    def windows_by_id=(windows_by_id : LibImGui::ImGuiStorage)
-      @this.windows_by_id = windows_by_id
-    end
-
-    def windows_active_count : Int32
-      @this.windows_active_count
-    end
-
-    def windows_active_count=(windows_active_count : Int32)
-      @this.windows_active_count = windows_active_count
-    end
-
-    def current_window : ImGuiWindow
-      ImGuiWindow.new(@this.current_window)
-    end
-
-    def current_window=(current_window : ImGuiWindow)
-      @this.current_window = current_window
-    end
-
-    def hovered_window : ImGuiWindow
-      ImGuiWindow.new(@this.hovered_window)
-    end
-
-    def hovered_window=(hovered_window : ImGuiWindow)
-      @this.hovered_window = hovered_window
-    end
-
-    def hovered_root_window : ImGuiWindow
-      ImGuiWindow.new(@this.hovered_root_window)
-    end
-
-    def hovered_root_window=(hovered_root_window : ImGuiWindow)
-      @this.hovered_root_window = hovered_root_window
-    end
-
-    def moving_window : ImGuiWindow
-      ImGuiWindow.new(@this.moving_window)
-    end
-
-    def moving_window=(moving_window : ImGuiWindow)
-      @this.moving_window = moving_window
-    end
-
-    def wheeling_window : ImGuiWindow
-      ImGuiWindow.new(@this.wheeling_window)
-    end
-
-    def wheeling_window=(wheeling_window : ImGuiWindow)
-      @this.wheeling_window = wheeling_window
-    end
-
-    def wheeling_window_ref_mouse_pos : ImVec2
-      @this.wheeling_window_ref_mouse_pos.value
-    end
-
-    def wheeling_window_ref_mouse_pos=(wheeling_window_ref_mouse_pos : ImVec2)
-      @this.wheeling_window_ref_mouse_pos = wheeling_window_ref_mouse_pos
-    end
-
-    def wheeling_window_timer : Float32
-      @this.wheeling_window_timer
-    end
-
-    def wheeling_window_timer=(wheeling_window_timer : Float32)
-      @this.wheeling_window_timer = wheeling_window_timer
-    end
-
-    def hovered_id : ImGuiID
-      @this.hovered_id
-    end
-
-    def hovered_id=(hovered_id : ImGuiID)
-      @this.hovered_id = hovered_id
-    end
-
-    def hovered_id_allow_overlap : Bool
-      @this.hovered_id_allow_overlap
-    end
-
-    def hovered_id_allow_overlap=(hovered_id_allow_overlap : Bool)
-      @this.hovered_id_allow_overlap = hovered_id_allow_overlap
-    end
-
-    def hovered_id_previous_frame : ImGuiID
-      @this.hovered_id_previous_frame
-    end
-
-    def hovered_id_previous_frame=(hovered_id_previous_frame : ImGuiID)
-      @this.hovered_id_previous_frame = hovered_id_previous_frame
-    end
-
-    def hovered_id_timer : Float32
-      @this.hovered_id_timer
-    end
-
-    def hovered_id_timer=(hovered_id_timer : Float32)
-      @this.hovered_id_timer = hovered_id_timer
-    end
-
-    def hovered_id_not_active_timer : Float32
-      @this.hovered_id_not_active_timer
-    end
-
-    def hovered_id_not_active_timer=(hovered_id_not_active_timer : Float32)
-      @this.hovered_id_not_active_timer = hovered_id_not_active_timer
-    end
-
-    def active_id : ImGuiID
-      @this.active_id
-    end
-
-    def active_id=(active_id : ImGuiID)
-      @this.active_id = active_id
-    end
-
-    def active_id_is_alive : ImGuiID
-      @this.active_id_is_alive
-    end
-
-    def active_id_is_alive=(active_id_is_alive : ImGuiID)
-      @this.active_id_is_alive = active_id_is_alive
-    end
-
-    def active_id_timer : Float32
-      @this.active_id_timer
-    end
-
-    def active_id_timer=(active_id_timer : Float32)
-      @this.active_id_timer = active_id_timer
-    end
-
-    def active_id_is_just_activated : Bool
-      @this.active_id_is_just_activated
-    end
-
-    def active_id_is_just_activated=(active_id_is_just_activated : Bool)
-      @this.active_id_is_just_activated = active_id_is_just_activated
-    end
-
-    def active_id_allow_overlap : Bool
-      @this.active_id_allow_overlap
-    end
-
-    def active_id_allow_overlap=(active_id_allow_overlap : Bool)
-      @this.active_id_allow_overlap = active_id_allow_overlap
-    end
-
-    def active_id_has_been_pressed_before : Bool
-      @this.active_id_has_been_pressed_before
-    end
-
-    def active_id_has_been_pressed_before=(active_id_has_been_pressed_before : Bool)
-      @this.active_id_has_been_pressed_before = active_id_has_been_pressed_before
-    end
-
-    def active_id_has_been_edited_before : Bool
-      @this.active_id_has_been_edited_before
-    end
-
-    def active_id_has_been_edited_before=(active_id_has_been_edited_before : Bool)
-      @this.active_id_has_been_edited_before = active_id_has_been_edited_before
-    end
-
-    def active_id_has_been_edited_this_frame : Bool
-      @this.active_id_has_been_edited_this_frame
-    end
-
-    def active_id_has_been_edited_this_frame=(active_id_has_been_edited_this_frame : Bool)
-      @this.active_id_has_been_edited_this_frame = active_id_has_been_edited_this_frame
-    end
-
-    def active_id_using_nav_dir_mask : UInt32
-      @this.active_id_using_nav_dir_mask
-    end
-
-    def active_id_using_nav_dir_mask=(active_id_using_nav_dir_mask : UInt32)
-      @this.active_id_using_nav_dir_mask = active_id_using_nav_dir_mask
-    end
-
-    def active_id_using_nav_input_mask : UInt32
-      @this.active_id_using_nav_input_mask
-    end
-
-    def active_id_using_nav_input_mask=(active_id_using_nav_input_mask : UInt32)
-      @this.active_id_using_nav_input_mask = active_id_using_nav_input_mask
-    end
-
-    def active_id_using_key_input_mask : UInt64
-      @this.active_id_using_key_input_mask
-    end
-
-    def active_id_using_key_input_mask=(active_id_using_key_input_mask : UInt64)
-      @this.active_id_using_key_input_mask = active_id_using_key_input_mask
-    end
-
-    def active_id_click_offset : ImVec2
-      @this.active_id_click_offset.value
-    end
-
-    def active_id_click_offset=(active_id_click_offset : ImVec2)
-      @this.active_id_click_offset = active_id_click_offset
-    end
-
-    def active_id_window : ImGuiWindow
-      ImGuiWindow.new(@this.active_id_window)
-    end
-
-    def active_id_window=(active_id_window : ImGuiWindow)
-      @this.active_id_window = active_id_window
-    end
-
-    def active_id_source : LibImGui::ImGuiInputSource
-      @this.active_id_source
-    end
-
-    def active_id_source=(active_id_source : LibImGui::ImGuiInputSource)
-      @this.active_id_source = active_id_source
-    end
-
-    def active_id_mouse_button : Int32
-      @this.active_id_mouse_button
-    end
-
-    def active_id_mouse_button=(active_id_mouse_button : Int32)
-      @this.active_id_mouse_button = active_id_mouse_button
-    end
-
-    def active_id_previous_frame : ImGuiID
-      @this.active_id_previous_frame
-    end
-
-    def active_id_previous_frame=(active_id_previous_frame : ImGuiID)
-      @this.active_id_previous_frame = active_id_previous_frame
-    end
-
-    def active_id_previous_frame_is_alive : Bool
-      @this.active_id_previous_frame_is_alive
-    end
-
-    def active_id_previous_frame_is_alive=(active_id_previous_frame_is_alive : Bool)
-      @this.active_id_previous_frame_is_alive = active_id_previous_frame_is_alive
-    end
-
-    def active_id_previous_frame_has_been_edited_before : Bool
-      @this.active_id_previous_frame_has_been_edited_before
-    end
-
-    def active_id_previous_frame_has_been_edited_before=(active_id_previous_frame_has_been_edited_before : Bool)
-      @this.active_id_previous_frame_has_been_edited_before = active_id_previous_frame_has_been_edited_before
-    end
-
-    def active_id_previous_frame_window : ImGuiWindow
-      ImGuiWindow.new(@this.active_id_previous_frame_window)
-    end
-
-    def active_id_previous_frame_window=(active_id_previous_frame_window : ImGuiWindow)
-      @this.active_id_previous_frame_window = active_id_previous_frame_window
-    end
-
-    def last_active_id : ImGuiID
-      @this.last_active_id
-    end
-
-    def last_active_id=(last_active_id : ImGuiID)
-      @this.last_active_id = last_active_id
-    end
-
-    def last_active_id_timer : Float32
-      @this.last_active_id_timer
-    end
-
-    def last_active_id_timer=(last_active_id_timer : Float32)
-      @this.last_active_id_timer = last_active_id_timer
-    end
-
-    def next_window_data : LibImGui::ImGuiNextWindowData
-      ImGuiNextWindowData.new(@this.next_window_data)
-    end
-
-    def next_window_data=(next_window_data : LibImGui::ImGuiNextWindowData)
-      @this.next_window_data = next_window_data
-    end
-
-    def next_item_data : LibImGui::ImGuiNextItemData
-      ImGuiNextItemData.new(@this.next_item_data)
-    end
-
-    def next_item_data=(next_item_data : LibImGui::ImGuiNextItemData)
-      @this.next_item_data = next_item_data
-    end
-
-    def color_modifiers : LibImGui::ImVector(LibImGui::ImGuiColorMod)
-      @this.color_modifiers.value
-    end
-
-    def color_modifiers=(color_modifiers : LibImGui::ImVector(LibImGui::ImGuiColorMod))
-      @this.color_modifiers = color_modifiers
-    end
-
-    def style_modifiers : LibImGui::ImVector(LibImGui::ImGuiStyleMod)
-      @this.style_modifiers.value
-    end
-
-    def style_modifiers=(style_modifiers : LibImGui::ImVector(LibImGui::ImGuiStyleMod))
-      @this.style_modifiers = style_modifiers
-    end
-
-    def font_stack : LibImGui::ImVector(ImFont)
-      @this.font_stack.value
-    end
-
-    def font_stack=(font_stack : LibImGui::ImVector(ImFont))
-      @this.font_stack = font_stack
-    end
-
-    def open_popup_stack : LibImGui::ImVector(LibImGui::ImGuiPopupData)
-      @this.open_popup_stack.value
-    end
-
-    def open_popup_stack=(open_popup_stack : LibImGui::ImVector(LibImGui::ImGuiPopupData))
-      @this.open_popup_stack = open_popup_stack
-    end
-
-    def begin_popup_stack : LibImGui::ImVector(LibImGui::ImGuiPopupData)
-      @this.begin_popup_stack.value
-    end
-
-    def begin_popup_stack=(begin_popup_stack : LibImGui::ImVector(LibImGui::ImGuiPopupData))
-      @this.begin_popup_stack = begin_popup_stack
-    end
-
-    def nav_window : ImGuiWindow
-      ImGuiWindow.new(@this.nav_window)
-    end
-
-    def nav_window=(nav_window : ImGuiWindow)
-      @this.nav_window = nav_window
-    end
-
-    def nav_id : ImGuiID
-      @this.nav_id
-    end
-
-    def nav_id=(nav_id : ImGuiID)
-      @this.nav_id = nav_id
-    end
-
-    def nav_focus_scope_id : ImGuiID
-      @this.nav_focus_scope_id
-    end
-
-    def nav_focus_scope_id=(nav_focus_scope_id : ImGuiID)
-      @this.nav_focus_scope_id = nav_focus_scope_id
-    end
-
-    def nav_activate_id : ImGuiID
-      @this.nav_activate_id
-    end
-
-    def nav_activate_id=(nav_activate_id : ImGuiID)
-      @this.nav_activate_id = nav_activate_id
-    end
-
-    def nav_activate_down_id : ImGuiID
-      @this.nav_activate_down_id
-    end
-
-    def nav_activate_down_id=(nav_activate_down_id : ImGuiID)
-      @this.nav_activate_down_id = nav_activate_down_id
-    end
-
-    def nav_activate_pressed_id : ImGuiID
-      @this.nav_activate_pressed_id
-    end
-
-    def nav_activate_pressed_id=(nav_activate_pressed_id : ImGuiID)
-      @this.nav_activate_pressed_id = nav_activate_pressed_id
-    end
-
-    def nav_input_id : ImGuiID
-      @this.nav_input_id
-    end
-
-    def nav_input_id=(nav_input_id : ImGuiID)
-      @this.nav_input_id = nav_input_id
-    end
-
-    def nav_just_tabbed_id : ImGuiID
-      @this.nav_just_tabbed_id
-    end
-
-    def nav_just_tabbed_id=(nav_just_tabbed_id : ImGuiID)
-      @this.nav_just_tabbed_id = nav_just_tabbed_id
-    end
-
-    def nav_just_moved_to_id : ImGuiID
-      @this.nav_just_moved_to_id
-    end
-
-    def nav_just_moved_to_id=(nav_just_moved_to_id : ImGuiID)
-      @this.nav_just_moved_to_id = nav_just_moved_to_id
-    end
-
-    def nav_just_moved_to_focus_scope_id : ImGuiID
-      @this.nav_just_moved_to_focus_scope_id
-    end
-
-    def nav_just_moved_to_focus_scope_id=(nav_just_moved_to_focus_scope_id : ImGuiID)
-      @this.nav_just_moved_to_focus_scope_id = nav_just_moved_to_focus_scope_id
-    end
-
-    def nav_just_moved_to_key_mods : ImGuiKeyModFlags
-      @this.nav_just_moved_to_key_mods
-    end
-
-    def nav_just_moved_to_key_mods=(nav_just_moved_to_key_mods : ImGuiKeyModFlags)
-      @this.nav_just_moved_to_key_mods = nav_just_moved_to_key_mods
-    end
-
-    def nav_next_activate_id : ImGuiID
-      @this.nav_next_activate_id
-    end
-
-    def nav_next_activate_id=(nav_next_activate_id : ImGuiID)
-      @this.nav_next_activate_id = nav_next_activate_id
-    end
-
-    def nav_input_source : LibImGui::ImGuiInputSource
-      @this.nav_input_source
-    end
-
-    def nav_input_source=(nav_input_source : LibImGui::ImGuiInputSource)
-      @this.nav_input_source = nav_input_source
-    end
-
-    def nav_scoring_rect : LibImGui::ImRect
-      ImRect.new(@this.nav_scoring_rect)
-    end
-
-    def nav_scoring_rect=(nav_scoring_rect : LibImGui::ImRect)
-      @this.nav_scoring_rect = nav_scoring_rect
-    end
-
-    def nav_scoring_count : Int32
-      @this.nav_scoring_count
-    end
-
-    def nav_scoring_count=(nav_scoring_count : Int32)
-      @this.nav_scoring_count = nav_scoring_count
-    end
-
-    def nav_layer : LibImGui::ImGuiNavLayer
-      @this.nav_layer
-    end
-
-    def nav_layer=(nav_layer : LibImGui::ImGuiNavLayer)
-      @this.nav_layer = nav_layer
-    end
-
-    def nav_id_tab_counter : Int32
-      @this.nav_id_tab_counter
-    end
-
-    def nav_id_tab_counter=(nav_id_tab_counter : Int32)
-      @this.nav_id_tab_counter = nav_id_tab_counter
-    end
-
-    def nav_id_is_alive : Bool
-      @this.nav_id_is_alive
-    end
-
-    def nav_id_is_alive=(nav_id_is_alive : Bool)
-      @this.nav_id_is_alive = nav_id_is_alive
-    end
-
-    def nav_mouse_pos_dirty : Bool
-      @this.nav_mouse_pos_dirty
-    end
-
-    def nav_mouse_pos_dirty=(nav_mouse_pos_dirty : Bool)
-      @this.nav_mouse_pos_dirty = nav_mouse_pos_dirty
-    end
-
-    def nav_disable_highlight : Bool
-      @this.nav_disable_highlight
-    end
-
-    def nav_disable_highlight=(nav_disable_highlight : Bool)
-      @this.nav_disable_highlight = nav_disable_highlight
-    end
-
-    def nav_disable_mouse_hover : Bool
-      @this.nav_disable_mouse_hover
-    end
-
-    def nav_disable_mouse_hover=(nav_disable_mouse_hover : Bool)
-      @this.nav_disable_mouse_hover = nav_disable_mouse_hover
-    end
-
-    def nav_any_request : Bool
-      @this.nav_any_request
-    end
-
-    def nav_any_request=(nav_any_request : Bool)
-      @this.nav_any_request = nav_any_request
-    end
-
-    def nav_init_request : Bool
-      @this.nav_init_request
-    end
-
-    def nav_init_request=(nav_init_request : Bool)
-      @this.nav_init_request = nav_init_request
-    end
-
-    def nav_init_request_from_move : Bool
-      @this.nav_init_request_from_move
-    end
-
-    def nav_init_request_from_move=(nav_init_request_from_move : Bool)
-      @this.nav_init_request_from_move = nav_init_request_from_move
-    end
-
-    def nav_init_result_id : ImGuiID
-      @this.nav_init_result_id
-    end
-
-    def nav_init_result_id=(nav_init_result_id : ImGuiID)
-      @this.nav_init_result_id = nav_init_result_id
-    end
-
-    def nav_init_result_rect_rel : LibImGui::ImRect
-      ImRect.new(@this.nav_init_result_rect_rel)
-    end
-
-    def nav_init_result_rect_rel=(nav_init_result_rect_rel : LibImGui::ImRect)
-      @this.nav_init_result_rect_rel = nav_init_result_rect_rel
-    end
-
-    def nav_move_from_clamped_ref_rect : Bool
-      @this.nav_move_from_clamped_ref_rect
-    end
-
-    def nav_move_from_clamped_ref_rect=(nav_move_from_clamped_ref_rect : Bool)
-      @this.nav_move_from_clamped_ref_rect = nav_move_from_clamped_ref_rect
-    end
-
-    def nav_move_request : Bool
-      @this.nav_move_request
-    end
-
-    def nav_move_request=(nav_move_request : Bool)
-      @this.nav_move_request = nav_move_request
-    end
-
-    def nav_move_request_flags : LibImGui::ImGuiNavMoveFlags
-      @this.nav_move_request_flags
-    end
-
-    def nav_move_request_flags=(nav_move_request_flags : LibImGui::ImGuiNavMoveFlags)
-      @this.nav_move_request_flags = nav_move_request_flags
-    end
-
-    def nav_move_request_forward : LibImGui::ImGuiNavForward
-      @this.nav_move_request_forward
-    end
-
-    def nav_move_request_forward=(nav_move_request_forward : LibImGui::ImGuiNavForward)
-      @this.nav_move_request_forward = nav_move_request_forward
-    end
-
-    def nav_move_request_key_mods : ImGuiKeyModFlags
-      @this.nav_move_request_key_mods
-    end
-
-    def nav_move_request_key_mods=(nav_move_request_key_mods : ImGuiKeyModFlags)
-      @this.nav_move_request_key_mods = nav_move_request_key_mods
-    end
-
-    def nav_move_dir : ImGuiDir
-      @this.nav_move_dir
-    end
-
-    def nav_move_dir=(nav_move_dir : ImGuiDir)
-      @this.nav_move_dir = nav_move_dir
-    end
-
-    def nav_move_dir_last : ImGuiDir
-      @this.nav_move_dir_last
-    end
-
-    def nav_move_dir_last=(nav_move_dir_last : ImGuiDir)
-      @this.nav_move_dir_last = nav_move_dir_last
-    end
-
-    def nav_move_clip_dir : ImGuiDir
-      @this.nav_move_clip_dir
-    end
-
-    def nav_move_clip_dir=(nav_move_clip_dir : ImGuiDir)
-      @this.nav_move_clip_dir = nav_move_clip_dir
-    end
-
-    def nav_move_result_local : LibImGui::ImGuiNavMoveResult
-      ImGuiNavMoveResult.new(@this.nav_move_result_local)
-    end
-
-    def nav_move_result_local=(nav_move_result_local : LibImGui::ImGuiNavMoveResult)
-      @this.nav_move_result_local = nav_move_result_local
-    end
-
-    def nav_move_result_local_visible_set : LibImGui::ImGuiNavMoveResult
-      ImGuiNavMoveResult.new(@this.nav_move_result_local_visible_set)
-    end
-
-    def nav_move_result_local_visible_set=(nav_move_result_local_visible_set : LibImGui::ImGuiNavMoveResult)
-      @this.nav_move_result_local_visible_set = nav_move_result_local_visible_set
-    end
-
-    def nav_move_result_other : LibImGui::ImGuiNavMoveResult
-      ImGuiNavMoveResult.new(@this.nav_move_result_other)
-    end
-
-    def nav_move_result_other=(nav_move_result_other : LibImGui::ImGuiNavMoveResult)
-      @this.nav_move_result_other = nav_move_result_other
-    end
-
-    def nav_wrap_request_window : ImGuiWindow
-      ImGuiWindow.new(@this.nav_wrap_request_window)
-    end
-
-    def nav_wrap_request_window=(nav_wrap_request_window : ImGuiWindow)
-      @this.nav_wrap_request_window = nav_wrap_request_window
-    end
-
-    def nav_wrap_request_flags : LibImGui::ImGuiNavMoveFlags
-      @this.nav_wrap_request_flags
-    end
-
-    def nav_wrap_request_flags=(nav_wrap_request_flags : LibImGui::ImGuiNavMoveFlags)
-      @this.nav_wrap_request_flags = nav_wrap_request_flags
-    end
-
-    def nav_windowing_target : ImGuiWindow
-      ImGuiWindow.new(@this.nav_windowing_target)
-    end
-
-    def nav_windowing_target=(nav_windowing_target : ImGuiWindow)
-      @this.nav_windowing_target = nav_windowing_target
-    end
-
-    def nav_windowing_target_anim : ImGuiWindow
-      ImGuiWindow.new(@this.nav_windowing_target_anim)
-    end
-
-    def nav_windowing_target_anim=(nav_windowing_target_anim : ImGuiWindow)
-      @this.nav_windowing_target_anim = nav_windowing_target_anim
-    end
-
-    def nav_windowing_list_window : ImGuiWindow
-      ImGuiWindow.new(@this.nav_windowing_list_window)
-    end
-
-    def nav_windowing_list_window=(nav_windowing_list_window : ImGuiWindow)
-      @this.nav_windowing_list_window = nav_windowing_list_window
-    end
-
-    def nav_windowing_timer : Float32
-      @this.nav_windowing_timer
-    end
-
-    def nav_windowing_timer=(nav_windowing_timer : Float32)
-      @this.nav_windowing_timer = nav_windowing_timer
-    end
-
-    def nav_windowing_highlight_alpha : Float32
-      @this.nav_windowing_highlight_alpha
-    end
-
-    def nav_windowing_highlight_alpha=(nav_windowing_highlight_alpha : Float32)
-      @this.nav_windowing_highlight_alpha = nav_windowing_highlight_alpha
-    end
-
-    def nav_windowing_toggle_layer : Bool
-      @this.nav_windowing_toggle_layer
-    end
-
-    def nav_windowing_toggle_layer=(nav_windowing_toggle_layer : Bool)
-      @this.nav_windowing_toggle_layer = nav_windowing_toggle_layer
-    end
-
-    def focus_request_curr_window : ImGuiWindow
-      ImGuiWindow.new(@this.focus_request_curr_window)
-    end
-
-    def focus_request_curr_window=(focus_request_curr_window : ImGuiWindow)
-      @this.focus_request_curr_window = focus_request_curr_window
-    end
-
-    def focus_request_next_window : ImGuiWindow
-      ImGuiWindow.new(@this.focus_request_next_window)
-    end
-
-    def focus_request_next_window=(focus_request_next_window : ImGuiWindow)
-      @this.focus_request_next_window = focus_request_next_window
-    end
-
-    def focus_request_curr_counter_regular : Int32
-      @this.focus_request_curr_counter_regular
-    end
-
-    def focus_request_curr_counter_regular=(focus_request_curr_counter_regular : Int32)
-      @this.focus_request_curr_counter_regular = focus_request_curr_counter_regular
-    end
-
-    def focus_request_curr_counter_tab_stop : Int32
-      @this.focus_request_curr_counter_tab_stop
-    end
-
-    def focus_request_curr_counter_tab_stop=(focus_request_curr_counter_tab_stop : Int32)
-      @this.focus_request_curr_counter_tab_stop = focus_request_curr_counter_tab_stop
-    end
-
-    def focus_request_next_counter_regular : Int32
-      @this.focus_request_next_counter_regular
-    end
-
-    def focus_request_next_counter_regular=(focus_request_next_counter_regular : Int32)
-      @this.focus_request_next_counter_regular = focus_request_next_counter_regular
-    end
-
-    def focus_request_next_counter_tab_stop : Int32
-      @this.focus_request_next_counter_tab_stop
-    end
-
-    def focus_request_next_counter_tab_stop=(focus_request_next_counter_tab_stop : Int32)
-      @this.focus_request_next_counter_tab_stop = focus_request_next_counter_tab_stop
-    end
-
-    def focus_tab_pressed : Bool
-      @this.focus_tab_pressed
-    end
-
-    def focus_tab_pressed=(focus_tab_pressed : Bool)
-      @this.focus_tab_pressed = focus_tab_pressed
-    end
-
-    def draw_data : LibImGui::ImDrawData
-      ImDrawData.new(@this.draw_data)
-    end
-
-    def draw_data=(draw_data : LibImGui::ImDrawData)
-      @this.draw_data = draw_data
-    end
-
-    def draw_data_builder : LibImGui::ImDrawDataBuilder
-      ImDrawDataBuilder.new(@this.draw_data_builder)
-    end
-
-    def draw_data_builder=(draw_data_builder : LibImGui::ImDrawDataBuilder)
-      @this.draw_data_builder = draw_data_builder
-    end
-
-    def dim_bg_ratio : Float32
-      @this.dim_bg_ratio
-    end
-
-    def dim_bg_ratio=(dim_bg_ratio : Float32)
-      @this.dim_bg_ratio = dim_bg_ratio
-    end
-
-    def background_draw_list : LibImGui::ImDrawList
-      ImDrawList.new(@this.background_draw_list)
-    end
-
-    def background_draw_list=(background_draw_list : LibImGui::ImDrawList)
-      @this.background_draw_list = background_draw_list
-    end
-
-    def foreground_draw_list : LibImGui::ImDrawList
-      ImDrawList.new(@this.foreground_draw_list)
-    end
-
-    def foreground_draw_list=(foreground_draw_list : LibImGui::ImDrawList)
-      @this.foreground_draw_list = foreground_draw_list
-    end
-
-    def mouse_cursor : ImGuiMouseCursor
-      @this.mouse_cursor
-    end
-
-    def mouse_cursor=(mouse_cursor : ImGuiMouseCursor)
-      @this.mouse_cursor = mouse_cursor
-    end
-
-    def drag_drop_active : Bool
-      @this.drag_drop_active
-    end
-
-    def drag_drop_active=(drag_drop_active : Bool)
-      @this.drag_drop_active = drag_drop_active
-    end
-
-    def drag_drop_within_source : Bool
-      @this.drag_drop_within_source
-    end
-
-    def drag_drop_within_source=(drag_drop_within_source : Bool)
-      @this.drag_drop_within_source = drag_drop_within_source
-    end
-
-    def drag_drop_within_target : Bool
-      @this.drag_drop_within_target
-    end
-
-    def drag_drop_within_target=(drag_drop_within_target : Bool)
-      @this.drag_drop_within_target = drag_drop_within_target
-    end
-
-    def drag_drop_source_flags : ImGuiDragDropFlags
-      @this.drag_drop_source_flags
-    end
-
-    def drag_drop_source_flags=(drag_drop_source_flags : ImGuiDragDropFlags)
-      @this.drag_drop_source_flags = drag_drop_source_flags
-    end
-
-    def drag_drop_source_frame_count : Int32
-      @this.drag_drop_source_frame_count
-    end
-
-    def drag_drop_source_frame_count=(drag_drop_source_frame_count : Int32)
-      @this.drag_drop_source_frame_count = drag_drop_source_frame_count
-    end
-
-    def drag_drop_mouse_button : Int32
-      @this.drag_drop_mouse_button
-    end
-
-    def drag_drop_mouse_button=(drag_drop_mouse_button : Int32)
-      @this.drag_drop_mouse_button = drag_drop_mouse_button
-    end
-
-    def drag_drop_payload : LibImGui::ImGuiPayload
-      ImGuiPayload.new(@this.drag_drop_payload)
-    end
-
-    def drag_drop_payload=(drag_drop_payload : LibImGui::ImGuiPayload)
-      @this.drag_drop_payload = drag_drop_payload
-    end
-
-    def drag_drop_target_rect : LibImGui::ImRect
-      ImRect.new(@this.drag_drop_target_rect)
-    end
-
-    def drag_drop_target_rect=(drag_drop_target_rect : LibImGui::ImRect)
-      @this.drag_drop_target_rect = drag_drop_target_rect
-    end
-
-    def drag_drop_target_id : ImGuiID
-      @this.drag_drop_target_id
-    end
-
-    def drag_drop_target_id=(drag_drop_target_id : ImGuiID)
-      @this.drag_drop_target_id = drag_drop_target_id
-    end
-
-    def drag_drop_accept_flags : ImGuiDragDropFlags
-      @this.drag_drop_accept_flags
-    end
-
-    def drag_drop_accept_flags=(drag_drop_accept_flags : ImGuiDragDropFlags)
-      @this.drag_drop_accept_flags = drag_drop_accept_flags
-    end
-
-    def drag_drop_accept_id_curr_rect_surface : Float32
-      @this.drag_drop_accept_id_curr_rect_surface
-    end
-
-    def drag_drop_accept_id_curr_rect_surface=(drag_drop_accept_id_curr_rect_surface : Float32)
-      @this.drag_drop_accept_id_curr_rect_surface = drag_drop_accept_id_curr_rect_surface
-    end
-
-    def drag_drop_accept_id_curr : ImGuiID
-      @this.drag_drop_accept_id_curr
-    end
-
-    def drag_drop_accept_id_curr=(drag_drop_accept_id_curr : ImGuiID)
-      @this.drag_drop_accept_id_curr = drag_drop_accept_id_curr
-    end
-
-    def drag_drop_accept_id_prev : ImGuiID
-      @this.drag_drop_accept_id_prev
-    end
-
-    def drag_drop_accept_id_prev=(drag_drop_accept_id_prev : ImGuiID)
-      @this.drag_drop_accept_id_prev = drag_drop_accept_id_prev
-    end
-
-    def drag_drop_accept_frame_count : Int32
-      @this.drag_drop_accept_frame_count
-    end
-
-    def drag_drop_accept_frame_count=(drag_drop_accept_frame_count : Int32)
-      @this.drag_drop_accept_frame_count = drag_drop_accept_frame_count
-    end
-
-    def drag_drop_hold_just_pressed_id : ImGuiID
-      @this.drag_drop_hold_just_pressed_id
-    end
-
-    def drag_drop_hold_just_pressed_id=(drag_drop_hold_just_pressed_id : ImGuiID)
-      @this.drag_drop_hold_just_pressed_id = drag_drop_hold_just_pressed_id
-    end
-
-    def drag_drop_payload_buf_heap : LibImGui::ImVector(LibC::UChar)
-      @this.drag_drop_payload_buf_heap.value
-    end
-
-    def drag_drop_payload_buf_heap=(drag_drop_payload_buf_heap : LibImGui::ImVector(LibC::UChar))
-      @this.drag_drop_payload_buf_heap = drag_drop_payload_buf_heap
-    end
-
-    def drag_drop_payload_buf_local : LibC::UChar[16]
-      @this.drag_drop_payload_buf_local
-    end
-
-    def drag_drop_payload_buf_local=(drag_drop_payload_buf_local : LibC::UChar[16])
-      @this.drag_drop_payload_buf_local = drag_drop_payload_buf_local
-    end
-
-    def current_tab_bar : ImGuiTabBar
-      ImGuiTabBar.new(@this.current_tab_bar)
-    end
-
-    def current_tab_bar=(current_tab_bar : ImGuiTabBar)
-      @this.current_tab_bar = current_tab_bar
-    end
-
-    def tab_bars : ImPool(LibImGui::ImGuiTabBar)
-      @this.tab_bars
-    end
-
-    def tab_bars=(tab_bars : ImPool(LibImGui::ImGuiTabBar))
-      @this.tab_bars = tab_bars
-    end
-
-    def current_tab_bar_stack : LibImGui::ImVector(LibImGui::ImGuiPtrOrIndex)
-      @this.current_tab_bar_stack.value
-    end
-
-    def current_tab_bar_stack=(current_tab_bar_stack : LibImGui::ImVector(LibImGui::ImGuiPtrOrIndex))
-      @this.current_tab_bar_stack = current_tab_bar_stack
-    end
-
-    def shrink_width_buffer : LibImGui::ImVector(LibImGui::ImGuiShrinkWidthItem)
-      @this.shrink_width_buffer.value
-    end
-
-    def shrink_width_buffer=(shrink_width_buffer : LibImGui::ImVector(LibImGui::ImGuiShrinkWidthItem))
-      @this.shrink_width_buffer = shrink_width_buffer
-    end
-
-    def last_valid_mouse_pos : ImVec2
-      @this.last_valid_mouse_pos.value
-    end
-
-    def last_valid_mouse_pos=(last_valid_mouse_pos : ImVec2)
-      @this.last_valid_mouse_pos = last_valid_mouse_pos
-    end
-
-    def input_text_state : LibImGui::ImGuiInputTextState
-      ImGuiInputTextState.new(@this.input_text_state)
-    end
-
-    def input_text_state=(input_text_state : LibImGui::ImGuiInputTextState)
-      @this.input_text_state = input_text_state
-    end
-
-    def input_text_password_font : LibImGui::ImFont
-      ImFont.new(@this.input_text_password_font)
-    end
-
-    def input_text_password_font=(input_text_password_font : LibImGui::ImFont)
-      @this.input_text_password_font = input_text_password_font
-    end
-
-    def temp_input_id : ImGuiID
-      @this.temp_input_id
-    end
-
-    def temp_input_id=(temp_input_id : ImGuiID)
-      @this.temp_input_id = temp_input_id
-    end
-
-    def color_edit_options : ImGuiColorEditFlags
-      @this.color_edit_options
-    end
-
-    def color_edit_options=(color_edit_options : ImGuiColorEditFlags)
-      @this.color_edit_options = color_edit_options
-    end
-
-    def color_edit_last_hue : Float32
-      @this.color_edit_last_hue
-    end
-
-    def color_edit_last_hue=(color_edit_last_hue : Float32)
-      @this.color_edit_last_hue = color_edit_last_hue
-    end
-
-    def color_edit_last_sat : Float32
-      @this.color_edit_last_sat
-    end
-
-    def color_edit_last_sat=(color_edit_last_sat : Float32)
-      @this.color_edit_last_sat = color_edit_last_sat
-    end
-
-    def color_edit_last_color : Float32[3]
-      @this.color_edit_last_color
-    end
-
-    def color_edit_last_color=(color_edit_last_color : Float32[3])
-      @this.color_edit_last_color = color_edit_last_color
-    end
-
-    def color_picker_ref : ImVec4
-      @this.color_picker_ref.value
-    end
-
-    def color_picker_ref=(color_picker_ref : ImVec4)
-      @this.color_picker_ref = color_picker_ref
-    end
-
-    def drag_current_accum_dirty : Bool
-      @this.drag_current_accum_dirty
-    end
-
-    def drag_current_accum_dirty=(drag_current_accum_dirty : Bool)
-      @this.drag_current_accum_dirty = drag_current_accum_dirty
-    end
-
-    def drag_current_accum : Float32
-      @this.drag_current_accum
-    end
-
-    def drag_current_accum=(drag_current_accum : Float32)
-      @this.drag_current_accum = drag_current_accum
-    end
-
-    def drag_speed_default_ratio : Float32
-      @this.drag_speed_default_ratio
-    end
-
-    def drag_speed_default_ratio=(drag_speed_default_ratio : Float32)
-      @this.drag_speed_default_ratio = drag_speed_default_ratio
-    end
-
-    def scrollbar_click_delta_to_grab_center : Float32
-      @this.scrollbar_click_delta_to_grab_center
-    end
-
-    def scrollbar_click_delta_to_grab_center=(scrollbar_click_delta_to_grab_center : Float32)
-      @this.scrollbar_click_delta_to_grab_center = scrollbar_click_delta_to_grab_center
-    end
-
-    def tooltip_override_count : Int32
-      @this.tooltip_override_count
-    end
-
-    def tooltip_override_count=(tooltip_override_count : Int32)
-      @this.tooltip_override_count = tooltip_override_count
-    end
-
-    def clipboard_handler_data : LibImGui::ImVector(LibC::Char)
-      @this.clipboard_handler_data.value
-    end
-
-    def clipboard_handler_data=(clipboard_handler_data : LibImGui::ImVector(LibC::Char))
-      @this.clipboard_handler_data = clipboard_handler_data
-    end
-
-    def menus_id_submitted_this_frame : LibImGui::ImVector(ImGuiID)
-      @this.menus_id_submitted_this_frame.value
-    end
-
-    def menus_id_submitted_this_frame=(menus_id_submitted_this_frame : LibImGui::ImVector(ImGuiID))
-      @this.menus_id_submitted_this_frame = menus_id_submitted_this_frame
-    end
-
-    def platform_ime_pos : ImVec2
-      @this.platform_ime_pos.value
-    end
-
-    def platform_ime_pos=(platform_ime_pos : ImVec2)
-      @this.platform_ime_pos = platform_ime_pos
-    end
-
-    def platform_ime_last_pos : ImVec2
-      @this.platform_ime_last_pos.value
-    end
-
-    def platform_ime_last_pos=(platform_ime_last_pos : ImVec2)
-      @this.platform_ime_last_pos = platform_ime_last_pos
-    end
-
-    def settings_loaded : Bool
-      @this.settings_loaded
-    end
-
-    def settings_loaded=(settings_loaded : Bool)
-      @this.settings_loaded = settings_loaded
-    end
-
-    def settings_dirty_timer : Float32
-      @this.settings_dirty_timer
-    end
-
-    def settings_dirty_timer=(settings_dirty_timer : Float32)
-      @this.settings_dirty_timer = settings_dirty_timer
-    end
-
-    def settings_ini_data : LibImGui::ImGuiTextBuffer
-      ImGuiTextBuffer.new(@this.settings_ini_data)
-    end
-
-    def settings_ini_data=(settings_ini_data : LibImGui::ImGuiTextBuffer)
-      @this.settings_ini_data = settings_ini_data
-    end
-
-    def settings_handlers : LibImGui::ImVector(LibImGui::ImGuiSettingsHandler)
-      @this.settings_handlers.value
-    end
-
-    def settings_handlers=(settings_handlers : LibImGui::ImVector(LibImGui::ImGuiSettingsHandler))
-      @this.settings_handlers = settings_handlers
-    end
-
-    def settings_windows : ImChunkStream(LibImGui::ImGuiWindowSettings)
-      @this.settings_windows
-    end
-
-    def settings_windows=(settings_windows : ImChunkStream(LibImGui::ImGuiWindowSettings))
-      @this.settings_windows = settings_windows
-    end
-
-    def log_enabled : Bool
-      @this.log_enabled
-    end
-
-    def log_enabled=(log_enabled : Bool)
-      @this.log_enabled = log_enabled
-    end
-
-    def log_type : LibImGui::ImGuiLogType
-      @this.log_type
-    end
-
-    def log_type=(log_type : LibImGui::ImGuiLogType)
-      @this.log_type = log_type
-    end
-
-    def log_file : ImFileHandle
-      @this.log_file
-    end
-
-    def log_file=(log_file : ImFileHandle)
-      @this.log_file = log_file
-    end
-
-    def log_buffer : LibImGui::ImGuiTextBuffer
-      ImGuiTextBuffer.new(@this.log_buffer)
-    end
-
-    def log_buffer=(log_buffer : LibImGui::ImGuiTextBuffer)
-      @this.log_buffer = log_buffer
-    end
-
-    def log_line_pos_y : Float32
-      @this.log_line_pos_y
-    end
-
-    def log_line_pos_y=(log_line_pos_y : Float32)
-      @this.log_line_pos_y = log_line_pos_y
-    end
-
-    def log_line_first_item : Bool
-      @this.log_line_first_item
-    end
-
-    def log_line_first_item=(log_line_first_item : Bool)
-      @this.log_line_first_item = log_line_first_item
-    end
-
-    def log_depth_ref : Int32
-      @this.log_depth_ref
-    end
-
-    def log_depth_ref=(log_depth_ref : Int32)
-      @this.log_depth_ref = log_depth_ref
-    end
-
-    def log_depth_to_expand : Int32
-      @this.log_depth_to_expand
-    end
-
-    def log_depth_to_expand=(log_depth_to_expand : Int32)
-      @this.log_depth_to_expand = log_depth_to_expand
-    end
-
-    def log_depth_to_expand_default : Int32
-      @this.log_depth_to_expand_default
-    end
-
-    def log_depth_to_expand_default=(log_depth_to_expand_default : Int32)
-      @this.log_depth_to_expand_default = log_depth_to_expand_default
-    end
-
-    def debug_item_picker_active : Bool
-      @this.debug_item_picker_active
-    end
-
-    def debug_item_picker_active=(debug_item_picker_active : Bool)
-      @this.debug_item_picker_active = debug_item_picker_active
-    end
-
-    def debug_item_picker_break_id : ImGuiID
-      @this.debug_item_picker_break_id
-    end
-
-    def debug_item_picker_break_id=(debug_item_picker_break_id : ImGuiID)
-      @this.debug_item_picker_break_id = debug_item_picker_break_id
-    end
-
-    def framerate_sec_per_frame : Float32[120]
-      @this.framerate_sec_per_frame
-    end
-
-    def framerate_sec_per_frame=(framerate_sec_per_frame : Float32[120])
-      @this.framerate_sec_per_frame = framerate_sec_per_frame
-    end
-
-    def framerate_sec_per_frame_idx : Int32
-      @this.framerate_sec_per_frame_idx
-    end
-
-    def framerate_sec_per_frame_idx=(framerate_sec_per_frame_idx : Int32)
-      @this.framerate_sec_per_frame_idx = framerate_sec_per_frame_idx
-    end
-
-    def framerate_sec_per_frame_accum : Float32
-      @this.framerate_sec_per_frame_accum
-    end
-
-    def framerate_sec_per_frame_accum=(framerate_sec_per_frame_accum : Float32)
-      @this.framerate_sec_per_frame_accum = framerate_sec_per_frame_accum
-    end
-
-    def want_capture_mouse_next_frame : Int32
-      @this.want_capture_mouse_next_frame
-    end
-
-    def want_capture_mouse_next_frame=(want_capture_mouse_next_frame : Int32)
-      @this.want_capture_mouse_next_frame = want_capture_mouse_next_frame
-    end
-
-    def want_capture_keyboard_next_frame : Int32
-      @this.want_capture_keyboard_next_frame
-    end
-
-    def want_capture_keyboard_next_frame=(want_capture_keyboard_next_frame : Int32)
-      @this.want_capture_keyboard_next_frame = want_capture_keyboard_next_frame
-    end
-
-    def want_text_input_next_frame : Int32
-      @this.want_text_input_next_frame
-    end
-
-    def want_text_input_next_frame=(want_text_input_next_frame : Int32)
-      @this.want_text_input_next_frame = want_text_input_next_frame
-    end
-
-    def temp_buffer : LibC::Char[3073]
-      @this.temp_buffer
-    end
-
-    def temp_buffer=(temp_buffer : LibC::Char[3073])
-      @this.temp_buffer = temp_buffer
-    end
-  end
-
-  class ImGuiIO
-    include ClassType(LibImGui::ImGuiIO)
+  alias ImGuiColorMod = LibImGui::ImGuiColorMod
+  alias ImGuiColumnData = LibImGui::ImGuiColumnData
+  alias ImGuiColumns = LibImGui::ImGuiColumns
+  alias ImGuiContext = LibImGui::ImGuiContext
+  alias ImGuiDataTypeInfo = LibImGui::ImGuiDataTypeInfo
+  alias ImGuiDataTypeTempStorage = LibImGui::ImGuiDataTypeTempStorage
+  alias ImGuiGroupData = LibImGui::ImGuiGroupData
+
+  struct ImGuiIO
+    include StructClassType(LibImGui::ImGuiIO)
 
     def config_flags : ImGuiConfigFlags
-      @this.config_flags
+      @this.value.config_flags
     end
 
     def config_flags=(config_flags : ImGuiConfigFlags)
-      @this.config_flags = config_flags
+      @this.value.config_flags = config_flags
     end
 
     def backend_flags : ImGuiBackendFlags
-      @this.backend_flags
+      @this.value.backend_flags
     end
 
     def backend_flags=(backend_flags : ImGuiBackendFlags)
-      @this.backend_flags = backend_flags
+      @this.value.backend_flags = backend_flags
     end
 
     def display_size : ImVec2
-      @this.display_size.value
+      @this.value.display_size.value
     end
 
     def display_size=(display_size : ImVec2)
-      @this.display_size = display_size
+      @this.value.display_size = display_size
     end
 
     def delta_time : Float32
-      @this.delta_time
+      @this.value.delta_time
     end
 
     def delta_time=(delta_time : Float32)
-      @this.delta_time = delta_time
+      @this.value.delta_time = delta_time
     end
 
     def ini_saving_rate : Float32
-      @this.ini_saving_rate
+      @this.value.ini_saving_rate
     end
 
     def ini_saving_rate=(ini_saving_rate : Float32)
-      @this.ini_saving_rate = ini_saving_rate
+      @this.value.ini_saving_rate = ini_saving_rate
     end
 
     def ini_filename : String
-      String.new(@this.ini_filename)
+      String.new(@this.value.ini_filename)
     end
 
     def ini_filename=(ini_filename : String)
-      @this.ini_filename = ini_filename
+      @this.value.ini_filename = ini_filename
     end
 
     def log_filename : String
-      String.new(@this.log_filename)
+      String.new(@this.value.log_filename)
     end
 
     def log_filename=(log_filename : String)
-      @this.log_filename = log_filename
+      @this.value.log_filename = log_filename
     end
 
     def mouse_double_click_time : Float32
-      @this.mouse_double_click_time
+      @this.value.mouse_double_click_time
     end
 
     def mouse_double_click_time=(mouse_double_click_time : Float32)
-      @this.mouse_double_click_time = mouse_double_click_time
+      @this.value.mouse_double_click_time = mouse_double_click_time
     end
 
     def mouse_double_click_max_dist : Float32
-      @this.mouse_double_click_max_dist
+      @this.value.mouse_double_click_max_dist
     end
 
     def mouse_double_click_max_dist=(mouse_double_click_max_dist : Float32)
-      @this.mouse_double_click_max_dist = mouse_double_click_max_dist
+      @this.value.mouse_double_click_max_dist = mouse_double_click_max_dist
     end
 
     def mouse_drag_threshold : Float32
-      @this.mouse_drag_threshold
+      @this.value.mouse_drag_threshold
     end
 
     def mouse_drag_threshold=(mouse_drag_threshold : Float32)
-      @this.mouse_drag_threshold = mouse_drag_threshold
+      @this.value.mouse_drag_threshold = mouse_drag_threshold
     end
 
     def key_map : Int32[22]
-      @this.key_map
+      @this.value.key_map
     end
 
     def key_map=(key_map : Int32[22])
-      @this.key_map = key_map
+      @this.value.key_map = key_map
     end
 
     def key_repeat_delay : Float32
-      @this.key_repeat_delay
+      @this.value.key_repeat_delay
     end
 
     def key_repeat_delay=(key_repeat_delay : Float32)
-      @this.key_repeat_delay = key_repeat_delay
+      @this.value.key_repeat_delay = key_repeat_delay
     end
 
     def key_repeat_rate : Float32
-      @this.key_repeat_rate
+      @this.value.key_repeat_rate
     end
 
     def key_repeat_rate=(key_repeat_rate : Float32)
-      @this.key_repeat_rate = key_repeat_rate
+      @this.value.key_repeat_rate = key_repeat_rate
     end
 
     def user_data : Void*
-      @this.user_data
+      @this.value.user_data
     end
 
     def user_data=(user_data : Void*)
-      @this.user_data = user_data
+      @this.value.user_data = user_data
     end
 
     def fonts : ImFontAtlas
-      ImFontAtlas.new(@this.fonts)
+      ImFontAtlas.new(@this.value.fonts)
     end
 
     def fonts=(fonts : ImFontAtlas)
-      @this.fonts = fonts
+      @this.value.fonts = fonts
     end
 
     def font_global_scale : Float32
-      @this.font_global_scale
+      @this.value.font_global_scale
     end
 
     def font_global_scale=(font_global_scale : Float32)
-      @this.font_global_scale = font_global_scale
+      @this.value.font_global_scale = font_global_scale
     end
 
     def font_allow_user_scaling : Bool
-      @this.font_allow_user_scaling
+      @this.value.font_allow_user_scaling
     end
 
     def font_allow_user_scaling=(font_allow_user_scaling : Bool)
-      @this.font_allow_user_scaling = font_allow_user_scaling
+      @this.value.font_allow_user_scaling = font_allow_user_scaling
     end
 
     def font_default : ImFont
-      ImFont.new(@this.font_default)
+      ImFont.new(@this.value.font_default)
     end
 
     def font_default=(font_default : ImFont)
-      @this.font_default = font_default
+      @this.value.font_default = font_default
     end
 
     def display_framebuffer_scale : ImVec2
-      @this.display_framebuffer_scale.value
+      @this.value.display_framebuffer_scale.value
     end
 
     def display_framebuffer_scale=(display_framebuffer_scale : ImVec2)
-      @this.display_framebuffer_scale = display_framebuffer_scale
+      @this.value.display_framebuffer_scale = display_framebuffer_scale
     end
 
     def mouse_draw_cursor : Bool
-      @this.mouse_draw_cursor
+      @this.value.mouse_draw_cursor
     end
 
     def mouse_draw_cursor=(mouse_draw_cursor : Bool)
-      @this.mouse_draw_cursor = mouse_draw_cursor
+      @this.value.mouse_draw_cursor = mouse_draw_cursor
     end
 
     def config_mac_osx_behaviors : Bool
-      @this.config_mac_osx_behaviors
+      @this.value.config_mac_osx_behaviors
     end
 
     def config_mac_osx_behaviors=(config_mac_osx_behaviors : Bool)
-      @this.config_mac_osx_behaviors = config_mac_osx_behaviors
+      @this.value.config_mac_osx_behaviors = config_mac_osx_behaviors
     end
 
     def config_input_text_cursor_blink : Bool
-      @this.config_input_text_cursor_blink
+      @this.value.config_input_text_cursor_blink
     end
 
     def config_input_text_cursor_blink=(config_input_text_cursor_blink : Bool)
-      @this.config_input_text_cursor_blink = config_input_text_cursor_blink
+      @this.value.config_input_text_cursor_blink = config_input_text_cursor_blink
     end
 
     def config_windows_resize_from_edges : Bool
-      @this.config_windows_resize_from_edges
+      @this.value.config_windows_resize_from_edges
     end
 
     def config_windows_resize_from_edges=(config_windows_resize_from_edges : Bool)
-      @this.config_windows_resize_from_edges = config_windows_resize_from_edges
+      @this.value.config_windows_resize_from_edges = config_windows_resize_from_edges
     end
 
     def config_windows_move_from_title_bar_only : Bool
-      @this.config_windows_move_from_title_bar_only
+      @this.value.config_windows_move_from_title_bar_only
     end
 
     def config_windows_move_from_title_bar_only=(config_windows_move_from_title_bar_only : Bool)
-      @this.config_windows_move_from_title_bar_only = config_windows_move_from_title_bar_only
+      @this.value.config_windows_move_from_title_bar_only = config_windows_move_from_title_bar_only
     end
 
     def config_windows_memory_compact_timer : Float32
-      @this.config_windows_memory_compact_timer
+      @this.value.config_windows_memory_compact_timer
     end
 
     def config_windows_memory_compact_timer=(config_windows_memory_compact_timer : Float32)
-      @this.config_windows_memory_compact_timer = config_windows_memory_compact_timer
+      @this.value.config_windows_memory_compact_timer = config_windows_memory_compact_timer
     end
 
     def backend_platform_name : String
-      String.new(@this.backend_platform_name)
+      String.new(@this.value.backend_platform_name)
     end
 
     def backend_platform_name=(backend_platform_name : String)
-      @this.backend_platform_name = backend_platform_name
+      @this.value.backend_platform_name = backend_platform_name
     end
 
     def backend_renderer_name : String
-      String.new(@this.backend_renderer_name)
+      String.new(@this.value.backend_renderer_name)
     end
 
     def backend_renderer_name=(backend_renderer_name : String)
-      @this.backend_renderer_name = backend_renderer_name
+      @this.value.backend_renderer_name = backend_renderer_name
     end
 
     def backend_platform_user_data : Void*
-      @this.backend_platform_user_data
+      @this.value.backend_platform_user_data
     end
 
     def backend_platform_user_data=(backend_platform_user_data : Void*)
-      @this.backend_platform_user_data = backend_platform_user_data
+      @this.value.backend_platform_user_data = backend_platform_user_data
     end
 
     def backend_renderer_user_data : Void*
-      @this.backend_renderer_user_data
+      @this.value.backend_renderer_user_data
     end
 
     def backend_renderer_user_data=(backend_renderer_user_data : Void*)
-      @this.backend_renderer_user_data = backend_renderer_user_data
+      @this.value.backend_renderer_user_data = backend_renderer_user_data
     end
 
     def backend_language_user_data : Void*
-      @this.backend_language_user_data
+      @this.value.backend_language_user_data
     end
 
     def backend_language_user_data=(backend_language_user_data : Void*)
-      @this.backend_language_user_data = backend_language_user_data
+      @this.value.backend_language_user_data = backend_language_user_data
     end
 
     def get_clipboard_text_fn : (Void*) -> String
-      @this.get_clipboard_text_fn
+      @this.value.get_clipboard_text_fn
     end
 
     def get_clipboard_text_fn=(get_clipboard_text_fn : (Void*) -> String)
-      @this.get_clipboard_text_fn = get_clipboard_text_fn
+      @this.value.get_clipboard_text_fn = get_clipboard_text_fn
     end
 
     def set_clipboard_text_fn : (Void*, String) -> Void
-      @this.set_clipboard_text_fn
+      @this.value.set_clipboard_text_fn
     end
 
     def set_clipboard_text_fn=(set_clipboard_text_fn : (Void*, String) -> Void)
-      @this.set_clipboard_text_fn = set_clipboard_text_fn
+      @this.value.set_clipboard_text_fn = set_clipboard_text_fn
     end
 
     def clipboard_user_data : Void*
-      @this.clipboard_user_data
+      @this.value.clipboard_user_data
     end
 
     def clipboard_user_data=(clipboard_user_data : Void*)
-      @this.clipboard_user_data = clipboard_user_data
+      @this.value.clipboard_user_data = clipboard_user_data
     end
 
     def ime_set_input_screen_pos_fn : (Int32, Int32) -> Void
-      @this.ime_set_input_screen_pos_fn
+      @this.value.ime_set_input_screen_pos_fn
     end
 
     def ime_set_input_screen_pos_fn=(ime_set_input_screen_pos_fn : (Int32, Int32) -> Void)
-      @this.ime_set_input_screen_pos_fn = ime_set_input_screen_pos_fn
+      @this.value.ime_set_input_screen_pos_fn = ime_set_input_screen_pos_fn
     end
 
     def ime_window_handle : Void*
-      @this.ime_window_handle
+      @this.value.ime_window_handle
     end
 
     def ime_window_handle=(ime_window_handle : Void*)
-      @this.ime_window_handle = ime_window_handle
+      @this.value.ime_window_handle = ime_window_handle
     end
 
     def render_draw_lists_fn_unused : Void*
-      @this.render_draw_lists_fn_unused
+      @this.value.render_draw_lists_fn_unused
     end
 
     def render_draw_lists_fn_unused=(render_draw_lists_fn_unused : Void*)
-      @this.render_draw_lists_fn_unused = render_draw_lists_fn_unused
+      @this.value.render_draw_lists_fn_unused = render_draw_lists_fn_unused
     end
 
     def mouse_pos : ImVec2
-      @this.mouse_pos.value
+      @this.value.mouse_pos.value
     end
 
     def mouse_pos=(mouse_pos : ImVec2)
-      @this.mouse_pos = mouse_pos
+      @this.value.mouse_pos = mouse_pos
     end
 
     def mouse_down : Bool[5]
-      @this.mouse_down
+      @this.value.mouse_down
     end
 
     def mouse_down=(mouse_down : Bool[5])
-      @this.mouse_down = mouse_down
+      @this.value.mouse_down = mouse_down
     end
 
     def mouse_wheel : Float32
-      @this.mouse_wheel
+      @this.value.mouse_wheel
     end
 
     def mouse_wheel=(mouse_wheel : Float32)
-      @this.mouse_wheel = mouse_wheel
+      @this.value.mouse_wheel = mouse_wheel
     end
 
     def mouse_wheel_h : Float32
-      @this.mouse_wheel_h
+      @this.value.mouse_wheel_h
     end
 
     def mouse_wheel_h=(mouse_wheel_h : Float32)
-      @this.mouse_wheel_h = mouse_wheel_h
+      @this.value.mouse_wheel_h = mouse_wheel_h
     end
 
     def key_ctrl : Bool
-      @this.key_ctrl
+      @this.value.key_ctrl
     end
 
     def key_ctrl=(key_ctrl : Bool)
-      @this.key_ctrl = key_ctrl
+      @this.value.key_ctrl = key_ctrl
     end
 
     def key_shift : Bool
-      @this.key_shift
+      @this.value.key_shift
     end
 
     def key_shift=(key_shift : Bool)
-      @this.key_shift = key_shift
+      @this.value.key_shift = key_shift
     end
 
     def key_alt : Bool
-      @this.key_alt
+      @this.value.key_alt
     end
 
     def key_alt=(key_alt : Bool)
-      @this.key_alt = key_alt
+      @this.value.key_alt = key_alt
     end
 
     def key_super : Bool
-      @this.key_super
+      @this.value.key_super
     end
 
     def key_super=(key_super : Bool)
-      @this.key_super = key_super
+      @this.value.key_super = key_super
     end
 
     def keys_down : Bool[512]
-      @this.keys_down
+      @this.value.keys_down
     end
 
     def keys_down=(keys_down : Bool[512])
-      @this.keys_down = keys_down
+      @this.value.keys_down = keys_down
     end
 
     def nav_inputs : Float32[21]
-      @this.nav_inputs
+      @this.value.nav_inputs
     end
 
     def nav_inputs=(nav_inputs : Float32[21])
-      @this.nav_inputs = nav_inputs
+      @this.value.nav_inputs = nav_inputs
     end
 
     def want_capture_mouse : Bool
-      @this.want_capture_mouse
+      @this.value.want_capture_mouse
     end
 
     def want_capture_mouse=(want_capture_mouse : Bool)
-      @this.want_capture_mouse = want_capture_mouse
+      @this.value.want_capture_mouse = want_capture_mouse
     end
 
     def want_capture_keyboard : Bool
-      @this.want_capture_keyboard
+      @this.value.want_capture_keyboard
     end
 
     def want_capture_keyboard=(want_capture_keyboard : Bool)
-      @this.want_capture_keyboard = want_capture_keyboard
+      @this.value.want_capture_keyboard = want_capture_keyboard
     end
 
     def want_text_input : Bool
-      @this.want_text_input
+      @this.value.want_text_input
     end
 
     def want_text_input=(want_text_input : Bool)
-      @this.want_text_input = want_text_input
+      @this.value.want_text_input = want_text_input
     end
 
     def want_set_mouse_pos : Bool
-      @this.want_set_mouse_pos
+      @this.value.want_set_mouse_pos
     end
 
     def want_set_mouse_pos=(want_set_mouse_pos : Bool)
-      @this.want_set_mouse_pos = want_set_mouse_pos
+      @this.value.want_set_mouse_pos = want_set_mouse_pos
     end
 
     def want_save_ini_settings : Bool
-      @this.want_save_ini_settings
+      @this.value.want_save_ini_settings
     end
 
     def want_save_ini_settings=(want_save_ini_settings : Bool)
-      @this.want_save_ini_settings = want_save_ini_settings
+      @this.value.want_save_ini_settings = want_save_ini_settings
     end
 
     def nav_active : Bool
-      @this.nav_active
+      @this.value.nav_active
     end
 
     def nav_active=(nav_active : Bool)
-      @this.nav_active = nav_active
+      @this.value.nav_active = nav_active
     end
 
     def nav_visible : Bool
-      @this.nav_visible
+      @this.value.nav_visible
     end
 
     def nav_visible=(nav_visible : Bool)
-      @this.nav_visible = nav_visible
+      @this.value.nav_visible = nav_visible
     end
 
     def framerate : Float32
-      @this.framerate
+      @this.value.framerate
     end
 
     def framerate=(framerate : Float32)
-      @this.framerate = framerate
+      @this.value.framerate = framerate
     end
 
     def metrics_render_vertices : Int32
-      @this.metrics_render_vertices
+      @this.value.metrics_render_vertices
     end
 
     def metrics_render_vertices=(metrics_render_vertices : Int32)
-      @this.metrics_render_vertices = metrics_render_vertices
+      @this.value.metrics_render_vertices = metrics_render_vertices
     end
 
     def metrics_render_indices : Int32
-      @this.metrics_render_indices
+      @this.value.metrics_render_indices
     end
 
     def metrics_render_indices=(metrics_render_indices : Int32)
-      @this.metrics_render_indices = metrics_render_indices
+      @this.value.metrics_render_indices = metrics_render_indices
     end
 
     def metrics_render_windows : Int32
-      @this.metrics_render_windows
+      @this.value.metrics_render_windows
     end
 
     def metrics_render_windows=(metrics_render_windows : Int32)
-      @this.metrics_render_windows = metrics_render_windows
+      @this.value.metrics_render_windows = metrics_render_windows
     end
 
     def metrics_active_windows : Int32
-      @this.metrics_active_windows
+      @this.value.metrics_active_windows
     end
 
     def metrics_active_windows=(metrics_active_windows : Int32)
-      @this.metrics_active_windows = metrics_active_windows
+      @this.value.metrics_active_windows = metrics_active_windows
     end
 
     def metrics_active_allocations : Int32
-      @this.metrics_active_allocations
+      @this.value.metrics_active_allocations
     end
 
     def metrics_active_allocations=(metrics_active_allocations : Int32)
-      @this.metrics_active_allocations = metrics_active_allocations
+      @this.value.metrics_active_allocations = metrics_active_allocations
     end
 
     def mouse_delta : ImVec2
-      @this.mouse_delta.value
+      @this.value.mouse_delta.value
     end
 
     def mouse_delta=(mouse_delta : ImVec2)
-      @this.mouse_delta = mouse_delta
+      @this.value.mouse_delta = mouse_delta
     end
 
     def key_mods : ImGuiKeyModFlags
-      @this.key_mods
+      @this.value.key_mods
     end
 
     def key_mods=(key_mods : ImGuiKeyModFlags)
-      @this.key_mods = key_mods
+      @this.value.key_mods = key_mods
     end
 
     def mouse_pos_prev : ImVec2
-      @this.mouse_pos_prev.value
+      @this.value.mouse_pos_prev.value
     end
 
     def mouse_pos_prev=(mouse_pos_prev : ImVec2)
-      @this.mouse_pos_prev = mouse_pos_prev
+      @this.value.mouse_pos_prev = mouse_pos_prev
     end
 
     def mouse_clicked_pos : ImVec2[5]
-      @this.mouse_clicked_pos.value
+      @this.value.mouse_clicked_pos.value
     end
 
     def mouse_clicked_pos=(mouse_clicked_pos : ImVec2[5])
-      @this.mouse_clicked_pos = mouse_clicked_pos
+      @this.value.mouse_clicked_pos = mouse_clicked_pos
     end
 
     def mouse_clicked_time : Float64[5]
-      @this.mouse_clicked_time
+      @this.value.mouse_clicked_time
     end
 
     def mouse_clicked_time=(mouse_clicked_time : Float64[5])
-      @this.mouse_clicked_time = mouse_clicked_time
+      @this.value.mouse_clicked_time = mouse_clicked_time
     end
 
     def mouse_clicked : Bool[5]
-      @this.mouse_clicked
+      @this.value.mouse_clicked
     end
 
     def mouse_clicked=(mouse_clicked : Bool[5])
-      @this.mouse_clicked = mouse_clicked
+      @this.value.mouse_clicked = mouse_clicked
     end
 
     def mouse_double_clicked : Bool[5]
-      @this.mouse_double_clicked
+      @this.value.mouse_double_clicked
     end
 
     def mouse_double_clicked=(mouse_double_clicked : Bool[5])
-      @this.mouse_double_clicked = mouse_double_clicked
+      @this.value.mouse_double_clicked = mouse_double_clicked
     end
 
     def mouse_released : Bool[5]
-      @this.mouse_released
+      @this.value.mouse_released
     end
 
     def mouse_released=(mouse_released : Bool[5])
-      @this.mouse_released = mouse_released
+      @this.value.mouse_released = mouse_released
     end
 
     def mouse_down_owned : Bool[5]
-      @this.mouse_down_owned
+      @this.value.mouse_down_owned
     end
 
     def mouse_down_owned=(mouse_down_owned : Bool[5])
-      @this.mouse_down_owned = mouse_down_owned
+      @this.value.mouse_down_owned = mouse_down_owned
     end
 
     def mouse_down_was_double_click : Bool[5]
-      @this.mouse_down_was_double_click
+      @this.value.mouse_down_was_double_click
     end
 
     def mouse_down_was_double_click=(mouse_down_was_double_click : Bool[5])
-      @this.mouse_down_was_double_click = mouse_down_was_double_click
+      @this.value.mouse_down_was_double_click = mouse_down_was_double_click
     end
 
     def mouse_down_duration : Float32[5]
-      @this.mouse_down_duration
+      @this.value.mouse_down_duration
     end
 
     def mouse_down_duration=(mouse_down_duration : Float32[5])
-      @this.mouse_down_duration = mouse_down_duration
+      @this.value.mouse_down_duration = mouse_down_duration
     end
 
     def mouse_down_duration_prev : Float32[5]
-      @this.mouse_down_duration_prev
+      @this.value.mouse_down_duration_prev
     end
 
     def mouse_down_duration_prev=(mouse_down_duration_prev : Float32[5])
-      @this.mouse_down_duration_prev = mouse_down_duration_prev
+      @this.value.mouse_down_duration_prev = mouse_down_duration_prev
     end
 
     def mouse_drag_max_distance_abs : ImVec2[5]
-      @this.mouse_drag_max_distance_abs.value
+      @this.value.mouse_drag_max_distance_abs.value
     end
 
     def mouse_drag_max_distance_abs=(mouse_drag_max_distance_abs : ImVec2[5])
-      @this.mouse_drag_max_distance_abs = mouse_drag_max_distance_abs
+      @this.value.mouse_drag_max_distance_abs = mouse_drag_max_distance_abs
     end
 
     def mouse_drag_max_distance_sqr : Float32[5]
-      @this.mouse_drag_max_distance_sqr
+      @this.value.mouse_drag_max_distance_sqr
     end
 
     def mouse_drag_max_distance_sqr=(mouse_drag_max_distance_sqr : Float32[5])
-      @this.mouse_drag_max_distance_sqr = mouse_drag_max_distance_sqr
+      @this.value.mouse_drag_max_distance_sqr = mouse_drag_max_distance_sqr
     end
 
     def keys_down_duration : Float32[512]
-      @this.keys_down_duration
+      @this.value.keys_down_duration
     end
 
     def keys_down_duration=(keys_down_duration : Float32[512])
-      @this.keys_down_duration = keys_down_duration
+      @this.value.keys_down_duration = keys_down_duration
     end
 
     def keys_down_duration_prev : Float32[512]
-      @this.keys_down_duration_prev
+      @this.value.keys_down_duration_prev
     end
 
     def keys_down_duration_prev=(keys_down_duration_prev : Float32[512])
-      @this.keys_down_duration_prev = keys_down_duration_prev
+      @this.value.keys_down_duration_prev = keys_down_duration_prev
     end
 
     def nav_inputs_down_duration : Float32[21]
-      @this.nav_inputs_down_duration
+      @this.value.nav_inputs_down_duration
     end
 
     def nav_inputs_down_duration=(nav_inputs_down_duration : Float32[21])
-      @this.nav_inputs_down_duration = nav_inputs_down_duration
+      @this.value.nav_inputs_down_duration = nav_inputs_down_duration
     end
 
     def nav_inputs_down_duration_prev : Float32[21]
-      @this.nav_inputs_down_duration_prev
+      @this.value.nav_inputs_down_duration_prev
     end
 
     def nav_inputs_down_duration_prev=(nav_inputs_down_duration_prev : Float32[21])
-      @this.nav_inputs_down_duration_prev = nav_inputs_down_duration_prev
+      @this.value.nav_inputs_down_duration_prev = nav_inputs_down_duration_prev
     end
 
     def pen_pressure : Float32
-      @this.pen_pressure
+      @this.value.pen_pressure
     end
 
     def pen_pressure=(pen_pressure : Float32)
-      @this.pen_pressure = pen_pressure
+      @this.value.pen_pressure = pen_pressure
     end
 
     def input_queue_surrogate : ImWchar16
-      @this.input_queue_surrogate
+      @this.value.input_queue_surrogate
     end
 
     def input_queue_surrogate=(input_queue_surrogate : ImWchar16)
-      @this.input_queue_surrogate = input_queue_surrogate
+      @this.value.input_queue_surrogate = input_queue_surrogate
     end
 
     def input_queue_characters : LibImGui::ImVector(ImWchar)
-      @this.input_queue_characters.value
+      @this.value.input_queue_characters.value
     end
 
     def input_queue_characters=(input_queue_characters : LibImGui::ImVector(ImWchar))
-      @this.input_queue_characters = input_queue_characters
+      @this.value.input_queue_characters = input_queue_characters
     end
 
     def add_input_character(c : UInt32) : Void
@@ -3378,7 +1916,7 @@ module ImGui
   end
 
   class ImGuiInputTextCallbackData
-    include ClassType(LibImGui::ImGuiInputTextCallbackData)
+    include DirectClassType(LibImGui::ImGuiInputTextCallbackData)
 
     def event_flag : ImGuiInputTextFlags
       @this.event_flag
@@ -3494,8 +2032,11 @@ module ImGui
     end
   end
 
+  alias ImGuiInputTextState = LibImGui::ImGuiInputTextState
+  alias ImGuiItemHoveredDataBackup = LibImGui::ImGuiItemHoveredDataBackup
+
   class ImGuiListClipper
-    include ClassType(LibImGui::ImGuiListClipper)
+    include DirectClassType(LibImGui::ImGuiListClipper)
 
     def display_start : Int32
       @this.display_start
@@ -3563,8 +2104,13 @@ module ImGui
     end
   end
 
+  alias ImGuiMenuColumns = LibImGui::ImGuiMenuColumns
+  alias ImGuiNavMoveResult = LibImGui::ImGuiNavMoveResult
+  alias ImGuiNextItemData = LibImGui::ImGuiNextItemData
+  alias ImGuiNextWindowData = LibImGui::ImGuiNextWindowData
+
   class ImGuiOnceUponAFrame
-    include ClassType(LibImGui::ImGuiOnceUponAFrame)
+    include DirectClassType(LibImGui::ImGuiOnceUponAFrame)
 
     def ref_frame : Int32
       @this.ref_frame
@@ -3581,7 +2127,7 @@ module ImGui
   end
 
   class ImGuiPayload
-    include ClassType(LibImGui::ImGuiPayload)
+    include DirectClassType(LibImGui::ImGuiPayload)
 
     def data : Void*
       @this.data
@@ -3669,8 +2215,13 @@ module ImGui
     end
   end
 
+  alias ImGuiPopupData = LibImGui::ImGuiPopupData
+  alias ImGuiPtrOrIndex = LibImGui::ImGuiPtrOrIndex
+  alias ImGuiSettingsHandler = LibImGui::ImGuiSettingsHandler
+  alias ImGuiShrinkWidthItem = LibImGui::ImGuiShrinkWidthItem
+
   class ImGuiSizeCallbackData
-    include ClassType(LibImGui::ImGuiSizeCallbackData)
+    include DirectClassType(LibImGui::ImGuiSizeCallbackData)
 
     def user_data : Void*
       @this.user_data
@@ -3706,7 +2257,7 @@ module ImGui
   end
 
   class ImGuiStorage
-    include ClassType(LibImGui::ImGuiStorage)
+    include DirectClassType(LibImGui::ImGuiStorage)
 
     def data : LibImGui::ImVector(LibImGui::ImGuiStoragePair)
       @this.data.value
@@ -3777,8 +2328,10 @@ module ImGui
     end
   end
 
+  alias ImGuiStoragePair = LibImGui::ImGuiStoragePair
+
   class ImGuiStyle
-    include ClassType(LibImGui::ImGuiStyle)
+    include DirectClassType(LibImGui::ImGuiStyle)
 
     def alpha : Float32
       @this.alpha
@@ -4086,8 +2639,12 @@ module ImGui
     end
   end
 
+  alias ImGuiStyleMod = LibImGui::ImGuiStyleMod
+  alias ImGuiTabBar = LibImGui::ImGuiTabBar
+  alias ImGuiTabItem = LibImGui::ImGuiTabItem
+
   class ImGuiTextBuffer
-    include ClassType(LibImGui::ImGuiTextBuffer)
+    include DirectClassType(LibImGui::ImGuiTextBuffer)
 
     def buf : LibImGui::ImVector(LibC::Char)
       @this.buf.value
@@ -4143,7 +2700,7 @@ module ImGui
   end
 
   class ImGuiTextFilter
-    include ClassType(LibImGui::ImGuiTextFilter)
+    include DirectClassType(LibImGui::ImGuiTextFilter)
 
     def input_buf : LibC::Char[256]
       @this.input_buf
@@ -4195,6 +2752,13 @@ module ImGui
     end
   end
 
+  alias ImGuiTextRange = LibImGui::ImGuiTextRange
+  alias ImGuiWindow = LibImGui::ImGuiWindow
+  alias ImGuiWindowSettings = LibImGui::ImGuiWindowSettings
+  alias ImGuiWindowTempData = LibImGui::ImGuiWindowTempData
+  alias ImRect = LibImGui::ImRect
+  alias ImVec1 = LibImGui::ImVec1
+
   struct ImVec2
     include StructType
 
@@ -4208,6 +2772,8 @@ module ImGui
       result.value
     end
   end
+
+  alias ImVec2ih = LibImGui::ImVec2ih
 
   struct ImVec4
     include StructType
@@ -4427,7 +2993,7 @@ module ImGui
 
   def self.create_context(shared_font_atlas : ImFontAtlas? = nil) : ImGuiContext
     result = LibImGui.igCreateContext(shared_font_atlas)
-    ImGuiContext.new(result)
+    result.value
   end
 
   def self.debug_check_version_and_data_layout(version_str : String, sz_io : LibC::SizeT, sz_style : LibC::SizeT, sz_vec2 : LibC::SizeT, sz_vec4 : LibC::SizeT, sz_drawvert : LibC::SizeT, sz_drawidx : LibC::SizeT) : Bool
@@ -4600,7 +3166,7 @@ module ImGui
 
   def self.get_current_context : ImGuiContext
     result = LibImGui.igGetCurrentContext
-    ImGuiContext.new(result)
+    result.value
   end
 
   def self.get_cursor_pos : ImGui::ImVec2
@@ -4638,7 +3204,7 @@ module ImGui
 
   def self.get_draw_list_shared_data : ImDrawListSharedData
     result = LibImGui.igGetDrawListSharedData
-    ImDrawListSharedData.new(result)
+    result.value
   end
 
   def self.get_font : ImFont

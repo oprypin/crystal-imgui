@@ -118,6 +118,12 @@ class CType
   def class? : Bool
     !!(struct?.try &.class?)
   end
+  def direct_class? : Bool
+    !!(struct?.try &.direct_class?)
+  end
+  def has_destructor? : Bool
+    !!(AllFunctions.has_key?("#{self.base_type}_destroy"))
+  end
 end
 
 class CTemplateType < CType
@@ -344,7 +350,7 @@ def convert_returns(outp : Array(String), rets : Array(CType)) : Array(String)
   outp.map_with_index do |o, i|
     ret = rets[i]
     if (t = ret.try &.base_type.struct?)
-      if t.class?
+      if t.class? && !t.internal?
         %(#{ret.name(Context::Obj)}.new(#{o}))
       else
         rets[i] = CType.new(ret.name.rchop("*"))
@@ -422,22 +428,24 @@ class CStructMember
       yield %(#{varname} : #{self.type.name(ctx)})
     elsif ctx.obj? && self.parent.class?
       return if self.internal?
+      this = "@this"
+      this += ".value" unless self.parent.direct_class?
       typename = self.type.name(ctx)
       if varname == "cmd_lists" && typename == "ImDrawList*"
         typename = "Slice(ImDrawList)"
-        call = %(Slice(ImDrawList).new(@this.cmd_lists, @this.cmd_lists_count))
+        call = %(Slice(ImDrawList).new(#{this}.cmd_lists, #{this}.cmd_lists_count))
       else
         typ = self.type
         if typ.class?
           typ = CType.new(typ.name + "*")
         end
-        call = convert_returns(["@this.#{varname}"], [typ]).first
+        call = convert_returns(["#{this}.#{varname}"], [typ]).first
       end
       yield %(def #{varname} : #{typename})
       yield call
       yield %(end)
       yield %(def #{varname}=(#{varname} : #{typename}))
-      yield %(@this.#{varname} = #{varname})
+      yield %(#{this}.#{varname} = #{varname})
       yield %(end)
     else
       if (t = self.type.as?(CTemplateType))
@@ -464,12 +472,19 @@ class CStruct
   def_map_from_json(members : Array(CStructMember), parent)
 
   def render(ctx : Context, &block : String->)
-    if self.internal? && ctx.lib?
-      yield %(alias #{self.name} = Void)
-    elsif ctx.obj? && (!self.internal? || self.name.in?("ImGuiContext"))
-      if self.class?
+    if self.internal?
+      if ctx.lib?
+        yield %(type #{self.name} = Void*)
+      elsif ctx.obj?
+        yield %(alias #{self.name} = LibImGui::#{self.name})
+      end
+    elsif ctx.obj?
+      if self.direct_class?
         yield %(class #{self.name})
-        yield %(include ClassType(LibImGui::#{self.name}))
+        yield %(include DirectClassType(LibImGui::#{self.name}))
+      elsif self.class?
+        yield %(struct #{self.name})
+        yield %(include StructClassType(LibImGui::#{self.name}))
       else
         yield %(struct #{self.name})
         yield %(include StructType)
@@ -483,7 +498,7 @@ class CStruct
         member.render(ctx, &block)
       end
       yield %(end)
-    elsif !self.class? && ctx.ext? && !self.internal?
+    elsif !self.class? && ctx.ext?
       yield %()
       yield %(@[Extern])
       yield %(struct #{self.name})
@@ -510,6 +525,9 @@ class CStruct
 
   def class? : Bool
     !%w[ImVector ImVec2 ImVec4 ImColor ImDrawVert ImFontGlyph ImGuiTextRange].includes?(self.name)
+  end
+  def direct_class? : Bool
+    class? && !%w[ImDrawCmd ImDrawData ImDrawList ImGuiIO].includes?(self.name)
   end
 end
 
@@ -607,6 +625,22 @@ AllTypedefs = Hash(String, String).from_json(
 ).map { |k, v|
   {k, CTypedef.new(k, CType.new(v.rchop(";")))}
 }.to_h
+
+AllStructs.each_value do |str|
+  next if str.internal?
+  str.members.each do |member|
+    assert member.internal? || !member.type.direct_class?
+  end
+  assert str.class? || !CType.new(str.name).has_destructor?
+end
+AllFunctions.each_value do |func|
+  func.overloads.each do |func|
+    next if func.internal? || func.constructor?
+    if (ret = func.ret)
+      assert !ret.direct_class?
+    end
+  end
+end
 
 def render(ctx : Context, &block : String->)
   if ctx.lib?
