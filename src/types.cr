@@ -120,7 +120,6 @@ module ImGui
     NavWindowingHighlight = 45
     NavWindowingDimBg     = 46
     ModalWindowDimBg      = 47
-    COUNT                 = 48
   end
 
   @[Flags]
@@ -201,17 +200,16 @@ module ImGui
   end
 
   enum ImGuiDataType
-    S8     =  0
-    U8     =  1
-    S16    =  2
-    U16    =  3
-    S32    =  4
-    U32    =  5
-    S64    =  6
-    U64    =  7
-    Float  =  8
-    Double =  9
-    COUNT  = 10
+    S8     = 0
+    U8     = 1
+    S16    = 2
+    U16    = 3
+    S32    = 4
+    U32    = 5
+    S64    = 6
+    U64    = 7
+    Float  = 8
+    Double = 9
   end
 
   enum ImGuiDir
@@ -220,7 +218,6 @@ module ImGui
     Right =  1
     Up    =  2
     Down  =  3
-    COUNT =  4
   end
 
   @[Flags]
@@ -282,7 +279,6 @@ module ImGui
     Nav         = 2
     NavKeyboard = 3
     NavGamepad  = 4
-    COUNT       = 5
   end
 
   @[Flags]
@@ -368,7 +364,6 @@ module ImGui
     X           = 19
     Y           = 20
     Z           = 21
-    COUNT       = 22
   end
 
   enum ImGuiLayoutType
@@ -388,7 +383,6 @@ module ImGui
     Left   = 0
     Right  = 1
     Middle = 2
-    COUNT  = 5
   end
 
   enum ImGuiMouseCursor
@@ -402,7 +396,6 @@ module ImGui
     ResizeNWSE =  6
     Hand       =  7
     NotAllowed =  8
-    COUNT      =  9
   end
 
   @[Flags]
@@ -450,14 +443,12 @@ module ImGui
     KeyRight      = 18
     KeyUp         = 19
     KeyDown       = 20
-    COUNT         = 21
     InternalStart = KeyMenu
   end
 
   enum ImGuiNavLayer
-    Main  = 0
-    Menu  = 1
-    COUNT = 2
+    Main = 0
+    Menu = 1
   end
 
   @[Flags]
@@ -565,7 +556,6 @@ module ImGui
     TabRounding         = 20
     ButtonTextAlign     = 21
     SelectableTextAlign = 22
-    COUNT               = 23
   end
 
   @[Flags]

@@ -309,6 +309,10 @@ class COverload
       outp = ["result"] * rets.size
       conv = {} of String => String
       outputter = nil
+      as_datatype = self.args.index { |arg| arg.type.c_name == "ImGuiDataType" }
+      if as_datatype
+        yield %(  {% for k, t in {S8: Int8, U8: UInt8, S16: Int16, U16: UInt16, S32: Int32, U32: UInt32, S64: Int64, U64: UInt64, Float: Float32, Double: Float64} %})
+      end
       self.args.each_with_index do |arg, arg_i|
         if arg.type.c_name == "..."
           args << %(*args)
@@ -327,19 +331,34 @@ class COverload
           .gsub("(ImU32)", "UInt32.new")
           .gsub("((void*)0)", "nil")
           .gsub(/\bfloat\b/, "Float32")
+          .gsub(/\bFLT_MAX\b/, "Float32::MAX")
         end
         typ = arg.type.name(ctx)
         callarg = arg.name
         if arg.name == "ptr_id" && typ == "Void*"
           typ = "Reference | #{typ}"
           callarg = "#{callarg}.as(Void*)"
-        elsif arg.name == "col" && typ == "Float32*"
+        elsif arg.type.c_name == "float[4]" || arg.name == "col" && typ == "Float32*"
           typ = "ImVec4* | #{typ}"
+          callarg = "#{callarg}.as(Float32*)"
+        elsif arg.type.c_name == "float[2]"
+          typ = "ImVec2* | #{typ}"
           callarg = "#{callarg}.as(Float32*)"
         elsif arg.name.rpartition("_").last == "end" && typ == "String"
           args[-1] = "#{self.args[arg_i - 1].name} : Slice(UInt8) | String"
           call_args << "(#{self.args[arg_i - 1].name}.to_unsafe + #{self.args[arg_i - 1].name}.bytesize)"
           next
+        elsif arg_i == as_datatype
+          call_args << "ImGuiDataType::{{k.id}}"
+          next
+        elsif as_datatype && arg_i > as_datatype && typ == "Void*" && arg.name.partition("_").first == "p"
+          typ = "{{t}}"
+          if arg_i - 1 == as_datatype || self.name(Context::Obj).ends_with?("n")
+            typ += "*"
+          else
+            callarg = "pointerof(#{callarg})"
+          end
+#           callarg += ".as(Void*)"
         end
         if default == "nil"
           if (t = typ.rchop?("*"))
@@ -357,7 +376,7 @@ class COverload
         args << "#{arg.name} : #{typ}#{" = #{default}" if default}" unless arg.name == "self"
         call_args << "#{callarg}"
         if arg.type.name(ctx).ends_with?("*") && (arg.name.split("_")[0].in?("p", "v") || !default) && self.ret.try(&.c_name) == "bool"
-          outputter = arg_i
+          outputter ||= arg_i
         end
       end
       ret_s = to_tuple(rets.map &.name(ctx).rchop("*"))
@@ -366,16 +385,18 @@ class COverload
           arg.type.name(Context::Obj).ends_with?("*") && (arg.name.split("_")[0].in?("p", "v") || !overload.defaults[arg.name]?) && overload.ret.try(&.c_name) == "bool"
         end
       end
-      yield %(def #{"self. " if !inside_class}#{self.name(ctx)}#{"_" if any_outputter}(#{args.join(", ")}) : #{ret_s || "Void"})
-      call = %(LibImGui.#{self.name(Context::Lib)}(#{call_args.join(", ")}))
+      yield %(  def #{"self. " if !inside_class}#{self.name(ctx)}#{"_" if any_outputter}(#{args.join(", ")}) : #{ret_s || "Void"})
+      call = %(    LibImGui.#{self.name(Context::Lib)}(#{call_args.join(", ")}))
       outp2 = convert_returns(outp, rets)
-      call = %(result = #{call}) if outp.first? == "result" && outp2 != ["result"]
+      call = %(    result = #{call}) if outp.first? == "result" && outp2 != ["result"]
       yield call
       yield (assert to_tuple(outp2)) unless outp2.empty? || outp2 == ["result"]
-      yield %(end)
+      yield %(  end)
+      yield %(  {% end %}) if as_datatype
+
       if (i = outputter)
-        yield %(  macro #{self.name(ctx)}(*args))
-        yield %(    ::ImGui._pointer_wrapper("::ImGui.#{self.name(ctx)}_", #{i}, #{self.args[i].type.c_name == "bool*"}, {{*args}}))
+        yield %(  macro #{self.name(ctx)}(*args, **kwargs, &block))
+        yield %(    ::ImGui._pointer_wrapper("::ImGui.#{self.name(ctx)}_", #{i}, #{self.args[i].type.c_name == "bool*"}, {{*args}}, {{**kwargs}}) {{block}})
         yield %(  end)
       end
     end
@@ -389,7 +410,9 @@ end
 def convert_returns(outp : Array(String), rets : Array(CType)) : Array(String)
   outp.map_with_index do |o, i|
     ret = rets[i]
-    if (t = ret.try &.base_type.struct?)
+    if ret.c_name =~ /\d\]$/
+      %(#{o}.to_slice)
+    elsif (t = ret.try &.base_type.struct?)
       if t.class? && !t.internal?
         %(#{ret.name(Context::Obj)}.new(#{o}))
       else
@@ -618,7 +641,7 @@ class CEnum
 
     yield %(enum #{name})
     self.members.each do |member|
-      next if member.name == "All"
+      next if member.name.in?("All", "COUNT")
       yield %(#{member.name} = #{member.value})
     end
     yield %(end)
