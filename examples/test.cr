@@ -22,7 +22,7 @@ f = 0f32
   ImGui.new_frame()
 
   ImGui.text("Hello World!")
-  ImGui.slider_float("float", pointerof(f), 0.0, 1.0)
+  ImGui.slider_float("float", pointerof(f), 0.0f32, 1.0f32)
   ImGui.text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f32 / io.framerate, io.framerate)
   ImGui.show_demo_window()
 

@@ -81,14 +81,15 @@ class CType
   end
 
   def base_type : CType
-    base_type = CType.new(self.c_name[/[\w ]+/])
+    base_type = CType.new(self.c_name[/[\w ]+/]? || self.c_name)
   end
 
   def base_name(ctx : Context) : String
     if ctx.obj? && self.const? && self.c_name == "char*"
       return "String"
     end
-    name = self.c_name.sub("[]", "*")
+    name = self.c_name.gsub("[]", "*")
+    name = name.gsub(/\[\d+\]/, "*") unless ctx.lib?
     name = name.sub(/[\w ]+/) do |s|
       CType.native?(s, ctx) || s
     end
@@ -148,7 +149,7 @@ class CFunctionType < CType
     type, args = $1, $2
     @type = CType.new(type)
     @args = args.split(",").map do |arg|
-      type, _, name = arg.rpartition(" ")
+      type, _, name = arg.gsub(" *", "* ").rpartition(" ")
       CArg.new(CType.new(type), name)
     end
   end
@@ -295,7 +296,7 @@ class COverload
     if ctx.lib?
       args = self.args.map do |arg|
         next "..." if arg.type.c_name == "..."
-        "#{arg.name} : #{arg.type.name(ctx)}"
+        "#{arg.name} : #{arg.type.name(ctx).gsub(/\[\d+\]/, "*")}"
       end
       ret = self.ret.try &.name(ctx)
       yield %(fun #{self.c_name}(#{args.join(", ")})#{" : #{ret}" if ret})
@@ -303,10 +304,12 @@ class COverload
       return if self.struct? && !inside_class
       args = [] of String
       call_args = [] of String
+      macro_args = [] of String
       rets = [self.ret].compact
       outp = ["result"] * rets.size
       conv = {} of String => String
-      self.args.each do |arg|
+      outputter = nil
+      self.args.each_with_index do |arg, arg_i|
         if arg.type.c_name == "..."
           args << %(*args)
           call_args << %(*args)
@@ -326,18 +329,55 @@ class COverload
           .gsub(/\bfloat\b/, "Float32")
         end
         typ = arg.type.name(ctx)
-        typ += "?" if default == "nil"
+        callarg = arg.name
+        if arg.name == "ptr_id" && typ == "Void*"
+          typ = "Reference | #{typ}"
+          callarg = "#{callarg}.as(Void*)"
+        elsif arg.name == "col" && typ == "Float32*"
+          typ = "ImVec4* | #{typ}"
+          callarg = "#{callarg}.as(Float32*)"
+        elsif arg.name.rpartition("_").last == "end" && typ == "String"
+          args[-1] = "#{self.args[arg_i - 1].name} : Slice(UInt8) | String"
+          call_args << "(#{self.args[arg_i - 1].name}.to_unsafe + #{self.args[arg_i - 1].name}.bytesize)"
+          next
+        end
+        if default == "nil"
+          if (t = typ.rchop?("*"))
+            default = "Pointer(#{t}).null"
+          else
+            typ += "?"
+          end
+        end
+        if arg.type.enum? && default =~ /^\d/
+          default = "#{typ}.new(#{default})"
+        end
+        if arg.type.enum? && default
+          default = default.gsub(/\B_\B/, "::")
+        end
         args << "#{arg.name} : #{typ}#{" = #{default}" if default}" unless arg.name == "self"
-        call_args << "#{arg.name}"
+        call_args << "#{callarg}"
+        if arg.type.name(ctx).ends_with?("*") && (arg.name.split("_")[0].in?("p", "v") || !default) && self.ret.try(&.c_name) == "bool"
+          outputter = arg_i
+        end
       end
       ret_s = to_tuple(rets.map &.name(ctx).rchop("*"))
-      yield %(def #{"self. " if !inside_class}#{self.name(ctx)}(#{args.join(", ")}) : #{ret_s || "Void"})
+      any_outputter = self.parent.overloads.any? do |overload|
+        overload.args.any? do |arg|
+          arg.type.name(Context::Obj).ends_with?("*") && (arg.name.split("_")[0].in?("p", "v") || !overload.defaults[arg.name]?) && overload.ret.try(&.c_name) == "bool"
+        end
+      end
+      yield %(def #{"self. " if !inside_class}#{self.name(ctx)}#{"_" if any_outputter}(#{args.join(", ")}) : #{ret_s || "Void"})
       call = %(LibImGui.#{self.name(Context::Lib)}(#{call_args.join(", ")}))
       outp2 = convert_returns(outp, rets)
       call = %(result = #{call}) if outp.first? == "result" && outp2 != ["result"]
       yield call
       yield (assert to_tuple(outp2)) unless outp2.empty? || outp2 == ["result"]
       yield %(end)
+      if (i = outputter)
+        yield %(  macro #{self.name(ctx)}(*args))
+        yield %(    ::ImGui._pointer_wrapper("::ImGui.#{self.name(ctx)}_", #{i}, #{self.args[i].type.c_name == "bool*"}, {{*args}}))
+        yield %(  end)
+      end
     end
   end
 end
@@ -354,7 +394,8 @@ def convert_returns(outp : Array(String), rets : Array(CType)) : Array(String)
         %(#{ret.name(Context::Obj)}.new(#{o}))
       else
         rets[i] = CType.new(ret.name.rchop("*"))
-        %(#{o}.value)
+        o += ".value" if ret.name.rchop?("*")
+        o
       end
     elsif ret.name(Context::Obj) == "String"
       %(String.new(#{o}))

@@ -7,7 +7,7 @@ lib LibImGui
   alias ImDrawIdx = LibC::UShort
   alias ImFileHandle = Void*
   alias ImGuiID = LibC::UInt
-  alias ImGuiInputTextCallback = (ImGuiInputTextCallbackData) -> LibC::Int
+  alias ImGuiInputTextCallback = (ImGuiInputTextCallbackData*) -> LibC::Int
   alias ImGuiSizeCallback = (ImGuiSizeCallbackData*) -> Void
   alias ImPoolIdx = LibC::Int
   alias ImTextureID = Void*
@@ -456,7 +456,7 @@ lib LibImGui
   fun ImFontAtlas_GetGlyphRangesKorean(self : ImFontAtlas*) : ImWchar*
   fun ImFontAtlas_GetGlyphRangesThai(self : ImFontAtlas*) : ImWchar*
   fun ImFontAtlas_GetGlyphRangesVietnamese(self : ImFontAtlas*) : ImWchar*
-  fun ImFontAtlas_GetMouseCursorTexData(self : ImFontAtlas*, cursor : ImGui::ImGuiMouseCursor, out_offset : ImGui::ImVec2*, out_size : ImGui::ImVec2*, out_uv_border : ImGui::ImVec2[2], out_uv_fill : ImGui::ImVec2[2]) : Bool
+  fun ImFontAtlas_GetMouseCursorTexData(self : ImFontAtlas*, cursor : ImGui::ImGuiMouseCursor, out_offset : ImGui::ImVec2*, out_size : ImGui::ImVec2*, out_uv_border : ImGui::ImVec2*, out_uv_fill : ImGui::ImVec2*) : Bool
   fun ImFontAtlas_GetTexDataAsAlpha8(self : ImFontAtlas*, out_pixels : LibC::UChar**, out_width : LibC::Int*, out_height : LibC::Int*, out_bytes_per_pixel : LibC::Int*)
   fun ImFontAtlas_GetTexDataAsRGBA32(self : ImFontAtlas*, out_pixels : LibC::UChar**, out_width : LibC::Int*, out_height : LibC::Int*, out_bytes_per_pixel : LibC::Int*)
   fun ImFontAtlas_ImFontAtlas : ImFontAtlas*
@@ -592,10 +592,10 @@ lib LibImGui
   fun igColorConvertHSVtoRGB(h : LibC::Float, s : LibC::Float, v : LibC::Float, out_r : LibC::Float*, out_g : LibC::Float*, out_b : LibC::Float*)
   fun igColorConvertRGBtoHSV(r : LibC::Float, g : LibC::Float, b : LibC::Float, out_h : LibC::Float*, out_s : LibC::Float*, out_v : LibC::Float*)
   fun igColorConvertU32ToFloat4(pOut : ImGui::ImVec4*, in : UInt32)
-  fun igColorEdit3(label : LibC::Char*, col : LibC::Float[3], flags : ImGui::ImGuiColorEditFlags) : Bool
-  fun igColorEdit4(label : LibC::Char*, col : LibC::Float[4], flags : ImGui::ImGuiColorEditFlags) : Bool
-  fun igColorPicker3(label : LibC::Char*, col : LibC::Float[3], flags : ImGui::ImGuiColorEditFlags) : Bool
-  fun igColorPicker4(label : LibC::Char*, col : LibC::Float[4], flags : ImGui::ImGuiColorEditFlags, ref_col : LibC::Float*) : Bool
+  fun igColorEdit3(label : LibC::Char*, col : LibC::Float*, flags : ImGui::ImGuiColorEditFlags) : Bool
+  fun igColorEdit4(label : LibC::Char*, col : LibC::Float*, flags : ImGui::ImGuiColorEditFlags) : Bool
+  fun igColorPicker3(label : LibC::Char*, col : LibC::Float*, flags : ImGui::ImGuiColorEditFlags) : Bool
+  fun igColorPicker4(label : LibC::Char*, col : LibC::Float*, flags : ImGui::ImGuiColorEditFlags, ref_col : LibC::Float*) : Bool
   fun igColumns(count : LibC::Int, id : LibC::Char*, border : Bool)
   fun igComboStr_arr(label : LibC::Char*, current_item : LibC::Int*, items : LibC::Char**, items_count : LibC::Int, popup_max_height_in_items : LibC::Int) : Bool
   fun igComboStr(label : LibC::Char*, current_item : LibC::Int*, items_separated_by_zeros : LibC::Char*, popup_max_height_in_items : LibC::Int) : Bool
@@ -604,14 +604,14 @@ lib LibImGui
   fun igDebugCheckVersionAndDataLayout(version_str : LibC::Char*, sz_io : LibC::SizeT, sz_style : LibC::SizeT, sz_vec2 : LibC::SizeT, sz_vec4 : LibC::SizeT, sz_drawvert : LibC::SizeT, sz_drawidx : LibC::SizeT) : Bool
   fun igDestroyContext(ctx : ImGuiContext*)
   fun igDragFloat(label : LibC::Char*, v : LibC::Float*, v_speed : LibC::Float, v_min : LibC::Float, v_max : LibC::Float, format : LibC::Char*, power : LibC::Float) : Bool
-  fun igDragFloat2(label : LibC::Char*, v : LibC::Float[2], v_speed : LibC::Float, v_min : LibC::Float, v_max : LibC::Float, format : LibC::Char*, power : LibC::Float) : Bool
-  fun igDragFloat3(label : LibC::Char*, v : LibC::Float[3], v_speed : LibC::Float, v_min : LibC::Float, v_max : LibC::Float, format : LibC::Char*, power : LibC::Float) : Bool
-  fun igDragFloat4(label : LibC::Char*, v : LibC::Float[4], v_speed : LibC::Float, v_min : LibC::Float, v_max : LibC::Float, format : LibC::Char*, power : LibC::Float) : Bool
+  fun igDragFloat2(label : LibC::Char*, v : LibC::Float*, v_speed : LibC::Float, v_min : LibC::Float, v_max : LibC::Float, format : LibC::Char*, power : LibC::Float) : Bool
+  fun igDragFloat3(label : LibC::Char*, v : LibC::Float*, v_speed : LibC::Float, v_min : LibC::Float, v_max : LibC::Float, format : LibC::Char*, power : LibC::Float) : Bool
+  fun igDragFloat4(label : LibC::Char*, v : LibC::Float*, v_speed : LibC::Float, v_min : LibC::Float, v_max : LibC::Float, format : LibC::Char*, power : LibC::Float) : Bool
   fun igDragFloatRange2(label : LibC::Char*, v_current_min : LibC::Float*, v_current_max : LibC::Float*, v_speed : LibC::Float, v_min : LibC::Float, v_max : LibC::Float, format : LibC::Char*, format_max : LibC::Char*, power : LibC::Float) : Bool
   fun igDragInt(label : LibC::Char*, v : LibC::Int*, v_speed : LibC::Float, v_min : LibC::Int, v_max : LibC::Int, format : LibC::Char*) : Bool
-  fun igDragInt2(label : LibC::Char*, v : LibC::Int[2], v_speed : LibC::Float, v_min : LibC::Int, v_max : LibC::Int, format : LibC::Char*) : Bool
-  fun igDragInt3(label : LibC::Char*, v : LibC::Int[3], v_speed : LibC::Float, v_min : LibC::Int, v_max : LibC::Int, format : LibC::Char*) : Bool
-  fun igDragInt4(label : LibC::Char*, v : LibC::Int[4], v_speed : LibC::Float, v_min : LibC::Int, v_max : LibC::Int, format : LibC::Char*) : Bool
+  fun igDragInt2(label : LibC::Char*, v : LibC::Int*, v_speed : LibC::Float, v_min : LibC::Int, v_max : LibC::Int, format : LibC::Char*) : Bool
+  fun igDragInt3(label : LibC::Char*, v : LibC::Int*, v_speed : LibC::Float, v_min : LibC::Int, v_max : LibC::Int, format : LibC::Char*) : Bool
+  fun igDragInt4(label : LibC::Char*, v : LibC::Int*, v_speed : LibC::Float, v_min : LibC::Int, v_max : LibC::Int, format : LibC::Char*) : Bool
   fun igDragIntRange2(label : LibC::Char*, v_current_min : LibC::Int*, v_current_max : LibC::Int*, v_speed : LibC::Float, v_min : LibC::Int, v_max : LibC::Int, format : LibC::Char*, format_max : LibC::Char*) : Bool
   fun igDragScalar(label : LibC::Char*, data_type : ImGui::ImGuiDataType, p_data : Void*, v_speed : LibC::Float, p_min : Void*, p_max : Void*, format : LibC::Char*, power : LibC::Float) : Bool
   fun igDragScalarN(label : LibC::Char*, data_type : ImGui::ImGuiDataType, p_data : Void*, components : LibC::Int, v_speed : LibC::Float, p_min : Void*, p_max : Void*, format : LibC::Char*, power : LibC::Float) : Bool
@@ -697,13 +697,13 @@ lib LibImGui
   fun igIndent(indent_w : LibC::Float)
   fun igInputDouble(label : LibC::Char*, v : LibC::Double*, step : LibC::Double, step_fast : LibC::Double, format : LibC::Char*, flags : ImGui::ImGuiInputTextFlags) : Bool
   fun igInputFloat(label : LibC::Char*, v : LibC::Float*, step : LibC::Float, step_fast : LibC::Float, format : LibC::Char*, flags : ImGui::ImGuiInputTextFlags) : Bool
-  fun igInputFloat2(label : LibC::Char*, v : LibC::Float[2], format : LibC::Char*, flags : ImGui::ImGuiInputTextFlags) : Bool
-  fun igInputFloat3(label : LibC::Char*, v : LibC::Float[3], format : LibC::Char*, flags : ImGui::ImGuiInputTextFlags) : Bool
-  fun igInputFloat4(label : LibC::Char*, v : LibC::Float[4], format : LibC::Char*, flags : ImGui::ImGuiInputTextFlags) : Bool
+  fun igInputFloat2(label : LibC::Char*, v : LibC::Float*, format : LibC::Char*, flags : ImGui::ImGuiInputTextFlags) : Bool
+  fun igInputFloat3(label : LibC::Char*, v : LibC::Float*, format : LibC::Char*, flags : ImGui::ImGuiInputTextFlags) : Bool
+  fun igInputFloat4(label : LibC::Char*, v : LibC::Float*, format : LibC::Char*, flags : ImGui::ImGuiInputTextFlags) : Bool
   fun igInputInt(label : LibC::Char*, v : LibC::Int*, step : LibC::Int, step_fast : LibC::Int, flags : ImGui::ImGuiInputTextFlags) : Bool
-  fun igInputInt2(label : LibC::Char*, v : LibC::Int[2], flags : ImGui::ImGuiInputTextFlags) : Bool
-  fun igInputInt3(label : LibC::Char*, v : LibC::Int[3], flags : ImGui::ImGuiInputTextFlags) : Bool
-  fun igInputInt4(label : LibC::Char*, v : LibC::Int[4], flags : ImGui::ImGuiInputTextFlags) : Bool
+  fun igInputInt2(label : LibC::Char*, v : LibC::Int*, flags : ImGui::ImGuiInputTextFlags) : Bool
+  fun igInputInt3(label : LibC::Char*, v : LibC::Int*, flags : ImGui::ImGuiInputTextFlags) : Bool
+  fun igInputInt4(label : LibC::Char*, v : LibC::Int*, flags : ImGui::ImGuiInputTextFlags) : Bool
   fun igInputScalar(label : LibC::Char*, data_type : ImGui::ImGuiDataType, p_data : Void*, p_step : Void*, p_step_fast : Void*, format : LibC::Char*, flags : ImGui::ImGuiInputTextFlags) : Bool
   fun igInputScalarN(label : LibC::Char*, data_type : ImGui::ImGuiDataType, p_data : Void*, components : LibC::Int, p_step : Void*, p_step_fast : Void*, format : LibC::Char*, flags : ImGui::ImGuiInputTextFlags) : Bool
   fun igInputText(label : LibC::Char*, buf : LibC::Char*, buf_size : LibC::SizeT, flags : ImGui::ImGuiInputTextFlags, callback : ImGuiInputTextCallback, user_data : Void*) : Bool
@@ -853,13 +853,13 @@ lib LibImGui
   fun igShowUserGuide
   fun igSliderAngle(label : LibC::Char*, v_rad : LibC::Float*, v_degrees_min : LibC::Float, v_degrees_max : LibC::Float, format : LibC::Char*) : Bool
   fun igSliderFloat(label : LibC::Char*, v : LibC::Float*, v_min : LibC::Float, v_max : LibC::Float, format : LibC::Char*, power : LibC::Float) : Bool
-  fun igSliderFloat2(label : LibC::Char*, v : LibC::Float[2], v_min : LibC::Float, v_max : LibC::Float, format : LibC::Char*, power : LibC::Float) : Bool
-  fun igSliderFloat3(label : LibC::Char*, v : LibC::Float[3], v_min : LibC::Float, v_max : LibC::Float, format : LibC::Char*, power : LibC::Float) : Bool
-  fun igSliderFloat4(label : LibC::Char*, v : LibC::Float[4], v_min : LibC::Float, v_max : LibC::Float, format : LibC::Char*, power : LibC::Float) : Bool
+  fun igSliderFloat2(label : LibC::Char*, v : LibC::Float*, v_min : LibC::Float, v_max : LibC::Float, format : LibC::Char*, power : LibC::Float) : Bool
+  fun igSliderFloat3(label : LibC::Char*, v : LibC::Float*, v_min : LibC::Float, v_max : LibC::Float, format : LibC::Char*, power : LibC::Float) : Bool
+  fun igSliderFloat4(label : LibC::Char*, v : LibC::Float*, v_min : LibC::Float, v_max : LibC::Float, format : LibC::Char*, power : LibC::Float) : Bool
   fun igSliderInt(label : LibC::Char*, v : LibC::Int*, v_min : LibC::Int, v_max : LibC::Int, format : LibC::Char*) : Bool
-  fun igSliderInt2(label : LibC::Char*, v : LibC::Int[2], v_min : LibC::Int, v_max : LibC::Int, format : LibC::Char*) : Bool
-  fun igSliderInt3(label : LibC::Char*, v : LibC::Int[3], v_min : LibC::Int, v_max : LibC::Int, format : LibC::Char*) : Bool
-  fun igSliderInt4(label : LibC::Char*, v : LibC::Int[4], v_min : LibC::Int, v_max : LibC::Int, format : LibC::Char*) : Bool
+  fun igSliderInt2(label : LibC::Char*, v : LibC::Int*, v_min : LibC::Int, v_max : LibC::Int, format : LibC::Char*) : Bool
+  fun igSliderInt3(label : LibC::Char*, v : LibC::Int*, v_min : LibC::Int, v_max : LibC::Int, format : LibC::Char*) : Bool
+  fun igSliderInt4(label : LibC::Char*, v : LibC::Int*, v_min : LibC::Int, v_max : LibC::Int, format : LibC::Char*) : Bool
   fun igSliderScalar(label : LibC::Char*, data_type : ImGui::ImGuiDataType, p_data : Void*, p_min : Void*, p_max : Void*, format : LibC::Char*, power : LibC::Float) : Bool
   fun igSliderScalarN(label : LibC::Char*, data_type : ImGui::ImGuiDataType, p_data : Void*, components : LibC::Int, p_min : Void*, p_max : Void*, format : LibC::Char*, power : LibC::Float) : Bool
   fun igSmallButton(label : LibC::Char*) : Bool
