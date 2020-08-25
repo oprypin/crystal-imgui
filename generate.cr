@@ -326,7 +326,7 @@ class COverload
           next
         end
         default = self.defaults[arg.name]?.try do |default| default
-          .gsub(/\b([0-9.]+)f\b/, "\\1")
+          .gsub(/\b([0-9.]+)f\b(?!")/, "\\1")
           .gsub(/\bImVec2\(/, "ImVec2.new(")
           .gsub("(ImU32)", "UInt32.new")
           .gsub("((void*)0)", "nil")
@@ -356,7 +356,7 @@ class COverload
           if arg_i - 1 == as_datatype || self.name(Context::Obj).ends_with?("n")
             typ += "*"
           else
-            callarg = "pointerof(#{callarg})"
+            callarg = "#{callarg} && (#{callarg}_ = #{callarg}; pointerof(#{callarg}_))"
           end
 #           callarg += ".as(Void*)"
         end
@@ -385,7 +385,7 @@ class COverload
           arg.type.name(Context::Obj).ends_with?("*") && (arg.name.split("_")[0].in?("p", "v") || !overload.defaults[arg.name]?) && overload.ret.try(&.c_name) == "bool"
         end
       end
-      yield %(  def #{"self. " if !inside_class}#{self.name(ctx)}#{"_" if any_outputter}(#{args.join(", ")}) : #{ret_s || "Void"})
+      yield %(  def #{"self." if !inside_class}#{self.name(ctx)}#{"_" if any_outputter}(#{args.join(", ")}) : #{ret_s || "Void"})
       call = %(    LibImGui.#{self.name(Context::Lib)}(#{call_args.join(", ")}))
       outp2 = convert_returns(outp, rets)
       call = %(    result = #{call}) if outp.first? == "result" && outp2 != ["result"]
@@ -591,7 +591,7 @@ class CStruct
     !%w[ImVector ImVec2 ImVec4 ImColor ImDrawVert ImFontGlyph ImGuiTextRange].includes?(self.name)
   end
   def direct_class? : Bool
-    class? && !%w[ImDrawCmd ImDrawData ImDrawList ImGuiIO].includes?(self.name)
+    class? && !%w[ImDrawCmd ImDrawData ImDrawList ImGuiIO ImGuiStyle ImGuiPayload].includes?(self.name)
   end
 end
 

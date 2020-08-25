@@ -2126,71 +2126,71 @@ module ImGui
     end
   end
 
-  class ImGuiPayload
-    include DirectClassType(LibImGui::ImGuiPayload)
+  struct ImGuiPayload
+    include StructClassType(LibImGui::ImGuiPayload)
 
     def data : Void*
-      @this.data
+      @this.value.data
     end
 
     def data=(data : Void*)
-      @this.data = data
+      @this.value.data = data
     end
 
     def data_size : Int32
-      @this.data_size
+      @this.value.data_size
     end
 
     def data_size=(data_size : Int32)
-      @this.data_size = data_size
+      @this.value.data_size = data_size
     end
 
     def source_id : ImGuiID
-      @this.source_id
+      @this.value.source_id
     end
 
     def source_id=(source_id : ImGuiID)
-      @this.source_id = source_id
+      @this.value.source_id = source_id
     end
 
     def source_parent_id : ImGuiID
-      @this.source_parent_id
+      @this.value.source_parent_id
     end
 
     def source_parent_id=(source_parent_id : ImGuiID)
-      @this.source_parent_id = source_parent_id
+      @this.value.source_parent_id = source_parent_id
     end
 
     def data_frame_count : Int32
-      @this.data_frame_count
+      @this.value.data_frame_count
     end
 
     def data_frame_count=(data_frame_count : Int32)
-      @this.data_frame_count = data_frame_count
+      @this.value.data_frame_count = data_frame_count
     end
 
     def data_type : LibC::Char*
-      @this.data_type.to_slice
+      @this.value.data_type.to_slice
     end
 
     def data_type=(data_type : LibC::Char*)
-      @this.data_type = data_type
+      @this.value.data_type = data_type
     end
 
     def preview : Bool
-      @this.preview
+      @this.value.preview
     end
 
     def preview=(preview : Bool)
-      @this.preview = preview
+      @this.value.preview = preview
     end
 
     def delivery : Bool
-      @this.delivery
+      @this.value.delivery
     end
 
     def delivery=(delivery : Bool)
-      @this.delivery = delivery
+      @this.value.delivery = delivery
     end
 
     def clear : Void
@@ -2330,303 +2330,303 @@ module ImGui
 
   alias ImGuiStoragePair = LibImGui::ImGuiStoragePair
 
-  class ImGuiStyle
-    include DirectClassType(LibImGui::ImGuiStyle)
+  struct ImGuiStyle
+    include StructClassType(LibImGui::ImGuiStyle)
 
     def alpha : Float32
-      @this.alpha
+      @this.value.alpha
     end
 
     def alpha=(alpha : Float32)
-      @this.alpha = alpha
+      @this.value.alpha = alpha
     end
 
     def window_padding : ImVec2
-      @this.window_padding
+      @this.value.window_padding
     end
 
     def window_padding=(window_padding : ImVec2)
-      @this.window_padding = window_padding
+      @this.value.window_padding = window_padding
     end
 
     def window_rounding : Float32
-      @this.window_rounding
+      @this.value.window_rounding
     end
 
     def window_rounding=(window_rounding : Float32)
-      @this.window_rounding = window_rounding
+      @this.value.window_rounding = window_rounding
     end
 
     def window_border_size : Float32
-      @this.window_border_size
+      @this.value.window_border_size
     end
 
     def window_border_size=(window_border_size : Float32)
-      @this.window_border_size = window_border_size
+      @this.value.window_border_size = window_border_size
     end
 
     def window_min_size : ImVec2
-      @this.window_min_size
+      @this.value.window_min_size
     end
 
     def window_min_size=(window_min_size : ImVec2)
-      @this.window_min_size = window_min_size
+      @this.value.window_min_size = window_min_size
     end
 
     def window_title_align : ImVec2
-      @this.window_title_align
+      @this.value.window_title_align
     end
 
     def window_title_align=(window_title_align : ImVec2)
-      @this.window_title_align = window_title_align
+      @this.value.window_title_align = window_title_align
     end
 
     def window_menu_button_position : ImGuiDir
-      @this.window_menu_button_position
+      @this.value.window_menu_button_position
     end
 
     def window_menu_button_position=(window_menu_button_position : ImGuiDir)
-      @this.window_menu_button_position = window_menu_button_position
+      @this.value.window_menu_button_position = window_menu_button_position
     end
 
     def child_rounding : Float32
-      @this.child_rounding
+      @this.value.child_rounding
     end
 
     def child_rounding=(child_rounding : Float32)
-      @this.child_rounding = child_rounding
+      @this.value.child_rounding = child_rounding
     end
 
     def child_border_size : Float32
-      @this.child_border_size
+      @this.value.child_border_size
     end
 
     def child_border_size=(child_border_size : Float32)
-      @this.child_border_size = child_border_size
+      @this.value.child_border_size = child_border_size
     end
 
     def popup_rounding : Float32
-      @this.popup_rounding
+      @this.value.popup_rounding
     end
 
     def popup_rounding=(popup_rounding : Float32)
-      @this.popup_rounding = popup_rounding
+      @this.value.popup_rounding = popup_rounding
     end
 
     def popup_border_size : Float32
-      @this.popup_border_size
+      @this.value.popup_border_size
     end
 
     def popup_border_size=(popup_border_size : Float32)
-      @this.popup_border_size = popup_border_size
+      @this.value.popup_border_size = popup_border_size
     end
 
     def frame_padding : ImVec2
-      @this.frame_padding
+      @this.value.frame_padding
     end
 
     def frame_padding=(frame_padding : ImVec2)
-      @this.frame_padding = frame_padding
+      @this.value.frame_padding = frame_padding
     end
 
     def frame_rounding : Float32
-      @this.frame_rounding
+      @this.value.frame_rounding
     end
 
     def frame_rounding=(frame_rounding : Float32)
-      @this.frame_rounding = frame_rounding
+      @this.value.frame_rounding = frame_rounding
     end
 
     def frame_border_size : Float32
-      @this.frame_border_size
+      @this.value.frame_border_size
     end
 
     def frame_border_size=(frame_border_size : Float32)
-      @this.frame_border_size = frame_border_size
+      @this.value.frame_border_size = frame_border_size
     end
 
     def item_spacing : ImVec2
-      @this.item_spacing
+      @this.value.item_spacing
     end
 
     def item_spacing=(item_spacing : ImVec2)
-      @this.item_spacing = item_spacing
+      @this.value.item_spacing = item_spacing
     end
 
     def item_inner_spacing : ImVec2
-      @this.item_inner_spacing
+      @this.value.item_inner_spacing
     end
 
     def item_inner_spacing=(item_inner_spacing : ImVec2)
-      @this.item_inner_spacing = item_inner_spacing
+      @this.value.item_inner_spacing = item_inner_spacing
     end
 
     def touch_extra_padding : ImVec2
-      @this.touch_extra_padding
+      @this.value.touch_extra_padding
     end
 
     def touch_extra_padding=(touch_extra_padding : ImVec2)
-      @this.touch_extra_padding = touch_extra_padding
+      @this.value.touch_extra_padding = touch_extra_padding
     end
 
     def indent_spacing : Float32
-      @this.indent_spacing
+      @this.value.indent_spacing
     end
 
     def indent_spacing=(indent_spacing : Float32)
-      @this.indent_spacing = indent_spacing
+      @this.value.indent_spacing = indent_spacing
     end
 
     def columns_min_spacing : Float32
-      @this.columns_min_spacing
+      @this.value.columns_min_spacing
     end
 
     def columns_min_spacing=(columns_min_spacing : Float32)
-      @this.columns_min_spacing = columns_min_spacing
+      @this.value.columns_min_spacing = columns_min_spacing
     end
 
     def scrollbar_size : Float32
-      @this.scrollbar_size
+      @this.value.scrollbar_size
     end
 
     def scrollbar_size=(scrollbar_size : Float32)
-      @this.scrollbar_size = scrollbar_size
+      @this.value.scrollbar_size = scrollbar_size
     end
 
     def scrollbar_rounding : Float32
-      @this.scrollbar_rounding
+      @this.value.scrollbar_rounding
     end
 
     def scrollbar_rounding=(scrollbar_rounding : Float32)
-      @this.scrollbar_rounding = scrollbar_rounding
+      @this.value.scrollbar_rounding = scrollbar_rounding
     end
 
     def grab_min_size : Float32
-      @this.grab_min_size
+      @this.value.grab_min_size
     end
 
     def grab_min_size=(grab_min_size : Float32)
-      @this.grab_min_size = grab_min_size
+      @this.value.grab_min_size = grab_min_size
     end
 
     def grab_rounding : Float32
-      @this.grab_rounding
+      @this.value.grab_rounding
     end
 
     def grab_rounding=(grab_rounding : Float32)
-      @this.grab_rounding = grab_rounding
+      @this.value.grab_rounding = grab_rounding
     end
 
     def tab_rounding : Float32
-      @this.tab_rounding
+      @this.value.tab_rounding
     end
 
     def tab_rounding=(tab_rounding : Float32)
-      @this.tab_rounding = tab_rounding
+      @this.value.tab_rounding = tab_rounding
     end
 
     def tab_border_size : Float32
-      @this.tab_border_size
+      @this.value.tab_border_size
     end
 
     def tab_border_size=(tab_border_size : Float32)
-      @this.tab_border_size = tab_border_size
+      @this.value.tab_border_size = tab_border_size
     end
 
     def tab_min_width_for_unselected_close_button : Float32
-      @this.tab_min_width_for_unselected_close_button
+      @this.value.tab_min_width_for_unselected_close_button
     end
 
     def tab_min_width_for_unselected_close_button=(tab_min_width_for_unselected_close_button : Float32)
-      @this.tab_min_width_for_unselected_close_button = tab_min_width_for_unselected_close_button
+      @this.value.tab_min_width_for_unselected_close_button = tab_min_width_for_unselected_close_button
     end
 
     def color_button_position : ImGuiDir
-      @this.color_button_position
+      @this.value.color_button_position
     end
 
     def color_button_position=(color_button_position : ImGuiDir)
-      @this.color_button_position = color_button_position
+      @this.value.color_button_position = color_button_position
     end
 
     def button_text_align : ImVec2
-      @this.button_text_align
+      @this.value.button_text_align
     end
 
     def button_text_align=(button_text_align : ImVec2)
-      @this.button_text_align = button_text_align
+      @this.value.button_text_align = button_text_align
     end
 
     def selectable_text_align : ImVec2
-      @this.selectable_text_align
+      @this.value.selectable_text_align
     end
 
     def selectable_text_align=(selectable_text_align : ImVec2)
-      @this.selectable_text_align = selectable_text_align
+      @this.value.selectable_text_align = selectable_text_align
     end
 
     def display_window_padding : ImVec2
-      @this.display_window_padding
+      @this.value.display_window_padding
     end
 
     def display_window_padding=(display_window_padding : ImVec2)
-      @this.display_window_padding = display_window_padding
+      @this.value.display_window_padding = display_window_padding
     end
 
     def display_safe_area_padding : ImVec2
-      @this.display_safe_area_padding
+      @this.value.display_safe_area_padding
     end
 
     def display_safe_area_padding=(display_safe_area_padding : ImVec2)
-      @this.display_safe_area_padding = display_safe_area_padding
+      @this.value.display_safe_area_padding = display_safe_area_padding
     end
 
     def mouse_cursor_scale : Float32
-      @this.mouse_cursor_scale
+      @this.value.mouse_cursor_scale
     end
 
     def mouse_cursor_scale=(mouse_cursor_scale : Float32)
-      @this.mouse_cursor_scale = mouse_cursor_scale
+      @this.value.mouse_cursor_scale = mouse_cursor_scale
     end
 
     def anti_aliased_lines : Bool
-      @this.anti_aliased_lines
+      @this.value.anti_aliased_lines
     end
 
     def anti_aliased_lines=(anti_aliased_lines : Bool)
-      @this.anti_aliased_lines = anti_aliased_lines
+      @this.value.anti_aliased_lines = anti_aliased_lines
     end
 
     def anti_aliased_fill : Bool
-      @this.anti_aliased_fill
+      @this.value.anti_aliased_fill
     end
 
     def anti_aliased_fill=(anti_aliased_fill : Bool)
-      @this.anti_aliased_fill = anti_aliased_fill
+      @this.value.anti_aliased_fill = anti_aliased_fill
     end
 
     def curve_tessellation_tol : Float32
-      @this.curve_tessellation_tol
+      @this.value.curve_tessellation_tol
     end
 
     def curve_tessellation_tol=(curve_tessellation_tol : Float32)
-      @this.curve_tessellation_tol = curve_tessellation_tol
+      @this.value.curve_tessellation_tol = curve_tessellation_tol
     end
 
     def circle_segment_max_error : Float32
-      @this.circle_segment_max_error
+      @this.value.circle_segment_max_error
     end
 
     def circle_segment_max_error=(circle_segment_max_error : Float32)
-      @this.circle_segment_max_error = circle_segment_max_error
+      @this.value.circle_segment_max_error = circle_segment_max_error
     end
 
     def colors : ImVec4*
-      @this.colors.to_slice
+      @this.value.colors.to_slice
     end
 
     def colors=(colors : ImVec4*)
-      @this.colors = colors
+      @this.value.colors = colors
     end
 
     def self.new : ImGuiStyle
@@ -3056,7 +3056,7 @@ module ImGui
     LibImGui.igDestroyContext(ctx)
   end
 
-  def self.drag_float_(label : String, v : Float32*, v_speed : Float32 = 1.0, v_min : Float32 = 0.0, v_max : Float32 = 0.0, format : String = "%.3", power : Float32 = 1.0) : Bool
+  def self.drag_float_(label : String, v : Float32*, v_speed : Float32 = 1.0, v_min : Float32 = 0.0, v_max : Float32 = 0.0, format : String = "%.3f", power : Float32 = 1.0) : Bool
     LibImGui.igDragFloat(label, v, v_speed, v_min, v_max, format, power)
   end
 
@@ -3064,7 +3064,7 @@ module ImGui
     ::ImGui._pointer_wrapper("::ImGui.drag_float_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
   end
 
-  def self.drag_float2_(label : String, v : ImVec2* | Float32*, v_speed : Float32 = 1.0, v_min : Float32 = 0.0, v_max : Float32 = 0.0, format : String = "%.3", power : Float32 = 1.0) : Bool
+  def self.drag_float2_(label : String, v : ImVec2* | Float32*, v_speed : Float32 = 1.0, v_min : Float32 = 0.0, v_max : Float32 = 0.0, format : String = "%.3f", power : Float32 = 1.0) : Bool
     LibImGui.igDragFloat2(label, v.as(Float32*), v_speed, v_min, v_max, format, power)
   end
 
@@ -3072,7 +3072,7 @@ module ImGui
     ::ImGui._pointer_wrapper("::ImGui.drag_float2_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
   end
 
-  def self.drag_float3_(label : String, v : Float32*, v_speed : Float32 = 1.0, v_min : Float32 = 0.0, v_max : Float32 = 0.0, format : String = "%.3", power : Float32 = 1.0) : Bool
+  def self.drag_float3_(label : String, v : Float32*, v_speed : Float32 = 1.0, v_min : Float32 = 0.0, v_max : Float32 = 0.0, format : String = "%.3f", power : Float32 = 1.0) : Bool
     LibImGui.igDragFloat3(label, v, v_speed, v_min, v_max, format, power)
   end
 
@@ -3080,7 +3080,7 @@ module ImGui
     ::ImGui._pointer_wrapper("::ImGui.drag_float3_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
   end
 
-  def self.drag_float4_(label : String, v : ImVec4* | Float32*, v_speed : Float32 = 1.0, v_min : Float32 = 0.0, v_max : Float32 = 0.0, format : String = "%.3", power : Float32 = 1.0) : Bool
+  def self.drag_float4_(label : String, v : ImVec4* | Float32*, v_speed : Float32 = 1.0, v_min : Float32 = 0.0, v_max : Float32 = 0.0, format : String = "%.3f", power : Float32 = 1.0) : Bool
     LibImGui.igDragFloat4(label, v.as(Float32*), v_speed, v_min, v_max, format, power)
   end
 
@@ -3088,7 +3088,7 @@ module ImGui
     ::ImGui._pointer_wrapper("::ImGui.drag_float4_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
   end
 
-  def self.drag_float_range2_(label : String, v_current_min : Float32*, v_current_max : Float32*, v_speed : Float32 = 1.0, v_min : Float32 = 0.0, v_max : Float32 = 0.0, format : String = "%.3", format_max : String? = nil, power : Float32 = 1.0) : Bool
+  def self.drag_float_range2_(label : String, v_current_min : Float32*, v_current_max : Float32*, v_speed : Float32 = 1.0, v_min : Float32 = 0.0, v_max : Float32 = 0.0, format : String = "%.3f", format_max : String? = nil, power : Float32 = 1.0) : Bool
     LibImGui.igDragFloatRange2(label, v_current_min, v_current_max, v_speed, v_min, v_max, format, format_max, power)
   end
 
@@ -3137,8 +3137,8 @@ module ImGui
   end
 
   {% for k, t in {S8: Int8, U8: UInt8, S16: Int16, U16: UInt16, S32: Int32, U32: UInt32, S64: Int64, U64: UInt64, Float: Float32, Double: Float64} %}
-  def self. drag_scalar_(label : String, p_data : {{t}}*, v_speed : Float32, p_min : {{t}}? = nil, p_max : {{t}}? = nil, format : String? = nil, power : Float32 = 1.0) : Bool
-    LibImGui.igDragScalar(label, ImGuiDataType::{{k.id}}, p_data, v_speed, pointerof(p_min), pointerof(p_max), format, power)
+  def self.drag_scalar_(label : String, p_data : {{t}}*, v_speed : Float32, p_min : {{t}}? = nil, p_max : {{t}}? = nil, format : String? = nil, power : Float32 = 1.0) : Bool
+    LibImGui.igDragScalar(label, ImGuiDataType::{{k.id}}, p_data, v_speed, p_min && (p_min_ = p_min; pointerof(p_min_)), p_max && (p_max_ = p_max; pointerof(p_max_)), format, power)
   end
   {% end %}
 
@@ -3147,7 +3147,7 @@ module ImGui
   end
 
   {% for k, t in {S8: Int8, U8: UInt8, S16: Int16, U16: UInt16, S32: Int32, U32: UInt32, S64: Int64, U64: UInt64, Float: Float32, Double: Float64} %}
-  def self. drag_scalar_n_(label : String, p_data : {{t}}*, components : Int32, v_speed : Float32, p_min : {{t}}* = Pointer({{t}}).null, p_max : {{t}}* = Pointer({{t}}).null, format : String? = nil, power : Float32 = 1.0) : Bool
+  def self.drag_scalar_n_(label : String, p_data : {{t}}*, components : Int32, v_speed : Float32, p_min : {{t}}* = Pointer({{t}}).null, p_max : {{t}}* = Pointer({{t}}).null, format : String? = nil, power : Float32 = 1.0) : Bool
     LibImGui.igDragScalarN(label, ImGuiDataType::{{k.id}}, p_data, components, v_speed, p_min, p_max, format, power)
   end
   {% end %}
@@ -3507,7 +3507,7 @@ module ImGui
     LibImGui.igIndent(indent_w)
   end
 
-  def self.input_double_(label : String, v : Float64*, step : Float64 = 0.0, step_fast : Float64 = 0.0, format : String = "%.6", flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0)) : Bool
+  def self.input_double_(label : String, v : Float64*, step : Float64 = 0.0, step_fast : Float64 = 0.0, format : String = "%.6f", flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0)) : Bool
     LibImGui.igInputDouble(label, v, step, step_fast, format, flags)
   end
 
@@ -3515,7 +3515,7 @@ module ImGui
     ::ImGui._pointer_wrapper("::ImGui.input_double_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
   end
 
-  def self.input_float_(label : String, v : Float32*, step : Float32 = 0.0, step_fast : Float32 = 0.0, format : String = "%.3", flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0)) : Bool
+  def self.input_float_(label : String, v : Float32*, step : Float32 = 0.0, step_fast : Float32 = 0.0, format : String = "%.3f", flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0)) : Bool
     LibImGui.igInputFloat(label, v, step, step_fast, format, flags)
   end
 
@@ -3523,7 +3523,7 @@ module ImGui
     ::ImGui._pointer_wrapper("::ImGui.input_float_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
   end
 
-  def self.input_float2_(label : String, v : ImVec2* | Float32*, format : String = "%.3", flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0)) : Bool
+  def self.input_float2_(label : String, v : ImVec2* | Float32*, format : String = "%.3f", flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0)) : Bool
     LibImGui.igInputFloat2(label, v.as(Float32*), format, flags)
   end
 
@@ -3531,7 +3531,7 @@ module ImGui
     ::ImGui._pointer_wrapper("::ImGui.input_float2_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
   end
 
-  def self.input_float3_(label : String, v : Float32*, format : String = "%.3", flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0)) : Bool
+  def self.input_float3_(label : String, v : Float32*, format : String = "%.3f", flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0)) : Bool
     LibImGui.igInputFloat3(label, v, format, flags)
   end
 
@@ -3539,7 +3539,7 @@ module ImGui
     ::ImGui._pointer_wrapper("::ImGui.input_float3_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
   end
 
-  def self.input_float4_(label : String, v : ImVec4* | Float32*, format : String = "%.3", flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0)) : Bool
+  def self.input_float4_(label : String, v : ImVec4* | Float32*, format : String = "%.3f", flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0)) : Bool
     LibImGui.igInputFloat4(label, v.as(Float32*), format, flags)
   end
 
@@ -3580,8 +3580,8 @@ module ImGui
   end
 
   {% for k, t in {S8: Int8, U8: UInt8, S16: Int16, U16: UInt16, S32: Int32, U32: UInt32, S64: Int64, U64: UInt64, Float: Float32, Double: Float64} %}
-  def self. input_scalar_(label : String, p_data : {{t}}*, p_step : {{t}}? = nil, p_step_fast : {{t}}? = nil, format : String? = nil, flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0)) : Bool
-    LibImGui.igInputScalar(label, ImGuiDataType::{{k.id}}, p_data, pointerof(p_step), pointerof(p_step_fast), format, flags)
+  def self.input_scalar_(label : String, p_data : {{t}}*, p_step : {{t}}? = nil, p_step_fast : {{t}}? = nil, format : String? = nil, flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0)) : Bool
+    LibImGui.igInputScalar(label, ImGuiDataType::{{k.id}}, p_data, p_step && (p_step_ = p_step; pointerof(p_step_)), p_step_fast && (p_step_fast_ = p_step_fast; pointerof(p_step_fast_)), format, flags)
   end
   {% end %}
 
@@ -3590,7 +3590,7 @@ module ImGui
   end
 
   {% for k, t in {S8: Int8, U8: UInt8, S16: Int16, U16: UInt16, S32: Int32, U32: UInt32, S64: Int64, U64: UInt64, Float: Float32, Double: Float64} %}
-  def self. input_scalar_n_(label : String, p_data : {{t}}*, components : Int32, p_step : {{t}}* = Pointer({{t}}).null, p_step_fast : {{t}}* = Pointer({{t}}).null, format : String? = nil, flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0)) : Bool
+  def self.input_scalar_n_(label : String, p_data : {{t}}*, components : Int32, p_step : {{t}}* = Pointer({{t}}).null, p_step_fast : {{t}}* = Pointer({{t}}).null, format : String? = nil, flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0)) : Bool
     LibImGui.igInputScalarN(label, ImGuiDataType::{{k.id}}, p_data, components, p_step, p_step_fast, format, flags)
   end
   {% end %}
@@ -4224,7 +4224,7 @@ module ImGui
     ::ImGui._pointer_wrapper("::ImGui.slider_angle_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
   end
 
-  def self.slider_float_(label : String, v : Float32*, v_min : Float32, v_max : Float32, format : String = "%.3", power : Float32 = 1.0) : Bool
+  def self.slider_float_(label : String, v : Float32*, v_min : Float32, v_max : Float32, format : String = "%.3f", power : Float32 = 1.0) : Bool
     LibImGui.igSliderFloat(label, v, v_min, v_max, format, power)
   end
 
@@ -4232,7 +4232,7 @@ module ImGui
     ::ImGui._pointer_wrapper("::ImGui.slider_float_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
   end
 
-  def self.slider_float2_(label : String, v : ImVec2* | Float32*, v_min : Float32, v_max : Float32, format : String = "%.3", power : Float32 = 1.0) : Bool
+  def self.slider_float2_(label : String, v : ImVec2* | Float32*, v_min : Float32, v_max : Float32, format : String = "%.3f", power : Float32 = 1.0) : Bool
     LibImGui.igSliderFloat2(label, v.as(Float32*), v_min, v_max, format, power)
   end
 
@@ -4240,7 +4240,7 @@ module ImGui
     ::ImGui._pointer_wrapper("::ImGui.slider_float2_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
   end
 
-  def self.slider_float3_(label : String, v : Float32*, v_min : Float32, v_max : Float32, format : String = "%.3", power : Float32 = 1.0) : Bool
+  def self.slider_float3_(label : String, v : Float32*, v_min : Float32, v_max : Float32, format : String = "%.3f", power : Float32 = 1.0) : Bool
     LibImGui.igSliderFloat3(label, v, v_min, v_max, format, power)
   end
 
@@ -4248,7 +4248,7 @@ module ImGui
     ::ImGui._pointer_wrapper("::ImGui.slider_float3_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
   end
 
-  def self.slider_float4_(label : String, v : ImVec4* | Float32*, v_min : Float32, v_max : Float32, format : String = "%.3", power : Float32 = 1.0) : Bool
+  def self.slider_float4_(label : String, v : ImVec4* | Float32*, v_min : Float32, v_max : Float32, format : String = "%.3f", power : Float32 = 1.0) : Bool
     LibImGui.igSliderFloat4(label, v.as(Float32*), v_min, v_max, format, power)
   end
 
@@ -4289,8 +4289,8 @@ module ImGui
   end
 
   {% for k, t in {S8: Int8, U8: UInt8, S16: Int16, U16: UInt16, S32: Int32, U32: UInt32, S64: Int64, U64: UInt64, Float: Float32, Double: Float64} %}
-  def self. slider_scalar_(label : String, p_data : {{t}}*, p_min : {{t}}, p_max : {{t}}, format : String? = nil, power : Float32 = 1.0) : Bool
-    LibImGui.igSliderScalar(label, ImGuiDataType::{{k.id}}, p_data, pointerof(p_min), pointerof(p_max), format, power)
+  def self.slider_scalar_(label : String, p_data : {{t}}*, p_min : {{t}}, p_max : {{t}}, format : String? = nil, power : Float32 = 1.0) : Bool
+    LibImGui.igSliderScalar(label, ImGuiDataType::{{k.id}}, p_data, p_min && (p_min_ = p_min; pointerof(p_min_)), p_max && (p_max_ = p_max; pointerof(p_max_)), format, power)
   end
   {% end %}
 
@@ -4299,7 +4299,7 @@ module ImGui
   end
 
   {% for k, t in {S8: Int8, U8: UInt8, S16: Int16, U16: UInt16, S32: Int32, U32: UInt32, S64: Int64, U64: UInt64, Float: Float32, Double: Float64} %}
-  def self. slider_scalar_n_(label : String, p_data : {{t}}*, components : Int32, p_min : {{t}}*, p_max : {{t}}*, format : String? = nil, power : Float32 = 1.0) : Bool
+  def self.slider_scalar_n_(label : String, p_data : {{t}}*, components : Int32, p_min : {{t}}*, p_max : {{t}}*, format : String? = nil, power : Float32 = 1.0) : Bool
     LibImGui.igSliderScalarN(label, ImGuiDataType::{{k.id}}, p_data, components, p_min, p_max, format, power)
   end
   {% end %}
@@ -4396,7 +4396,7 @@ module ImGui
     LibImGui.igUnindent(indent_w)
   end
 
-  def self.v_slider_float_(label : String, size : ImVec2, v : Float32*, v_min : Float32, v_max : Float32, format : String = "%.3", power : Float32 = 1.0) : Bool
+  def self.v_slider_float_(label : String, size : ImVec2, v : Float32*, v_min : Float32, v_max : Float32, format : String = "%.3f", power : Float32 = 1.0) : Bool
     LibImGui.igVSliderFloat(label, size, v, v_min, v_max, format, power)
   end
 
@@ -4413,8 +4413,8 @@ module ImGui
   end
 
   {% for k, t in {S8: Int8, U8: UInt8, S16: Int16, U16: UInt16, S32: Int32, U32: UInt32, S64: Int64, U64: UInt64, Float: Float32, Double: Float64} %}
-  def self. v_slider_scalar_(label : String, size : ImVec2, p_data : {{t}}*, p_min : {{t}}, p_max : {{t}}, format : String? = nil, power : Float32 = 1.0) : Bool
-    LibImGui.igVSliderScalar(label, size, ImGuiDataType::{{k.id}}, p_data, pointerof(p_min), pointerof(p_max), format, power)
+  def self.v_slider_scalar_(label : String, size : ImVec2, p_data : {{t}}*, p_min : {{t}}, p_max : {{t}}, format : String? = nil, power : Float32 = 1.0) : Bool
+    LibImGui.igVSliderScalar(label, size, ImGuiDataType::{{k.id}}, p_data, p_min && (p_min_ = p_min; pointerof(p_min_)), p_max && (p_max_ = p_max; pointerof(p_max_)), format, power)
   end
   {% end %}
 

@@ -22,6 +22,7 @@ module ImGui
 
       # :nodoc:
       def self.new(ptr : T*) : self
+        ptr || raise "Null pointer passed to #{{{@type}}}.new"
         (ptr.as(Void*) - offsetof(self, @this)).as(Int32*).tap do |ptr|
           if ptr.value.in?(SENTINEL, TYPEID)
             ptr.value = TYPEID
@@ -43,6 +44,7 @@ module ImGui
 
       # :nodoc:
       def initialize(@this : T*)
+        this || raise "Null pointer passed to #{{{@type}}}.new"
       end
 
       def to_unsafe : T*
@@ -193,11 +195,26 @@ module ImGui
   end
 
   def self.col32(r : Int, g : Int, b : Int, a : Int = 255) : UInt32
-    (a.to_u32 << 24) | (b.to_u32 << 16) | (g.to_u32 << 8) | (r.to_u32 << 0)
+    (r.to_u32 << 0) | (g.to_u32 << 8) | (b.to_u32 << 16) | (a.to_u32 << 24)
   end
 
-  def self.col32(col : ImVec4) : UInt32
-    color_convert_float4_to_u32(col)
+  def self.col32(color : ImVec4) : UInt32
+    color_convert_float4_to_u32(color)
+  end
+
+  def self.color(r : Int, g : Int, b : Int, a : Int = 255) : ImVec4
+    vec4(r / 255f32, g / 255f32, b / 255f32, a / 255f32)
+  end
+
+  def self.color(col32 : UInt32) : ImVec4
+    color_convert_u32_to_float4(col32)
+  end
+
+  def self.get_rgba(color : ImVec4) : {UInt8, UInt8, UInt8, UInt8}
+    {(color.x * 255).round.to_u8,
+     (color.y * 255).round.to_u8,
+     (color.z * 255).round.to_u8,
+     (color.w * 255).round.to_u8}
   end
 
   def self.rgb(r : Number, g : Number, b : Number, a : Number = 1.0) : ImVec4
