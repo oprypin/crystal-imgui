@@ -14,10 +14,11 @@ module ImGui
 
   @[Flags]
   enum ImDrawListFlags
-    None             = 0
-    AntiAliasedLines = 1 << 0
-    AntiAliasedFill  = 1 << 1
-    AllowVtxOffset   = 1 << 2
+    None                   = 0
+    AntiAliasedLines       = 1 << 0
+    AntiAliasedLinesUseTex = 1 << 1
+    AntiAliasedFill        = 1 << 2
+    AllowVtxOffset         = 1 << 3
   end
 
   @[Flags]
@@ -25,6 +26,7 @@ module ImGui
     None               = 0
     NoPowerOfTwoHeight = 1 << 0
     NoMouseCursors     = 1 << 1
+    NoBakedLines       = 1 << 2
   end
 
   enum ImGuiAxis
@@ -44,31 +46,12 @@ module ImGui
 
   @[Flags]
   enum ImGuiButtonFlags
-    None                          = 0
-    Repeat                        = 1 << 0
-    PressedOnClick                = 1 << 1
-    PressedOnClickRelease         = 1 << 2
-    PressedOnClickReleaseAnywhere = 1 << 3
-    PressedOnRelease              = 1 << 4
-    PressedOnDoubleClick          = 1 << 5
-    PressedOnDragDropHold         = 1 << 6
-    FlattenChildren               = 1 << 7
-    AllowItemOverlap              = 1 << 8
-    DontClosePopups               = 1 << 9
-    Disabled                      = 1 << 10
-    AlignTextBaseLine             = 1 << 11
-    NoKeyModifiers                = 1 << 12
-    NoHoldingActiveId             = 1 << 13
-    NoNavFocus                    = 1 << 14
-    NoHoveredOnFocus              = 1 << 15
-    MouseButtonLeft               = 1 << 16
-    MouseButtonRight              = 1 << 17
-    MouseButtonMiddle             = 1 << 18
-    MouseButtonMask               = MouseButtonLeft | MouseButtonRight | MouseButtonMiddle
-    MouseButtonShift              = 16
-    MouseButtonDefault            = MouseButtonLeft
-    PressedOnMask                 = PressedOnClick | PressedOnClickRelease | PressedOnClickReleaseAnywhere | PressedOnRelease | PressedOnDoubleClick | PressedOnDragDropHold
-    PressedOnDefault              = PressedOnClickRelease
+    None               = 0
+    MouseButtonLeft    = 1 << 0
+    MouseButtonRight   = 1 << 1
+    MouseButtonMiddle  = 1 << 2
+    MouseButtonMask    = MouseButtonLeft | MouseButtonRight | MouseButtonMiddle
+    MouseButtonDefault = MouseButtonLeft
   end
 
   enum ImGuiCol
@@ -236,12 +219,6 @@ module ImGui
   end
 
   @[Flags]
-  enum ImGuiDragFlags
-    None     = 0
-    Vertical = 1 << 0
-  end
-
-  @[Flags]
   enum ImGuiFocusedFlags
     None                = 0
     ChildWindows        = 1 << 0
@@ -317,6 +294,7 @@ module ImGui
     NoNavDefaultFocus        = 1 << 4
     SelectableDontClosePopup = 1 << 5
     MixedValue               = 1 << 6
+    ReadOnly                 = 1 << 7
     Default                  = 0
   end
 
@@ -528,8 +506,12 @@ module ImGui
 
   @[Flags]
   enum ImGuiSliderFlags
-    None     = 0
-    Vertical = 1 << 0
+    None            = 0
+    ClampOnInput    = 1 << 4
+    Logarithmic     = 1 << 5
+    NoRoundToFormat = 1 << 6
+    NoInput         = 1 << 7
+    InvalidMask     = 0x7000000F
   end
 
   enum ImGuiStyleVar

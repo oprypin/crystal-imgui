@@ -240,11 +240,11 @@ module ImGui
       LibImGui.ImDrawList_AddCallback(self, callback, callback_data)
     end
 
-    def add_circle(center : ImVec2, radius : Float32, col : UInt32, num_segments : Int32 = 12, thickness : Float32 = 1.0) : Void
+    def add_circle(center : ImVec2, radius : Float32, col : UInt32, num_segments : Int32 = 0, thickness : Float32 = 1.0) : Void
       LibImGui.ImDrawList_AddCircle(self, center, radius, col, num_segments, thickness)
     end
 
-    def add_circle_filled(center : ImVec2, radius : Float32, col : UInt32, num_segments : Int32 = 12) : Void
+    def add_circle_filled(center : ImVec2, radius : Float32, col : UInt32, num_segments : Int32 = 0) : Void
       LibImGui.ImDrawList_AddCircleFilled(self, center, radius, col, num_segments)
     end
 
@@ -623,8 +623,8 @@ module ImGui
       @this.used4k_pages_map = used4k_pages_map
     end
 
-    def add_glyph(c : ImWchar, x0 : Float32, y0 : Float32, x1 : Float32, y1 : Float32, u0 : Float32, v0 : Float32, u1 : Float32, v1 : Float32, advance_x : Float32) : Void
-      LibImGui.ImFont_AddGlyph(self, c, x0, y0, x1, y1, u0, v0, u1, v1, advance_x)
+    def add_glyph(src_cfg : ImFontConfig, c : ImWchar, x0 : Float32, y0 : Float32, x1 : Float32, y1 : Float32, u0 : Float32, v0 : Float32, u1 : Float32, v1 : Float32, advance_x : Float32) : Void
+      LibImGui.ImFont_AddGlyph(self, src_cfg, c, x0, y0, x1, y1, u0, v0, u1, v1, advance_x)
     end
 
     def add_remap_char(dst : ImWchar, src : ImWchar, overwrite_dst : Bool = true) : Void
@@ -817,12 +817,28 @@ module ImGui
       @this.config_data = config_data
     end
 
-    def custom_rect_ids : Int32*
-      @this.custom_rect_ids.to_slice
+    def tex_uv_lines : ImVec4*
+      @this.tex_uv_lines.to_slice
     end
 
-    def custom_rect_ids=(custom_rect_ids : Int32*)
-      @this.custom_rect_ids = custom_rect_ids
+    def tex_uv_lines=(tex_uv_lines : ImVec4*)
+      @this.tex_uv_lines = tex_uv_lines
+    end
+
+    def pack_id_mouse_cursors : Int32
+      @this.pack_id_mouse_cursors
+    end
+
+    def pack_id_mouse_cursors=(pack_id_mouse_cursors : Int32)
+      @this.pack_id_mouse_cursors = pack_id_mouse_cursors
+    end
+
+    def pack_id_lines : Int32
+      @this.pack_id_lines
+    end
+
+    def pack_id_lines=(pack_id_lines : Int32)
+      @this.pack_id_lines = pack_id_lines
     end
 
     def add_custom_rect_font_glyph(font : ImFont, id : ImWchar, width : Int32, height : Int32, advance_x : Float32, offset : ImVec2 = ImVec2.new(0, 0)) : Int32
@@ -2033,7 +2049,7 @@ module ImGui
   end
 
   alias ImGuiInputTextState = LibImGui::ImGuiInputTextState
-  alias ImGuiItemHoveredDataBackup = LibImGui::ImGuiItemHoveredDataBackup
+  alias ImGuiLastItemDataBackup = LibImGui::ImGuiLastItemDataBackup
 
   class ImGuiListClipper
     include DirectClassType(LibImGui::ImGuiListClipper)
@@ -2517,6 +2533,14 @@ module ImGui
       @this.value.grab_rounding = grab_rounding
     end
 
+    def log_slider_deadzone : Float32
+      @this.value.log_slider_deadzone
+    end
+
+    def log_slider_deadzone=(log_slider_deadzone : Float32)
+      @this.value.log_slider_deadzone = log_slider_deadzone
+    end
+
     def tab_rounding : Float32
       @this.value.tab_rounding
     end
@@ -2595,6 +2619,14 @@ module ImGui
 
     def anti_aliased_lines=(anti_aliased_lines : Bool)
       @this.value.anti_aliased_lines = anti_aliased_lines
+    end
+
+    def anti_aliased_lines_use_tex : Bool
+      @this.value.anti_aliased_lines_use_tex
+    end
+
+    def anti_aliased_lines_use_tex=(anti_aliased_lines_use_tex : Bool)
+      @this.value.anti_aliased_lines_use_tex = anti_aliased_lines_use_tex
     end
 
     def anti_aliased_fill : Bool
@@ -2788,6 +2820,11 @@ module ImGui
       result.value
     end
   end
+
+  alias STB_TexteditState = LibImGui::STB_TexteditState
+  alias StbTexteditRow = LibImGui::StbTexteditRow
+  alias StbUndoRecord = LibImGui::StbUndoRecord
+  alias StbUndoState = LibImGui::StbUndoState
 
   struct ImVector
     include StructType
@@ -3056,80 +3093,80 @@ module ImGui
     LibImGui.igDestroyContext(ctx)
   end
 
-  def self.drag_float_(label : String, v : Float32*, v_speed : Float32 = 1.0, v_min : Float32 = 0.0, v_max : Float32 = 0.0, format : String = "%.3f", power : Float32 = 1.0) : Bool
-    LibImGui.igDragFloat(label, v, v_speed, v_min, v_max, format, power)
+  def self.drag_float_(label : String, v : Float32*, v_speed : Float32 = 1.0, v_min : Float32 = 0.0, v_max : Float32 = 0.0, format : String = "%.3f", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
+    LibImGui.igDragFloat(label, v, v_speed, v_min, v_max, format, flags)
   end
 
   macro drag_float(*args, **kwargs, &block)
     ::ImGui._pointer_wrapper("::ImGui.drag_float_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
   end
 
-  def self.drag_float2_(label : String, v : ImVec2* | Float32*, v_speed : Float32 = 1.0, v_min : Float32 = 0.0, v_max : Float32 = 0.0, format : String = "%.3f", power : Float32 = 1.0) : Bool
-    LibImGui.igDragFloat2(label, v.as(Float32*), v_speed, v_min, v_max, format, power)
+  def self.drag_float2_(label : String, v : ImVec2* | Float32*, v_speed : Float32 = 1.0, v_min : Float32 = 0.0, v_max : Float32 = 0.0, format : String = "%.3f", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
+    LibImGui.igDragFloat2(label, v.as(Float32*), v_speed, v_min, v_max, format, flags)
   end
 
   macro drag_float2(*args, **kwargs, &block)
     ::ImGui._pointer_wrapper("::ImGui.drag_float2_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
   end
 
-  def self.drag_float3_(label : String, v : Float32*, v_speed : Float32 = 1.0, v_min : Float32 = 0.0, v_max : Float32 = 0.0, format : String = "%.3f", power : Float32 = 1.0) : Bool
-    LibImGui.igDragFloat3(label, v, v_speed, v_min, v_max, format, power)
+  def self.drag_float3_(label : String, v : Float32*, v_speed : Float32 = 1.0, v_min : Float32 = 0.0, v_max : Float32 = 0.0, format : String = "%.3f", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
+    LibImGui.igDragFloat3(label, v, v_speed, v_min, v_max, format, flags)
   end
 
   macro drag_float3(*args, **kwargs, &block)
     ::ImGui._pointer_wrapper("::ImGui.drag_float3_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
   end
 
-  def self.drag_float4_(label : String, v : ImVec4* | Float32*, v_speed : Float32 = 1.0, v_min : Float32 = 0.0, v_max : Float32 = 0.0, format : String = "%.3f", power : Float32 = 1.0) : Bool
-    LibImGui.igDragFloat4(label, v.as(Float32*), v_speed, v_min, v_max, format, power)
+  def self.drag_float4_(label : String, v : ImVec4* | Float32*, v_speed : Float32 = 1.0, v_min : Float32 = 0.0, v_max : Float32 = 0.0, format : String = "%.3f", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
+    LibImGui.igDragFloat4(label, v.as(Float32*), v_speed, v_min, v_max, format, flags)
   end
 
   macro drag_float4(*args, **kwargs, &block)
     ::ImGui._pointer_wrapper("::ImGui.drag_float4_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
   end
 
-  def self.drag_float_range2_(label : String, v_current_min : Float32*, v_current_max : Float32*, v_speed : Float32 = 1.0, v_min : Float32 = 0.0, v_max : Float32 = 0.0, format : String = "%.3f", format_max : String? = nil, power : Float32 = 1.0) : Bool
-    LibImGui.igDragFloatRange2(label, v_current_min, v_current_max, v_speed, v_min, v_max, format, format_max, power)
+  def self.drag_float_range2_(label : String, v_current_min : Float32*, v_current_max : Float32*, v_speed : Float32 = 1.0, v_min : Float32 = 0.0, v_max : Float32 = 0.0, format : String = "%.3f", format_max : String? = nil, flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
+    LibImGui.igDragFloatRange2(label, v_current_min, v_current_max, v_speed, v_min, v_max, format, format_max, flags)
   end
 
   macro drag_float_range2(*args, **kwargs, &block)
     ::ImGui._pointer_wrapper("::ImGui.drag_float_range2_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
   end
 
-  def self.drag_int_(label : String, v : Int32*, v_speed : Float32 = 1.0, v_min : Int32 = 0, v_max : Int32 = 0, format : String = "%d") : Bool
-    LibImGui.igDragInt(label, v, v_speed, v_min, v_max, format)
+  def self.drag_int_(label : String, v : Int32*, v_speed : Float32 = 1.0, v_min : Int32 = 0, v_max : Int32 = 0, format : String = "%d", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
+    LibImGui.igDragInt(label, v, v_speed, v_min, v_max, format, flags)
   end
 
   macro drag_int(*args, **kwargs, &block)
     ::ImGui._pointer_wrapper("::ImGui.drag_int_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
   end
 
-  def self.drag_int2_(label : String, v : Int32*, v_speed : Float32 = 1.0, v_min : Int32 = 0, v_max : Int32 = 0, format : String = "%d") : Bool
-    LibImGui.igDragInt2(label, v, v_speed, v_min, v_max, format)
+  def self.drag_int2_(label : String, v : Int32*, v_speed : Float32 = 1.0, v_min : Int32 = 0, v_max : Int32 = 0, format : String = "%d", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
+    LibImGui.igDragInt2(label, v, v_speed, v_min, v_max, format, flags)
   end
 
   macro drag_int2(*args, **kwargs, &block)
     ::ImGui._pointer_wrapper("::ImGui.drag_int2_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
   end
 
-  def self.drag_int3_(label : String, v : Int32*, v_speed : Float32 = 1.0, v_min : Int32 = 0, v_max : Int32 = 0, format : String = "%d") : Bool
-    LibImGui.igDragInt3(label, v, v_speed, v_min, v_max, format)
+  def self.drag_int3_(label : String, v : Int32*, v_speed : Float32 = 1.0, v_min : Int32 = 0, v_max : Int32 = 0, format : String = "%d", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
+    LibImGui.igDragInt3(label, v, v_speed, v_min, v_max, format, flags)
   end
 
   macro drag_int3(*args, **kwargs, &block)
     ::ImGui._pointer_wrapper("::ImGui.drag_int3_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
   end
 
-  def self.drag_int4_(label : String, v : Int32*, v_speed : Float32 = 1.0, v_min : Int32 = 0, v_max : Int32 = 0, format : String = "%d") : Bool
-    LibImGui.igDragInt4(label, v, v_speed, v_min, v_max, format)
+  def self.drag_int4_(label : String, v : Int32*, v_speed : Float32 = 1.0, v_min : Int32 = 0, v_max : Int32 = 0, format : String = "%d", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
+    LibImGui.igDragInt4(label, v, v_speed, v_min, v_max, format, flags)
   end
 
   macro drag_int4(*args, **kwargs, &block)
     ::ImGui._pointer_wrapper("::ImGui.drag_int4_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
   end
 
-  def self.drag_int_range2_(label : String, v_current_min : Int32*, v_current_max : Int32*, v_speed : Float32 = 1.0, v_min : Int32 = 0, v_max : Int32 = 0, format : String = "%d", format_max : String? = nil) : Bool
-    LibImGui.igDragIntRange2(label, v_current_min, v_current_max, v_speed, v_min, v_max, format, format_max)
+  def self.drag_int_range2_(label : String, v_current_min : Int32*, v_current_max : Int32*, v_speed : Float32 = 1.0, v_min : Int32 = 0, v_max : Int32 = 0, format : String = "%d", format_max : String? = nil, flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
+    LibImGui.igDragIntRange2(label, v_current_min, v_current_max, v_speed, v_min, v_max, format, format_max, flags)
   end
 
   macro drag_int_range2(*args, **kwargs, &block)
@@ -3137,8 +3174,8 @@ module ImGui
   end
 
   {% for k, t in {S8: Int8, U8: UInt8, S16: Int16, U16: UInt16, S32: Int32, U32: UInt32, S64: Int64, U64: UInt64, Float: Float32, Double: Float64} %}
-  def self.drag_scalar_(label : String, p_data : {{t}}*, v_speed : Float32, p_min : {{t}}? = nil, p_max : {{t}}? = nil, format : String? = nil, power : Float32 = 1.0) : Bool
-    LibImGui.igDragScalar(label, ImGuiDataType::{{k.id}}, p_data, v_speed, p_min && (p_min_ = p_min; pointerof(p_min_)), p_max && (p_max_ = p_max; pointerof(p_max_)), format, power)
+  def self.drag_scalar_(label : String, p_data : {{t}}*, v_speed : Float32, p_min : {{t}}? = nil, p_max : {{t}}? = nil, format : String? = nil, flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
+    LibImGui.igDragScalar(label, ImGuiDataType::{{k.id}}, p_data, v_speed, p_min && (p_min_ = p_min; pointerof(p_min_)), p_max && (p_max_ = p_max; pointerof(p_max_)), format, flags)
   end
   {% end %}
 
@@ -3147,8 +3184,8 @@ module ImGui
   end
 
   {% for k, t in {S8: Int8, U8: UInt8, S16: Int16, U16: UInt16, S32: Int32, U32: UInt32, S64: Int64, U64: UInt64, Float: Float32, Double: Float64} %}
-  def self.drag_scalar_n_(label : String, p_data : {{t}}*, components : Int32, v_speed : Float32, p_min : {{t}}* = Pointer({{t}}).null, p_max : {{t}}* = Pointer({{t}}).null, format : String? = nil, power : Float32 = 1.0) : Bool
-    LibImGui.igDragScalarN(label, ImGuiDataType::{{k.id}}, p_data, components, v_speed, p_min, p_max, format, power)
+  def self.drag_scalar_n_(label : String, p_data : {{t}}*, components : Int32, v_speed : Float32, p_min : {{t}}* = Pointer({{t}}).null, p_max : {{t}}* = Pointer({{t}}).null, format : String? = nil, flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
+    LibImGui.igDragScalarN(label, ImGuiDataType::{{k.id}}, p_data, components, v_speed, p_min, p_max, format, flags)
   end
   {% end %}
 
@@ -3623,8 +3660,8 @@ module ImGui
     ::ImGui._pointer_wrapper("::ImGui.input_text_with_hint_", 2, false, {{*args}}, {{**kwargs}}) {{block}}
   end
 
-  def self.invisible_button(str_id : String, size : ImVec2) : Bool
-    LibImGui.igInvisibleButton(str_id, size)
+  def self.invisible_button(str_id : String, size : ImVec2, flags : ImGuiButtonFlags = ImGuiButtonFlags.new(0)) : Bool
+    LibImGui.igInvisibleButton(str_id, size, flags)
   end
 
   def self.is_any_item_active : Bool
@@ -4216,72 +4253,72 @@ module ImGui
     LibImGui.igShowUserGuide
   end
 
-  def self.slider_angle_(label : String, v_rad : Float32*, v_degrees_min : Float32 = -360.0, v_degrees_max : Float32 = +360.0, format : String = "%.0 deg") : Bool
-    LibImGui.igSliderAngle(label, v_rad, v_degrees_min, v_degrees_max, format)
+  def self.slider_angle_(label : String, v_rad : Float32*, v_degrees_min : Float32 = -360.0, v_degrees_max : Float32 = +360.0, format : String = "%.0 deg", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
+    LibImGui.igSliderAngle(label, v_rad, v_degrees_min, v_degrees_max, format, flags)
   end
 
   macro slider_angle(*args, **kwargs, &block)
     ::ImGui._pointer_wrapper("::ImGui.slider_angle_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
   end
 
-  def self.slider_float_(label : String, v : Float32*, v_min : Float32, v_max : Float32, format : String = "%.3f", power : Float32 = 1.0) : Bool
-    LibImGui.igSliderFloat(label, v, v_min, v_max, format, power)
+  def self.slider_float_(label : String, v : Float32*, v_min : Float32, v_max : Float32, format : String = "%.3f", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
+    LibImGui.igSliderFloat(label, v, v_min, v_max, format, flags)
   end
 
   macro slider_float(*args, **kwargs, &block)
     ::ImGui._pointer_wrapper("::ImGui.slider_float_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
   end
 
-  def self.slider_float2_(label : String, v : ImVec2* | Float32*, v_min : Float32, v_max : Float32, format : String = "%.3f", power : Float32 = 1.0) : Bool
-    LibImGui.igSliderFloat2(label, v.as(Float32*), v_min, v_max, format, power)
+  def self.slider_float2_(label : String, v : ImVec2* | Float32*, v_min : Float32, v_max : Float32, format : String = "%.3f", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
+    LibImGui.igSliderFloat2(label, v.as(Float32*), v_min, v_max, format, flags)
   end
 
   macro slider_float2(*args, **kwargs, &block)
     ::ImGui._pointer_wrapper("::ImGui.slider_float2_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
   end
 
-  def self.slider_float3_(label : String, v : Float32*, v_min : Float32, v_max : Float32, format : String = "%.3f", power : Float32 = 1.0) : Bool
-    LibImGui.igSliderFloat3(label, v, v_min, v_max, format, power)
+  def self.slider_float3_(label : String, v : Float32*, v_min : Float32, v_max : Float32, format : String = "%.3f", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
+    LibImGui.igSliderFloat3(label, v, v_min, v_max, format, flags)
   end
 
   macro slider_float3(*args, **kwargs, &block)
     ::ImGui._pointer_wrapper("::ImGui.slider_float3_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
   end
 
-  def self.slider_float4_(label : String, v : ImVec4* | Float32*, v_min : Float32, v_max : Float32, format : String = "%.3f", power : Float32 = 1.0) : Bool
-    LibImGui.igSliderFloat4(label, v.as(Float32*), v_min, v_max, format, power)
+  def self.slider_float4_(label : String, v : ImVec4* | Float32*, v_min : Float32, v_max : Float32, format : String = "%.3f", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
+    LibImGui.igSliderFloat4(label, v.as(Float32*), v_min, v_max, format, flags)
   end
 
   macro slider_float4(*args, **kwargs, &block)
     ::ImGui._pointer_wrapper("::ImGui.slider_float4_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
   end
 
-  def self.slider_int_(label : String, v : Int32*, v_min : Int32, v_max : Int32, format : String = "%d") : Bool
-    LibImGui.igSliderInt(label, v, v_min, v_max, format)
+  def self.slider_int_(label : String, v : Int32*, v_min : Int32, v_max : Int32, format : String = "%d", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
+    LibImGui.igSliderInt(label, v, v_min, v_max, format, flags)
   end
 
   macro slider_int(*args, **kwargs, &block)
     ::ImGui._pointer_wrapper("::ImGui.slider_int_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
   end
 
-  def self.slider_int2_(label : String, v : Int32*, v_min : Int32, v_max : Int32, format : String = "%d") : Bool
-    LibImGui.igSliderInt2(label, v, v_min, v_max, format)
+  def self.slider_int2_(label : String, v : Int32*, v_min : Int32, v_max : Int32, format : String = "%d", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
+    LibImGui.igSliderInt2(label, v, v_min, v_max, format, flags)
   end
 
   macro slider_int2(*args, **kwargs, &block)
     ::ImGui._pointer_wrapper("::ImGui.slider_int2_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
   end
 
-  def self.slider_int3_(label : String, v : Int32*, v_min : Int32, v_max : Int32, format : String = "%d") : Bool
-    LibImGui.igSliderInt3(label, v, v_min, v_max, format)
+  def self.slider_int3_(label : String, v : Int32*, v_min : Int32, v_max : Int32, format : String = "%d", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
+    LibImGui.igSliderInt3(label, v, v_min, v_max, format, flags)
   end
 
   macro slider_int3(*args, **kwargs, &block)
     ::ImGui._pointer_wrapper("::ImGui.slider_int3_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
   end
 
-  def self.slider_int4_(label : String, v : Int32*, v_min : Int32, v_max : Int32, format : String = "%d") : Bool
-    LibImGui.igSliderInt4(label, v, v_min, v_max, format)
+  def self.slider_int4_(label : String, v : Int32*, v_min : Int32, v_max : Int32, format : String = "%d", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
+    LibImGui.igSliderInt4(label, v, v_min, v_max, format, flags)
   end
 
   macro slider_int4(*args, **kwargs, &block)
@@ -4289,8 +4326,8 @@ module ImGui
   end
 
   {% for k, t in {S8: Int8, U8: UInt8, S16: Int16, U16: UInt16, S32: Int32, U32: UInt32, S64: Int64, U64: UInt64, Float: Float32, Double: Float64} %}
-  def self.slider_scalar_(label : String, p_data : {{t}}*, p_min : {{t}}, p_max : {{t}}, format : String? = nil, power : Float32 = 1.0) : Bool
-    LibImGui.igSliderScalar(label, ImGuiDataType::{{k.id}}, p_data, p_min && (p_min_ = p_min; pointerof(p_min_)), p_max && (p_max_ = p_max; pointerof(p_max_)), format, power)
+  def self.slider_scalar_(label : String, p_data : {{t}}*, p_min : {{t}}, p_max : {{t}}, format : String? = nil, flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
+    LibImGui.igSliderScalar(label, ImGuiDataType::{{k.id}}, p_data, p_min && (p_min_ = p_min; pointerof(p_min_)), p_max && (p_max_ = p_max; pointerof(p_max_)), format, flags)
   end
   {% end %}
 
@@ -4299,8 +4336,8 @@ module ImGui
   end
 
   {% for k, t in {S8: Int8, U8: UInt8, S16: Int16, U16: UInt16, S32: Int32, U32: UInt32, S64: Int64, U64: UInt64, Float: Float32, Double: Float64} %}
-  def self.slider_scalar_n_(label : String, p_data : {{t}}*, components : Int32, p_min : {{t}}*, p_max : {{t}}*, format : String? = nil, power : Float32 = 1.0) : Bool
-    LibImGui.igSliderScalarN(label, ImGuiDataType::{{k.id}}, p_data, components, p_min, p_max, format, power)
+  def self.slider_scalar_n_(label : String, p_data : {{t}}*, components : Int32, p_min : {{t}}*, p_max : {{t}}*, format : String? = nil, flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
+    LibImGui.igSliderScalarN(label, ImGuiDataType::{{k.id}}, p_data, components, p_min, p_max, format, flags)
   end
   {% end %}
 
@@ -4396,16 +4433,16 @@ module ImGui
     LibImGui.igUnindent(indent_w)
   end
 
-  def self.v_slider_float_(label : String, size : ImVec2, v : Float32*, v_min : Float32, v_max : Float32, format : String = "%.3f", power : Float32 = 1.0) : Bool
-    LibImGui.igVSliderFloat(label, size, v, v_min, v_max, format, power)
+  def self.v_slider_float_(label : String, size : ImVec2, v : Float32*, v_min : Float32, v_max : Float32, format : String = "%.3f", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
+    LibImGui.igVSliderFloat(label, size, v, v_min, v_max, format, flags)
   end
 
   macro v_slider_float(*args, **kwargs, &block)
     ::ImGui._pointer_wrapper("::ImGui.v_slider_float_", 2, false, {{*args}}, {{**kwargs}}) {{block}}
   end
 
-  def self.v_slider_int_(label : String, size : ImVec2, v : Int32*, v_min : Int32, v_max : Int32, format : String = "%d") : Bool
-    LibImGui.igVSliderInt(label, size, v, v_min, v_max, format)
+  def self.v_slider_int_(label : String, size : ImVec2, v : Int32*, v_min : Int32, v_max : Int32, format : String = "%d", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
+    LibImGui.igVSliderInt(label, size, v, v_min, v_max, format, flags)
   end
 
   macro v_slider_int(*args, **kwargs, &block)
@@ -4413,8 +4450,8 @@ module ImGui
   end
 
   {% for k, t in {S8: Int8, U8: UInt8, S16: Int16, U16: UInt16, S32: Int32, U32: UInt32, S64: Int64, U64: UInt64, Float: Float32, Double: Float64} %}
-  def self.v_slider_scalar_(label : String, size : ImVec2, p_data : {{t}}*, p_min : {{t}}, p_max : {{t}}, format : String? = nil, power : Float32 = 1.0) : Bool
-    LibImGui.igVSliderScalar(label, size, ImGuiDataType::{{k.id}}, p_data, p_min && (p_min_ = p_min; pointerof(p_min_)), p_max && (p_max_ = p_max; pointerof(p_max_)), format, power)
+  def self.v_slider_scalar_(label : String, size : ImVec2, p_data : {{t}}*, p_min : {{t}}, p_max : {{t}}, format : String? = nil, flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
+    LibImGui.igVSliderScalar(label, size, ImGuiDataType::{{k.id}}, p_data, p_min && (p_min_ = p_min; pointerof(p_min_)), p_max && (p_max_ = p_max; pointerof(p_max_)), format, flags)
   end
   {% end %}
 
