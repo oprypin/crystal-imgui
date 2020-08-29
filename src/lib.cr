@@ -16,11 +16,6 @@ lib LibImGui
   alias ImWchar32 = LibC::UInt
   type ImBitVector = Void*
 
-  struct ImDrawChannel
-    _cmd_buffer : ImVectorInternal
-    _idx_buffer : ImVectorInternal
-  end
-
   struct ImDrawCmd
     clip_rect : ImGui::ImVec4
     texture_id : ImTextureID
@@ -143,10 +138,6 @@ lib LibImGui
     dst_font : ImFont*
   end
 
-  struct ImFontGlyphRangesBuilder
-    used_chars : ImVectorInternal
-  end
-
   type ImGuiColorMod = Void*
   type ImGuiColumnData = Void*
   type ImGuiColumns = Void*
@@ -255,24 +246,10 @@ lib LibImGui
 
   type ImGuiInputTextState = Void*
   type ImGuiLastItemDataBackup = Void*
-
-  struct ImGuiListClipper
-    display_start : LibC::Int
-    display_end : LibC::Int
-    items_count : LibC::Int
-    step_no : LibC::Int
-    items_height : LibC::Float
-    start_pos_y : LibC::Float
-  end
-
   type ImGuiMenuColumns = Void*
   type ImGuiNavMoveResult = Void*
   type ImGuiNextItemData = Void*
   type ImGuiNextWindowData = Void*
-
-  struct ImGuiOnceUponAFrame
-    ref_frame : LibC::Int
-  end
 
   struct ImGuiPayload
     data : Void*
@@ -295,10 +272,6 @@ lib LibImGui
     pos : ImGui::ImVec2
     current_size : ImGui::ImVec2
     desired_size : ImGui::ImVec2
-  end
-
-  struct ImGuiStorage
-    data : ImVectorInternal
   end
 
   type ImGuiStoragePair = Void*
@@ -348,10 +321,6 @@ lib LibImGui
   type ImGuiStyleMod = Void*
   type ImGuiTabBar = Void*
   type ImGuiTabItem = Void*
-
-  struct ImGuiTextBuffer
-    buf : ImVectorInternal
-  end
 
   struct ImGuiTextFilter
     input_buf : LibC::Char[256]
@@ -471,14 +440,14 @@ lib LibImGui
   fun ImFontAtlas_IsBuilt(self : ImFontAtlas*) : Bool
   fun ImFontAtlas_SetTexID(self : ImFontAtlas*, id : ImTextureID)
   fun ImFontConfig_ImFontConfig : ImFontConfig*
-  fun ImFontGlyphRangesBuilder_AddChar(self : ImFontGlyphRangesBuilder*, c : ImWchar)
-  fun ImFontGlyphRangesBuilder_AddRanges(self : ImFontGlyphRangesBuilder*, ranges : ImWchar*)
-  fun ImFontGlyphRangesBuilder_AddText(self : ImFontGlyphRangesBuilder*, text : LibC::Char*, text_end : LibC::Char*)
-  fun ImFontGlyphRangesBuilder_BuildRanges(self : ImFontGlyphRangesBuilder*, out_ranges : ImVectorInternal*)
-  fun ImFontGlyphRangesBuilder_Clear(self : ImFontGlyphRangesBuilder*)
-  fun ImFontGlyphRangesBuilder_GetBit(self : ImFontGlyphRangesBuilder*, n : LibC::SizeT) : Bool
-  fun ImFontGlyphRangesBuilder_ImFontGlyphRangesBuilder : ImFontGlyphRangesBuilder*
-  fun ImFontGlyphRangesBuilder_SetBit(self : ImFontGlyphRangesBuilder*, n : LibC::SizeT)
+  fun ImFontGlyphRangesBuilder_AddChar(self : ImGui::ImFontGlyphRangesBuilder*, c : ImWchar)
+  fun ImFontGlyphRangesBuilder_AddRanges(self : ImGui::ImFontGlyphRangesBuilder*, ranges : ImWchar*)
+  fun ImFontGlyphRangesBuilder_AddText(self : ImGui::ImFontGlyphRangesBuilder*, text : LibC::Char*, text_end : LibC::Char*)
+  fun ImFontGlyphRangesBuilder_BuildRanges(self : ImGui::ImFontGlyphRangesBuilder*, out_ranges : ImVectorInternal*)
+  fun ImFontGlyphRangesBuilder_Clear(self : ImGui::ImFontGlyphRangesBuilder*)
+  fun ImFontGlyphRangesBuilder_GetBit(self : ImGui::ImFontGlyphRangesBuilder*, n : LibC::SizeT) : Bool
+  fun ImFontGlyphRangesBuilder_ImFontGlyphRangesBuilder : ImGui::ImFontGlyphRangesBuilder*
+  fun ImFontGlyphRangesBuilder_SetBit(self : ImGui::ImFontGlyphRangesBuilder*, n : LibC::SizeT)
   fun ImFont_AddGlyph(self : ImFont*, src_cfg : ImFontConfig*, c : ImWchar, x0 : LibC::Float, y0 : LibC::Float, x1 : LibC::Float, y1 : LibC::Float, u0 : LibC::Float, v0 : LibC::Float, u1 : LibC::Float, v1 : LibC::Float, advance_x : LibC::Float)
   fun ImFont_AddRemapChar(self : ImFont*, dst : ImWchar, src : ImWchar, overwrite_dst : Bool)
   fun ImFont_BuildLookupTable(self : ImFont*)
@@ -506,11 +475,11 @@ lib LibImGui
   fun ImGuiInputTextCallbackData_HasSelection(self : ImGuiInputTextCallbackData*) : Bool
   fun ImGuiInputTextCallbackData_ImGuiInputTextCallbackData : ImGuiInputTextCallbackData*
   fun ImGuiInputTextCallbackData_InsertChars(self : ImGuiInputTextCallbackData*, pos : LibC::Int, text : LibC::Char*, text_end : LibC::Char*)
-  fun ImGuiListClipper_Begin(self : ImGuiListClipper*, items_count : LibC::Int, items_height : LibC::Float)
-  fun ImGuiListClipper_End(self : ImGuiListClipper*)
-  fun ImGuiListClipper_ImGuiListClipper(items_count : LibC::Int, items_height : LibC::Float) : ImGuiListClipper*
-  fun ImGuiListClipper_Step(self : ImGuiListClipper*) : Bool
-  fun ImGuiOnceUponAFrame_ImGuiOnceUponAFrame : ImGuiOnceUponAFrame*
+  fun ImGuiListClipper_Begin(self : ImGui::ImGuiListClipper*, items_count : LibC::Int, items_height : LibC::Float)
+  fun ImGuiListClipper_End(self : ImGui::ImGuiListClipper*)
+  fun ImGuiListClipper_ImGuiListClipper(items_count : LibC::Int, items_height : LibC::Float) : ImGui::ImGuiListClipper*
+  fun ImGuiListClipper_Step(self : ImGui::ImGuiListClipper*) : Bool
+  fun ImGuiOnceUponAFrame_ImGuiOnceUponAFrame : ImGui::ImGuiOnceUponAFrame*
   fun ImGuiPayload_Clear(self : ImGuiPayload*)
   fun ImGuiPayload_ImGuiPayload : ImGuiPayload*
   fun ImGuiPayload_IsDataType(self : ImGuiPayload*, type : LibC::Char*) : Bool
@@ -519,33 +488,33 @@ lib LibImGui
   fun ImGuiStoragePair_ImGuiStoragePairInt(_key : ImGuiID, _val_i : LibC::Int) : ImGuiStoragePair*
   fun ImGuiStoragePair_ImGuiStoragePairFloat(_key : ImGuiID, _val_f : LibC::Float) : ImGuiStoragePair*
   fun ImGuiStoragePair_ImGuiStoragePairPtr(_key : ImGuiID, _val_p : Void*) : ImGuiStoragePair*
-  fun ImGuiStorage_BuildSortByKey(self : ImGuiStorage*)
-  fun ImGuiStorage_Clear(self : ImGuiStorage*)
-  fun ImGuiStorage_GetBool(self : ImGuiStorage*, key : ImGuiID, default_val : Bool) : Bool
-  fun ImGuiStorage_GetBoolRef(self : ImGuiStorage*, key : ImGuiID, default_val : Bool) : Bool*
-  fun ImGuiStorage_GetFloat(self : ImGuiStorage*, key : ImGuiID, default_val : LibC::Float) : LibC::Float
-  fun ImGuiStorage_GetFloatRef(self : ImGuiStorage*, key : ImGuiID, default_val : LibC::Float) : LibC::Float*
-  fun ImGuiStorage_GetInt(self : ImGuiStorage*, key : ImGuiID, default_val : LibC::Int) : LibC::Int
-  fun ImGuiStorage_GetIntRef(self : ImGuiStorage*, key : ImGuiID, default_val : LibC::Int) : LibC::Int*
-  fun ImGuiStorage_GetVoidPtr(self : ImGuiStorage*, key : ImGuiID) : Void*
-  fun ImGuiStorage_GetVoidPtrRef(self : ImGuiStorage*, key : ImGuiID, default_val : Void*) : Void**
-  fun ImGuiStorage_SetAllInt(self : ImGuiStorage*, val : LibC::Int)
-  fun ImGuiStorage_SetBool(self : ImGuiStorage*, key : ImGuiID, val : Bool)
-  fun ImGuiStorage_SetFloat(self : ImGuiStorage*, key : ImGuiID, val : LibC::Float)
-  fun ImGuiStorage_SetInt(self : ImGuiStorage*, key : ImGuiID, val : LibC::Int)
-  fun ImGuiStorage_SetVoidPtr(self : ImGuiStorage*, key : ImGuiID, val : Void*)
+  fun ImGuiStorage_BuildSortByKey(self : ImGui::ImGuiStorage*)
+  fun ImGuiStorage_Clear(self : ImGui::ImGuiStorage*)
+  fun ImGuiStorage_GetBool(self : ImGui::ImGuiStorage*, key : ImGuiID, default_val : Bool) : Bool
+  fun ImGuiStorage_GetBoolRef(self : ImGui::ImGuiStorage*, key : ImGuiID, default_val : Bool) : Bool*
+  fun ImGuiStorage_GetFloat(self : ImGui::ImGuiStorage*, key : ImGuiID, default_val : LibC::Float) : LibC::Float
+  fun ImGuiStorage_GetFloatRef(self : ImGui::ImGuiStorage*, key : ImGuiID, default_val : LibC::Float) : LibC::Float*
+  fun ImGuiStorage_GetInt(self : ImGui::ImGuiStorage*, key : ImGuiID, default_val : LibC::Int) : LibC::Int
+  fun ImGuiStorage_GetIntRef(self : ImGui::ImGuiStorage*, key : ImGuiID, default_val : LibC::Int) : LibC::Int*
+  fun ImGuiStorage_GetVoidPtr(self : ImGui::ImGuiStorage*, key : ImGuiID) : Void*
+  fun ImGuiStorage_GetVoidPtrRef(self : ImGui::ImGuiStorage*, key : ImGuiID, default_val : Void*) : Void**
+  fun ImGuiStorage_SetAllInt(self : ImGui::ImGuiStorage*, val : LibC::Int)
+  fun ImGuiStorage_SetBool(self : ImGui::ImGuiStorage*, key : ImGuiID, val : Bool)
+  fun ImGuiStorage_SetFloat(self : ImGui::ImGuiStorage*, key : ImGuiID, val : LibC::Float)
+  fun ImGuiStorage_SetInt(self : ImGui::ImGuiStorage*, key : ImGuiID, val : LibC::Int)
+  fun ImGuiStorage_SetVoidPtr(self : ImGui::ImGuiStorage*, key : ImGuiID, val : Void*)
   fun ImGuiStyle_ImGuiStyle : ImGuiStyle*
   fun ImGuiStyle_ScaleAllSizes(self : ImGuiStyle*, scale_factor : LibC::Float)
-  fun ImGuiTextBuffer_ImGuiTextBuffer : ImGuiTextBuffer*
-  fun ImGuiTextBuffer_append(self : ImGuiTextBuffer*, str : LibC::Char*, str_end : LibC::Char*)
-  fun ImGuiTextBuffer_appendf(self : ImGuiTextBuffer*, fmt : LibC::Char*, ...)
-  fun ImGuiTextBuffer_begin(self : ImGuiTextBuffer*) : LibC::Char*
-  fun ImGuiTextBuffer_c_str(self : ImGuiTextBuffer*) : LibC::Char*
-  fun ImGuiTextBuffer_clear(self : ImGuiTextBuffer*)
-  fun ImGuiTextBuffer_empty(self : ImGuiTextBuffer*) : Bool
-  fun ImGuiTextBuffer_end(self : ImGuiTextBuffer*) : LibC::Char*
-  fun ImGuiTextBuffer_reserve(self : ImGuiTextBuffer*, capacity : LibC::Int)
-  fun ImGuiTextBuffer_size(self : ImGuiTextBuffer*) : LibC::Int
+  fun ImGuiTextBuffer_ImGuiTextBuffer : ImGui::ImGuiTextBuffer*
+  fun ImGuiTextBuffer_append(self : ImGui::ImGuiTextBuffer*, str : LibC::Char*, str_end : LibC::Char*)
+  fun ImGuiTextBuffer_appendf(self : ImGui::ImGuiTextBuffer*, fmt : LibC::Char*, ...)
+  fun ImGuiTextBuffer_begin(self : ImGui::ImGuiTextBuffer*) : LibC::Char*
+  fun ImGuiTextBuffer_c_str(self : ImGui::ImGuiTextBuffer*) : LibC::Char*
+  fun ImGuiTextBuffer_clear(self : ImGui::ImGuiTextBuffer*)
+  fun ImGuiTextBuffer_empty(self : ImGui::ImGuiTextBuffer*) : Bool
+  fun ImGuiTextBuffer_end(self : ImGui::ImGuiTextBuffer*) : LibC::Char*
+  fun ImGuiTextBuffer_reserve(self : ImGui::ImGuiTextBuffer*, capacity : LibC::Int)
+  fun ImGuiTextBuffer_size(self : ImGui::ImGuiTextBuffer*) : LibC::Int
   fun ImGuiTextFilter_Build(self : ImGuiTextFilter*)
   fun ImGuiTextFilter_Clear(self : ImGuiTextFilter*)
   fun ImGuiTextFilter_Draw(self : ImGuiTextFilter*, label : LibC::Char*, width : LibC::Float) : Bool
@@ -683,7 +652,7 @@ lib LibImGui
   fun igGetScrollMaxY : LibC::Float
   fun igGetScrollX : LibC::Float
   fun igGetScrollY : LibC::Float
-  fun igGetStateStorage : ImGuiStorage*
+  fun igGetStateStorage : ImGui::ImGuiStorage*
   fun igGetStyle : ImGuiStyle*
   fun igGetStyleColorName(idx : ImGui::ImGuiCol) : LibC::Char*
   fun igGetStyleColorVec4(idx : ImGui::ImGuiCol) : ImGui::ImVec4*
@@ -840,7 +809,7 @@ lib LibImGui
   fun igSetScrollHereY(center_y_ratio : LibC::Float)
   fun igSetScrollXFloat(scroll_x : LibC::Float)
   fun igSetScrollYFloat(scroll_y : LibC::Float)
-  fun igSetStateStorage(storage : ImGuiStorage*)
+  fun igSetStateStorage(storage : ImGui::ImGuiStorage*)
   fun igSetTabItemClosed(tab_or_docked_window_label : LibC::Char*)
   fun igSetTooltip(fmt : LibC::Char*, ...)
   fun igSetWindowCollapsedBool(collapsed : Bool, cond : ImGui::ImGuiCond)

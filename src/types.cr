@@ -651,6 +651,15 @@ module ImGui
   end
 
   @[Extern]
+  struct ImDrawChannel
+    @_cmd_buffer : LibImGui::ImVectorInternal
+    @_idx_buffer : LibImGui::ImVectorInternal
+
+    def initialize(@_cmd_buffer : LibImGui::ImVectorInternal, @_idx_buffer : LibImGui::ImVectorInternal)
+    end
+  end
+
+  @[Extern]
   struct ImDrawVert
     property pos : ImVec2
     property uv : ImVec2
@@ -675,6 +684,51 @@ module ImGui
     property v1 : Float32
 
     def initialize(@codepoint : UInt32, @visible : UInt32, @advance_x : Float32, @x0 : Float32, @y0 : Float32, @x1 : Float32, @y1 : Float32, @u0 : Float32, @v0 : Float32, @u1 : Float32, @v1 : Float32)
+    end
+  end
+
+  @[Extern]
+  struct ImFontGlyphRangesBuilder
+    @used_chars : LibImGui::ImVectorInternal
+
+    def initialize(@used_chars : LibImGui::ImVectorInternal)
+    end
+  end
+
+  @[Extern]
+  struct ImGuiListClipper
+    property display_start : Int32
+    property display_end : Int32
+    property items_count : Int32
+    property step_no : Int32
+    property items_height : Float32
+    property start_pos_y : Float32
+
+    def initialize(@display_start : Int32, @display_end : Int32, @items_count : Int32, @step_no : Int32, @items_height : Float32, @start_pos_y : Float32)
+    end
+  end
+
+  @[Extern]
+  struct ImGuiOnceUponAFrame
+    property ref_frame : Int32
+
+    def initialize(@ref_frame : Int32)
+    end
+  end
+
+  @[Extern]
+  struct ImGuiStorage
+    @data : LibImGui::ImVectorInternal
+
+    def initialize(@data : LibImGui::ImVectorInternal)
+    end
+  end
+
+  @[Extern]
+  struct ImGuiTextBuffer
+    @buf : LibImGui::ImVectorInternal
+
+    def initialize(@buf : LibImGui::ImVectorInternal)
     end
   end
 

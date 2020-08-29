@@ -119,9 +119,6 @@ class CType
   def class? : Bool
     !!(struct?.try &.class?)
   end
-  def direct_class? : Bool
-    !!(struct?.try &.direct_class?)
-  end
   def has_destructor? : Bool
     !!(AllFunctions.has_key?("#{self.base_type}_destroy"))
   end
@@ -492,8 +489,7 @@ class CStructMember
       yield %(#{varname} : #{self.type.name(ctx)})
     elsif ctx.obj? && self.parent.class?
       return if self.internal?
-      this = "@this"
-      this += ".value" unless self.parent.direct_class?
+      this = "@this.value"
       typename = self.type.name(ctx)
       if varname == "cmd_lists" && typename == "ImDrawList*"
         typename = "Slice(ImDrawList)"
@@ -543,10 +539,7 @@ class CStruct
         yield %(alias #{self.name} = LibImGui::#{self.name})
       end
     elsif ctx.obj?
-      if self.direct_class?
-        yield %(class #{self.name})
-        yield %(include DirectClassType(LibImGui::#{self.name}))
-      elsif self.class?
+      if self.class?
         yield %(struct #{self.name})
         yield %(include StructClassType(LibImGui::#{self.name}))
       else
@@ -588,10 +581,7 @@ class CStruct
   end
 
   def class? : Bool
-    !%w[ImVector ImVec2 ImVec4 ImColor ImDrawVert ImFontGlyph ImGuiTextRange].includes?(self.name)
-  end
-  def direct_class? : Bool
-    class? && !%w[ImDrawCmd ImDrawData ImDrawList ImGuiIO ImGuiStyle ImGuiPayload].includes?(self.name)
+    !%w[ImVector ImVec2 ImVec4 ImColor ImDrawVert ImFontGlyph ImGuiTextRange ImGuiOnceUponAFrame ImGuiStorage ImGuiTextBuffer ImGuiListClipper ImFontGlyphRangesBuilder ImDrawChannel].includes?(self.name)
   end
 end
 
@@ -692,18 +682,7 @@ AllTypedefs = Hash(String, String).from_json(
 
 AllStructs.each_value do |str|
   next if str.internal?
-  str.members.each do |member|
-    assert member.internal? || !member.type.direct_class?
-  end
   assert str.class? || !CType.new(str.name).has_destructor?
-end
-AllFunctions.each_value do |func|
-  func.overloads.each do |func|
-    next if func.internal? || func.constructor?
-    if (ret = func.ret)
-      assert !ret.direct_class?
-    end
-  end
 end
 
 def render(ctx : Context, &block : String->)

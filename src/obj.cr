@@ -41,8 +41,8 @@ module ImGui
     end
   end
 
-  class ImDrawChannel
-    include DirectClassType(LibImGui::ImDrawChannel)
+  struct ImDrawChannel
+    include StructType
   end
 
   struct ImDrawCmd
@@ -443,8 +443,8 @@ module ImGui
 
   alias ImDrawListSharedData = LibImGui::ImDrawListSharedData
 
-  class ImDrawListSplitter
-    include DirectClassType(LibImGui::ImDrawListSplitter)
+  struct ImDrawListSplitter
+    include StructClassType(LibImGui::ImDrawListSplitter)
 
     def clear : Void
       LibImGui.ImDrawListSplitter_Clear(self)
@@ -476,151 +476,151 @@ module ImGui
     include StructType
   end
 
-  class ImFont
-    include DirectClassType(LibImGui::ImFont)
+  struct ImFont
+    include StructClassType(LibImGui::ImFont)
 
     def index_advance_x : LibImGui::ImVector(Float32)
-      @this.index_advance_x
+      @this.value.index_advance_x
     end
 
     def index_advance_x=(index_advance_x : LibImGui::ImVector(Float32))
-      @this.index_advance_x = index_advance_x
+      @this.value.index_advance_x = index_advance_x
     end
 
     def fallback_advance_x : Float32
-      @this.fallback_advance_x
+      @this.value.fallback_advance_x
     end
 
     def fallback_advance_x=(fallback_advance_x : Float32)
-      @this.fallback_advance_x = fallback_advance_x
+      @this.value.fallback_advance_x = fallback_advance_x
     end
 
     def font_size : Float32
-      @this.font_size
+      @this.value.font_size
     end
 
     def font_size=(font_size : Float32)
-      @this.font_size = font_size
+      @this.value.font_size = font_size
     end
 
     def index_lookup : LibImGui::ImVector(ImWchar)
-      @this.index_lookup
+      @this.value.index_lookup
     end
 
     def index_lookup=(index_lookup : LibImGui::ImVector(ImWchar))
-      @this.index_lookup = index_lookup
+      @this.value.index_lookup = index_lookup
     end
 
     def glyphs : LibImGui::ImVector(ImFontGlyph)
-      @this.glyphs
+      @this.value.glyphs
     end
 
     def glyphs=(glyphs : LibImGui::ImVector(ImFontGlyph))
-      @this.glyphs = glyphs
+      @this.value.glyphs = glyphs
     end
 
     def fallback_glyph : ImFontGlyph*
-      @this.fallback_glyph.value
+      @this.value.fallback_glyph.value
     end
 
     def fallback_glyph=(fallback_glyph : ImFontGlyph*)
-      @this.fallback_glyph = fallback_glyph
+      @this.value.fallback_glyph = fallback_glyph
     end
 
     def display_offset : ImVec2
-      @this.display_offset
+      @this.value.display_offset
     end
 
     def display_offset=(display_offset : ImVec2)
-      @this.display_offset = display_offset
+      @this.value.display_offset = display_offset
     end
 
     def container_atlas : ImFontAtlas
-      ImFontAtlas.new(@this.container_atlas)
+      ImFontAtlas.new(@this.value.container_atlas)
     end
 
     def container_atlas=(container_atlas : ImFontAtlas)
-      @this.container_atlas = container_atlas
+      @this.value.container_atlas = container_atlas
     end
 
     def config_data : ImFontConfig
-      ImFontConfig.new(@this.config_data)
+      ImFontConfig.new(@this.value.config_data)
     end
 
     def config_data=(config_data : ImFontConfig)
-      @this.config_data = config_data
+      @this.value.config_data = config_data
     end
 
     def config_data_count : Int16
-      @this.config_data_count
+      @this.value.config_data_count
     end
 
     def config_data_count=(config_data_count : Int16)
-      @this.config_data_count = config_data_count
+      @this.value.config_data_count = config_data_count
     end
 
     def fallback_char : ImWchar
-      @this.fallback_char
+      @this.value.fallback_char
     end
 
     def fallback_char=(fallback_char : ImWchar)
-      @this.fallback_char = fallback_char
+      @this.value.fallback_char = fallback_char
     end
 
     def ellipsis_char : ImWchar
-      @this.ellipsis_char
+      @this.value.ellipsis_char
     end
 
     def ellipsis_char=(ellipsis_char : ImWchar)
-      @this.ellipsis_char = ellipsis_char
+      @this.value.ellipsis_char = ellipsis_char
     end
 
     def dirty_lookup_tables : Bool
-      @this.dirty_lookup_tables
+      @this.value.dirty_lookup_tables
     end
 
     def dirty_lookup_tables=(dirty_lookup_tables : Bool)
-      @this.dirty_lookup_tables = dirty_lookup_tables
+      @this.value.dirty_lookup_tables = dirty_lookup_tables
     end
 
     def scale : Float32
-      @this.scale
+      @this.value.scale
     end
 
     def scale=(scale : Float32)
-      @this.scale = scale
+      @this.value.scale = scale
     end
 
     def ascent : Float32
-      @this.ascent
+      @this.value.ascent
     end
 
     def ascent=(ascent : Float32)
-      @this.ascent = ascent
+      @this.value.ascent = ascent
     end
 
     def descent : Float32
-      @this.descent
+      @this.value.descent
     end
 
     def descent=(descent : Float32)
-      @this.descent = descent
+      @this.value.descent = descent
     end
 
     def metrics_total_surface : Int32
-      @this.metrics_total_surface
+      @this.value.metrics_total_surface
     end
 
     def metrics_total_surface=(metrics_total_surface : Int32)
-      @this.metrics_total_surface = metrics_total_surface
+      @this.value.metrics_total_surface = metrics_total_surface
     end
 
     def used4k_pages_map : UInt8*
-      @this.used4k_pages_map.to_slice
+      @this.value.used4k_pages_map.to_slice
     end
 
     def used4k_pages_map=(used4k_pages_map : UInt8*)
-      @this.used4k_pages_map = used4k_pages_map
+      @this.value.used4k_pages_map = used4k_pages_map
     end
 
     def add_glyph(src_cfg : ImFontConfig, c : ImWchar, x0 : Float32, y0 : Float32, x1 : Float32, y1 : Float32, u0 : Float32, v0 : Float32, u1 : Float32, v1 : Float32, advance_x : Float32) : Void
@@ -702,143 +702,143 @@ module ImGui
     end
   end
 
-  class ImFontAtlas
-    include DirectClassType(LibImGui::ImFontAtlas)
+  struct ImFontAtlas
+    include StructClassType(LibImGui::ImFontAtlas)
 
     def locked : Bool
-      @this.locked
+      @this.value.locked
     end
 
     def locked=(locked : Bool)
-      @this.locked = locked
+      @this.value.locked = locked
     end
 
     def flags : ImFontAtlasFlags
-      @this.flags
+      @this.value.flags
     end
 
     def flags=(flags : ImFontAtlasFlags)
-      @this.flags = flags
+      @this.value.flags = flags
     end
 
     def tex_id : ImTextureID
-      @this.tex_id
+      @this.value.tex_id
     end
 
     def tex_id=(tex_id : ImTextureID)
-      @this.tex_id = tex_id
+      @this.value.tex_id = tex_id
     end
 
     def tex_desired_width : Int32
-      @this.tex_desired_width
+      @this.value.tex_desired_width
     end
 
     def tex_desired_width=(tex_desired_width : Int32)
-      @this.tex_desired_width = tex_desired_width
+      @this.value.tex_desired_width = tex_desired_width
     end
 
     def tex_glyph_padding : Int32
-      @this.tex_glyph_padding
+      @this.value.tex_glyph_padding
     end
 
     def tex_glyph_padding=(tex_glyph_padding : Int32)
-      @this.tex_glyph_padding = tex_glyph_padding
+      @this.value.tex_glyph_padding = tex_glyph_padding
     end
 
     def tex_pixels_alpha8 : LibC::UChar*
-      @this.tex_pixels_alpha8
+      @this.value.tex_pixels_alpha8
     end
 
     def tex_pixels_alpha8=(tex_pixels_alpha8 : LibC::UChar*)
-      @this.tex_pixels_alpha8 = tex_pixels_alpha8
+      @this.value.tex_pixels_alpha8 = tex_pixels_alpha8
     end
 
     def tex_pixels_rgba32 : UInt32*
-      @this.tex_pixels_rgba32
+      @this.value.tex_pixels_rgba32
     end
 
     def tex_pixels_rgba32=(tex_pixels_rgba32 : UInt32*)
-      @this.tex_pixels_rgba32 = tex_pixels_rgba32
+      @this.value.tex_pixels_rgba32 = tex_pixels_rgba32
     end
 
     def tex_width : Int32
-      @this.tex_width
+      @this.value.tex_width
     end
 
     def tex_width=(tex_width : Int32)
-      @this.tex_width = tex_width
+      @this.value.tex_width = tex_width
     end
 
     def tex_height : Int32
-      @this.tex_height
+      @this.value.tex_height
     end
 
     def tex_height=(tex_height : Int32)
-      @this.tex_height = tex_height
+      @this.value.tex_height = tex_height
     end
 
     def tex_uv_scale : ImVec2
-      @this.tex_uv_scale
+      @this.value.tex_uv_scale
     end
 
     def tex_uv_scale=(tex_uv_scale : ImVec2)
-      @this.tex_uv_scale = tex_uv_scale
+      @this.value.tex_uv_scale = tex_uv_scale
     end
 
     def tex_uv_white_pixel : ImVec2
-      @this.tex_uv_white_pixel
+      @this.value.tex_uv_white_pixel
     end
 
     def tex_uv_white_pixel=(tex_uv_white_pixel : ImVec2)
-      @this.tex_uv_white_pixel = tex_uv_white_pixel
+      @this.value.tex_uv_white_pixel = tex_uv_white_pixel
     end
 
     def fonts : LibImGui::ImVector(ImFont)
-      @this.fonts
+      @this.value.fonts
     end
 
     def fonts=(fonts : LibImGui::ImVector(ImFont))
-      @this.fonts = fonts
+      @this.value.fonts = fonts
     end
 
     def custom_rects : LibImGui::ImVector(LibImGui::ImFontAtlasCustomRect)
-      @this.custom_rects
+      @this.value.custom_rects
     end
 
     def custom_rects=(custom_rects : LibImGui::ImVector(LibImGui::ImFontAtlasCustomRect))
-      @this.custom_rects = custom_rects
+      @this.value.custom_rects = custom_rects
     end
 
     def config_data : LibImGui::ImVector(LibImGui::ImFontConfig)
-      @this.config_data
+      @this.value.config_data
     end
 
     def config_data=(config_data : LibImGui::ImVector(LibImGui::ImFontConfig))
-      @this.config_data = config_data
+      @this.value.config_data = config_data
     end
 
     def tex_uv_lines : ImVec4*
-      @this.tex_uv_lines.to_slice
+      @this.value.tex_uv_lines.to_slice
     end
 
     def tex_uv_lines=(tex_uv_lines : ImVec4*)
-      @this.tex_uv_lines = tex_uv_lines
+      @this.value.tex_uv_lines = tex_uv_lines
     end
 
     def pack_id_mouse_cursors : Int32
-      @this.pack_id_mouse_cursors
+      @this.value.pack_id_mouse_cursors
     end
 
     def pack_id_mouse_cursors=(pack_id_mouse_cursors : Int32)
-      @this.pack_id_mouse_cursors = pack_id_mouse_cursors
+      @this.value.pack_id_mouse_cursors = pack_id_mouse_cursors
     end
 
     def pack_id_lines : Int32
-      @this.pack_id_lines
+      @this.value.pack_id_lines
     end
 
     def pack_id_lines=(pack_id_lines : Int32)
-      @this.pack_id_lines = pack_id_lines
+      @this.value.pack_id_lines = pack_id_lines
     end
 
     def add_custom_rect_font_glyph(font : ImFont, id : ImWchar, width : Int32, height : Int32, advance_x : Float32, offset : ImVec2 = ImVec2.new(0, 0)) : Int32
@@ -970,71 +970,71 @@ module ImGui
     end
   end
 
-  class ImFontAtlasCustomRect
-    include DirectClassType(LibImGui::ImFontAtlasCustomRect)
+  struct ImFontAtlasCustomRect
+    include StructClassType(LibImGui::ImFontAtlasCustomRect)
 
     def width : UInt16
-      @this.width
+      @this.value.width
     end
 
     def width=(width : UInt16)
-      @this.width = width
+      @this.value.width = width
     end
 
     def height : UInt16
-      @this.height
+      @this.value.height
     end
 
     def height=(height : UInt16)
-      @this.height = height
+      @this.value.height = height
     end
 
     def x : UInt16
-      @this.x
+      @this.value.x
     end
 
     def x=(x : UInt16)
-      @this.x = x
+      @this.value.x = x
     end
 
     def y : UInt16
-      @this.y
+      @this.value.y
     end
 
     def y=(y : UInt16)
-      @this.y = y
+      @this.value.y = y
     end
 
     def glyph_id : UInt32
-      @this.glyph_id
+      @this.value.glyph_id
     end
 
     def glyph_id=(glyph_id : UInt32)
-      @this.glyph_id = glyph_id
+      @this.value.glyph_id = glyph_id
     end
 
     def glyph_advance_x : Float32
-      @this.glyph_advance_x
+      @this.value.glyph_advance_x
     end
 
     def glyph_advance_x=(glyph_advance_x : Float32)
-      @this.glyph_advance_x = glyph_advance_x
+      @this.value.glyph_advance_x = glyph_advance_x
     end
 
     def glyph_offset : ImVec2
-      @this.glyph_offset
+      @this.value.glyph_offset
     end
 
     def glyph_offset=(glyph_offset : ImVec2)
-      @this.glyph_offset = glyph_offset
+      @this.value.glyph_offset = glyph_offset
     end
 
     def font : ImFont
-      ImFont.new(@this.font)
+      ImFont.new(@this.value.font)
     end
 
     def font=(font : ImFont)
-      @this.font = font
+      @this.value.font = font
     end
 
     def self.new : ImFontAtlasCustomRect
@@ -1047,159 +1047,159 @@ module ImGui
     end
   end
 
-  class ImFontConfig
-    include DirectClassType(LibImGui::ImFontConfig)
+  struct ImFontConfig
+    include StructClassType(LibImGui::ImFontConfig)
 
     def font_data : Void*
-      @this.font_data
+      @this.value.font_data
     end
 
     def font_data=(font_data : Void*)
-      @this.font_data = font_data
+      @this.value.font_data = font_data
     end
 
     def font_data_size : Int32
-      @this.font_data_size
+      @this.value.font_data_size
     end
 
     def font_data_size=(font_data_size : Int32)
-      @this.font_data_size = font_data_size
+      @this.value.font_data_size = font_data_size
     end
 
     def font_data_owned_by_atlas : Bool
-      @this.font_data_owned_by_atlas
+      @this.value.font_data_owned_by_atlas
     end
 
     def font_data_owned_by_atlas=(font_data_owned_by_atlas : Bool)
-      @this.font_data_owned_by_atlas = font_data_owned_by_atlas
+      @this.value.font_data_owned_by_atlas = font_data_owned_by_atlas
     end
 
     def font_no : Int32
-      @this.font_no
+      @this.value.font_no
     end
 
     def font_no=(font_no : Int32)
-      @this.font_no = font_no
+      @this.value.font_no = font_no
     end
 
     def size_pixels : Float32
-      @this.size_pixels
+      @this.value.size_pixels
     end
 
     def size_pixels=(size_pixels : Float32)
-      @this.size_pixels = size_pixels
+      @this.value.size_pixels = size_pixels
     end
 
     def oversample_h : Int32
-      @this.oversample_h
+      @this.value.oversample_h
     end
 
     def oversample_h=(oversample_h : Int32)
-      @this.oversample_h = oversample_h
+      @this.value.oversample_h = oversample_h
     end
 
     def oversample_v : Int32
-      @this.oversample_v
+      @this.value.oversample_v
     end
 
     def oversample_v=(oversample_v : Int32)
-      @this.oversample_v = oversample_v
+      @this.value.oversample_v = oversample_v
     end
 
     def pixel_snap_h : Bool
-      @this.pixel_snap_h
+      @this.value.pixel_snap_h
     end
 
     def pixel_snap_h=(pixel_snap_h : Bool)
-      @this.pixel_snap_h = pixel_snap_h
+      @this.value.pixel_snap_h = pixel_snap_h
     end
 
     def glyph_extra_spacing : ImVec2
-      @this.glyph_extra_spacing
+      @this.value.glyph_extra_spacing
     end
 
     def glyph_extra_spacing=(glyph_extra_spacing : ImVec2)
-      @this.glyph_extra_spacing = glyph_extra_spacing
+      @this.value.glyph_extra_spacing = glyph_extra_spacing
     end
 
     def glyph_offset : ImVec2
-      @this.glyph_offset
+      @this.value.glyph_offset
     end
 
     def glyph_offset=(glyph_offset : ImVec2)
-      @this.glyph_offset = glyph_offset
+      @this.value.glyph_offset = glyph_offset
     end
 
     def glyph_ranges : ImWchar*
-      @this.glyph_ranges
+      @this.value.glyph_ranges
     end
 
     def glyph_ranges=(glyph_ranges : ImWchar*)
-      @this.glyph_ranges = glyph_ranges
+      @this.value.glyph_ranges = glyph_ranges
     end
 
     def glyph_min_advance_x : Float32
-      @this.glyph_min_advance_x
+      @this.value.glyph_min_advance_x
     end
 
     def glyph_min_advance_x=(glyph_min_advance_x : Float32)
-      @this.glyph_min_advance_x = glyph_min_advance_x
+      @this.value.glyph_min_advance_x = glyph_min_advance_x
     end
 
     def glyph_max_advance_x : Float32
-      @this.glyph_max_advance_x
+      @this.value.glyph_max_advance_x
     end
 
     def glyph_max_advance_x=(glyph_max_advance_x : Float32)
-      @this.glyph_max_advance_x = glyph_max_advance_x
+      @this.value.glyph_max_advance_x = glyph_max_advance_x
     end
 
     def merge_mode : Bool
-      @this.merge_mode
+      @this.value.merge_mode
     end
 
     def merge_mode=(merge_mode : Bool)
-      @this.merge_mode = merge_mode
+      @this.value.merge_mode = merge_mode
     end
 
     def rasterizer_flags : UInt32
-      @this.rasterizer_flags
+      @this.value.rasterizer_flags
     end
 
     def rasterizer_flags=(rasterizer_flags : UInt32)
-      @this.rasterizer_flags = rasterizer_flags
+      @this.value.rasterizer_flags = rasterizer_flags
     end
 
     def rasterizer_multiply : Float32
-      @this.rasterizer_multiply
+      @this.value.rasterizer_multiply
     end
 
     def rasterizer_multiply=(rasterizer_multiply : Float32)
-      @this.rasterizer_multiply = rasterizer_multiply
+      @this.value.rasterizer_multiply = rasterizer_multiply
     end
 
     def ellipsis_char : ImWchar
-      @this.ellipsis_char
+      @this.value.ellipsis_char
     end
 
     def ellipsis_char=(ellipsis_char : ImWchar)
-      @this.ellipsis_char = ellipsis_char
+      @this.value.ellipsis_char = ellipsis_char
     end
 
     def name : LibC::Char*
-      @this.name.to_slice
+      @this.value.name.to_slice
     end
 
     def name=(name : LibC::Char*)
-      @this.name = name
+      @this.value.name = name
     end
 
     def dst_font : ImFont
-      ImFont.new(@this.dst_font)
+      ImFont.new(@this.value.dst_font)
     end
 
     def dst_font=(dst_font : ImFont)
-      @this.dst_font = dst_font
+      @this.value.dst_font = dst_font
     end
 
     def self.new : ImFontConfig
@@ -1212,15 +1212,15 @@ module ImGui
     include StructType
   end
 
-  class ImFontGlyphRangesBuilder
-    include DirectClassType(LibImGui::ImFontGlyphRangesBuilder)
+  struct ImFontGlyphRangesBuilder
+    include StructType
 
     def used_chars : LibImGui::ImVector(UInt32)
-      @this.used_chars
+      pointerof(@used_chars).as(LibImGui::ImVector(UInt32)*).value
     end
 
     def used_chars=(used_chars : LibImGui::ImVector(UInt32))
-      @this.used_chars = used_chars
+      pointerof(@used_chars).value = used_chars.as(LibImGui::ImVectorInternal*).value
     end
 
     def add_char(c : ImWchar) : Void
@@ -1244,13 +1244,17 @@ module ImGui
       LibImGui.ImFontGlyphRangesBuilder_Clear(self)
     end
 
-    def get_bit(n : LibC::SizeT) : Bool
+    def get_bit_(n : LibC::SizeT) : Bool
       LibImGui.ImFontGlyphRangesBuilder_GetBit(self, n)
     end
 
+    macro get_bit(*args, **kwargs, &block)
+    ::ImGui._pointer_wrapper("::ImGui.get_bit_", 0, false, {{*args}}, {{**kwargs}}) {{block}}
+  end
+
     def self.new : ImFontGlyphRangesBuilder
       result = LibImGui.ImFontGlyphRangesBuilder_ImFontGlyphRangesBuilder
-      ImFontGlyphRangesBuilder.new(result)
+      result.value
     end
 
     def set_bit(n : LibC::SizeT) : Void
@@ -1931,103 +1935,103 @@ module ImGui
     end
   end
 
-  class ImGuiInputTextCallbackData
-    include DirectClassType(LibImGui::ImGuiInputTextCallbackData)
+  struct ImGuiInputTextCallbackData
+    include StructClassType(LibImGui::ImGuiInputTextCallbackData)
 
     def event_flag : ImGuiInputTextFlags
-      @this.event_flag
+      @this.value.event_flag
     end
 
     def event_flag=(event_flag : ImGuiInputTextFlags)
-      @this.event_flag = event_flag
+      @this.value.event_flag = event_flag
     end
 
     def flags : ImGuiInputTextFlags
-      @this.flags
+      @this.value.flags
     end
 
     def flags=(flags : ImGuiInputTextFlags)
-      @this.flags = flags
+      @this.value.flags = flags
     end
 
     def user_data : Void*
-      @this.user_data
+      @this.value.user_data
     end
 
     def user_data=(user_data : Void*)
-      @this.user_data = user_data
+      @this.value.user_data = user_data
     end
 
     def event_char : ImWchar
-      @this.event_char
+      @this.value.event_char
     end
 
     def event_char=(event_char : ImWchar)
-      @this.event_char = event_char
+      @this.value.event_char = event_char
     end
 
     def event_key : ImGuiKey
-      @this.event_key
+      @this.value.event_key
     end
 
     def event_key=(event_key : ImGuiKey)
-      @this.event_key = event_key
+      @this.value.event_key = event_key
     end
 
     def buf : LibC::Char*
-      @this.buf
+      @this.value.buf
     end
 
     def buf=(buf : LibC::Char*)
-      @this.buf = buf
+      @this.value.buf = buf
     end
 
     def buf_text_len : Int32
-      @this.buf_text_len
+      @this.value.buf_text_len
     end
 
     def buf_text_len=(buf_text_len : Int32)
-      @this.buf_text_len = buf_text_len
+      @this.value.buf_text_len = buf_text_len
     end
 
     def buf_size : Int32
-      @this.buf_size
+      @this.value.buf_size
     end
 
     def buf_size=(buf_size : Int32)
-      @this.buf_size = buf_size
+      @this.value.buf_size = buf_size
     end
 
     def buf_dirty : Bool
-      @this.buf_dirty
+      @this.value.buf_dirty
     end
 
     def buf_dirty=(buf_dirty : Bool)
-      @this.buf_dirty = buf_dirty
+      @this.value.buf_dirty = buf_dirty
     end
 
     def cursor_pos : Int32
-      @this.cursor_pos
+      @this.value.cursor_pos
     end
 
     def cursor_pos=(cursor_pos : Int32)
-      @this.cursor_pos = cursor_pos
+      @this.value.cursor_pos = cursor_pos
     end
 
     def selection_start : Int32
-      @this.selection_start
+      @this.value.selection_start
     end
 
     def selection_start=(selection_start : Int32)
-      @this.selection_start = selection_start
+      @this.value.selection_start = selection_start
     end
 
     def selection_end : Int32
-      @this.selection_end
+      @this.value.selection_end
     end
 
     def selection_end=(selection_end : Int32)
-      @this.selection_end = selection_end
+      @this.value.selection_end = selection_end
     end
 
     def delete_chars(pos : Int32, bytes_count : Int32) : Void
@@ -2051,56 +2055,8 @@ module ImGui
   alias ImGuiInputTextState = LibImGui::ImGuiInputTextState
   alias ImGuiLastItemDataBackup = LibImGui::ImGuiLastItemDataBackup
 
-  class ImGuiListClipper
-    include DirectClassType(LibImGui::ImGuiListClipper)
-
-    def display_start : Int32
-      @this.display_start
-    end
-
-    def display_start=(display_start : Int32)
-      @this.display_start = display_start
-    end
-
-    def display_end : Int32
-      @this.display_end
-    end
-
-    def display_end=(display_end : Int32)
-      @this.display_end = display_end
-    end
-
-    def items_count : Int32
-      @this.items_count
-    end
-
-    def items_count=(items_count : Int32)
-      @this.items_count = items_count
-    end
-
-    def step_no : Int32
-      @this.step_no
-    end
-
-    def step_no=(step_no : Int32)
-      @this.step_no = step_no
-    end
-
-    def items_height : Float32
-      @this.items_height
-    end
-
-    def items_height=(items_height : Float32)
-      @this.items_height = items_height
-    end
-
-    def start_pos_y : Float32
-      @this.start_pos_y
-    end
-
-    def start_pos_y=(start_pos_y : Float32)
-      @this.start_pos_y = start_pos_y
-    end
+  struct ImGuiListClipper
+    include StructType
 
     def begin(items_count : Int32, items_height : Float32 = -1.0) : Void
       LibImGui.ImGuiListClipper_Begin(self, items_count, items_height)
@@ -2112,12 +2068,16 @@ module ImGui
 
     def self.new(items_count : Int32 = -1, items_height : Float32 = -1.0) : ImGuiListClipper
       result = LibImGui.ImGuiListClipper_ImGuiListClipper(items_count, items_height)
-      ImGuiListClipper.new(result)
+      result.value
     end
 
-    def step : Bool
+    def step_ : Bool
       LibImGui.ImGuiListClipper_Step(self)
     end
+
+    macro step(*args, **kwargs, &block)
+    ::ImGui._pointer_wrapper("::ImGui.step_", 0, false, {{*args}}, {{**kwargs}}) {{block}}
+  end
   end
 
   alias ImGuiMenuColumns = LibImGui::ImGuiMenuColumns
@@ -2125,20 +2085,12 @@ module ImGui
   alias ImGuiNextItemData = LibImGui::ImGuiNextItemData
   alias ImGuiNextWindowData = LibImGui::ImGuiNextWindowData
 
-  class ImGuiOnceUponAFrame
-    include DirectClassType(LibImGui::ImGuiOnceUponAFrame)
-
-    def ref_frame : Int32
-      @this.ref_frame
-    end
-
-    def ref_frame=(ref_frame : Int32)
-      @this.ref_frame = ref_frame
-    end
+  struct ImGuiOnceUponAFrame
+    include StructType
 
     def self.new : ImGuiOnceUponAFrame
       result = LibImGui.ImGuiOnceUponAFrame_ImGuiOnceUponAFrame
-      ImGuiOnceUponAFrame.new(result)
+      result.value
     end
   end
 
@@ -2236,51 +2188,51 @@ module ImGui
   alias ImGuiSettingsHandler = LibImGui::ImGuiSettingsHandler
   alias ImGuiShrinkWidthItem = LibImGui::ImGuiShrinkWidthItem
 
-  class ImGuiSizeCallbackData
-    include DirectClassType(LibImGui::ImGuiSizeCallbackData)
+  struct ImGuiSizeCallbackData
+    include StructClassType(LibImGui::ImGuiSizeCallbackData)
 
     def user_data : Void*
-      @this.user_data
+      @this.value.user_data
     end
 
     def user_data=(user_data : Void*)
-      @this.user_data = user_data
+      @this.value.user_data = user_data
     end
 
     def pos : ImVec2
-      @this.pos
+      @this.value.pos
     end
 
     def pos=(pos : ImVec2)
-      @this.pos = pos
+      @this.value.pos = pos
     end
 
     def current_size : ImVec2
-      @this.current_size
+      @this.value.current_size
     end
 
     def current_size=(current_size : ImVec2)
-      @this.current_size = current_size
+      @this.value.current_size = current_size
     end
 
     def desired_size : ImVec2
-      @this.desired_size
+      @this.value.desired_size
     end
 
     def desired_size=(desired_size : ImVec2)
-      @this.desired_size = desired_size
+      @this.value.desired_size = desired_size
     end
   end
 
-  class ImGuiStorage
-    include DirectClassType(LibImGui::ImGuiStorage)
+  struct ImGuiStorage
+    include StructType
 
     def data : LibImGui::ImVector(LibImGui::ImGuiStoragePair)
-      @this.data
+      pointerof(@data).as(LibImGui::ImVector(LibImGui::ImGuiStoragePair)*).value
     end
 
     def data=(data : LibImGui::ImVector(LibImGui::ImGuiStoragePair))
-      @this.data = data
+      pointerof(@data).value = data.as(LibImGui::ImVectorInternal*).value
     end
 
     def build_sort_by_key : Void
@@ -2291,9 +2243,13 @@ module ImGui
       LibImGui.ImGuiStorage_Clear(self)
     end
 
-    def get_bool(key : ImGuiID, default_val : Bool = false) : Bool
+    def get_bool_(key : ImGuiID, default_val : Bool = false) : Bool
       LibImGui.ImGuiStorage_GetBool(self, key, default_val)
     end
+
+    macro get_bool(*args, **kwargs, &block)
+    ::ImGui._pointer_wrapper("::ImGui.get_bool_", 0, false, {{*args}}, {{**kwargs}}) {{block}}
+  end
 
     def get_bool_ref(key : ImGuiID, default_val : Bool = false) : Bool
       LibImGui.ImGuiStorage_GetBoolRef(self, key, default_val)
@@ -2675,20 +2631,20 @@ module ImGui
   alias ImGuiTabBar = LibImGui::ImGuiTabBar
   alias ImGuiTabItem = LibImGui::ImGuiTabItem
 
-  class ImGuiTextBuffer
-    include DirectClassType(LibImGui::ImGuiTextBuffer)
+  struct ImGuiTextBuffer
+    include StructType
 
     def buf : LibImGui::ImVector(LibC::Char)
-      @this.buf
+      pointerof(@buf).as(LibImGui::ImVector(LibC::Char)*).value
     end
 
     def buf=(buf : LibImGui::ImVector(LibC::Char))
-      @this.buf = buf
+      pointerof(@buf).value = buf.as(LibImGui::ImVectorInternal*).value
     end
 
     def self.new : ImGuiTextBuffer
       result = LibImGui.ImGuiTextBuffer_ImGuiTextBuffer
-      ImGuiTextBuffer.new(result)
+      result.value
     end
 
     def append(str : Slice(UInt8) | String) : Void
@@ -2713,9 +2669,13 @@ module ImGui
       LibImGui.ImGuiTextBuffer_clear(self)
     end
 
-    def empty : Bool
+    def empty_ : Bool
       LibImGui.ImGuiTextBuffer_empty(self)
     end
+
+    macro empty(*args, **kwargs, &block)
+    ::ImGui._pointer_wrapper("::ImGui.empty_", 0, false, {{*args}}, {{**kwargs}}) {{block}}
+  end
 
     def end : String
       result = LibImGui.ImGuiTextBuffer_end(self)
@@ -2731,31 +2691,31 @@ module ImGui
     end
   end
 
-  class ImGuiTextFilter
-    include DirectClassType(LibImGui::ImGuiTextFilter)
+  struct ImGuiTextFilter
+    include StructClassType(LibImGui::ImGuiTextFilter)
 
     def input_buf : LibC::Char*
-      @this.input_buf.to_slice
+      @this.value.input_buf.to_slice
     end
 
     def input_buf=(input_buf : LibC::Char*)
-      @this.input_buf = input_buf
+      @this.value.input_buf = input_buf
     end
 
     def filters : LibImGui::ImVector(LibImGui::ImGuiTextRange)
-      @this.filters
+      @this.value.filters
     end
 
     def filters=(filters : LibImGui::ImVector(LibImGui::ImGuiTextRange))
-      @this.filters = filters
+      @this.value.filters = filters
     end
 
     def count_grep : Int32
-      @this.count_grep
+      @this.value.count_grep
     end
 
     def count_grep=(count_grep : Int32)
-      @this.count_grep = count_grep
+      @this.value.count_grep = count_grep
     end
 
     def build : Void
@@ -3456,7 +3416,7 @@ module ImGui
 
   def self.get_state_storage : ImGuiStorage
     result = LibImGui.igGetStateStorage
-    ImGuiStorage.new(result)
+    result.value
   end
 
   def self.get_style : ImGuiStyle
@@ -4177,7 +4137,7 @@ module ImGui
     LibImGui.igSetScrollYFloat(scroll_y)
   end
 
-  def self.set_state_storage(storage : ImGuiStorage) : Void
+  def self.set_state_storage(storage : ImGuiStorage*) : Void
     LibImGui.igSetStateStorage(storage)
   end
 
