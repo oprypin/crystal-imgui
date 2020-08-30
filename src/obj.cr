@@ -122,7 +122,7 @@ module ImGui
     end
 
     def cmd_lists : Slice(ImDrawList)
-      Slice(ImDrawList).new(@this.value.cmd_lists, @this.value.cmd_lists_count)
+      Slice.new(@this.value.cmd_lists_count.to_i) { |i| ImDrawList.new(@this.value.cmd_lists + i) }
     end
 
     def cmd_lists=(cmd_lists : Slice(ImDrawList))
@@ -200,28 +200,31 @@ module ImGui
   struct ImDrawList
     include StructClassType(LibImGui::ImDrawList)
 
-    def cmd_buffer : LibImGui::ImVector(LibImGui::ImDrawCmd)
-      @this.value.cmd_buffer
+    def cmd_buffer : ImVector(LibImGui::ImDrawCmd)
+      t = @this.value.cmd_buffer
+      pointerof(t).as(ImVector(LibImGui::ImDrawCmd)*).value
     end
 
-    def cmd_buffer=(cmd_buffer : LibImGui::ImVector(LibImGui::ImDrawCmd))
-      @this.value.cmd_buffer = cmd_buffer
+    def cmd_buffer=(cmd_buffer : ImVector(LibImGui::ImDrawCmd))
+      @this.value.cmd_buffer = cmd_buffer.as(LibImGui::ImVectorInternal*).value
     end
 
-    def idx_buffer : LibImGui::ImVector(ImDrawIdx)
-      @this.value.idx_buffer
+    def idx_buffer : ImVector(ImDrawIdx)
+      t = @this.value.idx_buffer
+      pointerof(t).as(ImVector(ImDrawIdx)*).value
     end
 
-    def idx_buffer=(idx_buffer : LibImGui::ImVector(ImDrawIdx))
-      @this.value.idx_buffer = idx_buffer
+    def idx_buffer=(idx_buffer : ImVector(ImDrawIdx))
+      @this.value.idx_buffer = idx_buffer.as(LibImGui::ImVectorInternal*).value
     end
 
-    def vtx_buffer : LibImGui::ImVector(ImDrawVert)
-      @this.value.vtx_buffer
+    def vtx_buffer : ImVector(ImDrawVert)
+      t = @this.value.vtx_buffer
+      pointerof(t).as(ImVector(ImDrawVert)*).value
     end
 
-    def vtx_buffer=(vtx_buffer : LibImGui::ImVector(ImDrawVert))
-      @this.value.vtx_buffer = vtx_buffer
+    def vtx_buffer=(vtx_buffer : ImVector(ImDrawVert))
+      @this.value.vtx_buffer = vtx_buffer.as(LibImGui::ImVectorInternal*).value
     end
 
     def flags : ImDrawListFlags
@@ -479,12 +482,13 @@ module ImGui
   struct ImFont
     include StructClassType(LibImGui::ImFont)
 
-    def index_advance_x : LibImGui::ImVector(Float32)
-      @this.value.index_advance_x
+    def index_advance_x : ImVector(Float32)
+      t = @this.value.index_advance_x
+      pointerof(t).as(ImVector(Float32)*).value
     end
 
-    def index_advance_x=(index_advance_x : LibImGui::ImVector(Float32))
-      @this.value.index_advance_x = index_advance_x
+    def index_advance_x=(index_advance_x : ImVector(Float32))
+      @this.value.index_advance_x = index_advance_x.as(LibImGui::ImVectorInternal*).value
     end
 
     def fallback_advance_x : Float32
@@ -503,27 +507,29 @@ module ImGui
       @this.value.font_size = font_size
     end
 
-    def index_lookup : LibImGui::ImVector(ImWchar)
-      @this.value.index_lookup
+    def index_lookup : ImVector(ImWchar)
+      t = @this.value.index_lookup
+      pointerof(t).as(ImVector(ImWchar)*).value
     end
 
-    def index_lookup=(index_lookup : LibImGui::ImVector(ImWchar))
-      @this.value.index_lookup = index_lookup
+    def index_lookup=(index_lookup : ImVector(ImWchar))
+      @this.value.index_lookup = index_lookup.as(LibImGui::ImVectorInternal*).value
     end
 
-    def glyphs : LibImGui::ImVector(ImFontGlyph)
-      @this.value.glyphs
+    def glyphs : ImVector(ImFontGlyph)
+      t = @this.value.glyphs
+      pointerof(t).as(ImVector(ImFontGlyph)*).value
     end
 
-    def glyphs=(glyphs : LibImGui::ImVector(ImFontGlyph))
-      @this.value.glyphs = glyphs
+    def glyphs=(glyphs : ImVector(ImFontGlyph))
+      @this.value.glyphs = glyphs.as(LibImGui::ImVectorInternal*).value
     end
 
-    def fallback_glyph : ImFontGlyph*
+    def fallback_glyph : ImFontGlyph
       @this.value.fallback_glyph.value
     end
 
-    def fallback_glyph=(fallback_glyph : ImFontGlyph*)
+    def fallback_glyph=(fallback_glyph : ImFontGlyph)
       @this.value.fallback_glyph = fallback_glyph
     end
 
@@ -543,11 +549,11 @@ module ImGui
       @this.value.container_atlas = container_atlas
     end
 
-    def config_data : ImFontConfig
-      ImFontConfig.new(@this.value.config_data)
+    def config_data : Slice(ImFontConfig)
+      Slice.new(@this.value.config_data_count.to_i) { |i| ImFontConfig.new(@this.value.config_data + i) }
     end
 
-    def config_data=(config_data : ImFontConfig)
+    def config_data=(config_data : Slice(ImFontConfig))
       @this.value.config_data = config_data
     end
 
@@ -615,11 +621,11 @@ module ImGui
       @this.value.metrics_total_surface = metrics_total_surface
     end
 
-    def used4k_pages_map : UInt8*
+    def used4k_pages_map : Slice(UInt8)
       @this.value.used4k_pages_map.to_slice
     end
 
-    def used4k_pages_map=(used4k_pages_map : UInt8*)
+    def used4k_pages_map=(used4k_pages_map : Slice(UInt8))
       @this.value.used4k_pages_map = used4k_pages_map
     end
 
@@ -793,35 +799,38 @@ module ImGui
       @this.value.tex_uv_white_pixel = tex_uv_white_pixel
     end
 
-    def fonts : LibImGui::ImVector(ImFont)
-      @this.value.fonts
+    def fonts : ImVector(ImFont)
+      t = @this.value.fonts
+      pointerof(t).as(ImVector(ImFont)*).value
     end
 
-    def fonts=(fonts : LibImGui::ImVector(ImFont))
-      @this.value.fonts = fonts
+    def fonts=(fonts : ImVector(ImFont))
+      @this.value.fonts = fonts.as(LibImGui::ImVectorInternal*).value
     end
 
-    def custom_rects : LibImGui::ImVector(LibImGui::ImFontAtlasCustomRect)
-      @this.value.custom_rects
+    def custom_rects : ImVector(LibImGui::ImFontAtlasCustomRect)
+      t = @this.value.custom_rects
+      pointerof(t).as(ImVector(LibImGui::ImFontAtlasCustomRect)*).value
     end
 
-    def custom_rects=(custom_rects : LibImGui::ImVector(LibImGui::ImFontAtlasCustomRect))
-      @this.value.custom_rects = custom_rects
+    def custom_rects=(custom_rects : ImVector(LibImGui::ImFontAtlasCustomRect))
+      @this.value.custom_rects = custom_rects.as(LibImGui::ImVectorInternal*).value
     end
 
-    def config_data : LibImGui::ImVector(LibImGui::ImFontConfig)
-      @this.value.config_data
+    def config_data : ImVector(LibImGui::ImFontConfig)
+      t = @this.value.config_data
+      pointerof(t).as(ImVector(LibImGui::ImFontConfig)*).value
     end
 
-    def config_data=(config_data : LibImGui::ImVector(LibImGui::ImFontConfig))
-      @this.value.config_data = config_data
+    def config_data=(config_data : ImVector(LibImGui::ImFontConfig))
+      @this.value.config_data = config_data.as(LibImGui::ImVectorInternal*).value
     end
 
-    def tex_uv_lines : ImVec4*
+    def tex_uv_lines : Slice(ImVec4)
       @this.value.tex_uv_lines.to_slice
     end
 
-    def tex_uv_lines=(tex_uv_lines : ImVec4*)
+    def tex_uv_lines=(tex_uv_lines : Slice(ImVec4))
       @this.value.tex_uv_lines = tex_uv_lines
     end
 
@@ -941,7 +950,7 @@ module ImGui
       LibImGui.ImFontAtlas_GetGlyphRangesVietnamese(self)
     end
 
-    def get_mouse_cursor_tex_data(cursor : ImGuiMouseCursor) : {Bool, ImGui::ImVec2, ImGui::ImVec2, ImGui::ImVec2, ImGui::ImVec2}
+    def get_mouse_cursor_tex_data(cursor : ImGuiMouseCursor) : {Bool, ImGui::ImVec2, ImGui::ImVec2, Slice(ImGui::ImVec2), Slice(ImGui::ImVec2)}
       result = LibImGui.ImFontAtlas_GetMouseCursorTexData(self, cursor, out out_offset, out out_size, out out_uv_border, out out_uv_fill)
       {result, out_offset, out_size, out_uv_border.to_slice, out_uv_fill.to_slice}
     end
@@ -1186,11 +1195,11 @@ module ImGui
       @this.value.ellipsis_char = ellipsis_char
     end
 
-    def name : LibC::Char*
+    def name : Slice(LibC::Char)
       @this.value.name.to_slice
     end
 
-    def name=(name : LibC::Char*)
+    def name=(name : Slice(LibC::Char))
       @this.value.name = name
     end
 
@@ -1215,12 +1224,13 @@ module ImGui
   struct ImFontGlyphRangesBuilder
     include StructType
 
-    def used_chars : LibImGui::ImVector(UInt32)
-      pointerof(@used_chars).as(LibImGui::ImVector(UInt32)*).value
+    def used_chars : ImVector(UInt32)
+      t = @used_chars
+      pointerof(t).as(ImVector(UInt32)*).value
     end
 
-    def used_chars=(used_chars : LibImGui::ImVector(UInt32))
-      pointerof(@used_chars).value = used_chars.as(LibImGui::ImVectorInternal*).value
+    def used_chars=(used_chars : ImVector(UInt32))
+      @used_chars = used_chars.as(LibImGui::ImVectorInternal*).value
     end
 
     def add_char(c : ImWchar) : Void
@@ -1235,7 +1245,7 @@ module ImGui
       LibImGui.ImFontGlyphRangesBuilder_AddText(self, text, (text.to_unsafe + text.bytesize))
     end
 
-    def build_ranges : LibImGui::ImVector
+    def build_ranges : ImVector
       LibImGui.ImFontGlyphRangesBuilder_BuildRanges(self, out out_ranges)
       out_ranges.value
     end
@@ -1349,11 +1359,11 @@ module ImGui
       @this.value.mouse_drag_threshold = mouse_drag_threshold
     end
 
-    def key_map : Int32*
+    def key_map : Slice(Int32)
       @this.value.key_map.to_slice
     end
 
-    def key_map=(key_map : Int32*)
+    def key_map=(key_map : Slice(Int32))
       @this.value.key_map = key_map
     end
 
@@ -1565,11 +1575,11 @@ module ImGui
       @this.value.mouse_pos = mouse_pos
     end
 
-    def mouse_down : Bool*
+    def mouse_down : Slice(Bool)
       @this.value.mouse_down.to_slice
     end
 
-    def mouse_down=(mouse_down : Bool*)
+    def mouse_down=(mouse_down : Slice(Bool))
       @this.value.mouse_down = mouse_down
     end
 
@@ -1621,19 +1631,19 @@ module ImGui
       @this.value.key_super = key_super
     end
 
-    def keys_down : Bool*
+    def keys_down : Slice(Bool)
       @this.value.keys_down.to_slice
     end
 
-    def keys_down=(keys_down : Bool*)
+    def keys_down=(keys_down : Slice(Bool))
       @this.value.keys_down = keys_down
     end
 
-    def nav_inputs : Float32*
+    def nav_inputs : Slice(Float32)
       @this.value.nav_inputs.to_slice
     end
 
-    def nav_inputs=(nav_inputs : Float32*)
+    def nav_inputs=(nav_inputs : Slice(Float32))
       @this.value.nav_inputs = nav_inputs
     end
 
@@ -1765,123 +1775,123 @@ module ImGui
       @this.value.mouse_pos_prev = mouse_pos_prev
     end
 
-    def mouse_clicked_pos : ImVec2*
+    def mouse_clicked_pos : Slice(ImVec2)
       @this.value.mouse_clicked_pos.to_slice
     end
 
-    def mouse_clicked_pos=(mouse_clicked_pos : ImVec2*)
+    def mouse_clicked_pos=(mouse_clicked_pos : Slice(ImVec2))
       @this.value.mouse_clicked_pos = mouse_clicked_pos
     end
 
-    def mouse_clicked_time : Float64*
+    def mouse_clicked_time : Slice(Float64)
       @this.value.mouse_clicked_time.to_slice
     end
 
-    def mouse_clicked_time=(mouse_clicked_time : Float64*)
+    def mouse_clicked_time=(mouse_clicked_time : Slice(Float64))
       @this.value.mouse_clicked_time = mouse_clicked_time
     end
 
-    def mouse_clicked : Bool*
+    def mouse_clicked : Slice(Bool)
       @this.value.mouse_clicked.to_slice
     end
 
-    def mouse_clicked=(mouse_clicked : Bool*)
+    def mouse_clicked=(mouse_clicked : Slice(Bool))
       @this.value.mouse_clicked = mouse_clicked
     end
 
-    def mouse_double_clicked : Bool*
+    def mouse_double_clicked : Slice(Bool)
       @this.value.mouse_double_clicked.to_slice
     end
 
-    def mouse_double_clicked=(mouse_double_clicked : Bool*)
+    def mouse_double_clicked=(mouse_double_clicked : Slice(Bool))
       @this.value.mouse_double_clicked = mouse_double_clicked
     end
 
-    def mouse_released : Bool*
+    def mouse_released : Slice(Bool)
       @this.value.mouse_released.to_slice
     end
 
-    def mouse_released=(mouse_released : Bool*)
+    def mouse_released=(mouse_released : Slice(Bool))
       @this.value.mouse_released = mouse_released
     end
 
-    def mouse_down_owned : Bool*
+    def mouse_down_owned : Slice(Bool)
       @this.value.mouse_down_owned.to_slice
     end
 
-    def mouse_down_owned=(mouse_down_owned : Bool*)
+    def mouse_down_owned=(mouse_down_owned : Slice(Bool))
       @this.value.mouse_down_owned = mouse_down_owned
     end
 
-    def mouse_down_was_double_click : Bool*
+    def mouse_down_was_double_click : Slice(Bool)
       @this.value.mouse_down_was_double_click.to_slice
     end
 
-    def mouse_down_was_double_click=(mouse_down_was_double_click : Bool*)
+    def mouse_down_was_double_click=(mouse_down_was_double_click : Slice(Bool))
       @this.value.mouse_down_was_double_click = mouse_down_was_double_click
     end
 
-    def mouse_down_duration : Float32*
+    def mouse_down_duration : Slice(Float32)
       @this.value.mouse_down_duration.to_slice
     end
 
-    def mouse_down_duration=(mouse_down_duration : Float32*)
+    def mouse_down_duration=(mouse_down_duration : Slice(Float32))
       @this.value.mouse_down_duration = mouse_down_duration
     end
 
-    def mouse_down_duration_prev : Float32*
+    def mouse_down_duration_prev : Slice(Float32)
       @this.value.mouse_down_duration_prev.to_slice
     end
 
-    def mouse_down_duration_prev=(mouse_down_duration_prev : Float32*)
+    def mouse_down_duration_prev=(mouse_down_duration_prev : Slice(Float32))
       @this.value.mouse_down_duration_prev = mouse_down_duration_prev
     end
 
-    def mouse_drag_max_distance_abs : ImVec2*
+    def mouse_drag_max_distance_abs : Slice(ImVec2)
       @this.value.mouse_drag_max_distance_abs.to_slice
     end
 
-    def mouse_drag_max_distance_abs=(mouse_drag_max_distance_abs : ImVec2*)
+    def mouse_drag_max_distance_abs=(mouse_drag_max_distance_abs : Slice(ImVec2))
       @this.value.mouse_drag_max_distance_abs = mouse_drag_max_distance_abs
     end
 
-    def mouse_drag_max_distance_sqr : Float32*
+    def mouse_drag_max_distance_sqr : Slice(Float32)
       @this.value.mouse_drag_max_distance_sqr.to_slice
     end
 
-    def mouse_drag_max_distance_sqr=(mouse_drag_max_distance_sqr : Float32*)
+    def mouse_drag_max_distance_sqr=(mouse_drag_max_distance_sqr : Slice(Float32))
       @this.value.mouse_drag_max_distance_sqr = mouse_drag_max_distance_sqr
     end
 
-    def keys_down_duration : Float32*
+    def keys_down_duration : Slice(Float32)
       @this.value.keys_down_duration.to_slice
     end
 
-    def keys_down_duration=(keys_down_duration : Float32*)
+    def keys_down_duration=(keys_down_duration : Slice(Float32))
       @this.value.keys_down_duration = keys_down_duration
     end
 
-    def keys_down_duration_prev : Float32*
+    def keys_down_duration_prev : Slice(Float32)
       @this.value.keys_down_duration_prev.to_slice
     end
 
-    def keys_down_duration_prev=(keys_down_duration_prev : Float32*)
+    def keys_down_duration_prev=(keys_down_duration_prev : Slice(Float32))
       @this.value.keys_down_duration_prev = keys_down_duration_prev
     end
 
-    def nav_inputs_down_duration : Float32*
+    def nav_inputs_down_duration : Slice(Float32)
       @this.value.nav_inputs_down_duration.to_slice
     end
 
-    def nav_inputs_down_duration=(nav_inputs_down_duration : Float32*)
+    def nav_inputs_down_duration=(nav_inputs_down_duration : Slice(Float32))
       @this.value.nav_inputs_down_duration = nav_inputs_down_duration
     end
 
-    def nav_inputs_down_duration_prev : Float32*
+    def nav_inputs_down_duration_prev : Slice(Float32)
       @this.value.nav_inputs_down_duration_prev.to_slice
     end
 
-    def nav_inputs_down_duration_prev=(nav_inputs_down_duration_prev : Float32*)
+    def nav_inputs_down_duration_prev=(nav_inputs_down_duration_prev : Slice(Float32))
       @this.value.nav_inputs_down_duration_prev = nav_inputs_down_duration_prev
     end
 
@@ -1901,12 +1911,13 @@ module ImGui
       @this.value.input_queue_surrogate = input_queue_surrogate
     end
 
-    def input_queue_characters : LibImGui::ImVector(ImWchar)
-      @this.value.input_queue_characters
+    def input_queue_characters : ImVector(ImWchar)
+      t = @this.value.input_queue_characters
+      pointerof(t).as(ImVector(ImWchar)*).value
     end
 
-    def input_queue_characters=(input_queue_characters : LibImGui::ImVector(ImWchar))
-      @this.value.input_queue_characters = input_queue_characters
+    def input_queue_characters=(input_queue_characters : ImVector(ImWchar))
+      @this.value.input_queue_characters = input_queue_characters.as(LibImGui::ImVectorInternal*).value
     end
 
     def add_input_character(c : UInt32) : Void
@@ -2129,11 +2140,11 @@ module ImGui
       @this.value.data_frame_count = data_frame_count
     end
 
-    def data_type : LibC::Char*
+    def data_type : Slice(LibC::Char)
       @this.value.data_type.to_slice
     end
 
-    def data_type=(data_type : LibC::Char*)
+    def data_type=(data_type : Slice(LibC::Char))
       @this.value.data_type = data_type
     end
 
@@ -2219,12 +2230,13 @@ module ImGui
   struct ImGuiStorage
     include StructType
 
-    def data : LibImGui::ImVector(LibImGui::ImGuiStoragePair)
-      pointerof(@data).as(LibImGui::ImVector(LibImGui::ImGuiStoragePair)*).value
+    def data : ImVector(LibImGui::ImGuiStoragePair)
+      t = @data
+      pointerof(t).as(ImVector(LibImGui::ImGuiStoragePair)*).value
     end
 
-    def data=(data : LibImGui::ImVector(LibImGui::ImGuiStoragePair))
-      pointerof(@data).value = data.as(LibImGui::ImVectorInternal*).value
+    def data=(data : ImVector(LibImGui::ImGuiStoragePair))
+      @data = data.as(LibImGui::ImVectorInternal*).value
     end
 
     def build_sort_by_key : Void
@@ -2597,11 +2609,11 @@ module ImGui
       @this.value.circle_segment_max_error = circle_segment_max_error
     end
 
-    def colors : ImVec4*
+    def colors : Slice(ImVec4)
       @this.value.colors.to_slice
     end
 
-    def colors=(colors : ImVec4*)
+    def colors=(colors : Slice(ImVec4))
       @this.value.colors = colors
     end
 
@@ -2622,12 +2634,13 @@ module ImGui
   struct ImGuiTextBuffer
     include StructType
 
-    def buf : LibImGui::ImVector(LibC::Char)
-      pointerof(@buf).as(LibImGui::ImVector(LibC::Char)*).value
+    def buf : ImVector(LibC::Char)
+      t = @buf
+      pointerof(t).as(ImVector(LibC::Char)*).value
     end
 
-    def buf=(buf : LibImGui::ImVector(LibC::Char))
-      pointerof(@buf).value = buf.as(LibImGui::ImVectorInternal*).value
+    def buf=(buf : ImVector(LibC::Char))
+      @buf = buf.as(LibImGui::ImVectorInternal*).value
     end
 
     def self.new : ImGuiTextBuffer
@@ -2678,20 +2691,21 @@ module ImGui
   struct ImGuiTextFilter
     include StructClassType(LibImGui::ImGuiTextFilter)
 
-    def input_buf : LibC::Char*
+    def input_buf : Slice(LibC::Char)
       @this.value.input_buf.to_slice
     end
 
-    def input_buf=(input_buf : LibC::Char*)
+    def input_buf=(input_buf : Slice(LibC::Char))
       @this.value.input_buf = input_buf
     end
 
-    def filters : LibImGui::ImVector(LibImGui::ImGuiTextRange)
-      @this.value.filters
+    def filters : ImVector(LibImGui::ImGuiTextRange)
+      t = @this.value.filters
+      pointerof(t).as(ImVector(LibImGui::ImGuiTextRange)*).value
     end
 
-    def filters=(filters : LibImGui::ImVector(LibImGui::ImGuiTextRange))
-      @this.value.filters = filters
+    def filters=(filters : ImVector(LibImGui::ImGuiTextRange))
+      @this.value.filters = filters.as(LibImGui::ImVectorInternal*).value
     end
 
     def count_grep : Int32
@@ -3024,7 +3038,7 @@ module ImGui
     ::ImGui._pointer_wrapper("::ImGui.combo_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
   end
 
-  def self.create_context(shared_font_atlas : ImFontAtlas? = nil) : ImGuiContext
+  def self.create_context(shared_font_atlas : ImFontAtlas? = nil) : LibImGui::ImGuiContext
     result = LibImGui.igCreateContext(shared_font_atlas)
     result.value
   end
@@ -3249,7 +3263,7 @@ module ImGui
     p_out
   end
 
-  def self.get_current_context : ImGuiContext
+  def self.get_current_context : LibImGui::ImGuiContext
     result = LibImGui.igGetCurrentContext
     result.value
   end
@@ -3287,7 +3301,7 @@ module ImGui
     ImDrawData.new(result)
   end
 
-  def self.get_draw_list_shared_data : ImDrawListSharedData
+  def self.get_draw_list_shared_data : LibImGui::ImDrawListSharedData
     result = LibImGui.igGetDrawListSharedData
     result.value
   end
@@ -3331,8 +3345,8 @@ module ImGui
     LibImGui.igGetIDStrStr(str_id_begin, (str_id_begin.to_unsafe + str_id_begin.bytesize))
   end
 
-  def self.get_id(ptr_id : Reference | Void*) : ImGuiID
-    LibImGui.igGetIDPtr(ptr_id.as(Void*))
+  def self.get_id(ptr_id : Reference | StructClassType | Int | Void*) : ImGuiID
+    LibImGui.igGetIDPtr(to_void_id(ptr_id))
   end
 
   def self.get_io : ImGuiIO
@@ -3904,8 +3918,8 @@ module ImGui
     LibImGui.igPushIDStrStr(str_id_begin, (str_id_begin.to_unsafe + str_id_begin.bytesize))
   end
 
-  def self.push_id(ptr_id : Reference | Void*) : Void
-    LibImGui.igPushIDPtr(ptr_id.as(Void*))
+  def self.push_id(ptr_id : Reference | StructClassType | Int | Void*) : Void
+    LibImGui.igPushIDPtr(to_void_id(ptr_id))
   end
 
   def self.push_id(int_id : Int32) : Void
@@ -4321,8 +4335,8 @@ module ImGui
     LibImGui.igTreeNodeStrStr(str_id, fmt, *args)
   end
 
-  def self.tree_node(ptr_id : Reference | Void*, fmt : String, *args) : Bool
-    LibImGui.igTreeNodePtr(ptr_id.as(Void*), fmt, *args)
+  def self.tree_node(ptr_id : Reference | StructClassType | Int | Void*, fmt : String, *args) : Bool
+    LibImGui.igTreeNodePtr(to_void_id(ptr_id), fmt, *args)
   end
 
   def self.tree_node_ex(label : String, flags : ImGuiTreeNodeFlags = ImGuiTreeNodeFlags.new(0)) : Bool
@@ -4333,8 +4347,8 @@ module ImGui
     LibImGui.igTreeNodeExStrStr(str_id, flags, fmt, *args)
   end
 
-  def self.tree_node_ex(ptr_id : Reference | Void*, flags : ImGuiTreeNodeFlags, fmt : String, *args) : Bool
-    LibImGui.igTreeNodeExPtr(ptr_id.as(Void*), flags, fmt, *args)
+  def self.tree_node_ex(ptr_id : Reference | StructClassType | Int | Void*, flags : ImGuiTreeNodeFlags, fmt : String, *args) : Bool
+    LibImGui.igTreeNodeExPtr(to_void_id(ptr_id), flags, fmt, *args)
   end
 
   def self.tree_pop : Void
@@ -4345,8 +4359,8 @@ module ImGui
     LibImGui.igTreePushStr(str_id)
   end
 
-  def self.tree_push(ptr_id : Reference | Void* = Pointer(Reference | Void).null) : Void
-    LibImGui.igTreePushPtr(ptr_id.as(Void*))
+  def self.tree_push(ptr_id : Reference | StructClassType | Int | Void* = Pointer(Reference | StructClassType | Int | Void).null) : Void
+    LibImGui.igTreePushPtr(to_void_id(ptr_id))
   end
 
   def self.unindent(indent_w : Float32 = 0.0) : Void

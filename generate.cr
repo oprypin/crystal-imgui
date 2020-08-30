@@ -342,8 +342,8 @@ class COverload
         typ = arg.type.name(ctx)
         callarg = arg.name
         if arg.name == "ptr_id" && typ == "Void*"
-          typ = "Reference | #{typ}"
-          callarg = "#{callarg}.as(Void*)"
+          typ = "Reference | StructClassType | Int | #{typ}"
+          callarg = "to_void_id(#{callarg})"
         elsif arg.type.c_name == "float[4]" || arg.name == "col" && typ == "Float32*"
           typ = "ImVec4* | #{typ}"
           callarg = "#{callarg}.as(Float32*)"
@@ -382,11 +382,12 @@ class COverload
         args << "#{arg.name} : #{typ}#{" = #{default}" if default}" unless arg.name == "self"
         call_args << "#{callarg}"
       end
+      outp2 = outp.dup
+      outp2, rets = convert_returns!(outp2, rets)
       ret_s = to_tuple(rets.map &.name(ctx).rchop("*"))
       any_outputter = self.parent.overloads.any?(&.input_output_arg?)
       yield %(  def #{"self." if !inside_class}#{self.name(ctx)}#{"_" if any_outputter}(#{args.join(", ")}) : #{ret_s || "Void"})
       call = %(    LibImGui.#{self.name(Context::Lib)}(#{call_args.join(", ")}))
-      outp2 = convert_returns(outp, rets)
       call = %(    result = #{call}) if outp.first? == "result" && outp2 != ["result"]
       yield call
       yield (assert to_tuple(outp2)) unless outp2.empty? || outp2 == ["result"]
@@ -406,25 +407,24 @@ def to_tuple(args : Array(String)) : String?
   args.size > 1 ? "{" + args.join(", ") + "}" : args.join(", ").presence
 end
 
-def convert_returns(outp : Array(String), rets : Array(CType)) : Array(String)
-  outp.map_with_index do |o, i|
+def convert_returns!(outp : Array(String), rets : Array(CType)) : {Array(String), Array(CType)}
+  outp.each_with_index do |o, i|
     ret = rets[i]
     if ret.c_name =~ /\d\]$/
-      %(#{o}.to_slice)
+      outp[i] = %(#{o}.to_slice)
+      rets[i] = CType.new("Slice(#{ret.name(Context::Obj).rchop("*")})")
     elsif (t = ret.try &.base_type.struct?)
       if t.class? && !t.internal?
-        %(#{ret.name(Context::Obj)}.new(#{o}))
+        outp[i] = %(#{ret.name(Context::Obj)}.new(#{o}))
       else
-        rets[i] = CType.new(ret.name.rchop("*"))
-        o += ".value" if ret.name.rchop?("*")
-        o
+        rets[i] = CType.new(ret.name(Context::Obj).rchop("*"))
+        outp[i] = o + ".value" if ret.name.rchop?("*")
       end
     elsif ret.name(Context::Obj) == "String"
-      %(String.new(#{o}))
-    else
-      o
+      outp[i] = %(String.new(#{o}))
     end
   end
+  {outp, rets}
 end
 
 class CFunction
@@ -487,44 +487,48 @@ class CStructMember
 
   def render(ctx : Context, &block : String->)
     varname = self.name(ctx)
+    typ = self.type
     if ctx.lib?
-      yield %(#{varname} : #{self.type.name(ctx)})
-    elsif ctx.obj? && self.parent.class?
-      return if self.internal?
-      this = "@this.value"
-      typename = self.type.name(ctx)
-      if varname == "cmd_lists" && typename == "ImDrawList*"
-        typename = "Slice(ImDrawList)"
-        call = %(Slice(ImDrawList).new(#{this}.cmd_lists, #{this}.cmd_lists_count))
-      else
-        typ = self.type
-        if typ.class?
-          typ = CType.new(typ.name + "*")
-        end
-        call = convert_returns(["#{this}.#{varname}"], [typ]).first
-      end
-      yield %(def #{varname} : #{typename})
-      yield call
-      yield %(end)
-      yield %(def #{varname}=(#{varname} : #{typename}))
-      yield %(#{this}.#{varname} = #{varname})
-      yield %(end)
+      yield %(#{varname} : #{typ.name(ctx)})
+      return
+    end
+    return if self.internal? && !ctx.ext?
+    this = (self.parent.class? ? "@this.value." : "@")
+    typeinternal = typ.name(Context::Ext)
+    if {varname, typ.name(Context::Obj)} .in?({
+      {"cmd_lists", "ImDrawList*"},
+      {"config_data", "ImFontConfig"},
+    })
+      t = typ.name(Context::Obj).rchop("*")
+      typename = "Slice(#{t})"
+      call = %(Slice.new(#{this}#{varname}_count.to_i) { |i| #{t}.new(#{this}#{varname} + i) })
     else
-      if (t = self.type.as?(CTemplateType))
-        typename = t.name(Context::Obj)
-        typeinternal = t.name(Context::Ext)
-        yield %(@#{varname} : #{typeinternal}) if ctx.ext?
-        return if self.internal?
-        if ctx.obj?
-          yield %(def #{varname} : #{typename})
-          yield %(pointerof(@#{varname}).as(#{typename}*).value)
-          yield %(end)
-          yield %(def #{varname}=(#{varname} : #{typename}))
-          yield %(pointerof(@#{varname}).value = #{varname}.as(#{typeinternal}*).value)
-          yield %(end)
-        end
-      elsif ctx.ext?
-        yield %(#{self.internal? ? "@" : "property "}#{varname} : #{self.type.name(ctx)})
+      if typ.class?
+        typ = CType.new(typ.name + "*")
+      end
+      call, rets = convert_returns!(["#{this}#{varname}"], [typ])
+      call = call.first
+      typename = rets.first.name(ctx)
+    end
+    if ctx.ext? && !self.parent.class?
+      yield %(#{self.internal? ? "@" : "property "}#{varname} : #{self.type.name(ctx)})
+    end
+    if ctx.obj?
+      if (self.type.is_a?(CTemplateType)) && ctx.obj?
+        yield %(def #{varname} : #{typename})
+        yield %(t = #{this}#{varname})
+        yield %(pointerof(t).as(#{typename}*).value)
+        yield %(end)
+        yield %(def #{varname}=(#{varname} : #{typename}))
+        yield %(#{this}#{varname} = #{varname}.as(#{typeinternal}*).value)
+        yield %(end)
+      elsif self.parent.class?
+        yield %(def #{varname} : #{typename})
+        yield call
+        yield %(end)
+        yield %(def #{varname}=(#{varname} : #{typename}))
+        yield %(#{this}#{varname} = #{varname})
+        yield %(end)
       end
     end
   end

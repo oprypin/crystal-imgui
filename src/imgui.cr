@@ -127,12 +127,16 @@ module ImGui
     end
   {% end %}
 
-  def self.tree_node_(int_id : Int, fmt : String, *args) : Bool
-    tree_node_(Pointer(Void).new(int_id), fmt, *args)
+  private def self.to_void_id(x : Reference | Void*)
+    x.as(Void*)
   end
 
-  def self.tree_node_ex_(int_id : Int, flags : ImGuiTreeNodeFlags, fmt : String, *args) : Bool
-    tree_node_ex_(Pointer(Void).new(int_id), flags, fmt, *args)
+  private def self.to_void_id(x : StructClassType)
+    x.to_unsafe
+  end
+
+  private def self.to_void_id(x : Int)
+    Pointer(Void).new(x)
   end
 
   def self.get_id(int_id : Int) : ImGui::ImGuiID
@@ -155,6 +159,10 @@ module ImGui
     LibImGui.igSetNextWindowSizeConstraints(size_min, size_max, ->(data) {
       data.value.user_data.as(typeof(block)*).value.call(ImGui::ImGuiSizeCallbackData.new(data))
     }, pointerof(block))
+  end
+
+  def self.push_id(ptr_id : StructClassType) : Void
+    LibImGui.igPushIDPtr(ptr_id)
   end
 
   def self.col32(r : Int, g : Int, b : Int, a : Int = 255) : UInt32

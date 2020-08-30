@@ -1,10 +1,20 @@
 module ImGui
   struct ImVector(T)
-    @size : Int32
-    @capacity : Int32
+    getter size : Int32
+    getter capacity : Int32
     @data : T*
 
     def initialize(@size, @capacity, @data)
+    end
+
+    include Indexable(T)
+
+    def unsafe_fetch(index : Int)
+      @data[index]
+    end
+
+    def to_unsafe : T*
+      @data
     end
   end
 end

@@ -689,7 +689,7 @@ module ImGui
 
   @[Extern]
   struct ImFontGlyphRangesBuilder
-    @used_chars : LibImGui::ImVectorInternal
+    property used_chars : LibImGui::ImVectorInternal
 
     def initialize(@used_chars : LibImGui::ImVectorInternal)
     end
@@ -718,7 +718,7 @@ module ImGui
 
   @[Extern]
   struct ImGuiStorage
-    @data : LibImGui::ImVectorInternal
+    property data : LibImGui::ImVectorInternal
 
     def initialize(@data : LibImGui::ImVectorInternal)
     end
@@ -726,7 +726,7 @@ module ImGui
 
   @[Extern]
   struct ImGuiTextBuffer
-    @buf : LibImGui::ImVectorInternal
+    property buf : LibImGui::ImVectorInternal
 
     def initialize(@buf : LibImGui::ImVectorInternal)
     end
