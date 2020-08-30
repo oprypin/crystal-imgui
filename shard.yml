@@ -7,6 +7,14 @@ authors:
 description: |
   Crystal bindings to ImGui
 
+development_dependencies:
+  crsfml:
+    github: oprypin/crsfml
+    branch: master
+  imgui:
+    github: oprypin/crystal-imgui-sfml
+    commit: master
+
 license: MIT
 
 crystal: 0.25.1
