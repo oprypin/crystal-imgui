@@ -19,10 +19,8 @@ module ImGui
   end
 
   private module StructType
-    macro included
-      def to_unsafe : {{@type}}*
-        pointerof(@{{@type.instance_vars.first}})
-      end
+    def to_unsafe
+      {{"pointerof(@#{@type.instance_vars.first}).as(#{@type}*)".id}}
     end
   end
 end
@@ -190,6 +188,9 @@ module ImGui
     r, g, b = color_convert_hs_vto_rgb(h.to_f32, s.to_f32, v.to_f32)
     vec4(r, g, b, a)
   end
+
+  PAYLOAD_TYPE_COLOR_3F = "_COL3F"
+  PAYLOAD_TYPE_COLOR_4F = "_COL4F"
 end
 
 class IO::Memory
