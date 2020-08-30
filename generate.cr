@@ -674,6 +674,7 @@ class CTypedef
       yield %(alias #{self.name} = Void)
     else
       if ctx.lib?
+        return if self.name == "ImWchar"
         yield %(alias #{self.name} = #{type_name})
       elsif ctx.ext?
         yield %(alias #{self.name} = LibImGui::#{self.name})

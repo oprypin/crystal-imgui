@@ -20,6 +20,8 @@ module ImGui
 end
 
 lib LibImGui
+  alias ImWchar = Char
+
   struct ImVectorInternal
     size : Int32
     capacity : Int32

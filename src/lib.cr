@@ -11,7 +11,6 @@ lib LibImGui
   alias ImGuiSizeCallback = (ImGuiSizeCallbackData*) -> Void
   alias ImPoolIdx = LibC::Int
   alias ImTextureID = Void*
-  alias ImWchar = ImWchar16
   alias ImWchar16 = LibC::UShort
   alias ImWchar32 = LibC::UInt
   type ImBitVector = Void*
