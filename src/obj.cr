@@ -648,7 +648,7 @@ module ImGui
 
     def calc_word_wrap_position_a(scale : Float32, text : Slice(UInt8) | String, wrap_width : Float32) : String
       result = LibImGui.ImFont_CalcWordWrapPositionA(self, scale, text, (text.to_unsafe + text.bytesize), wrap_width)
-      String.new(result)
+      (s = result) ? String.new(s) : ""
     end
 
     def clear_output_data : Void
@@ -671,7 +671,7 @@ module ImGui
 
     def get_debug_name : String
       result = LibImGui.ImFont_GetDebugName(self)
-      String.new(result)
+      (s = result) ? String.new(s) : ""
     end
 
     def grow_index(new_size : Int32) : Void
@@ -1320,7 +1320,7 @@ module ImGui
     end
 
     def ini_filename : String
-      String.new(@this.value.ini_filename)
+      (s = @this.value.ini_filename) ? String.new(s) : ""
     end
 
     def ini_filename=(ini_filename : String)
@@ -1328,7 +1328,7 @@ module ImGui
     end
 
     def log_filename : String
-      String.new(@this.value.log_filename)
+      (s = @this.value.log_filename) ? String.new(s) : ""
     end
 
     def log_filename=(log_filename : String)
@@ -1480,7 +1480,7 @@ module ImGui
     end
 
     def backend_platform_name : String
-      String.new(@this.value.backend_platform_name)
+      (s = @this.value.backend_platform_name) ? String.new(s) : ""
     end
 
     def backend_platform_name=(backend_platform_name : String)
@@ -1488,7 +1488,7 @@ module ImGui
     end
 
     def backend_renderer_name : String
-      String.new(@this.value.backend_renderer_name)
+      (s = @this.value.backend_renderer_name) ? String.new(s) : ""
     end
 
     def backend_renderer_name=(backend_renderer_name : String)
@@ -2658,12 +2658,12 @@ module ImGui
 
     def begin : String
       result = LibImGui.ImGuiTextBuffer_begin(self)
-      String.new(result)
+      (s = result) ? String.new(s) : ""
     end
 
     def c_str : String
       result = LibImGui.ImGuiTextBuffer_c_str(self)
-      String.new(result)
+      (s = result) ? String.new(s) : ""
     end
 
     def clear : Void
@@ -2676,7 +2676,7 @@ module ImGui
 
     def end : String
       result = LibImGui.ImGuiTextBuffer_end(self)
-      String.new(result)
+      (s = result) ? String.new(s) : ""
     end
 
     def reserve(capacity : Int32) : Void
@@ -3133,7 +3133,7 @@ module ImGui
 
   {% for k, t in {S8: Int8, U8: UInt8, S16: Int16, U16: UInt16, S32: Int32, U32: UInt32, S64: Int64, U64: UInt64, Float: Float32, Double: Float64} %}
   def self.drag_scalar_(label : String, p_data : {{t}}*, v_speed : Float32, p_min : {{t}}? = nil, p_max : {{t}}? = nil, format : String? = nil, flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
-    LibImGui.igDragScalar(label, ImGuiDataType::{{k.id}}, p_data, v_speed, p_min && (p_min_ = p_min; pointerof(p_min_)), p_max && (p_max_ = p_max; pointerof(p_max_)), format, flags)
+    LibImGui.igDragScalar(label, ImGuiDataType::{{k.id}}, p_data, v_speed, p_min ? (p_min_ = p_min; pointerof(p_min_)) : Pointer({{t}}).null, p_max ? (p_max_ = p_max; pointerof(p_max_)) : Pointer({{t}}).null, format, flags)
   end
   {% end %}
 
@@ -3222,7 +3222,7 @@ module ImGui
 
   def self.get_clipboard_text : String
     result = LibImGui.igGetClipboardText
-    String.new(result)
+    (s = result) ? String.new(s) : ""
   end
 
   def self.get_color_u32(idx : ImGuiCol, alpha_mul : Float32 = 1.0) : UInt32
@@ -3424,7 +3424,7 @@ module ImGui
 
   def self.get_style_color_name(idx : ImGuiCol) : String
     result = LibImGui.igGetStyleColorName(idx)
-    String.new(result)
+    (s = result) ? String.new(s) : ""
   end
 
   def self.get_style_color_vec4(idx : ImGuiCol) : ImVec4
@@ -3450,7 +3450,7 @@ module ImGui
 
   def self.get_version : String
     result = LibImGui.igGetVersion
-    String.new(result)
+    (s = result) ? String.new(s) : ""
   end
 
   def self.get_window_content_region_max : ImGui::ImVec2
@@ -3576,7 +3576,7 @@ module ImGui
 
   {% for k, t in {S8: Int8, U8: UInt8, S16: Int16, U16: UInt16, S32: Int32, U32: UInt32, S64: Int64, U64: UInt64, Float: Float32, Double: Float64} %}
   def self.input_scalar_(label : String, p_data : {{t}}*, p_step : {{t}}? = nil, p_step_fast : {{t}}? = nil, format : String? = nil, flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0)) : Bool
-    LibImGui.igInputScalar(label, ImGuiDataType::{{k.id}}, p_data, p_step && (p_step_ = p_step; pointerof(p_step_)), p_step_fast && (p_step_fast_ = p_step_fast; pointerof(p_step_fast_)), format, flags)
+    LibImGui.igInputScalar(label, ImGuiDataType::{{k.id}}, p_data, p_step ? (p_step_ = p_step; pointerof(p_step_)) : Pointer({{t}}).null, p_step_fast ? (p_step_fast_ = p_step_fast; pointerof(p_step_fast_)) : Pointer({{t}}).null, format, flags)
   end
   {% end %}
 
@@ -3980,7 +3980,7 @@ module ImGui
 
   def self.save_ini_settings_to_memory : {String, LibC::SizeT}
     result = LibImGui.igSaveIniSettingsToMemory(out out_ini_size)
-    {String.new(result), out_ini_size}
+    {(s = result) ? String.new(s) : "", out_ini_size}
   end
 
   def self.selectable_(label : String, selected : Bool = false, flags : ImGuiSelectableFlags = ImGuiSelectableFlags.new(0), size : ImVec2 = ImVec2.new(0, 0)) : Bool
@@ -4269,7 +4269,7 @@ module ImGui
 
   {% for k, t in {S8: Int8, U8: UInt8, S16: Int16, U16: UInt16, S32: Int32, U32: UInt32, S64: Int64, U64: UInt64, Float: Float32, Double: Float64} %}
   def self.slider_scalar_(label : String, p_data : {{t}}*, p_min : {{t}}, p_max : {{t}}, format : String? = nil, flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
-    LibImGui.igSliderScalar(label, ImGuiDataType::{{k.id}}, p_data, p_min && (p_min_ = p_min; pointerof(p_min_)), p_max && (p_max_ = p_max; pointerof(p_max_)), format, flags)
+    LibImGui.igSliderScalar(label, ImGuiDataType::{{k.id}}, p_data, p_min ? (p_min_ = p_min; pointerof(p_min_)) : Pointer({{t}}).null, p_max ? (p_max_ = p_max; pointerof(p_max_)) : Pointer({{t}}).null, format, flags)
   end
   {% end %}
 
@@ -4385,7 +4385,7 @@ module ImGui
 
   {% for k, t in {S8: Int8, U8: UInt8, S16: Int16, U16: UInt16, S32: Int32, U32: UInt32, S64: Int64, U64: UInt64, Float: Float32, Double: Float64} %}
   def self.v_slider_scalar_(label : String, size : ImVec2, p_data : {{t}}*, p_min : {{t}}, p_max : {{t}}, format : String? = nil, flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
-    LibImGui.igVSliderScalar(label, size, ImGuiDataType::{{k.id}}, p_data, p_min && (p_min_ = p_min; pointerof(p_min_)), p_max && (p_max_ = p_max; pointerof(p_max_)), format, flags)
+    LibImGui.igVSliderScalar(label, size, ImGuiDataType::{{k.id}}, p_data, p_min ? (p_min_ = p_min; pointerof(p_min_)) : Pointer({{t}}).null, p_max ? (p_max_ = p_max; pointerof(p_max_)) : Pointer({{t}}).null, format, flags)
   end
   {% end %}
 

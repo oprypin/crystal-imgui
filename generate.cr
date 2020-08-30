@@ -362,7 +362,7 @@ class COverload
           if arg_i - 1 == as_datatype || self.name(Context::Obj).ends_with?("n")
             typ += "*"
           else
-            callarg = "#{callarg} && (#{callarg}_ = #{callarg}; pointerof(#{callarg}_))"
+            callarg = "#{callarg} ? (#{callarg}_ = #{callarg}; pointerof(#{callarg}_)) : Pointer({{t}}).null"
           end
 #           callarg += ".as(Void*)"
         end
@@ -370,7 +370,7 @@ class COverload
           if (t = typ.rchop?("*"))
             default = "Pointer(#{t}).null"
           else
-            typ += "?"
+            typ += "?" unless typ.ends_with?("?")
           end
         end
         if arg.type.enum? && default =~ /^\d/
@@ -421,7 +421,9 @@ def convert_returns!(outp : Array(String), rets : Array(CType)) : {Array(String)
         outp[i] = o + ".value" if ret.name.rchop?("*")
       end
     elsif ret.name(Context::Obj) == "String"
-      outp[i] = %(String.new(#{o}))
+      outp[i] = %((s = #{o}) ? String.new(s) : "")
+    elsif ret.name(Context::Obj) == "String?"
+      outp[i] = %((s = #{o}) ? String.new(s) : nil)
     end
   end
   {outp, rets}

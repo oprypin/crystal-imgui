@@ -81,7 +81,7 @@ module ImGui
   end
 
   private macro make_input_text(name, *args)
-    def self.{{name.id}}_({{*args}}, &block : ImGuiInputTextCallbackData -> Int32) : Bool
+    def self.{{name.id}}({{*args}}, &block : ImGuiInputTextCallbackData -> Int32) : Bool
       user_data = {buf, block}
       LibImGui.ig{{name.id.camelcase}}(
         {% for arg in args %}
@@ -104,8 +104,8 @@ module ImGui
       )
     end
 
-    def self.{{name.id}}_({{*args}}) : Bool
-      {{name.id}}_({{*args.map(&.var)}}) { 0 }
+    def self.{{name.id}}({{*args}}) : Bool
+      {{name.id}}({{*args.map(&.var)}}) { 0 }
     end
   end
 
