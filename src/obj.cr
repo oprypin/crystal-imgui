@@ -941,7 +941,7 @@ module ImGui
       LibImGui.ImFontAtlas_GetGlyphRangesVietnamese(self)
     end
 
-    def get_mouse_cursor_tex_data_(cursor : ImGuiMouseCursor) : {Bool, ImGui::ImVec2, ImGui::ImVec2, ImGui::ImVec2, ImGui::ImVec2}
+    def get_mouse_cursor_tex_data(cursor : ImGuiMouseCursor) : {Bool, ImGui::ImVec2, ImGui::ImVec2, ImGui::ImVec2, ImGui::ImVec2}
       result = LibImGui.ImFontAtlas_GetMouseCursorTexData(self, cursor, out out_offset, out out_size, out out_uv_border, out out_uv_fill)
       {result, out_offset, out_size, out_uv_border.to_slice, out_uv_fill.to_slice}
     end
@@ -1244,13 +1244,9 @@ module ImGui
       LibImGui.ImFontGlyphRangesBuilder_Clear(self)
     end
 
-    def get_bit_(n : LibC::SizeT) : Bool
+    def get_bit(n : LibC::SizeT) : Bool
       LibImGui.ImFontGlyphRangesBuilder_GetBit(self, n)
     end
-
-    macro get_bit(*args, **kwargs, &block)
-    ::ImGui._pointer_wrapper("::ImGui.get_bit_", 0, false, {{*args}}, {{**kwargs}}) {{block}}
-  end
 
     def self.new : ImFontGlyphRangesBuilder
       result = LibImGui.ImFontGlyphRangesBuilder_ImFontGlyphRangesBuilder
@@ -2071,13 +2067,9 @@ module ImGui
       result.value
     end
 
-    def step_ : Bool
+    def step : Bool
       LibImGui.ImGuiListClipper_Step(self)
     end
-
-    macro step(*args, **kwargs, &block)
-    ::ImGui._pointer_wrapper("::ImGui.step_", 0, false, {{*args}}, {{**kwargs}}) {{block}}
-  end
   end
 
   alias ImGuiMenuColumns = LibImGui::ImGuiMenuColumns
@@ -2243,13 +2235,9 @@ module ImGui
       LibImGui.ImGuiStorage_Clear(self)
     end
 
-    def get_bool_(key : ImGuiID, default_val : Bool = false) : Bool
+    def get_bool(key : ImGuiID, default_val : Bool = false) : Bool
       LibImGui.ImGuiStorage_GetBool(self, key, default_val)
     end
-
-    macro get_bool(*args, **kwargs, &block)
-    ::ImGui._pointer_wrapper("::ImGui.get_bool_", 0, false, {{*args}}, {{**kwargs}}) {{block}}
-  end
 
     def get_bool_ref(key : ImGuiID, default_val : Bool = false) : Bool
       LibImGui.ImGuiStorage_GetBoolRef(self, key, default_val)
@@ -2669,13 +2657,9 @@ module ImGui
       LibImGui.ImGuiTextBuffer_clear(self)
     end
 
-    def empty_ : Bool
+    def empty : Bool
       LibImGui.ImGuiTextBuffer_empty(self)
     end
-
-    macro empty(*args, **kwargs, &block)
-    ::ImGui._pointer_wrapper("::ImGui.empty_", 0, false, {{*args}}, {{**kwargs}}) {{block}}
-  end
 
     def end : String
       result = LibImGui.ImGuiTextBuffer_end(self)
@@ -3596,28 +3580,16 @@ module ImGui
     ::ImGui._pointer_wrapper("::ImGui.input_scalar_n_", 2, false, {{*args}}, {{**kwargs}}) {{block}}
   end
 
-  def self.input_text_(label : String, buf : LibC::Char*, buf_size : LibC::SizeT, flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0), callback : ImGuiInputTextCallback? = nil, user_data : Void* = Pointer(Void).null) : Bool
+  def self.input_text(label : String, buf : LibC::Char*, buf_size : LibC::SizeT, flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0), callback : ImGuiInputTextCallback? = nil, user_data : Void* = Pointer(Void).null) : Bool
     LibImGui.igInputText(label, buf, buf_size, flags, callback, user_data)
   end
 
-  macro input_text(*args, **kwargs, &block)
-    ::ImGui._pointer_wrapper("::ImGui.input_text_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
-  end
-
-  def self.input_text_multiline_(label : String, buf : LibC::Char*, buf_size : LibC::SizeT, size : ImVec2 = ImVec2.new(0, 0), flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0), callback : ImGuiInputTextCallback? = nil, user_data : Void* = Pointer(Void).null) : Bool
+  def self.input_text_multiline(label : String, buf : LibC::Char*, buf_size : LibC::SizeT, size : ImVec2 = ImVec2.new(0, 0), flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0), callback : ImGuiInputTextCallback? = nil, user_data : Void* = Pointer(Void).null) : Bool
     LibImGui.igInputTextMultiline(label, buf, buf_size, size, flags, callback, user_data)
   end
 
-  macro input_text_multiline(*args, **kwargs, &block)
-    ::ImGui._pointer_wrapper("::ImGui.input_text_multiline_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
-  end
-
-  def self.input_text_with_hint_(label : String, hint : String, buf : LibC::Char*, buf_size : LibC::SizeT, flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0), callback : ImGuiInputTextCallback? = nil, user_data : Void* = Pointer(Void).null) : Bool
+  def self.input_text_with_hint(label : String, hint : String, buf : LibC::Char*, buf_size : LibC::SizeT, flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0), callback : ImGuiInputTextCallback? = nil, user_data : Void* = Pointer(Void).null) : Bool
     LibImGui.igInputTextWithHint(label, hint, buf, buf_size, flags, callback, user_data)
-  end
-
-  macro input_text_with_hint(*args, **kwargs, &block)
-    ::ImGui._pointer_wrapper("::ImGui.input_text_with_hint_", 2, false, {{*args}}, {{**kwargs}}) {{block}}
   end
 
   def self.invisible_button(str_id : String, size : ImVec2, flags : ImGuiButtonFlags = ImGuiButtonFlags.new(0)) : Bool
@@ -4053,12 +4025,8 @@ module ImGui
     LibImGui.igSetCursorScreenPos(pos)
   end
 
-  def self.set_drag_drop_payload_(type : String, data : Void*, sz : LibC::SizeT, cond : ImGuiCond = ImGuiCond.new(0)) : Bool
+  def self.set_drag_drop_payload(type : String, data : Void*, sz : LibC::SizeT, cond : ImGuiCond = ImGuiCond.new(0)) : Bool
     LibImGui.igSetDragDropPayload(type, data, sz, cond)
-  end
-
-  macro set_drag_drop_payload(*args, **kwargs, &block)
-    ::ImGui._pointer_wrapper("::ImGui.set_drag_drop_payload_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
   end
 
   def self.set_item_allow_overlap : Void
@@ -4345,36 +4313,28 @@ module ImGui
     LibImGui.igTextWrapped(fmt, *args)
   end
 
-  def self.tree_node_(label : String) : Bool
+  def self.tree_node(label : String) : Bool
     LibImGui.igTreeNodeStr(label)
   end
 
-  def self.tree_node_(str_id : String, fmt : String, *args) : Bool
+  def self.tree_node(str_id : String, fmt : String, *args) : Bool
     LibImGui.igTreeNodeStrStr(str_id, fmt, *args)
   end
 
-  def self.tree_node_(ptr_id : Reference | Void*, fmt : String, *args) : Bool
+  def self.tree_node(ptr_id : Reference | Void*, fmt : String, *args) : Bool
     LibImGui.igTreeNodePtr(ptr_id.as(Void*), fmt, *args)
   end
 
-  macro tree_node(*args, **kwargs, &block)
-    ::ImGui._pointer_wrapper("::ImGui.tree_node_", 0, false, {{*args}}, {{**kwargs}}) {{block}}
-  end
-
-  def self.tree_node_ex_(label : String, flags : ImGuiTreeNodeFlags = ImGuiTreeNodeFlags.new(0)) : Bool
+  def self.tree_node_ex(label : String, flags : ImGuiTreeNodeFlags = ImGuiTreeNodeFlags.new(0)) : Bool
     LibImGui.igTreeNodeExStr(label, flags)
   end
 
-  def self.tree_node_ex_(str_id : String, flags : ImGuiTreeNodeFlags, fmt : String, *args) : Bool
+  def self.tree_node_ex(str_id : String, flags : ImGuiTreeNodeFlags, fmt : String, *args) : Bool
     LibImGui.igTreeNodeExStrStr(str_id, flags, fmt, *args)
   end
 
-  def self.tree_node_ex_(ptr_id : Reference | Void*, flags : ImGuiTreeNodeFlags, fmt : String, *args) : Bool
+  def self.tree_node_ex(ptr_id : Reference | Void*, flags : ImGuiTreeNodeFlags, fmt : String, *args) : Bool
     LibImGui.igTreeNodeExPtr(ptr_id.as(Void*), flags, fmt, *args)
-  end
-
-  macro tree_node_ex(*args, **kwargs, &block)
-    ::ImGui._pointer_wrapper("::ImGui.tree_node_ex_", 0, false, {{*args}}, {{**kwargs}}) {{block}}
   end
 
   def self.tree_pop : Void

@@ -98,7 +98,7 @@ class CType
       return t
     end
     if (t = base_type.struct? || base_type.enum?)
-      in_lib = (base_type.class? || t.internal? || name.starts_with?("ImVector"))
+      in_lib = (base_type.class? || t.internal? || name.starts_with?("ImVector") && !ctx.obj?)
       if ctx.lib?
         name = "ImGui::#{name}" if !in_lib
       else
@@ -286,6 +286,15 @@ class COverload
     self.location == "internal" || (self.funcname || "").starts_with?("_")
   end
 
+  def input_output_arg? : Int32?
+    if self.ret.try(&.c_name) != "bool"
+      return nil
+    end
+    self.args.index do |arg|
+      arg.type.name(Context::Obj).ends_with?("*") && (arg.name.split("_")[0].in?("p", "v") || arg.name.in?("current_item", "col", "flags"))
+    end
+  end
+
   def render(ctx, inside_class = false, &block)
     return if self.templated? || self.internal?
     return if self.args.any? { |arg| arg.type.c_name == "va_list" }
@@ -372,16 +381,9 @@ class COverload
         end
         args << "#{arg.name} : #{typ}#{" = #{default}" if default}" unless arg.name == "self"
         call_args << "#{callarg}"
-        if arg.type.name(ctx).ends_with?("*") && (arg.name.split("_")[0].in?("p", "v") || !default) && self.ret.try(&.c_name) == "bool"
-          outputter ||= arg_i
-        end
       end
       ret_s = to_tuple(rets.map &.name(ctx).rchop("*"))
-      any_outputter = self.parent.overloads.any? do |overload|
-        overload.args.any? do |arg|
-          arg.type.name(Context::Obj).ends_with?("*") && (arg.name.split("_")[0].in?("p", "v") || !overload.defaults[arg.name]?) && overload.ret.try(&.c_name) == "bool"
-        end
-      end
+      any_outputter = self.parent.overloads.any?(&.input_output_arg?)
       yield %(  def #{"self." if !inside_class}#{self.name(ctx)}#{"_" if any_outputter}(#{args.join(", ")}) : #{ret_s || "Void"})
       call = %(    LibImGui.#{self.name(Context::Lib)}(#{call_args.join(", ")}))
       outp2 = convert_returns(outp, rets)
@@ -391,7 +393,7 @@ class COverload
       yield %(  end)
       yield %(  {% end %}) if as_datatype
 
-      if (i = outputter)
+      if (i = self.input_output_arg?)
         yield %(  macro #{self.name(ctx)}(*args, **kwargs, &block))
         yield %(    ::ImGui._pointer_wrapper("::ImGui.#{self.name(ctx)}_", #{i}, #{self.args[i].type.c_name == "bool*"}, {{*args}}, {{**kwargs}}) {{block}})
         yield %(  end)
