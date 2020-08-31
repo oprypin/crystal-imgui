@@ -557,6 +557,7 @@ class CStruct
       self.members.each &.render(ctx, &block)
       self.functions.each &.render(ctx, true, &block)
       yield %(end)
+      yield %(alias TopLevel::#{name} = ImGui::#{name}) if self.class?
     elsif self.class? && ctx.lib?
       yield %(struct #{self.name})
       self.members.each do |member|
@@ -576,6 +577,7 @@ class CStruct
         yield %(end)
       end
       yield %(end)
+      yield %(alias TopLevel::#{name} = ImGui::#{name})
     end
   end
 
@@ -647,6 +649,7 @@ class CEnum
       yield %(#{member.name} = #{member.value})
     end
     yield %(end)
+    yield %(alias TopLevel::#{name} = ImGui::#{name})
   end
 
   property! location : String

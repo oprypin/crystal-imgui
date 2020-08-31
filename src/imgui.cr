@@ -47,6 +47,24 @@ module ImGui
       false
     end
   end
+
+  private def self.to_void_id(x : Reference | Void*)
+    x.as(Void*)
+  end
+
+  private def self.to_void_id(x : StructClassType)
+    x.to_unsafe
+  end
+
+  private def self.to_void_id(x : Int)
+    Pointer(Void).new(x)
+  end
+
+  # Include this module to get access to ImGui types directly
+  module TopLevel
+  end
+
+  include TopLevel
 end
 
 require "./obj"
@@ -127,19 +145,7 @@ module ImGui
     end
   {% end %}
 
-  private def self.to_void_id(x : Reference | Void*)
-    x.as(Void*)
-  end
-
-  private def self.to_void_id(x : StructClassType)
-    x.to_unsafe
-  end
-
-  private def self.to_void_id(x : Int)
-    Pointer(Void).new(x)
-  end
-
-  def self.get_id(int_id : Int) : ImGui::ImGuiID
+  def self.get_id(int_id : Int) : ImGuiID
     get_id(Pointer(Void).new(int_id))
   end
 
@@ -157,7 +163,7 @@ module ImGui
 
   def self.set_next_window_size_constraints(size_min : ImVec2, size_max : ImVec2, &block : ImGuiSizeCallbackData ->) : Void
     LibImGui.igSetNextWindowSizeConstraints(size_min, size_max, ->(data) {
-      data.value.user_data.as(typeof(block)*).value.call(ImGui::ImGuiSizeCallbackData.new(data))
+      data.value.user_data.as(typeof(block)*).value.call(ImGuiSizeCallbackData.new(data))
     }, pointerof(block))
   end
 

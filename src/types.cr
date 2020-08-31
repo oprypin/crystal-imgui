@@ -11,6 +11,7 @@ module ImGui
     Left     = TopLeft | BotLeft
     Right    = TopRight | BotRight
   end
+  alias TopLevel::ImDrawCornerFlags = ImGui::ImDrawCornerFlags
 
   @[Flags]
   enum ImDrawListFlags
@@ -20,6 +21,7 @@ module ImGui
     AntiAliasedFill        = 1 << 2
     AllowVtxOffset         = 1 << 3
   end
+  alias TopLevel::ImDrawListFlags = ImGui::ImDrawListFlags
 
   @[Flags]
   enum ImFontAtlasFlags
@@ -28,12 +30,14 @@ module ImGui
     NoMouseCursors     = 1 << 1
     NoBakedLines       = 1 << 2
   end
+  alias TopLevel::ImFontAtlasFlags = ImGui::ImFontAtlasFlags
 
   enum ImGuiAxis
     None = -1
     X    =  0
     Y    =  1
   end
+  alias TopLevel::ImGuiAxis = ImGui::ImGuiAxis
 
   @[Flags]
   enum ImGuiBackendFlags
@@ -43,6 +47,7 @@ module ImGui
     HasSetMousePos       = 1 << 2
     RendererHasVtxOffset = 1 << 3
   end
+  alias TopLevel::ImGuiBackendFlags = ImGui::ImGuiBackendFlags
 
   @[Flags]
   enum ImGuiButtonFlags
@@ -53,6 +58,7 @@ module ImGui
     MouseButtonMask_    = MouseButtonLeft | MouseButtonRight | MouseButtonMiddle
     MouseButtonDefault_ = MouseButtonLeft
   end
+  alias TopLevel::ImGuiButtonFlags = ImGui::ImGuiButtonFlags
 
   enum ImGuiCol
     Text                  =  0
@@ -104,6 +110,7 @@ module ImGui
     NavWindowingDimBg     = 46
     ModalWindowDimBg      = 47
   end
+  alias TopLevel::ImGuiCol = ImGui::ImGuiCol
 
   @[Flags]
   enum ImGuiColorEditFlags
@@ -137,6 +144,7 @@ module ImGui
     PickerMask_      = PickerHueWheel | PickerHueBar
     InputMask_       = InputRGB | InputHSV
   end
+  alias TopLevel::ImGuiColorEditFlags = ImGui::ImGuiColorEditFlags
 
   @[Flags]
   enum ImGuiColumnsFlags
@@ -147,6 +155,7 @@ module ImGui
     NoForceWithinWindow    = 1 << 3
     GrowParentContentsSize = 1 << 4
   end
+  alias TopLevel::ImGuiColumnsFlags = ImGui::ImGuiColumnsFlags
 
   @[Flags]
   enum ImGuiComboFlags
@@ -160,6 +169,7 @@ module ImGui
     NoPreview      = 1 << 6
     HeightMask_    = HeightSmall | HeightRegular | HeightLarge | HeightLargest
   end
+  alias TopLevel::ImGuiComboFlags = ImGui::ImGuiComboFlags
 
   enum ImGuiCond
     None         = 0
@@ -168,6 +178,7 @@ module ImGui
     FirstUseEver = 1 << 2
     Appearing    = 1 << 3
   end
+  alias TopLevel::ImGuiCond = ImGui::ImGuiCond
 
   @[Flags]
   enum ImGuiConfigFlags
@@ -181,6 +192,7 @@ module ImGui
     IsSRGB               = 1 << 20
     IsTouchScreen        = 1 << 21
   end
+  alias TopLevel::ImGuiConfigFlags = ImGui::ImGuiConfigFlags
 
   enum ImGuiDataType
     S8     = 0
@@ -194,6 +206,7 @@ module ImGui
     Float  = 8
     Double = 9
   end
+  alias TopLevel::ImGuiDataType = ImGui::ImGuiDataType
 
   enum ImGuiDir
     None  = -1
@@ -202,6 +215,7 @@ module ImGui
     Up    =  2
     Down  =  3
   end
+  alias TopLevel::ImGuiDir = ImGui::ImGuiDir
 
   @[Flags]
   enum ImGuiDragDropFlags
@@ -217,6 +231,7 @@ module ImGui
     AcceptNoPreviewTooltip   = 1 << 12
     AcceptPeekOnly           = AcceptBeforeDelivery | AcceptNoDrawDefaultRect
   end
+  alias TopLevel::ImGuiDragDropFlags = ImGui::ImGuiDragDropFlags
 
   @[Flags]
   enum ImGuiFocusedFlags
@@ -226,6 +241,7 @@ module ImGui
     AnyWindow           = 1 << 2
     RootAndChildWindows = RootWindow | ChildWindows
   end
+  alias TopLevel::ImGuiFocusedFlags = ImGui::ImGuiFocusedFlags
 
   @[Flags]
   enum ImGuiHoveredFlags
@@ -240,6 +256,7 @@ module ImGui
     RectOnly                     = AllowWhenBlockedByPopup | AllowWhenBlockedByActiveItem | AllowWhenOverlapped
     RootAndChildWindows          = RootWindow | ChildWindows
   end
+  alias TopLevel::ImGuiHoveredFlags = ImGui::ImGuiHoveredFlags
 
   enum ImGuiInputReadMode
     Down       = 0
@@ -249,6 +266,7 @@ module ImGui
     RepeatSlow = 4
     RepeatFast = 5
   end
+  alias TopLevel::ImGuiInputReadMode = ImGui::ImGuiInputReadMode
 
   enum ImGuiInputSource
     None        = 0
@@ -257,6 +275,7 @@ module ImGui
     NavKeyboard = 3
     NavGamepad  = 4
   end
+  alias TopLevel::ImGuiInputSource = ImGui::ImGuiInputSource
 
   @[Flags]
   enum ImGuiInputTextFlags
@@ -283,6 +302,7 @@ module ImGui
     Multiline           = 1 << 20
     NoMarkEdited        = 1 << 21
   end
+  alias TopLevel::ImGuiInputTextFlags = ImGui::ImGuiInputTextFlags
 
   @[Flags]
   enum ImGuiItemFlags
@@ -297,6 +317,7 @@ module ImGui
     ReadOnly                 = 1 << 7
     Default_                 = 0
   end
+  alias TopLevel::ImGuiItemFlags = ImGui::ImGuiItemFlags
 
   @[Flags]
   enum ImGuiItemStatusFlags
@@ -309,6 +330,7 @@ module ImGui
     HasDeactivated   = 1 << 5
     Deactivated      = 1 << 6
   end
+  alias TopLevel::ImGuiItemStatusFlags = ImGui::ImGuiItemStatusFlags
 
   @[Flags]
   enum ImGuiKeyModFlags
@@ -318,6 +340,7 @@ module ImGui
     Alt   = 1 << 2
     Super = 1 << 3
   end
+  alias TopLevel::ImGuiKeyModFlags = ImGui::ImGuiKeyModFlags
 
   enum ImGuiKey
     Tab         =  0
@@ -343,11 +366,13 @@ module ImGui
     Y           = 20
     Z           = 21
   end
+  alias TopLevel::ImGuiKey = ImGui::ImGuiKey
 
   enum ImGuiLayoutType
     Horizontal = 0
     Vertical   = 1
   end
+  alias TopLevel::ImGuiLayoutType = ImGui::ImGuiLayoutType
 
   enum ImGuiLogType
     None      = 0
@@ -356,12 +381,14 @@ module ImGui
     Buffer    = 3
     Clipboard = 4
   end
+  alias TopLevel::ImGuiLogType = ImGui::ImGuiLogType
 
   enum ImGuiMouseButton
     Left   = 0
     Right  = 1
     Middle = 2
   end
+  alias TopLevel::ImGuiMouseButton = ImGui::ImGuiMouseButton
 
   enum ImGuiMouseCursor
     None       = -1
@@ -375,6 +402,7 @@ module ImGui
     Hand       =  7
     NotAllowed =  8
   end
+  alias TopLevel::ImGuiMouseCursor = ImGui::ImGuiMouseCursor
 
   @[Flags]
   enum ImGuiNavDirSourceFlags
@@ -383,12 +411,14 @@ module ImGui
     PadDPad   = 1 << 1
     PadLStick = 1 << 2
   end
+  alias TopLevel::ImGuiNavDirSourceFlags = ImGui::ImGuiNavDirSourceFlags
 
   enum ImGuiNavForward
     None          = 0
     ForwardQueued = 1
     ForwardActive = 2
   end
+  alias TopLevel::ImGuiNavForward = ImGui::ImGuiNavForward
 
   @[Flags]
   enum ImGuiNavHighlightFlags
@@ -398,6 +428,7 @@ module ImGui
     AlwaysDraw  = 1 << 2
     NoRounding  = 1 << 3
   end
+  alias TopLevel::ImGuiNavHighlightFlags = ImGui::ImGuiNavHighlightFlags
 
   enum ImGuiNavInput
     Activate       =  0
@@ -423,11 +454,13 @@ module ImGui
     KeyDown_       = 20
     InternalStart_ = KeyMenu_
   end
+  alias TopLevel::ImGuiNavInput = ImGui::ImGuiNavInput
 
   enum ImGuiNavLayer
     Main = 0
     Menu = 1
   end
+  alias TopLevel::ImGuiNavLayer = ImGui::ImGuiNavLayer
 
   @[Flags]
   enum ImGuiNavMoveFlags
@@ -440,6 +473,7 @@ module ImGui
     AlsoScoreVisibleSet = 1 << 5
     ScrollToEdge        = 1 << 6
   end
+  alias TopLevel::ImGuiNavMoveFlags = ImGui::ImGuiNavMoveFlags
 
   @[Flags]
   enum ImGuiNextItemDataFlags
@@ -447,6 +481,7 @@ module ImGui
     HasWidth = 1 << 0
     HasOpen  = 1 << 1
   end
+  alias TopLevel::ImGuiNextItemDataFlags = ImGui::ImGuiNextItemDataFlags
 
   @[Flags]
   enum ImGuiNextWindowDataFlags
@@ -460,11 +495,13 @@ module ImGui
     HasBgAlpha        = 1 << 6
     HasScroll         = 1 << 7
   end
+  alias TopLevel::ImGuiNextWindowDataFlags = ImGui::ImGuiNextWindowDataFlags
 
   enum ImGuiPlotType
     Lines     = 0
     Histogram = 1
   end
+  alias TopLevel::ImGuiPlotType = ImGui::ImGuiPlotType
 
   @[Flags]
   enum ImGuiPopupFlags
@@ -480,11 +517,13 @@ module ImGui
     AnyPopupLevel           = 1 << 8
     AnyPopup                = AnyPopupId | AnyPopupLevel
   end
+  alias TopLevel::ImGuiPopupFlags = ImGui::ImGuiPopupFlags
 
   enum ImGuiPopupPositionPolicy
     Default  = 0
     ComboBox = 1
   end
+  alias TopLevel::ImGuiPopupPositionPolicy = ImGui::ImGuiPopupPositionPolicy
 
   @[Flags]
   enum ImGuiSelectableFlags
@@ -495,6 +534,7 @@ module ImGui
     Disabled         = 1 << 3
     AllowItemOverlap = 1 << 4
   end
+  alias TopLevel::ImGuiSelectableFlags = ImGui::ImGuiSelectableFlags
 
   @[Flags]
   enum ImGuiSeparatorFlags
@@ -503,6 +543,7 @@ module ImGui
     Vertical       = 1 << 1
     SpanAllColumns = 1 << 2
   end
+  alias TopLevel::ImGuiSeparatorFlags = ImGui::ImGuiSeparatorFlags
 
   @[Flags]
   enum ImGuiSliderFlags
@@ -513,6 +554,7 @@ module ImGui
     NoInput         = 1 << 7
     InvalidMask_    = 0x7000000F
   end
+  alias TopLevel::ImGuiSliderFlags = ImGui::ImGuiSliderFlags
 
   enum ImGuiStyleVar
     Alpha               =  0
@@ -539,6 +581,7 @@ module ImGui
     ButtonTextAlign     = 21
     SelectableTextAlign = 22
   end
+  alias TopLevel::ImGuiStyleVar = ImGui::ImGuiStyleVar
 
   @[Flags]
   enum ImGuiTabBarFlags
@@ -554,6 +597,7 @@ module ImGui
     FittingPolicyMask_           = FittingPolicyResizeDown | FittingPolicyScroll
     FittingPolicyDefault_        = FittingPolicyResizeDown
   end
+  alias TopLevel::ImGuiTabBarFlags = ImGui::ImGuiTabBarFlags
 
   @[Flags]
   enum ImGuiTabItemFlags
@@ -564,18 +608,21 @@ module ImGui
     NoPushId                     = 1 << 3
     NoTooltip                    = 1 << 4
   end
+  alias TopLevel::ImGuiTabItemFlags = ImGui::ImGuiTabItemFlags
 
   @[Flags]
   enum ImGuiTextFlags
     None                       = 0
     NoWidthForLargeClippedText = 1 << 0
   end
+  alias TopLevel::ImGuiTextFlags = ImGui::ImGuiTextFlags
 
   @[Flags]
   enum ImGuiTooltipFlags
     None                    = 0
     OverridePreviousTooltip = 1 << 0
   end
+  alias TopLevel::ImGuiTooltipFlags = ImGui::ImGuiTooltipFlags
 
   @[Flags]
   enum ImGuiTreeNodeFlags
@@ -596,6 +643,7 @@ module ImGui
     NavLeftJumpsBackHere = 1 << 13
     CollapsingHeader     = Framed | NoTreePushOnOpen | NoAutoOpenOnLog
   end
+  alias TopLevel::ImGuiTreeNodeFlags = ImGui::ImGuiTreeNodeFlags
 
   @[Flags]
   enum ImGuiWindowFlags
@@ -630,6 +678,7 @@ module ImGui
     Modal                     = 1 << 27
     ChildMenu                 = 1 << 28
   end
+  alias TopLevel::ImGuiWindowFlags = ImGui::ImGuiWindowFlags
   alias ImDrawCallback = LibImGui::ImDrawCallback
   alias ImDrawIdx = LibImGui::ImDrawIdx
   alias ImFileHandle = LibImGui::ImFileHandle
@@ -650,6 +699,8 @@ module ImGui
     end
   end
 
+  alias TopLevel::ImColor = ImGui::ImColor
+
   @[Extern]
   struct ImDrawChannel
     @_cmd_buffer : LibImGui::ImVectorInternal
@@ -658,6 +709,8 @@ module ImGui
     def initialize(@_cmd_buffer : LibImGui::ImVectorInternal, @_idx_buffer : LibImGui::ImVectorInternal)
     end
   end
+
+  alias TopLevel::ImDrawChannel = ImGui::ImDrawChannel
 
   @[Extern]
   struct ImDrawVert
@@ -668,6 +721,8 @@ module ImGui
     def initialize(@pos : ImVec2, @uv : ImVec2, @col : UInt32)
     end
   end
+
+  alias TopLevel::ImDrawVert = ImGui::ImDrawVert
 
   @[Extern]
   struct ImFontGlyph
@@ -687,6 +742,8 @@ module ImGui
     end
   end
 
+  alias TopLevel::ImFontGlyph = ImGui::ImFontGlyph
+
   @[Extern]
   struct ImFontGlyphRangesBuilder
     property used_chars : LibImGui::ImVectorInternal
@@ -694,6 +751,8 @@ module ImGui
     def initialize(@used_chars : LibImGui::ImVectorInternal)
     end
   end
+
+  alias TopLevel::ImFontGlyphRangesBuilder = ImGui::ImFontGlyphRangesBuilder
 
   @[Extern]
   struct ImGuiListClipper
@@ -708,6 +767,8 @@ module ImGui
     end
   end
 
+  alias TopLevel::ImGuiListClipper = ImGui::ImGuiListClipper
+
   @[Extern]
   struct ImGuiOnceUponAFrame
     property ref_frame : Int32
@@ -715,6 +776,8 @@ module ImGui
     def initialize(@ref_frame : Int32)
     end
   end
+
+  alias TopLevel::ImGuiOnceUponAFrame = ImGui::ImGuiOnceUponAFrame
 
   @[Extern]
   struct ImGuiStorage
@@ -724,6 +787,8 @@ module ImGui
     end
   end
 
+  alias TopLevel::ImGuiStorage = ImGui::ImGuiStorage
+
   @[Extern]
   struct ImGuiTextBuffer
     property buf : LibImGui::ImVectorInternal
@@ -731,6 +796,8 @@ module ImGui
     def initialize(@buf : LibImGui::ImVectorInternal)
     end
   end
+
+  alias TopLevel::ImGuiTextBuffer = ImGui::ImGuiTextBuffer
 
   @[Extern]
   struct ImVec2
@@ -740,6 +807,8 @@ module ImGui
     def initialize(@x : Float32, @y : Float32)
     end
   end
+
+  alias TopLevel::ImVec2 = ImGui::ImVec2
 
   @[Extern]
   struct ImVec4
@@ -752,7 +821,11 @@ module ImGui
     end
   end
 
+  alias TopLevel::ImVec4 = ImGui::ImVec4
+
   @[Extern]
   struct ImVector
   end
+
+  alias TopLevel::ImVector = ImGui::ImVector
 end

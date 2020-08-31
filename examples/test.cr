@@ -17,7 +17,7 @@ f = 0f32
 20.times do |n|
   puts "NewFrame() #{n}"
 
-  io.display_size = ImGui::ImVec2.new(1920, 1080)
+  io.display_size = ImGui.vec2(1920, 1080)
   io.delta_time = 1f32 / 60
   ImGui.new_frame()
 

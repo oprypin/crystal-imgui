@@ -110,6 +110,8 @@ module ImGui
     end
   end
 
+  alias TopLevel::ImDrawCmd = ImGui::ImDrawCmd
+
   struct ImDrawData
     include StructClassType(LibImGui::ImDrawData)
 
@@ -195,6 +197,7 @@ module ImGui
     end
   end
 
+  alias TopLevel::ImDrawData = ImGui::ImDrawData
   alias ImDrawDataBuilder = LibImGui::ImDrawDataBuilder
 
   struct ImDrawList
@@ -444,6 +447,7 @@ module ImGui
     end
   end
 
+  alias TopLevel::ImDrawList = ImGui::ImDrawList
   alias ImDrawListSharedData = LibImGui::ImDrawListSharedData
 
   struct ImDrawListSplitter
@@ -474,6 +478,8 @@ module ImGui
       LibImGui.ImDrawListSplitter_Split(self, draw_list, count)
     end
   end
+
+  alias TopLevel::ImDrawListSplitter = ImGui::ImDrawListSplitter
 
   struct ImDrawVert
     include StructType
@@ -707,6 +713,8 @@ module ImGui
       LibImGui.ImFont_SetGlyphVisible(self, c, visible)
     end
   end
+
+  alias TopLevel::ImFont = ImGui::ImFont
 
   struct ImFontAtlas
     include StructClassType(LibImGui::ImFontAtlas)
@@ -979,6 +987,8 @@ module ImGui
     end
   end
 
+  alias TopLevel::ImFontAtlas = ImGui::ImFontAtlas
+
   struct ImFontAtlasCustomRect
     include StructClassType(LibImGui::ImFontAtlasCustomRect)
 
@@ -1055,6 +1065,8 @@ module ImGui
       LibImGui.ImFontAtlasCustomRect_IsPacked(self)
     end
   end
+
+  alias TopLevel::ImFontAtlasCustomRect = ImGui::ImFontAtlasCustomRect
 
   struct ImFontConfig
     include StructClassType(LibImGui::ImFontConfig)
@@ -1216,6 +1228,8 @@ module ImGui
       ImFontConfig.new(result)
     end
   end
+
+  alias TopLevel::ImFontConfig = ImGui::ImFontConfig
 
   struct ImFontGlyph
     include StructType
@@ -1942,6 +1956,8 @@ module ImGui
     end
   end
 
+  alias TopLevel::ImGuiIO = ImGui::ImGuiIO
+
   struct ImGuiInputTextCallbackData
     include StructClassType(LibImGui::ImGuiInputTextCallbackData)
 
@@ -2059,6 +2075,7 @@ module ImGui
     end
   end
 
+  alias TopLevel::ImGuiInputTextCallbackData = ImGui::ImGuiInputTextCallbackData
   alias ImGuiInputTextState = LibImGui::ImGuiInputTextState
   alias ImGuiLastItemDataBackup = LibImGui::ImGuiLastItemDataBackup
 
@@ -2186,6 +2203,7 @@ module ImGui
     end
   end
 
+  alias TopLevel::ImGuiPayload = ImGui::ImGuiPayload
   alias ImGuiPopupData = LibImGui::ImGuiPopupData
   alias ImGuiPtrOrIndex = LibImGui::ImGuiPtrOrIndex
   alias ImGuiSettingsHandler = LibImGui::ImGuiSettingsHandler
@@ -2226,6 +2244,8 @@ module ImGui
       @this.value.desired_size = desired_size
     end
   end
+
+  alias TopLevel::ImGuiSizeCallbackData = ImGui::ImGuiSizeCallbackData
 
   struct ImGuiStorage
     include StructType
@@ -2627,6 +2647,7 @@ module ImGui
     end
   end
 
+  alias TopLevel::ImGuiStyle = ImGui::ImGuiStyle
   alias ImGuiStyleMod = LibImGui::ImGuiStyleMod
   alias ImGuiTabBar = LibImGui::ImGuiTabBar
   alias ImGuiTabItem = LibImGui::ImGuiTabItem
@@ -2742,6 +2763,7 @@ module ImGui
     end
   end
 
+  alias TopLevel::ImGuiTextFilter = ImGui::ImGuiTextFilter
   alias ImGuiTextRange = LibImGui::ImGuiTextRange
   alias ImGuiWindow = LibImGui::ImGuiWindow
   alias ImGuiWindowSettings = LibImGui::ImGuiWindowSettings
