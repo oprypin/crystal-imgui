@@ -46,12 +46,12 @@ module ImGui
 
   @[Flags]
   enum ImGuiButtonFlags
-    None               = 0
-    MouseButtonLeft    = 1 << 0
-    MouseButtonRight   = 1 << 1
-    MouseButtonMiddle  = 1 << 2
-    MouseButtonMask    = MouseButtonLeft | MouseButtonRight | MouseButtonMiddle
-    MouseButtonDefault = MouseButtonLeft
+    None                = 0
+    MouseButtonLeft     = 1 << 0
+    MouseButtonRight    = 1 << 1
+    MouseButtonMiddle   = 1 << 2
+    MouseButtonMask_    = MouseButtonLeft | MouseButtonRight | MouseButtonMiddle
+    MouseButtonDefault_ = MouseButtonLeft
   end
 
   enum ImGuiCol
@@ -131,11 +131,11 @@ module ImGui
     PickerHueWheel   = 1 << 26
     InputRGB         = 1 << 27
     InputHSV         = 1 << 28
-    OptionsDefault   = Uint8 | DisplayRGB | InputRGB | PickerHueBar
-    DisplayMask      = DisplayRGB | DisplayHSV | DisplayHex
-    DataTypeMask     = Uint8 | Float
-    PickerMask       = PickerHueWheel | PickerHueBar
-    InputMask        = InputRGB | InputHSV
+    OptionsDefault_  = Uint8 | DisplayRGB | InputRGB | PickerHueBar
+    DisplayMask_     = DisplayRGB | DisplayHSV | DisplayHex
+    DataTypeMask_    = Uint8 | Float
+    PickerMask_      = PickerHueWheel | PickerHueBar
+    InputMask_       = InputRGB | InputHSV
   end
 
   @[Flags]
@@ -158,7 +158,7 @@ module ImGui
     HeightLargest  = 1 << 4
     NoArrowButton  = 1 << 5
     NoPreview      = 1 << 6
-    HeightMask     = HeightSmall | HeightRegular | HeightLarge | HeightLargest
+    HeightMask_    = HeightSmall | HeightRegular | HeightLarge | HeightLargest
   end
 
   enum ImGuiCond
@@ -295,7 +295,7 @@ module ImGui
     SelectableDontClosePopup = 1 << 5
     MixedValue               = 1 << 6
     ReadOnly                 = 1 << 7
-    Default                  = 0
+    Default_                 = 0
   end
 
   @[Flags]
@@ -400,28 +400,28 @@ module ImGui
   end
 
   enum ImGuiNavInput
-    Activate      =  0
-    Cancel        =  1
-    Input         =  2
-    Menu          =  3
-    DpadLeft      =  4
-    DpadRight     =  5
-    DpadUp        =  6
-    DpadDown      =  7
-    LStickLeft    =  8
-    LStickRight   =  9
-    LStickUp      = 10
-    LStickDown    = 11
-    FocusPrev     = 12
-    FocusNext     = 13
-    TweakSlow     = 14
-    TweakFast     = 15
-    KeyMenu       = 16
-    KeyLeft       = 17
-    KeyRight      = 18
-    KeyUp         = 19
-    KeyDown       = 20
-    InternalStart = KeyMenu
+    Activate       =  0
+    Cancel         =  1
+    Input          =  2
+    Menu           =  3
+    DpadLeft       =  4
+    DpadRight      =  5
+    DpadUp         =  6
+    DpadDown       =  7
+    LStickLeft     =  8
+    LStickRight    =  9
+    LStickUp       = 10
+    LStickDown     = 11
+    FocusPrev      = 12
+    FocusNext      = 13
+    TweakSlow      = 14
+    TweakFast      = 15
+    KeyMenu_       = 16
+    KeyLeft_       = 17
+    KeyRight_      = 18
+    KeyUp_         = 19
+    KeyDown_       = 20
+    InternalStart_ = KeyMenu_
   end
 
   enum ImGuiNavLayer
@@ -472,8 +472,8 @@ module ImGui
     MouseButtonLeft         =    0
     MouseButtonRight        =    1
     MouseButtonMiddle       =    2
-    MouseButtonMask         = 0x1F
-    MouseButtonDefault      =    1
+    MouseButtonMask_        = 0x1F
+    MouseButtonDefault_     =    1
     NoOpenOverExistingPopup = 1 << 5
     NoOpenOverItems         = 1 << 6
     AnyPopupId              = 1 << 7
@@ -511,7 +511,7 @@ module ImGui
     Logarithmic     = 1 << 5
     NoRoundToFormat = 1 << 6
     NoInput         = 1 << 7
-    InvalidMask     = 0x7000000F
+    InvalidMask_    = 0x7000000F
   end
 
   enum ImGuiStyleVar
@@ -551,8 +551,8 @@ module ImGui
     NoTooltip                    = 1 << 5
     FittingPolicyResizeDown      = 1 << 6
     FittingPolicyScroll          = 1 << 7
-    FittingPolicyMask            = FittingPolicyResizeDown | FittingPolicyScroll
-    FittingPolicyDefault         = FittingPolicyResizeDown
+    FittingPolicyMask_           = FittingPolicyResizeDown | FittingPolicyScroll
+    FittingPolicyDefault_        = FittingPolicyResizeDown
   end
 
   @[Flags]

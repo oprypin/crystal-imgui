@@ -606,7 +606,11 @@ class CEnumMember
   @[JSON::Field(key: "name")]
   getter c_name : String
   def name : String
-    (assert self.c_name.lchop?(self.parent.name)).lchop("_").lchop("_").rchop("_")
+    name = (assert self.c_name.lchop?(self.parent.name)).lchop("_")
+    if (chop = name.lchop?("_"))
+      name = "#{chop}_"
+    end
+    name
   end
 
   @[JSON::Field(key: "value")]

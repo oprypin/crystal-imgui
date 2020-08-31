@@ -2056,14 +2056,14 @@ module ImGuiDemo
         ImGui.checkbox_flags("ImGui::ImGuiTabBarFlags::AutoSelectNewTabs", pointerof(@@tab_bar_flags), ImGui::ImGuiTabBarFlags::AutoSelectNewTabs)
         ImGui.checkbox_flags("ImGui::ImGuiTabBarFlags::TabListPopupButton", pointerof(@@tab_bar_flags), ImGui::ImGuiTabBarFlags::TabListPopupButton)
         ImGui.checkbox_flags("ImGui::ImGuiTabBarFlags::NoCloseWithMiddleMouseButton", pointerof(@@tab_bar_flags), ImGui::ImGuiTabBarFlags::NoCloseWithMiddleMouseButton)
-        if (@@tab_bar_flags.includes? :FittingPolicyMask) == 0
-          @@tab_bar_flags |= ImGui::ImGuiTabBarFlags::FittingPolicyDefault
+        if (@@tab_bar_flags.includes? :FittingPolicyMask_) == 0
+          @@tab_bar_flags |= ImGui::ImGuiTabBarFlags::FittingPolicyDefault_
         end
         if ImGui.checkbox_flags("ImGui::ImGuiTabBarFlags::FittingPolicyResizeDown", pointerof(@@tab_bar_flags), ImGui::ImGuiTabBarFlags::FittingPolicyResizeDown)
-          @@tab_bar_flags &= ~(ImGui::ImGuiTabBarFlags::FittingPolicyMask ^ ImGui::ImGuiTabBarFlags::FittingPolicyResizeDown)
+          @@tab_bar_flags &= ~(ImGui::ImGuiTabBarFlags::FittingPolicyMask_ ^ ImGui::ImGuiTabBarFlags::FittingPolicyResizeDown)
         end
         if ImGui.checkbox_flags("ImGui::ImGuiTabBarFlags::FittingPolicyScroll", pointerof(@@tab_bar_flags), ImGui::ImGuiTabBarFlags::FittingPolicyScroll)
-          @@tab_bar_flags &= ~(ImGui::ImGuiTabBarFlags::FittingPolicyMask ^ ImGui::ImGuiTabBarFlags::FittingPolicyScroll)
+          @@tab_bar_flags &= ~(ImGui::ImGuiTabBarFlags::FittingPolicyMask_ ^ ImGui::ImGuiTabBarFlags::FittingPolicyScroll)
         end
 
         names = ["Artichoke", "Beetroot", "Celery", "Daikon"]
@@ -4816,7 +4816,7 @@ module ImGuiDemo
 
   @@app = ExampleAppDocuments.new
   @@opt_reorderable = true
-  @@opt_fitting_flags = ImGui::ImGuiTabBarFlags::FittingPolicyDefault
+  @@opt_fitting_flags = ImGui::ImGuiTabBarFlags::FittingPolicyDefault_
   @@close_queue = [] of MyDocument
 
   def self.show_example_app_documents(p_open = Pointer(Bool).null)
