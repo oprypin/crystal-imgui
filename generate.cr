@@ -344,15 +344,27 @@ class COverload
         if arg.name == "ptr_id" && typ == "Void*"
           typ = "Reference | StructClassType | Int | #{typ}"
           callarg = "to_void_id(#{callarg})"
-        elsif arg.type.c_name == "float[4]" || arg.name == "col" && typ == "Float32*"
-          typ = "ImVec4* | #{typ}"
-          callarg = "#{callarg}.as(Float32*)"
-        elsif arg.type.c_name == "float[2]"
-          typ = "ImVec2* | #{typ}"
-          callarg = "#{callarg}.as(Float32*)"
+        elsif arg.type.c_name =~ /^(float|int)\[(\d+)\]$/
+          t = typ.rchop("*")
+          n = $2.to_i
+          typ = "Indexable(#{t}) | #{typ}"
+          if $1 == "float"
+            typ = "ImVec2* | #{typ}" if n == 2
+            typ = "ImVec4* | #{typ}" if n == 4 || arg.name.rpartition("_").last == "col"
+          end
+          callarg = %(#{callarg}.is_a?(Indexable) ? (
+              #{callarg}.size == #{n} ? #{callarg}.to_unsafe : raise ArgumentError.new("Slice has wrong size \#{#{callarg}.size} (want #{n})")
+          ) : #{callarg}.as(#{t}*))
         elsif arg.name.rpartition("_").last == "end" && typ == "String"
-          args[-1] = "#{self.args[arg_i - 1].name} : Slice(UInt8) | String"
-          call_args << "(#{self.args[arg_i - 1].name}.to_unsafe + #{self.args[arg_i - 1].name}.bytesize)"
+          assert (p_arg = self.args[arg_i - 1].name.rchop("_begin")) == arg.name.rpartition("_").first
+          args[-1] = "#{p_arg} : Bytes | String"
+          call_args[-1] = p_arg
+          call_args << "(#{p_arg}.to_unsafe + #{p_arg}.bytesize)"
+          next
+        elsif arg.name.rpartition("_").last == "count" && typ == "Int32" && (prev_arg = self.args[arg_i - 1]?) && prev_arg.name == arg.name.rpartition("_").first && args[-1]?.try(&.ends_with?("*"))
+          typ = CType.new(assert prev_arg.type.name(Context::Ext).rchop?("*")).name(ctx)
+          args[-1] = "#{prev_arg.name} : Indexable(#{typ})"
+          call_args << "#{prev_arg.name}.size"
           next
         elsif arg_i == as_datatype
           call_args << "ImGuiDataType::{{k.id}}"

@@ -137,28 +137,59 @@ module ImGui
     LibImGui.igCheckboxFlags(label, flags.as(UInt32*), flags_value.to_u32!)
   end
 
-  {% for fn in %w[lines histogram] %}
-    def self.plot_{{fn.id}}(label : String, values_count : Int32, values_offset : Int32 = 0, overlay_text : String? = nil, scale_min : Float32 = Float32::MAX, scale_max : Float32 = Float32::MAX, graph_size : ImVec2 = ImVec2.new(0, 0), &block : Int32 -> Float32) : Void
-      LibImGui.igPlot{{fn.id.capitalize}}FnFloatPtr(label, ->(data, idx) {
-        data.as(typeof(block)*).value.call(idx)
-      }, pointerof(block), values_count, values_offset, overlay_text, scale_min, scale_max, graph_size)
+  private macro make_plot(name, *args)
+    def self.{{name.id}}({{*args}}, &block : Int32 -> Float32) : Void
+      LibImGui.ig{{name.id.camelcase}}FnFloatPtr(
+        {% for arg, i in args %}
+          {% if i == 1 %}
+            ->(data, idx) { data.as(typeof(block)*).value.call(idx) },
+            pointerof(block),
+          {% end %}
+          {{arg.var}},
+        {% end %}
+      )
     end
-  {% end %}
+  end
+
+  make_plot(:plot_lines, label : String, values_count : Int32, values_offset : Int32 = 0, overlay_text : String? = nil, scale_min : Float32 = Float32::MAX, scale_max : Float32 = Float32::MAX, graph_size : ImVec2 = ImVec2.new(0, 0))
+
+  make_plot(:plot_histogram, label : String, values_count : Int32, values_offset : Int32 = 0, overlay_text : String? = nil, scale_min : Float32 = Float32::MAX, scale_max : Float32 = Float32::MAX, graph_size : ImVec2 = ImVec2.new(0, 0))
 
   def self.get_id(int_id : Int) : ImGuiID
     get_id(Pointer(Void).new(int_id))
   end
 
-  def self.combo_(label : String, current_item : Int32*, items_count : Int32, popup_max_height_in_items : Int32 = -1, &block : Int32 -> (Slice(UInt8) | String)?) : Bool
-    LibImGui.igComboFnBoolPtr(label, current_item, ->(data, idx, out_text) {
-      val = data.as(typeof(block)*).value.call(idx)
-      if val
-        out_text.value = val.to_unsafe
-        true
-      else
-        false
-      end
-    }, pointerof(block), items_count, popup_max_height_in_items)
+  private macro make_list_box(name, *args)
+    def self.{{name.id}}_({{*args}}, &block : Int32 -> (Slice(UInt8) | String)?) : Bool
+      LibImGui.ig{{name.id.camelcase}}FnBoolPtr(
+        {% for arg, i in args %}
+          {% if i == 2 %}
+            ->(data, idx, out_text) {
+              val = data.as(typeof(block)*).value.call(idx)
+              if val
+                out_text.value = val.to_unsafe
+                true
+              else
+                false
+              end
+            }, pointerof(block),
+            {% end %}
+          {{arg.var}},
+        {% end %}
+      )
+    end
+  end
+
+  make_list_box(:combo, label : String, current_item : Int32*, items_count : Int32, popup_max_height_in_items : Int32 = -1)
+
+  def self.combo_(label : String, current_item : Int32*, items : Indexable(String), popup_max_height_in_items : Int32 = -1)
+    combo_(label, current_item, items.size, popup_max_height_in_items) { |i| items[i] }
+  end
+
+  make_list_box(:list_box, label : String, current_item : Int32*, items_count : Int32, height_in_items : Int32 = -1)
+
+  def self.list_box_(label : String, current_item : Int32*, items : Indexable(String), height_in_items : Int32 = -1)
+    list_box_(label, current_item, items.size, height_in_items) { |i| items[i] }
   end
 
   def self.set_next_window_size_constraints(size_min : ImVec2, size_max : ImVec2, &block : ImGuiSizeCallbackData ->) : Void

@@ -538,7 +538,7 @@ module ImGuiDemo
         ImGui.begin_tooltip
         ImGui.text("I am a fancy tooltip")
 
-        ImGui.plot_lines("Curve", @@arr.to_unsafe, @@arr.size)
+        ImGui.plot_lines("Curve", @@arr)
         ImGui.end_tooltip
       end
 
@@ -548,7 +548,7 @@ module ImGuiDemo
 
       begin
         items = ["AAAA", "BBBB", "CCCC", "DDDD", "EEEE", "FFFF", "GGGG", "HHHH", "IIIIIII", "JJJJ", "KKKKKKK"]
-        ImGui.combo("combo", pointerof(@@item_current), items.map(&.to_unsafe).to_unsafe, items.size)
+        ImGui.combo("combo", pointerof(@@item_current), items)
         ImGui.same_line
         help_marker("Refer to the \"Combo\" section below for an explanation of the full BeginCombo/EndCombo API, and demonstration of various flags.\n")
       end
@@ -588,7 +588,7 @@ module ImGuiDemo
           "You can input value using the scientific notation,\n" +
           "  @@e.g. \"1e+8\" becomes \"100000000\".")
 
-        ImGui.input_float3("input float3", @@vec4a.to_unsafe)
+        ImGui.input_float3("input float3", @@vec4a)
       end
 
       begin
@@ -621,7 +621,7 @@ module ImGuiDemo
       end
 
       begin
-        ImGui.color_edit3("color 1", @@col1.to_unsafe)
+        ImGui.color_edit3("color 1", @@col1)
         ImGui.same_line
         help_marker(
           "Click on the colored square to open a color picker.\n" +
@@ -629,12 +629,12 @@ module ImGuiDemo
           "Right-click on the colored square to show options.\n" +
           "CTRL+click on individual component to input value.\n")
 
-        ImGui.color_edit4("color 2", @@col2.to_unsafe)
+        ImGui.color_edit4("color 2", @@col2)
       end
 
       begin
         items = ["Apple", "Banana", "Cherry", "Kiwi", "Mango", "Orange", "Pineapple", "Strawberry", "Watermelon"]
-        ImGui.list_box("listbox\n(single select)", pointerof(@@item_current_), items.map(&.to_unsafe).to_unsafe, items.size, 4)
+        ImGui.list_box("listbox\n(single select)", pointerof(@@item_current_), items, 4)
       end
 
       ImGui.tree_pop
@@ -897,7 +897,7 @@ module ImGuiDemo
 
       ImGui.combo("combo 2 (one-liner)", pointerof(@@item_current_2), "aaaa\0bbbb\0cccc\0dddd\0eeee\0\0")
 
-      ImGui.combo("combo 3 (array)", pointerof(@@item_current_3), items.map(&.to_unsafe).to_unsafe, items.size)
+      ImGui.combo("combo 3 (array)", pointerof(@@item_current_3), items, items.size)
 
       ImGui.combo("combo 4 (function)", pointerof(@@item_current_4), items.size) do |idx|
         items[idx]
@@ -1068,7 +1068,7 @@ module ImGuiDemo
     if ImGui.tree_node("Plots Widgets")
       ImGui.checkbox("Animate", pointerof(@@animate))
 
-      ImGui.plot_lines("Frame Times", @@arr_.to_unsafe, @@arr_.size)
+      ImGui.plot_lines("Frame Times", @@arr_)
 
       if !@@animate || @@refresh_time == 0.0
         @@refresh_time = ImGui.get_time
@@ -1086,9 +1086,9 @@ module ImGuiDemo
           average += @@values[n]
         end
         average /= @@values.size
-        ImGui.plot_lines("Lines", @@values.to_unsafe, @@values.size, @@values_offset, "avg %f" % average, -1.0f32, 1.0f32, ImGui.vec2(0, 80.0f32))
+        ImGui.plot_lines("Lines", @@values, @@values_offset, "avg %f" % average, -1.0f32, 1.0f32, ImGui.vec2(0, 80.0f32))
       end
-      ImGui.plot_histogram("Histogram", @@arr_.to_unsafe, @@arr_.size, 0, nil, 0.0f32, 1.0f32, ImGui.vec2(0, 80.0f32))
+      ImGui.plot_histogram("Histogram", @@arr_, 0, nil, 0.0f32, 1.0f32, ImGui.vec2(0, 80.0f32))
 
       sin = ->(i : Int32) { Math.sin(i * 0.1).to_f32 }
       saw = ->(i : Int32) { (i & 1) ? 1.0f32 : -1.0f32 }
@@ -1450,28 +1450,28 @@ module ImGuiDemo
     end
 
     if ImGui.tree_node("Multi-component Widgets")
-      ImGui.input_float2("input float2", @@vec4f.to_unsafe)
-      ImGui.drag_float2("drag float2", @@vec4f.to_unsafe, 0.01f32, 0.0f32, 1.0f32)
-      ImGui.slider_float2("slider float2", @@vec4f.to_unsafe, 0.0f32, 1.0f32)
-      ImGui.input_int2("input int2", @@vec4i.to_unsafe)
-      ImGui.drag_int2("drag int2", @@vec4i.to_unsafe, 1, 0, 255)
-      ImGui.slider_int2("slider int2", @@vec4i.to_unsafe, 0, 255)
+      ImGui.input_float2("input float2", @@vec4f)
+      ImGui.drag_float2("drag float2", @@vec4f, 0.01f32, 0.0f32, 1.0f32)
+      ImGui.slider_float2("slider float2", @@vec4f, 0.0f32, 1.0f32)
+      ImGui.input_int2("input int2", @@vec4i)
+      ImGui.drag_int2("drag int2", @@vec4i, 1, 0, 255)
+      ImGui.slider_int2("slider int2", @@vec4i, 0, 255)
       ImGui.spacing
 
-      ImGui.input_float3("input float3", @@vec4f.to_unsafe)
-      ImGui.drag_float3("drag float3", @@vec4f.to_unsafe, 0.01f32, 0.0f32, 1.0f32)
-      ImGui.slider_float3("slider float3", @@vec4f.to_unsafe, 0.0f32, 1.0f32)
-      ImGui.input_int3("input int3", @@vec4i.to_unsafe)
-      ImGui.drag_int3("drag int3", @@vec4i.to_unsafe, 1, 0, 255)
-      ImGui.slider_int3("slider int3", @@vec4i.to_unsafe, 0, 255)
+      ImGui.input_float3("input float3", @@vec4f)
+      ImGui.drag_float3("drag float3", @@vec4f, 0.01f32, 0.0f32, 1.0f32)
+      ImGui.slider_float3("slider float3", @@vec4f, 0.0f32, 1.0f32)
+      ImGui.input_int3("input int3", @@vec4i)
+      ImGui.drag_int3("drag int3", @@vec4i, 1, 0, 255)
+      ImGui.slider_int3("slider int3", @@vec4i, 0, 255)
       ImGui.spacing
 
-      ImGui.input_float4("input float4", @@vec4f.to_unsafe)
-      ImGui.drag_float4("drag float4", @@vec4f.to_unsafe, 0.01f32, 0.0f32, 1.0f32)
-      ImGui.slider_float4("slider float4", @@vec4f.to_unsafe, 0.0f32, 1.0f32)
-      ImGui.input_int4("input int4", @@vec4i.to_unsafe)
-      ImGui.drag_int4("drag int4", @@vec4i.to_unsafe, 1, 0, 255)
-      ImGui.slider_int4("slider int4", @@vec4i.to_unsafe, 0, 255)
+      ImGui.input_float4("input float4", @@vec4f)
+      ImGui.drag_float4("drag float4", @@vec4f, 0.01f32, 0.0f32, 1.0f32)
+      ImGui.slider_float4("slider float4", @@vec4f, 0.0f32, 1.0f32)
+      ImGui.input_int4("input int4", @@vec4i)
+      ImGui.drag_int4("drag int4", @@vec4i, 1, 0, 255)
+      ImGui.slider_int4("slider int4", @@vec4i, 0, 255)
 
       ImGui.tree_pop
     end
@@ -1545,8 +1545,8 @@ module ImGuiDemo
       if ImGui.tree_node("Drag and drop in standard widgets")
         help_marker("You can drag from the colored squares.")
 
-        ImGui.color_edit3("color 1", @@col1_.to_unsafe)
-        ImGui.color_edit4("color 2", @@col2_.to_unsafe)
+        ImGui.color_edit3("color 1", @@col1_)
+        ImGui.color_edit4("color 2", @@col2_)
         ImGui.tree_pop
       end
 
@@ -1636,7 +1636,7 @@ module ImGuiDemo
         "InputFloat3", "ColorEdit4", "MenuItem", "TreeNode", "TreeNode (w/ double-click)", "ListBox",
       ]
 
-      ImGui.combo("Item Type", pointerof(@@item_type), item_names.map(&.to_unsafe).to_unsafe, item_names.size, item_names.size)
+      ImGui.combo("Item Type", pointerof(@@item_type), item_names, item_names.size)
       ImGui.same_line
       help_marker("Testing how various types of items are interacting with the IsItemXXX functions.")
 
@@ -1657,19 +1657,19 @@ module ImGuiDemo
         ret = ImGui.checkbox("ITEM: Checkbox", pointerof(@@b))
       end
       if @@item_type == 4
-        ret = ImGui.slider_float("ITEM: SliderFloat", @@col4f.to_unsafe, 0.0f32, 1.0f32)
+        ret = ImGui.slider_float("ITEM: SliderFloat", pointerof(@@col4f[0]), 0.0f32, 1.0f32)
       end
       if @@item_type == 5
         ret = ImGui.input_text("ITEM: InputText", @@str)
       end
       if @@item_type == 6
-        ret = ImGui.input_float("ITEM: InputFloat", @@col4f.to_unsafe, 1.0f32)
+        ret = ImGui.input_float("ITEM: InputFloat", pointerof(@@col4f[0]), 1.0f32)
       end
       if @@item_type == 7
-        ret = ImGui.input_float3("ITEM: InputFloat3", @@col4f.to_unsafe)
+        ret = ImGui.input_float3("ITEM: InputFloat3", @@col4f)
       end
       if @@item_type == 8
-        ret = ImGui.color_edit4("ITEM: ColorEdit4", @@col4f.to_unsafe)
+        ret = ImGui.color_edit4("ITEM: ColorEdit4", @@col4f)
       end
       if @@item_type == 9
         ret = ImGui.menu_item("ITEM: MenuItem")
@@ -1685,8 +1685,7 @@ module ImGuiDemo
       end
       if @@item_type == 12
         items = ["Apple", "Banana", "Cherry", "Kiwi"]
-
-        ret = ImGui.list_box("ITEM: ListBox", pointerof(@@current), items.map(&.to_unsafe).to_unsafe, items.size, items.size)
+        ret = ImGui.list_box("ITEM: ListBox", pointerof(@@current), items, items.size)
       end
 
       ImGui.bullet_text(
@@ -1984,7 +1983,7 @@ module ImGuiDemo
       ImGui.push_item_width(80)
       items = ["AAAA", "BBBB", "CCCC", "DDDD"]
 
-      ImGui.combo("Combo", pointerof(@@item), items.map(&.to_unsafe).to_unsafe, items.size)
+      ImGui.combo("Combo", pointerof(@@item), items, items.size)
       ImGui.same_line
       ImGui.slider_float("X", pointerof(@@f0_), 0.0f32, 5.0f32)
       ImGui.same_line
@@ -2001,7 +2000,7 @@ module ImGuiDemo
           ImGui.same_line
         end
         ImGui.push_id(i)
-        ImGui.list_box("", pointerof(@@selection__[i]), items.map(&.to_unsafe).to_unsafe, items.size)
+        ImGui.list_box("", pointerof(@@selection__[i]), items)
         ImGui.pop_id
       end
       ImGui.pop_item_width
@@ -2121,7 +2120,7 @@ module ImGuiDemo
 
       size = ImGui.get_item_rect_size
       values = [0.5f32, 0.20f32, 0.80f32, 0.60f32, 0.25f32]
-      ImGui.plot_histogram("##values", values.to_unsafe, values.size, 0, nil, 0.0f32, 1.0f32, size)
+      ImGui.plot_histogram("##values", values, 0, nil, 0.0f32, 1.0f32, size)
 
       ImGui.button("ACTION", ImGui.vec2((size.x - ImGui.get_style.item_spacing.x) * 0.5f32, size.y))
       ImGui.same_line
@@ -2728,7 +2727,7 @@ module ImGuiDemo
         ImGui.text("Hello from Stacked The First\nUsing style.colors[ImGuiCol::ModalWindowDimBg] behind it.")
 
         ImGui.combo("Combo", pointerof(@@item_), "aaaa\0bbbb\0cccc\0dddd\0eeee\0\0")
-        ImGui.color_edit4("color", @@color_.to_unsafe)
+        ImGui.color_edit4("color", @@color_)
 
         if ImGui.button("Add another modal..")
           ImGui.open_popup("Stacked 2")
@@ -4427,7 +4426,7 @@ module ImGuiDemo
         ImGui.set_window_size(ImGui.vec2(800, 200))
       end
       ImGui.set_next_item_width(200)
-      ImGui.combo("Constraint", pointerof(@@type), test_desc.map(&.to_unsafe).to_unsafe, test_desc.size)
+      ImGui.combo("Constraint", pointerof(@@type), test_desc)
       ImGui.set_next_item_width(200)
       ImGui.drag_int("Lines", pointerof(@@display_lines), 0.2f32, 1, 100)
       ImGui.checkbox("Auto-resize", pointerof(@@auto_resize))
