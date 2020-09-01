@@ -165,6 +165,11 @@ class CArg
   include JSON::Serializable
 
   getter name : String
+  def name : String
+    name = previous_def
+    name += "_" if name == "in"
+    name
+  end
 
   getter type : CType
   def type : CType

@@ -2981,8 +2981,8 @@ module ImGui
     LibImGui.igColorButton(desc_id, col, flags, size)
   end
 
-  def self.color_convert_float4_to_u32(in : ImVec4) : UInt32
-    LibImGui.igColorConvertFloat4ToU32(in)
+  def self.color_convert_float4_to_u32(in_ : ImVec4) : UInt32
+    LibImGui.igColorConvertFloat4ToU32(in_)
   end
 
   def self.color_convert_hs_vto_rgb(h : Float32, s : Float32, v : Float32) : {LibC::Float, LibC::Float, LibC::Float}
@@ -2995,8 +2995,8 @@ module ImGui
     {out_h, out_s, out_v}
   end
 
-  def self.color_convert_u32_to_float4(in : UInt32) : ImGui::ImVec4
-    LibImGui.igColorConvertU32ToFloat4(out p_out, in)
+  def self.color_convert_u32_to_float4(in_ : UInt32) : ImGui::ImVec4
+    LibImGui.igColorConvertU32ToFloat4(out p_out, in_)
     p_out
   end
 

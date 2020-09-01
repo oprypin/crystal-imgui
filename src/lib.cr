@@ -564,10 +564,10 @@ lib LibImGui
   fun igCollapsingHeaderTreeNodeFlags(label : LibC::Char*, flags : ImGui::ImGuiTreeNodeFlags) : Bool
   fun igCollapsingHeaderBoolPtr(label : LibC::Char*, p_open : Bool*, flags : ImGui::ImGuiTreeNodeFlags) : Bool
   fun igColorButton(desc_id : LibC::Char*, col : ImGui::ImVec4, flags : ImGui::ImGuiColorEditFlags, size : ImGui::ImVec2) : Bool
-  fun igColorConvertFloat4ToU32(in : ImGui::ImVec4) : UInt32
+  fun igColorConvertFloat4ToU32(in_ : ImGui::ImVec4) : UInt32
   fun igColorConvertHSVtoRGB(h : LibC::Float, s : LibC::Float, v : LibC::Float, out_r : LibC::Float*, out_g : LibC::Float*, out_b : LibC::Float*)
   fun igColorConvertRGBtoHSV(r : LibC::Float, g : LibC::Float, b : LibC::Float, out_h : LibC::Float*, out_s : LibC::Float*, out_v : LibC::Float*)
-  fun igColorConvertU32ToFloat4(pOut : ImGui::ImVec4*, in : UInt32)
+  fun igColorConvertU32ToFloat4(pOut : ImGui::ImVec4*, in_ : UInt32)
   fun igColorEdit3(label : LibC::Char*, col : LibC::Float*, flags : ImGui::ImGuiColorEditFlags) : Bool
   fun igColorEdit4(label : LibC::Char*, col : LibC::Float*, flags : ImGui::ImGuiColorEditFlags) : Bool
   fun igColorPicker3(label : LibC::Char*, col : LibC::Float*, flags : ImGui::ImGuiColorEditFlags) : Bool
