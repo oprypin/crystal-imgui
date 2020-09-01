@@ -1,4 +1,4 @@
-require "imgui"
+require "../src/imgui"
 
 ImGui.debug_check_version_and_data_layout(
   ImGui.get_version(), *{

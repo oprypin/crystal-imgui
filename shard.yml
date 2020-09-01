@@ -11,9 +11,9 @@ development_dependencies:
   crsfml:
     github: oprypin/crsfml
     branch: master
-  imgui:
+  imgui-sfml:
     github: oprypin/crystal-imgui-sfml
-    commit: master
+    branch: master
 
 license: MIT
 

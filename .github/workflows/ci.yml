@@ -1,0 +1,72 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+    branches: [master]
+  schedule:
+    - cron: '0 6 * * 6'
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - crystal: nightly
+            os: ubuntu-latest
+          - crystal: latest
+            os: macos-latest
+          - os: windows-latest
+    runs-on: ${{matrix.os}}
+    steps:
+      - name: Install Crystal
+        uses: oprypin/install-crystal@v1
+        with:
+          crystal: ${{matrix.crystal}}
+      - name: Download source
+        uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - name: Re-generate sources
+        if: runner.os != 'Windows'
+        run: |
+          crystal generate.cr
+          crystal tool format src
+      - name: Validate freshness of generated files
+        if: matrix.crystal == 'latest'
+        run: |
+          git diff --exit-code
+      - name: Download crsfml
+        uses: actions/checkout@v2
+        with:
+          repository: oprypin/crsfml
+          path: lib/crsfml
+      - name: Download crystal-imgui-sfml
+        uses: actions/checkout@v2
+        with:
+          repository: oprypin/crystal-imgui-sfml
+          path: lib/imgui-sfml
+      - name: Build cimgui
+        working-directory: ./cimgui
+        run: |
+          cmake -DCMAKE_CXX_FLAGS='-DIMGUI_USE_WCHAR32' .
+          cmake --build . -j4
+      - name: Set up environment
+        if: runner.os != 'Windows'
+        working-directory: ./cimgui
+        run: |
+          ln -s {,lib}$(ls cimgui.so cimgui.dylib)
+          echo "::set-env name=LIBRARY_PATH::$(pwd)"
+          echo "::set-env name=LD_LIBRARY_PATH::$(pwd)"
+      - name: Set up environment
+        if: runner.os == 'Windows'
+        run: |
+          echo "::set-env name=LIB::$(pwd)\cimgui\Debug;${env:LIB}"
+      - name: Run example
+        if: runner.os == 'Linux'
+        run: |
+          crystal run examples/test.cr
+      - name: Build demo
+        run: |
+          crystal build --cross-compile examples/demo.cr
