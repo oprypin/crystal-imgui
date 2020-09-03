@@ -71,7 +71,7 @@ The API surface follows [Dear ImGui][imgui] itself very closely. Main difference
 * `ImVector` is discouraged. Usually you can just work with `Array` or `Slice`.
 * `ImColor` is even more discouraged, in favor of `ImVec4`. See some color helper functions in _src/imgui.cr_.
 
-#### Known issues
+### Known issues
 
 (planned to be fixed)
 
@@ -89,7 +89,7 @@ If you're editing files, make sure they wouldn't be overwritten by `generate.cr`
 
 ```bash
 crystal generate.cr  # assumes cimgui/ is populated, writes to src/
-crystal tool format
+crystal tool format src
 ```
 
 Credits
@@ -104,7 +104,6 @@ Credits
 [cimgui]: https://github.com/cimgui/cimgui
 [sfml]: https://www.sfml-dev.org/ "Simple and Fast Multimedia Library"
 [crystal-imgui-sfml]: https://github.com/oprypin/crystal-imgui-sfml
-[crsfml]: https://github.com/oprypin/crsfml
 
 [crystal]: https://crystal-lang.org/
 
