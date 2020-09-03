@@ -7,7 +7,7 @@ Introduction
 
 This library lets you use [Dear ImGui][imgui] with the [Crystal][] programming language.
 
-[Dear ImGui] is an immediate-mode library for programming and rendering graphical user interfaces. But note that just by itself it won't immediately let you do those things, it needs to be wired up to code that actually handles rendering and input. You can write these yourself or use a library:
+[Dear ImGui][imgui] is an immediate-mode library for programming and rendering graphical user interfaces. But note that just by itself it won't directly let you do those things, it needs to be wired up to code that actually handles rendering and input. You can write these yourself or use a library:
 
 * [crystal-imgui-sfml][] - backend using [SFML][] (assumed through [CrSFML][]).  
   Please refer to its instructions primarily, as it takes over large parts of the installation.
@@ -27,52 +27,51 @@ Then you can build [cimgui][]:
 
 ```bash
 cd cimgui
-cmake . -DCMAKE_CXX_FLAGS=""
+cmake -DCMAKE_CXX_FLAGS='-DIMGUI_USE_WCHAR32' .
 cmake --build .
 ln -s cimgui.so libcimgui.so  # or .dylib on macOS
 ```
 
-Yes, the flag is required (just makes the library play much nicely with Unicode *and* Crystal), and the symlink is also required, because the library ends up as _cimgui.so_ but somehow is referred by both that name and _libcimgui.so_
+Yes, the flag is required (just makes the library play much nicely with Unicode *and* Crystal), and the symlink is also required, because the library ends up as _cimgui.so_ but somehow is referred by both that name and _libcimgui.so_.
 
 ### Building a project
 
 Try the example from inside the folder of *imgui*:
 
 ```bash
-crystal build examples/test.cr
+crystal run examples/test.cr
 ```
 
-Prior `libcimgui.so` library (bundled with the project) to the search path, running it will require that addition to be done manually:
+Prior to that you'll need to add *cimgui* to the library search path:
 
 ```bash
-export LD_LIBRARY_PATH="$(pwd)"
-./example
+export LD_LIBRARY_PATH="$(pwd)/cimgui"
+export LIBRARY_PATH="$(pwd)/cimgui"
 ```
 
-For your own project, *imgui-sfml* will be in a subdirectory, so adjust this accordingly:
+For your own project, *crystal-imgui* will be in a subdirectory, so adjust this accordingly.
 
-```bash
-export LD_LIBRARY_PATH="$(pwd)/lib/imgui-sfml"
-printf 'require "crsfml"\nrequire "imgui"\nrequire "imgui-sfml"\n' >> my_project.cr
-crystal run my_project.cr
-```
+Usage
+-----
 
+Examples of most possible usages of the library are covered in the extensive [src/demo.cr](src/demo.cr) (entry point [examples/demo.cr](examples/demo.cr)).
+
+Using [crystal-imgui][] is agnostic of the backend for the most part, you invoke those just at the beginning of a frame, to process inputs, and at the end, to do the actual rendering (generally [imgui][] just builds up the things to be drawn until the end).
 
 Credits
 -------
 
-*crystal-imgui* was made by [Oleh Prypin][oprypin]. It uses and is based on [Dear ImGui][imgui].
+*crystal-imgui* was made by [Oleh Prypin][oprypin]. It uses and is based on [Dear ImGui][imgui] and [cimgui][].
 
 *crystal-imgui* is [licensed](LICENSE.md) under the terms and conditions of the *MIT* license.
 
 
-[imgui-sfml]: https://github.com/eliasdaler/imgui-sfml
 [imgui]: https://github.com/ocornut/imgui
+[cimgui]: https://github.com/cimgui/cimgui
 [sfml]: https://www.sfml-dev.org/ "Simple and Fast Multimedia Library"
 [crystal-imgui-sfml]: https://github.com/oprypin/crystal-imgui-sfml
 [crsfml]: https://github.com/oprypin/crsfml
 
 [crystal]: https://crystal-lang.org/
-[shards]: https://github.com/crystal-lang/shards
 
 [oprypin]: https://github.com/oprypin
