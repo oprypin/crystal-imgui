@@ -1,6 +1,6 @@
 require "crsfml"
-require "../src/imgui"
-require "../src/demo"
+require "../src/imgui"  # require "imgui"
+require "../src/demo"   # require "imgui/demo"
 require "imgui-sfml"
 
 title = "Side-by-side: Dear ImGui Demo + crystal-imgui reimplementation"
