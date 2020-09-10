@@ -2651,63 +2651,7 @@ module ImGui
   alias ImGuiStyleMod = LibImGui::ImGuiStyleMod
   alias ImGuiTabBar = LibImGui::ImGuiTabBar
   alias ImGuiTabItem = LibImGui::ImGuiTabItem
-
-  struct ImGuiTextBuffer
-    include StructType
-
-    def buf : ImVector(LibC::Char)
-      t = @buf
-      pointerof(t).as(ImVector(LibC::Char)*).value
-    end
-
-    def buf=(buf : ImVector(LibC::Char))
-      @buf = buf.as(LibImGui::ImVectorInternal*).value
-    end
-
-    def self.new : ImGuiTextBuffer
-      result = LibImGui.ImGuiTextBuffer_ImGuiTextBuffer
-      result.value
-    end
-
-    def append(str : Bytes | String) : Void
-      LibImGui.ImGuiTextBuffer_append(self, str, (str.to_unsafe + str.bytesize))
-    end
-
-    def appendf(fmt : String, *args) : Void
-      LibImGui.ImGuiTextBuffer_appendf(self, fmt, *args)
-    end
-
-    def begin : String
-      result = LibImGui.ImGuiTextBuffer_begin(self)
-      (s = result) ? String.new(s) : ""
-    end
-
-    def c_str : String
-      result = LibImGui.ImGuiTextBuffer_c_str(self)
-      (s = result) ? String.new(s) : ""
-    end
-
-    def clear : Void
-      LibImGui.ImGuiTextBuffer_clear(self)
-    end
-
-    def empty : Bool
-      LibImGui.ImGuiTextBuffer_empty(self)
-    end
-
-    def end : String
-      result = LibImGui.ImGuiTextBuffer_end(self)
-      (s = result) ? String.new(s) : ""
-    end
-
-    def reserve(capacity : Int32) : Void
-      LibImGui.ImGuiTextBuffer_reserve(self, capacity)
-    end
-
-    def size : Int32
-      LibImGui.ImGuiTextBuffer_size(self)
-    end
-  end
+  alias ImGuiTextBuffer = LibImGui::ImGuiTextBuffer
 
   struct ImGuiTextFilter
     include StructClassType(LibImGui::ImGuiTextFilter)
@@ -3648,16 +3592,16 @@ module ImGui
     ::ImGui._pointer_wrapper("::ImGui.input_scalar_n_", 2, false, {{*args}}, {{**kwargs}}) {{block}}
   end
 
-  def self.input_text(label : String, buf : LibC::Char*, buf_size : LibC::SizeT, flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0), callback : ImGuiInputTextCallback? = nil, user_data : Void* = Pointer(Void).null) : Bool
-    LibImGui.igInputText(label, buf, buf_size, flags, callback, user_data)
+  def self.input_text(label : String, buf : Bytes, flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0), callback : ImGuiInputTextCallback? = nil, user_data : Void* = Pointer(Void).null) : Bool
+    LibImGui.igInputText(label, buf, buf.size, flags, callback, user_data)
   end
 
-  def self.input_text_multiline(label : String, buf : LibC::Char*, buf_size : LibC::SizeT, size : ImVec2 = ImVec2.new(0, 0), flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0), callback : ImGuiInputTextCallback? = nil, user_data : Void* = Pointer(Void).null) : Bool
-    LibImGui.igInputTextMultiline(label, buf, buf_size, size, flags, callback, user_data)
+  def self.input_text_multiline(label : String, buf : Bytes, size : ImVec2 = ImVec2.new(0, 0), flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0), callback : ImGuiInputTextCallback? = nil, user_data : Void* = Pointer(Void).null) : Bool
+    LibImGui.igInputTextMultiline(label, buf, buf.size, size, flags, callback, user_data)
   end
 
-  def self.input_text_with_hint(label : String, hint : String, buf : LibC::Char*, buf_size : LibC::SizeT, flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0), callback : ImGuiInputTextCallback? = nil, user_data : Void* = Pointer(Void).null) : Bool
-    LibImGui.igInputTextWithHint(label, hint, buf, buf_size, flags, callback, user_data)
+  def self.input_text_with_hint(label : String, hint : String, buf : Bytes, flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0), callback : ImGuiInputTextCallback? = nil, user_data : Void* = Pointer(Void).null) : Bool
+    LibImGui.igInputTextWithHint(label, hint, buf, buf.size, flags, callback, user_data)
   end
 
   def self.invisible_button(str_id : String, size : ImVec2, flags : ImGuiButtonFlags = ImGuiButtonFlags.new(0)) : Bool

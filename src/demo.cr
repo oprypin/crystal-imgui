@@ -346,8 +346,8 @@ module ImGuiDemo
   @@counter = 0
   @@arr = [0.6f32, 0.1f32, 1.0f32, 0.5f32, 0.92f32, 0.1f32, 0.2f32]
   @@item_current = 0
-  @@str0 : IO::Memory = IO::Memory.new(128) << "Hello, world!"
-  @@str1 : IO::Memory = IO::Memory.new(128)
+  @@str0 = ImGui::TextBuffer.new("Hello, world!", 128)
+  @@str1 = ImGui::TextBuffer.new(128)
   @@i0 = 123
   @@f0 = 0.001f32
   @@d0 = 999999.00000001
@@ -371,7 +371,7 @@ module ImGuiDemo
   @@selection_mask : Int32 = (1 << 2)
   @@closable_group = true
   @@wrap_width = 200.0f32
-  @@buf : IO::Memory = IO::Memory.new(32) << "日本語"
+  @@buf = ImGui::TextBuffer.new("日本語", 32)
   @@pressed_count = 0
   @@flags = ImGuiComboFlags::None
   @@item_current_idx = 0
@@ -385,7 +385,7 @@ module ImGuiDemo
   @@selected__ : Array(Bool) = [false] * 16
   @@selected___ = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
   @@selected____ = [true, false, true, false, true, false, true, false, true]
-  @@text : IO::Memory = (IO::Memory.new(1024 * 16) <<
+  @@text : ImGui::TextBuffer = (ImGui::TextBuffer.new(1024 * 16) <<
     "/*\n" <<
     " The Pentium F00F bug, shorthand for F0 0F C7 C8,\n" <<
     " the hexadecimal encoding of one offending instruction,\n" <<
@@ -397,14 +397,14 @@ module ImGuiDemo
     "label:\n" <<
     "\tlock cmpxchg8b eax\n")
   @@flags_ = ImGuiInputTextFlags::AllowTabInput
-  @@buf1 = IO::Memory.new(64)
-  @@buf2 = IO::Memory.new(64)
-  @@buf3 = IO::Memory.new(64)
-  @@buf4 = IO::Memory.new(64)
-  @@buf5 = IO::Memory.new(64)
-  @@buf6 = IO::Memory.new(64)
-  @@password : IO::Memory = IO::Memory.new(64) << "password123"
-  @@my_str = IO::Memory.new
+  @@buf1 = ImGui::TextBuffer.new(64)
+  @@buf2 = ImGui::TextBuffer.new(64)
+  @@buf3 = ImGui::TextBuffer.new(64)
+  @@buf4 = ImGui::TextBuffer.new(64)
+  @@buf5 = ImGui::TextBuffer.new(64)
+  @@buf6 = ImGui::TextBuffer.new(64)
+  @@password = ImGui::TextBuffer.new("password123", 64)
+  @@my_str = ImGui::TextBuffer.new
   @@animate = true
   @@arr_ = [0.6f32, 0.1f32, 1.0f32, 0.5f32, 0.92f32, 0.1f32, 0.2f32]
   @@values : Array(Float32) = [0.0f32] * 90
@@ -469,10 +469,10 @@ module ImGuiDemo
   @@item_type = 1
   @@b = false
   @@col4f = [1.0f32, 0.5f32, 0.0f32, 1.0f32]
-  @@str = IO::Memory.new(16)
+  @@str = ImGui::TextBuffer.new(16)
   @@current = 1
   @@embed_all_inside_a_child_window = false
-  @@unused_str : IO::Memory = IO::Memory.new << "This widget is only here to be able to tab-out of the widgets above."
+  @@unused_str = ImGui::TextBuffer.new("This widget is only here to be able to tab-out of the widgets above.")
   @@test_window = false
 
   def self.show_demo_window_widgets
@@ -588,7 +588,7 @@ module ImGuiDemo
           "You can input value using the scientific notation,\n" +
           "  @@e.g. \"1e+8\" becomes \"100000000\".")
 
-        ImGui.input_float3("input float3", @@vec4a)
+        ImGui.input_float3("input float3", @@vec4a[...3])
       end
 
       begin
@@ -1057,8 +1057,8 @@ module ImGuiDemo
           "Using ImGuiInputTextFlags::CallbackResize to wire your custom string type to input_text().\n\n" +
           "See misc/cpp/imgui_stdlib.h for an implementation of this for std.string.")
 
-        ImGui.input_text_multiline("##MyStr", @@my_str, ImGui.vec2(-Float32::MIN_POSITIVE, ImGui.get_text_line_height * 16))
-        ImGui.text(@@my_str.inspect)
+        ImGui.input_text_multiline("##MyStr", @@my_str, ImGui.vec2(-Float32::MIN_POSITIVE, ImGui.get_text_line_height * 16), ImGuiInputTextFlags::CallbackResize)
+        ImGui.text("Data: %p\nSize: %d\nCapacity: %d", @@my_str.to_unsafe, @@my_str.bytesize, @@my_str.capacity)
         ImGui.tree_pop
       end
 
@@ -2567,7 +2567,7 @@ module ImGuiDemo
   @@selected_fish = -1
   @@toggles = [true, false, false, false, false]
   @@value = 0.5f32
-  @@name : IO::Memory = IO::Memory.new(32) << "Label1"
+  @@name = ImGui::TextBuffer.new("Label1", 32)
   @@dont_ask_me_next_time = false
   @@item_ = 1
   @@color_ = [0.4f32, 0.7f32, 0.0f32, 0.5f32]
@@ -2974,8 +2974,8 @@ module ImGuiDemo
   end
 
   @@filter = ImGuiTextFilter.new
-  @@buf_ : IO::Memory = IO::Memory.new(32) << "hello"
-  @@buf__ : IO::Memory = IO::Memory.new(128) << "click on a button to set focus"
+  @@buf_ = ImGui::TextBuffer.new("hello", 32)
+  @@buf__ = ImGui::TextBuffer.new("click on a button to set focus", 128)
   @@f3 = [0.0f32, 0.0f32, 0.0f32]
 
   def self.show_demo_window_misc
@@ -3821,7 +3821,7 @@ module ImGuiDemo
   end
 
   class ExampleAppConsole
-    @input_buf = IO::Memory.new(256)
+    @input_buf = ImGui::TextBuffer.new(256)
     @items = [] of String
     @commands = ["HELP", "HISTORY", "CLEAR", "CLASSIFY"]
     @history = [] of String
@@ -4077,7 +4077,7 @@ module ImGuiDemo
   end
 
   class ExampleAppLog
-    @buf = IO::Memory.new
+    @buf = ImGui::TextBuffer.new
     @filter = ImGuiTextFilter.new
     @line_offsets = [0]
     @auto_scroll = true
@@ -4088,10 +4088,10 @@ module ImGuiDemo
     end
 
     def add_log(fmt, *args)
-      old_size = @buf.size
+      old_size = @buf.bytesize
       @buf.printf(fmt, *args)
-      (old_size...@buf.size).each do |i|
-        if @buf.buffer[i] == '\n'.ord
+      (old_size...@buf.bytesize).each do |i|
+        if @buf.to_slice[i] == '\n'.ord
           @line_offsets << (i + 1)
         end
       end
@@ -4300,7 +4300,7 @@ module ImGuiDemo
   end
 
   @@test_type = 0
-  @@log_ = IO::Memory.new
+  @@log_ = ImGui::TextBuffer.new
   @@lines_ = 0
 
   def self.show_example_app_long_text(p_open = Pointer(Bool).null)
@@ -4315,7 +4315,7 @@ module ImGuiDemo
       "Single call to text_unformatted()\0" +
       "Multiple calls to text(), clipped\0" +
       "Multiple calls to text(), not clipped (slow)\0")
-    ImGui.text("Buffer contents: %d @@lines_, %d bytes", @@lines_, @@log_.size)
+    ImGui.text("Buffer contents: %d @@lines_, %d bytes", @@lines_, @@log_.bytesize)
     if ImGui.button("Clear")
       @@log_.clear
       @@lines_ = 0

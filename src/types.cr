@@ -790,16 +790,6 @@ module ImGui
   alias TopLevel::ImGuiStorage = ImGui::ImGuiStorage
 
   @[Extern]
-  struct ImGuiTextBuffer
-    property buf : LibImGui::ImVectorInternal
-
-    def initialize(@buf : LibImGui::ImVectorInternal)
-    end
-  end
-
-  alias TopLevel::ImGuiTextBuffer = ImGui::ImGuiTextBuffer
-
-  @[Extern]
   struct ImVec2
     property x : Float32
     property y : Float32

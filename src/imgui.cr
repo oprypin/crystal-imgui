@@ -98,13 +98,91 @@ module ImGui
     ImVec4.new(x.to_f32, y.to_f32, z.to_f32, w.to_f32)
   end
 
+  class TextBuffer < IO
+    private EMPTY_STRING = [0u8].to_unsafe
+
+    @buf : UInt8* = EMPTY_STRING
+    getter capacity : Int32
+
+    def bytesize : Int32
+      LibC.strlen(@buf).to_i
+    end
+
+    def self.new(string : String, capacity : Int32 = string.bytesize)
+      new(string.to_slice, capacity)
+    end
+
+    def initialize(string : Bytes, @capacity : Int32 = string.bytesize)
+      if capacity < string.bytesize
+        raise ArgumentError.new("Capacity can't be smaller than the string size")
+      end
+      if capacity > 0
+        @buf = Pointer(UInt8).malloc(capacity + 1)
+        @buf.copy_from(string.to_unsafe, string.bytesize)
+      end
+    end
+
+    def initialize(@capacity : Int32 = 0)
+      if capacity > 0
+        @buf = Pointer(UInt8).malloc(capacity + 1)
+      end
+    end
+
+    def read(slice)
+      raise "Can't read from TextBuffer"
+    end
+
+    def write(slice : Bytes) : Nil
+      old_size = bytesize
+      resize(bytesize + slice.bytesize)
+      slice.copy_to(@buf + old_size, slice.bytesize)
+    end
+
+    def resize(size : Int32) : Nil
+      if size <= 0
+        @buf = EMPTY_STRING
+        @capacity = 0
+        return
+      end
+      if size > @capacity
+        @capacity = size < 8 ? 8 : Math.pw2ceil(size + 1)
+        if @buf == EMPTY_STRING
+          @buf = Pointer(UInt8).malloc(@capacity)
+        else
+          @buf = @buf.realloc(@capacity)
+        end
+        @capacity -= 1
+      end
+      @buf[size] = 0
+    end
+
+    def clear : Nil
+      resize(0)
+    end
+
+    def to_unsafe : UInt8*
+      @buf
+    end
+
+    def to_slice : Bytes
+      @buf.to_slice(bytesize)
+    end
+
+    def to_s : String
+      String.new(@buf)
+    end
+  end
+
+  private NULL_CALLBACK = ->(d : ImGuiInputTextCallbackData) { 0 }
+
   private macro make_input_text(name, *args)
     def self.{{name.id}}({{*args}}, &block : ImGuiInputTextCallbackData -> Int32) : Bool
+      block = nil if block == NULL_CALLBACK
       user_data = {buf, block}
       LibImGui.ig{{name.id.camelcase}}(
         {% for arg in args %}
           {% if arg.var == "buf" %}
-            buf.buffer, buf.@capacity,
+            buf, buf.capacity,
           {% else %}
             {{arg.var}},
           {% end %}
@@ -114,24 +192,24 @@ module ImGui
           buf2, block2 = data.user_data.as(typeof(user_data)*).value
 
           if data.event_flag == ImGuiInputTextFlags::CallbackResize
-            buf2.resize_to_capacity(data.buf_text_len)
-            data.buf = buf2.buffer
+            buf2.resize(data.buf_text_len)
+            data.buf = buf2.to_unsafe
           end
-          block2.call(data)
+          block2 ? block2.call(data) : 0
         }, pointerof(user_data)
       )
     end
 
     def self.{{name.id}}({{*args}}) : Bool
-      {{name.id}}({{*args.map(&.var)}}) { 0 }
+      {{name.id}}({{*args.map(&.var)}}, &NULL_CALLBACK)
     end
   end
 
-  make_input_text(:input_text, label : String, buf : IO::Memory, flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0))
+  make_input_text(:input_text, label : String, buf : TextBuffer, flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0))
 
-  make_input_text(:input_text_multiline, label : String, buf : IO::Memory, size : ImVec2 = ImVec2.new(0, 0), flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0))
+  make_input_text(:input_text_multiline, label : String, buf : TextBuffer, size : ImVec2 = ImVec2.new(0, 0), flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0))
 
-  make_input_text(:input_text_with_hint, label : String, hint : String, buf : IO::Memory, flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0))
+  make_input_text(:input_text_with_hint, label : String, hint : String, buf : TextBuffer, flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0))
 
   def self.checkbox_flags_(label : String, flags : Enum*, flags_value : Enum) : Bool
     LibImGui.igCheckboxFlags(label, flags.as(UInt32*), flags_value.to_u32!)
@@ -236,12 +314,4 @@ module ImGui
 
   PAYLOAD_TYPE_COLOR_3F = "_COL3F"
   PAYLOAD_TYPE_COLOR_4F = "_COL4F"
-end
-
-class IO::Memory
-  getter capacity
-
-  def resize_to_capacity(capacity)
-    previous_def
-  end
 end

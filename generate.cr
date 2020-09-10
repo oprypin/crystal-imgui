@@ -366,6 +366,11 @@ class COverload
           call_args[-1] = p_arg
           call_args << "(#{p_arg}.to_unsafe + #{p_arg}.bytesize)"
           next
+        elsif arg.name.rpartition("_").last == "size" && typ == "LibC::SizeT" && (prev_arg = self.args[arg_i - 1]?) && prev_arg.name == arg.name.rpartition("_").first && args[-1]?.try(&.ends_with?("Char*"))
+          typ = CType.new(assert prev_arg.type.name(Context::Ext).rchop?("*")).name(ctx)
+          args[-1] = "#{prev_arg.name} : Bytes"
+          call_args << "#{prev_arg.name}.size"
+          next
         elsif arg.name.rpartition("_").last == "count" && typ == "Int32" && (prev_arg = self.args[arg_i - 1]?) && prev_arg.name == arg.name.rpartition("_").first && args[-1]?.try(&.ends_with?("*"))
           typ = CType.new(assert prev_arg.type.name(Context::Ext).rchop?("*")).name(ctx)
           args[-1] = "#{prev_arg.name} : Indexable(#{typ})"
@@ -600,7 +605,7 @@ class CStruct
 
   property! location : String
   def internal? : Bool
-    self.location == "internal" || self.name.in?("ImGuiStoragePair", "ImGuiTextRange")
+    self.location == "internal" || self.name.in?("ImGuiStoragePair", "ImGuiTextRange", "ImGuiTextBuffer")
   end
 
   getter functions : Array(CFunction) do

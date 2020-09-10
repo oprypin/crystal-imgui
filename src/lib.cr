@@ -320,6 +320,7 @@ lib LibImGui
   type ImGuiStyleMod = Void*
   type ImGuiTabBar = Void*
   type ImGuiTabItem = Void*
+  type ImGuiTextBuffer = Void*
 
   struct ImGuiTextFilter
     input_buf : LibC::Char[256]
@@ -504,16 +505,16 @@ lib LibImGui
   fun ImGuiStorage_SetVoidPtr(self : ImGui::ImGuiStorage*, key : ImGuiID, val : Void*)
   fun ImGuiStyle_ImGuiStyle : ImGuiStyle*
   fun ImGuiStyle_ScaleAllSizes(self : ImGuiStyle*, scale_factor : LibC::Float)
-  fun ImGuiTextBuffer_ImGuiTextBuffer : ImGui::ImGuiTextBuffer*
-  fun ImGuiTextBuffer_append(self : ImGui::ImGuiTextBuffer*, str : LibC::Char*, str_end : LibC::Char*)
-  fun ImGuiTextBuffer_appendf(self : ImGui::ImGuiTextBuffer*, fmt : LibC::Char*, ...)
-  fun ImGuiTextBuffer_begin(self : ImGui::ImGuiTextBuffer*) : LibC::Char*
-  fun ImGuiTextBuffer_c_str(self : ImGui::ImGuiTextBuffer*) : LibC::Char*
-  fun ImGuiTextBuffer_clear(self : ImGui::ImGuiTextBuffer*)
-  fun ImGuiTextBuffer_empty(self : ImGui::ImGuiTextBuffer*) : Bool
-  fun ImGuiTextBuffer_end(self : ImGui::ImGuiTextBuffer*) : LibC::Char*
-  fun ImGuiTextBuffer_reserve(self : ImGui::ImGuiTextBuffer*, capacity : LibC::Int)
-  fun ImGuiTextBuffer_size(self : ImGui::ImGuiTextBuffer*) : LibC::Int
+  fun ImGuiTextBuffer_ImGuiTextBuffer : ImGuiTextBuffer*
+  fun ImGuiTextBuffer_append(self : ImGuiTextBuffer*, str : LibC::Char*, str_end : LibC::Char*)
+  fun ImGuiTextBuffer_appendf(self : ImGuiTextBuffer*, fmt : LibC::Char*, ...)
+  fun ImGuiTextBuffer_begin(self : ImGuiTextBuffer*) : LibC::Char*
+  fun ImGuiTextBuffer_c_str(self : ImGuiTextBuffer*) : LibC::Char*
+  fun ImGuiTextBuffer_clear(self : ImGuiTextBuffer*)
+  fun ImGuiTextBuffer_empty(self : ImGuiTextBuffer*) : Bool
+  fun ImGuiTextBuffer_end(self : ImGuiTextBuffer*) : LibC::Char*
+  fun ImGuiTextBuffer_reserve(self : ImGuiTextBuffer*, capacity : LibC::Int)
+  fun ImGuiTextBuffer_size(self : ImGuiTextBuffer*) : LibC::Int
   fun ImGuiTextFilter_Build(self : ImGuiTextFilter*)
   fun ImGuiTextFilter_Clear(self : ImGuiTextFilter*)
   fun ImGuiTextFilter_Draw(self : ImGuiTextFilter*, label : LibC::Char*, width : LibC::Float) : Bool
