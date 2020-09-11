@@ -157,7 +157,9 @@ module ImGui
     end
 
     def clear : Nil
-      resize(0)
+      if capacity > 0
+        @buf[0] = 0
+      end
     end
 
     def to_unsafe : UInt8*
@@ -272,8 +274,9 @@ module ImGui
 
   def self.set_next_window_size_constraints(size_min : ImVec2, size_max : ImVec2, &block : ImGuiSizeCallbackData ->) : Void
     LibImGui.igSetNextWindowSizeConstraints(size_min, size_max, ->(data) {
-      data.value.user_data.as(typeof(block)*).value.call(ImGuiSizeCallbackData.new(data))
-    }, pointerof(block))
+      block2 = Box(typeof(block)).unbox(data.value.user_data)
+      block2.call(ImGuiSizeCallbackData.new(data))
+    }, Box.box(block))
   end
 
   def self.push_id(ptr_id : StructClassType) : Void

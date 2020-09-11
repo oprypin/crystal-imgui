@@ -344,7 +344,7 @@ module ImGuiDemo
   @@check = true
   @@e = 0
   @@counter = 0
-  @@arr = [0.6f32, 0.1f32, 1.0f32, 0.5f32, 0.92f32, 0.1f32, 0.2f32]
+  @@arr = [0.6, 0.1, 1.0, 0.5, 0.92, 0.1, 0.2] of Float32
   @@item_current = 0
   @@str0 = ImGui::TextBuffer.new("Hello, world!", 128)
   @@str1 = ImGui::TextBuffer.new(128)
@@ -406,7 +406,7 @@ module ImGuiDemo
   @@password = ImGui::TextBuffer.new("password123", 64)
   @@my_str = ImGui::TextBuffer.new
   @@animate = true
-  @@arr_ = [0.6f32, 0.1f32, 1.0f32, 0.5f32, 0.92f32, 0.1f32, 0.2f32]
+  @@arr_ = [0.6, 0.1, 1.0, 0.5, 0.92, 0.1, 0.2] of Float32
   @@values : Array(Float32) = [0.0f32] * 90
   @@values_offset = 0
   @@refresh_time = 0.0
@@ -415,7 +415,7 @@ module ImGuiDemo
   @@display_count = 70
   @@progress = 0.0f32
   @@progress_dir = 1.0f32
-  @@color = ImGui.vec4(114.0f32 / 255.0f32, 144.0f32 / 255.0f32, 154.0f32 / 255.0f32, 200.0f32 / 255.0f32)
+  @@color = ImGui.vec4(114.0f32 / 255, 144.0f32 / 255, 154.0f32 / 255, 200.0f32 / 255)
   @@alpha_preview = true
   @@alpha_half_preview = false
   @@drag_and_drop = true
@@ -575,7 +575,7 @@ module ImGuiDemo
         ImGui.same_line
         help_marker(
           "You can apply arithmetic operators +,*,/ on numerical values.\n" +
-          "  @@e.g. [ 100 ], input '*2', result becomes [ 200 ]\n" +
+          "  e.g. [ 100 ], input '*2', result becomes [ 200 ]\n" +
           "Use +- to subtract.")
 
         ImGui.input_float("input float", pointerof(@@f0), 0.01f32, 1.0f32, "%.3f")
@@ -586,7 +586,7 @@ module ImGuiDemo
         ImGui.same_line
         help_marker(
           "You can input value using the scientific notation,\n" +
-          "  @@e.g. \"1e+8\" becomes \"100000000\".")
+          "  e.g. \"1e+8\" becomes \"100000000\".")
 
         ImGui.input_float3("input float3", @@vec4a[...3])
       end
@@ -613,7 +613,7 @@ module ImGuiDemo
         ImGui.slider_float("slider float", pointerof(@@f1__), 0.0f32, 1.0f32, "ratio = %.3f")
         ImGui.slider_float("slider float (log)", pointerof(@@f2_), -10.0f32, 10.0f32, "%.4f", ImGuiSliderFlags::Logarithmic)
 
-        ImGui.slider_angle("slider @@angle", pointerof(@@angle))
+        ImGui.slider_angle("slider angle", pointerof(@@angle))
 
         ImGui.slider_int("slider enum", pointerof(@@elem), 0, Element.values.size - 1, Element.new(@@elem).to_s)
         ImGui.same_line
@@ -1091,7 +1091,7 @@ module ImGuiDemo
       ImGui.plot_histogram("Histogram", @@arr_, 0, nil, 0.0f32, 1.0f32, ImGui.vec2(0, 80.0f32))
 
       sin = ->(i : Int32) { Math.sin(i * 0.1).to_f32 }
-      saw = ->(i : Int32) { (i & 1) ? 1.0f32 : -1.0f32 }
+      saw = ->(i : Int32) { i.odd? ? 1.0f32 : -1.0f32 }
       ImGui.separator
       ImGui.set_next_item_width(100)
       ImGui.combo("func", pointerof(@@func_type), "Sin\0Saw\0")
@@ -1129,7 +1129,7 @@ module ImGuiDemo
       ImGui.checkbox("With Drag and Drop", pointerof(@@drag_and_drop))
       ImGui.checkbox("With Options Menu", pointerof(@@options_menu))
       ImGui.same_line
-      help_marker("Right-click on the individual @@color widget to show options.")
+      help_marker("Right-click on the individual color widget to show options.")
       ImGui.checkbox("With HDR", pointerof(@@hdr))
       ImGui.same_line
       help_marker("Currently all this does is to lift the 0..1 limits on dragging widgets.")
@@ -1138,7 +1138,7 @@ module ImGuiDemo
       ImGui.text("Color widget:")
       ImGui.same_line
       help_marker(
-        "Click on the colored square to open a @@color picker.\n" +
+        "Click on the colored square to open a color picker.\n" +
         "CTRL+click on individual component to input value.\n")
       ImGui.color_edit3("MyColor##1", pointerof(@@color), misc_flags)
 
@@ -1780,8 +1780,8 @@ module ImGuiDemo
           ImGui.end_popup
         end
         ImGui.text(
-          "is_item_hovered() after @@begin = %d (== is title bar hovered)\n" +
-          "is_item_active() after @@begin = %d (== is window being clicked/moved)\n",
+          "is_item_hovered() after begin = %d (== is title bar hovered)\n" +
+          "is_item_active() after begin = %d (== is window being clicked/moved)\n",
           ImGui.is_item_hovered, ImGui.is_item_active)
         ImGui.end
       end
@@ -2151,14 +2151,14 @@ module ImGuiDemo
 
         ImGui.text("KO Blahblah")
         ImGui.same_line
-        ImGui.button("Some framed @@item")
+        ImGui.button("Some framed item")
         ImGui.same_line
         help_marker("Baseline of button will look misaligned with text..")
 
         ImGui.align_text_to_frame_padding
         ImGui.text("OK Blahblah")
         ImGui.same_line
-        ImGui.button("Some framed @@item")
+        ImGui.button("Some framed item")
         ImGui.same_line
         help_marker("We call align_text_to_frame_padding() to vertically align the text baseline by +frame_padding.y")
 
@@ -2169,7 +2169,7 @@ module ImGuiDemo
         ImGui.small_button("TEST##2")
 
         ImGui.align_text_to_frame_padding
-        ImGui.text("Text aligned to framed @@item")
+        ImGui.text("Text aligned to framed item")
         ImGui.same_line
         ImGui.button("Item##1")
         ImGui.same_line
@@ -2273,7 +2273,7 @@ module ImGuiDemo
       ImGui.checkbox("Track", pointerof(@@enable_track))
       ImGui.push_item_width(100)
       ImGui.same_line(140)
-      @@enable_track |= ImGui.drag_int("##@@item", pointerof(@@track_item), 0.25f32, 0, 99, "Item = %d")
+      @@enable_track |= ImGui.drag_int("##item", pointerof(@@track_item), 0.25f32, 0, 99, "Item = %d")
 
       scroll_to_off = ImGui.button("Scroll Offset")
       ImGui.same_line(140)
@@ -2382,7 +2382,7 @@ module ImGuiDemo
       scrolling_child_size = ImGui.vec2(0, ImGui.get_frame_height_with_spacing * 7 + 30)
       ImGui.begin_child("scrolling", scrolling_child_size, true, ImGuiWindowFlags::HorizontalScrollbar)
       @@lines.times do |line|
-        num_buttons = 10 + ((line & 1) ? line * 9 : line * 3)
+        num_buttons = 10 + (line.odd? ? line * 9 : line * 3)
         num_buttons.times do |n|
           if n > 0
             ImGui.same_line
@@ -2670,7 +2670,7 @@ module ImGuiDemo
 
       ImGui.button("Button: #{@@name}###Button")
       if ImGui.begin_popup_context_item
-        ImGui.text("Edit @@name:")
+        ImGui.text("Edit name:")
         ImGui.input_text("##edit", @@name)
         if ImGui.button("Close")
           ImGui.close_current_popup
@@ -2756,7 +2756,7 @@ module ImGuiDemo
       ImGui.separator
 
       ImGui.push_id("foo")
-      ImGui.menu_item("Menu @@item_", "CTRL+M")
+      ImGui.menu_item("Menu item", "CTRL+M")
       if ImGui.begin_menu("Menu inside a regular window")
         show_example_menu_file()
         ImGui.end_menu
@@ -2838,7 +2838,7 @@ module ImGuiDemo
     if ImGui.tree_node("Borders")
       lines_count = 3
       ImGui.set_next_item_width(ImGui.get_font_size * 8)
-      ImGui.drag_int("##@@columns_count", pointerof(@@columns_count), 0.1f32, 2, 10, "%d columns")
+      ImGui.drag_int("##columns_count", pointerof(@@columns_count), 0.1f32, 2, 10, "%d columns")
       if @@columns_count < 2
         columns_count = 2
       end
@@ -4237,7 +4237,7 @@ module ImGuiDemo
     ImGui.end
   end
 
-  @@placeholder_members = [0.0f32, 0.0f32, 1.0f32, 3.1416f32, 100.0f32, 999.0f32]
+  @@placeholder_members = [0.0, 0.0, 1.0, 3.1416, 100.0, 999.0, 0.0, 0.0] of Float32
 
   def self.show_placeholder_object(prefix, uid)
     ImGui.push_id(uid)
@@ -4315,13 +4315,13 @@ module ImGuiDemo
       "Single call to text_unformatted()\0" +
       "Multiple calls to text(), clipped\0" +
       "Multiple calls to text(), not clipped (slow)\0")
-    ImGui.text("Buffer contents: %d @@lines_, %d bytes", @@lines_, @@log_.bytesize)
+    ImGui.text("Buffer contents: %d lines, %d bytes", @@lines_, @@log_.bytesize)
     if ImGui.button("Clear")
       @@log_.clear
       @@lines_ = 0
     end
     ImGui.same_line
-    if ImGui.button("Add 1000 @@lines_")
+    if ImGui.button("Add 1000 lines")
       1000.times do |i|
         @@log_ << (@@lines_ + i) << " The quick brown fox jumps over the lazy dog\n"
       end
@@ -4402,7 +4402,8 @@ module ImGuiDemo
     end
     if @@type == 5
       ImGui.set_next_window_size_constraints(ImGui.vec2(0, 0), ImGui.vec2(Float32::MAX, Float32::MAX)) do |data|
-        data.desired_size.x = data.desired_size.y = {data.desired_size.x, data.desired_size.y}.max
+        size = {data.desired_size.x, data.desired_size.y}.max
+        data.desired_size = ImGui.vec2(size, size)
       end
     end
     if @@type == 6
@@ -4444,8 +4445,8 @@ module ImGuiDemo
 
     io = ImGui.get_io
     if @@corner != -1
-      window_pos = ImGui.vec2((@@corner & 1) ? io.display_size.x - distance : distance, (@@corner & 2) ? io.display_size.y - distance : distance)
-      window_pos_pivot = ImGui.vec2((@@corner & 1) ? 1.0f32 : 0.0f32, (@@corner & 2) ? 1.0f32 : 0.0f32)
+      window_pos = ImGui.vec2((@@corner & 1) != 0 ? io.display_size.x - distance : distance, (@@corner & 2) != 0 ? io.display_size.y - distance : distance)
+      window_pos_pivot = ImGui.vec2((@@corner & 1) != 0 ? 1.0f32 : 0.0f32, (@@corner & 2) != 0 ? 1.0f32 : 0.0f32)
       ImGui.set_next_window_pos(window_pos, ImGuiCond::Always, window_pos_pivot)
     end
     ImGui.set_next_window_bg_alpha(0.35f32)
@@ -4455,7 +4456,7 @@ module ImGuiDemo
     end
     if ImGui.begin("Example: Simple overlay", p_open, window_flags)
       ImGui.text("Simple overlay\n" +
-                 "in the @@corner of the screen.\n" +
+                 "in the corner of the screen.\n" +
                  "(right-click to change position)")
       ImGui.separator
       if ImGui.is_mouse_pos_valid
@@ -4465,19 +4466,19 @@ module ImGuiDemo
       end
       if ImGui.begin_popup_context_window
         if ImGui.menu_item("Custom", nil, @@corner == -1)
-          corner = -1
+          @@corner = -1
         end
         if ImGui.menu_item("Top-left", nil, @@corner == 0)
-          corner = 0
+          @@corner = 0
         end
         if ImGui.menu_item("Top-right", nil, @@corner == 1)
-          corner = 1
+          @@corner = 1
         end
         if ImGui.menu_item("Bottom-left", nil, @@corner == 2)
-          corner = 2
+          @@corner = 2
         end
         if ImGui.menu_item("Bottom-right", nil, @@corner == 3)
-          corner = 3
+          @@corner = 3
         end
         if p_open.value && ImGui.menu_item("Close")
           p_open.value = false
@@ -4513,6 +4514,7 @@ module ImGuiDemo
   @@circle_segments_override_v = 12
   @@colf = ImGui.vec4(1.0f32, 1.0f32, 0.4f32, 1.0f32)
   @@points = [] of ImVec2
+  @@scrolling = ImGui.vec2(0.0f32, 0.0f32)
   @@opt_enable_grid = true
   @@opt_enable_context_menu = true
   @@adding_line = false
@@ -4622,8 +4624,6 @@ module ImGuiDemo
       end
 
       if ImGui.begin_tab_item("Canvas")
-        scrolling = ImGui.vec2(0.0f32, 0.0f32)
-
         ImGui.checkbox("Enable grid", pointerof(@@opt_enable_grid))
         ImGui.checkbox("Enable context menu", pointerof(@@opt_enable_context_menu))
         ImGui.text("Mouse Left: drag to add lines,\nMouse Right: drag to scroll, click for context menu.")
@@ -4645,24 +4645,24 @@ module ImGuiDemo
         ImGui.invisible_button("canvas", canvas_sz, ImGuiButtonFlags::MouseButtonLeft | ImGuiButtonFlags::MouseButtonRight)
         is_hovered = ImGui.is_item_hovered
         is_active = ImGui.is_item_active
-        origin = ImGui.vec2(canvas_p0.x + scrolling.x, canvas_p0.y + scrolling.y)
+        origin = ImGui.vec2(canvas_p0.x + @@scrolling.x, canvas_p0.y + @@scrolling.y)
         mouse_pos_in_canvas = ImGui.vec2(io.mouse_pos.x - origin.x, io.mouse_pos.y - origin.y)
 
         if is_hovered && !@@adding_line && ImGui.is_mouse_clicked(ImGuiMouseButton::Left)
           @@points.push(mouse_pos_in_canvas)
           @@points.push(mouse_pos_in_canvas)
-          adding_line = true
+          @@adding_line = true
         end
         if @@adding_line
           @@points[-1] = mouse_pos_in_canvas
           if !ImGui.is_mouse_down(ImGuiMouseButton::Left)
-            adding_line = false
+            @@adding_line = false
           end
         end
         mouse_threshold_for_pan = @@opt_enable_context_menu ? -1.0f32 : 0.0f32
         if is_active && ImGui.is_mouse_dragging(ImGuiMouseButton::Right, mouse_threshold_for_pan)
-          scrolling.x += io.mouse_delta.x
-          scrolling.y += io.mouse_delta.y
+          @@scrolling.x += io.mouse_delta.x
+          @@scrolling.y += io.mouse_delta.y
         end
 
         drag_delta = ImGui.get_mouse_drag_delta(ImGuiMouseButton::Right)
@@ -4670,10 +4670,10 @@ module ImGuiDemo
           ImGui.open_popup_context_item("context")
         end
         if ImGui.begin_popup("context")
-          if adding_line
+          if @@adding_line
             @@points.pop(2)
           end
-          adding_line = false
+          @@adding_line = false
           if ImGui.menu_item("Remove one", nil, false, @@points.size > 0)
             @@points.pop(2)
           end
@@ -4686,12 +4686,12 @@ module ImGuiDemo
         draw_list.push_clip_rect(canvas_p0, canvas_p1, true)
         if @@opt_enable_grid
           grid_step = 64.0f32
-          x = scrolling.x % grid_step
+          x = @@scrolling.x % grid_step
           while x < canvas_sz.x
             draw_list.add_line(ImGui.vec2(canvas_p0.x + x, canvas_p0.y), ImGui.vec2(canvas_p0.x + x, canvas_p1.y), ImGui.col32(200, 200, 200, 40))
             x += grid_step
           end
-          y = scrolling.y % grid_step
+          y = @@scrolling.y % grid_step
           while y < canvas_sz.y
             draw_list.add_line(ImGui.vec2(canvas_p0.x, canvas_p0.y + y), ImGui.vec2(canvas_p1.x, canvas_p0.y + y), ImGui.col32(200, 200, 200, 40))
             y += grid_step
