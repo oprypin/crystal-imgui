@@ -67,6 +67,26 @@ module ImGui
   include TopLevel
 end
 
+struct Tuple
+  # :nodoc:
+  def _promote_va_args
+    {% begin %}
+    Tuple.new(
+    {% for i in 0...@type.size %}
+      {% t = @type[i].name %}
+      {% if t == "Int8" || t == "UInt8" || t == "Int16" || t == "UInt16" %}
+        self[{{i}}].to_i32!,
+      {% elsif t == "Float32" %}
+        self[{{i}}].to_f64,
+      {% else %}
+        self[{{i}}],
+      {% end %}
+    {% end %}
+    )
+    {% end %}
+  end
+end
+
 require "./obj"
 
 module ImGui

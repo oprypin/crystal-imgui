@@ -75,7 +75,6 @@ The API surface follows [Dear ImGui][imgui] itself very closely. Main difference
 
 (planned to be fixed)
 
-* Variadic arguments to printf-like functions seem to be broken.
 * Getters and setters of structs are very iffy.
     * In many cases they should be nilable but aren't.
 * Likely undiscovered bugs

@@ -327,7 +327,7 @@ class COverload
       self.args.each_with_index do |arg, arg_i|
         if arg.type.c_name == "..."
           args << %(*args)
-          call_args << %(*args)
+          call_args << %(*args._promote_va_args)
           next
         end
         if arg.name == "pOut" || arg.name.split("_").first == "out"

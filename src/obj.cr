@@ -2860,7 +2860,7 @@ module ImGui
   end
 
   def self.bullet_text(fmt : String, *args) : Void
-    LibImGui.igBulletText(fmt, *args)
+    LibImGui.igBulletText(fmt, *args._promote_va_args)
   end
 
   def self.button(label : String, size : ImVec2 = ImVec2.new(0, 0)) : Bool
@@ -3733,7 +3733,7 @@ module ImGui
   end
 
   def self.label_text(label : String, fmt : String, *args) : Void
-    LibImGui.igLabelText(label, fmt, *args)
+    LibImGui.igLabelText(label, fmt, *args._promote_va_args)
   end
 
   def self.list_box_(label : String, current_item : Int32*, items : Indexable(LibC::Char*), height_in_items : Int32 = -1) : Bool
@@ -3781,7 +3781,7 @@ module ImGui
   end
 
   def self.log_text(fmt : String, *args) : Void
-    LibImGui.igLogText(fmt, *args)
+    LibImGui.igLogText(fmt, *args._promote_va_args)
   end
 
   def self.log_to_clipboard(auto_open_depth : Int32 = -1) : Void
@@ -4126,7 +4126,7 @@ module ImGui
   end
 
   def self.set_tooltip(fmt : String, *args) : Void
-    LibImGui.igSetTooltip(fmt, *args)
+    LibImGui.igSetTooltip(fmt, *args._promote_va_args)
   end
 
   def self.set_window_collapsed(collapsed : Bool, cond : ImGuiCond = ImGuiCond.new(0)) : Void
@@ -4318,15 +4318,15 @@ module ImGui
   end
 
   def self.text(fmt : String, *args) : Void
-    LibImGui.igText(fmt, *args)
+    LibImGui.igText(fmt, *args._promote_va_args)
   end
 
   def self.text_colored(col : ImVec4, fmt : String, *args) : Void
-    LibImGui.igTextColored(col, fmt, *args)
+    LibImGui.igTextColored(col, fmt, *args._promote_va_args)
   end
 
   def self.text_disabled(fmt : String, *args) : Void
-    LibImGui.igTextDisabled(fmt, *args)
+    LibImGui.igTextDisabled(fmt, *args._promote_va_args)
   end
 
   def self.text_unformatted(text : Bytes | String) : Void
@@ -4334,7 +4334,7 @@ module ImGui
   end
 
   def self.text_wrapped(fmt : String, *args) : Void
-    LibImGui.igTextWrapped(fmt, *args)
+    LibImGui.igTextWrapped(fmt, *args._promote_va_args)
   end
 
   def self.tree_node(label : String) : Bool
@@ -4342,11 +4342,11 @@ module ImGui
   end
 
   def self.tree_node(str_id : String, fmt : String, *args) : Bool
-    LibImGui.igTreeNodeStrStr(str_id, fmt, *args)
+    LibImGui.igTreeNodeStrStr(str_id, fmt, *args._promote_va_args)
   end
 
   def self.tree_node(ptr_id : Reference | StructClassType | Int | Void*, fmt : String, *args) : Bool
-    LibImGui.igTreeNodePtr(to_void_id(ptr_id), fmt, *args)
+    LibImGui.igTreeNodePtr(to_void_id(ptr_id), fmt, *args._promote_va_args)
   end
 
   def self.tree_node_ex(label : String, flags : ImGuiTreeNodeFlags = ImGuiTreeNodeFlags.new(0)) : Bool
@@ -4354,11 +4354,11 @@ module ImGui
   end
 
   def self.tree_node_ex(str_id : String, flags : ImGuiTreeNodeFlags, fmt : String, *args) : Bool
-    LibImGui.igTreeNodeExStrStr(str_id, flags, fmt, *args)
+    LibImGui.igTreeNodeExStrStr(str_id, flags, fmt, *args._promote_va_args)
   end
 
   def self.tree_node_ex(ptr_id : Reference | StructClassType | Int | Void*, flags : ImGuiTreeNodeFlags, fmt : String, *args) : Bool
-    LibImGui.igTreeNodeExPtr(to_void_id(ptr_id), flags, fmt, *args)
+    LibImGui.igTreeNodeExPtr(to_void_id(ptr_id), flags, fmt, *args._promote_va_args)
   end
 
   def self.tree_pop : Void
