@@ -3124,7 +3124,7 @@ module ImGui
   {% end %}
 
   macro drag_scalar(*args, **kwargs, &block)
-    ::ImGui._pointer_wrapper("::ImGui.drag_scalar_", 2, false, {{*args}}, {{**kwargs}}) {{block}}
+    ::ImGui._pointer_wrapper("::ImGui.drag_scalar_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
   end
 
   {% for k, t in {S8: Int8, U8: UInt8, S16: Int16, U16: UInt16, S32: Int32, U32: UInt32, S64: Int64, U64: UInt64, Float: Float32, Double: Float64} %}
@@ -3134,7 +3134,7 @@ module ImGui
   {% end %}
 
   macro drag_scalar_n(*args, **kwargs, &block)
-    ::ImGui._pointer_wrapper("::ImGui.drag_scalar_n_", 2, false, {{*args}}, {{**kwargs}}) {{block}}
+    ::ImGui._pointer_wrapper("::ImGui.drag_scalar_n_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
   end
 
   def self.dummy(size : ImVec2) : Void
@@ -3579,7 +3579,7 @@ module ImGui
   {% end %}
 
   macro input_scalar(*args, **kwargs, &block)
-    ::ImGui._pointer_wrapper("::ImGui.input_scalar_", 2, false, {{*args}}, {{**kwargs}}) {{block}}
+    ::ImGui._pointer_wrapper("::ImGui.input_scalar_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
   end
 
   {% for k, t in {S8: Int8, U8: UInt8, S16: Int16, U16: UInt16, S32: Int32, U32: UInt32, S64: Int64, U64: UInt64, Float: Float32, Double: Float64} %}
@@ -3589,7 +3589,7 @@ module ImGui
   {% end %}
 
   macro input_scalar_n(*args, **kwargs, &block)
-    ::ImGui._pointer_wrapper("::ImGui.input_scalar_n_", 2, false, {{*args}}, {{**kwargs}}) {{block}}
+    ::ImGui._pointer_wrapper("::ImGui.input_scalar_n_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
   end
 
   def self.input_text(label : String, buf : Bytes, flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0), callback : ImGuiInputTextCallback? = nil, user_data : Void* = Pointer(Void).null) : Bool
@@ -4284,7 +4284,7 @@ module ImGui
   {% end %}
 
   macro slider_scalar(*args, **kwargs, &block)
-    ::ImGui._pointer_wrapper("::ImGui.slider_scalar_", 2, false, {{*args}}, {{**kwargs}}) {{block}}
+    ::ImGui._pointer_wrapper("::ImGui.slider_scalar_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
   end
 
   {% for k, t in {S8: Int8, U8: UInt8, S16: Int16, U16: UInt16, S32: Int32, U32: UInt32, S64: Int64, U64: UInt64, Float: Float32, Double: Float64} %}
@@ -4294,7 +4294,7 @@ module ImGui
   {% end %}
 
   macro slider_scalar_n(*args, **kwargs, &block)
-    ::ImGui._pointer_wrapper("::ImGui.slider_scalar_n_", 2, false, {{*args}}, {{**kwargs}}) {{block}}
+    ::ImGui._pointer_wrapper("::ImGui.slider_scalar_n_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
   end
 
   def self.small_button(label : String) : Bool
@@ -4400,7 +4400,7 @@ module ImGui
   {% end %}
 
   macro v_slider_scalar(*args, **kwargs, &block)
-    ::ImGui._pointer_wrapper("::ImGui.v_slider_scalar_", 3, false, {{*args}}, {{**kwargs}}) {{block}}
+    ::ImGui._pointer_wrapper("::ImGui.v_slider_scalar_", 2, false, {{*args}}, {{**kwargs}}) {{block}}
   end
 
   def self.value(prefix : String, b : Bool) : Void

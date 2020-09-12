@@ -295,9 +295,13 @@ class COverload
     if self.ret.try(&.c_name) != "bool"
       return nil
     end
-    self.args.index do |arg|
+    idx = self.args.index do |arg|
       arg.type.name(Context::Obj).ends_with?("*") && (arg.name.split("_")[0].in?("p", "v") || arg.name.in?("current_item", "col", "flags"))
     end
+    if idx
+      idx -= self.args.count { |arg| arg.type.c_name == "ImGuiDataType" }
+    end
+    idx
   end
 
   def render(ctx, inside_class = false, &block)
