@@ -210,7 +210,7 @@ module ImGuiDemo
       ImGui.separator
 
       ImGui.text("PROGRAMMER GUIDE:")
-      ImGui.bullet_text("See the show_demo_window() code in imgui_demo.cpp. <- you are here!")
+      ImGui.bullet_text("See the show_demo_window() code in src/demo.cr. <- you are here!")
       ImGui.bullet_text("See comments in imgui.cpp.")
       ImGui.bullet_text("See example applications in the examples/ folder.")
       ImGui.bullet_text("Read the FAQ at http://www.dearimgui.org/faq/")
@@ -567,7 +567,7 @@ module ImGuiDemo
           "PROGRAMMER:\n" +
           "You can use the ImGuiInputTextFlags::CallbackResize facility if you need to wire input_text() " +
           "to a dynamic string type. See misc/cpp/imgui_stdlib.h for an example (this is not demonstrated " +
-          "in imgui_demo.cpp).")
+          "in src/demo.cr).")
 
         ImGui.input_text_with_hint("input text (w/ hint)", "enter text here", @@str1)
 
@@ -1016,7 +1016,7 @@ module ImGuiDemo
 
     if ImGui.tree_node("Text Input")
       if ImGui.tree_node("Multi-line Text Input")
-        help_marker("You can use the ImGuiInputTextFlags::CallbackResize facility if you need to wire input_text_multiline() to a dynamic string type. See misc/cpp/imgui_stdlib.h for an example. (This is not demonstrated in imgui_demo.cpp because we don't want to include <string> in here)")
+        help_marker("You can use the ImGuiInputTextFlags::CallbackResize facility if you need to wire input_text_multiline() to a dynamic string type. See misc/cpp/imgui_stdlib.h for an example. (This is not demonstrated in src/demo.cr because we don't want to include <string> in here)")
         ImGui.checkbox_flags("ImGuiInputTextFlags::ReadOnly", pointerof(@@flags_), ImGuiInputTextFlags::ReadOnly)
         ImGui.checkbox_flags("ImGuiInputTextFlags::AllowTabInput", pointerof(@@flags_), ImGuiInputTextFlags::AllowTabInput)
         ImGui.checkbox_flags("ImGuiInputTextFlags::CtrlEnterForNewLine", pointerof(@@flags_), ImGuiInputTextFlags::CtrlEnterForNewLine)
@@ -3458,27 +3458,21 @@ module ImGuiDemo
     ImGui.tree_pop
   end
 
-  @@ref_saved_style = ImGuiStyle.new
-  @@init = true
+  @@ref_saved_style : ImGuiStyle? = nil
   @@output_dest = 0
   @@output_only_modified = true
   @@filter_ = ImGuiTextFilter.new
   @@alpha_flags = ImGuiColorEditFlags::None
   @@window_scale = 1.0f32
 
-  def self.show_style_editor(ref : ImGuiStyle? = nil)
+  def self.show_style_editor
     style = ImGui.get_style
-
-    if @@init && ref == nil
-      ref_saved_style = style
-    end
-    init = false
-    ref ||= @@ref_saved_style
+    ref = (@@ref_saved_style ||= style)
 
     ImGui.push_item_width(ImGui.get_window_width * 0.50f32)
 
     if show_style_selector("Colors##Selector")
-      ref_saved_style = style
+      @@ref_saved_style = style
     end
     show_font_selector("Fonts##Selector")
 
@@ -3507,7 +3501,7 @@ module ImGuiDemo
     end
 
     if ImGui.button("Save Ref")
-      ref = @@ref_saved_style = style
+      @@ref_saved_style = style
     end
     ImGui.same_line
     if ImGui.button("Revert Ref")
@@ -3594,18 +3588,18 @@ module ImGuiDemo
         ImGui.same_line
         ImGui.checkbox("Only Modified Colors", pointerof(@@output_only_modified))
 
-        @@filter.draw("Filter colors", ImGui.get_font_size * 16)
+        @@filter_.draw("Filter colors", ImGui.get_font_size * 16)
 
         if ImGui.radio_button("Opaque", @@alpha_flags == ImGuiColorEditFlags::None)
-          alpha_flags = ImGuiColorEditFlags::None
+          @@alpha_flags = ImGuiColorEditFlags::None
         end
         ImGui.same_line
         if ImGui.radio_button("Alpha", @@alpha_flags == ImGuiColorEditFlags::AlphaPreview)
-          alpha_flags = ImGuiColorEditFlags::AlphaPreview
+          @@alpha_flags = ImGuiColorEditFlags::AlphaPreview
         end
         ImGui.same_line
         if ImGui.radio_button("Both", @@alpha_flags == ImGuiColorEditFlags::AlphaPreviewHalf)
-          alpha_flags = ImGuiColorEditFlags::AlphaPreviewHalf
+          @@alpha_flags = ImGuiColorEditFlags::AlphaPreviewHalf
         end
         ImGui.same_line
         help_marker(
@@ -3692,7 +3686,7 @@ module ImGuiDemo
           style.curve_tessellation_tol = 0.10f32
         end
 
-        ImGui.drag_float("Circle Segment Max Error", pointerof(style.circle_segment_max_error), 0.01f32, 0.10f32, 10.0f32, "%.2")
+        ImGui.drag_float("Circle Segment Max Error", pointerof(style.circle_segment_max_error), 0.01f32, 0.10f32, 10.0f32, "%.2f")
         if ImGui.is_item_active
           ImGui.set_next_window_pos(ImGui.get_cursor_screen_pos)
           ImGui.begin_tooltip
