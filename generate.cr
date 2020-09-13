@@ -292,9 +292,6 @@ class COverload
   end
 
   def input_output_arg? : Int32?
-    if self.ret.try(&.c_name) != "bool"
-      return nil
-    end
     idx = self.args.index do |arg|
       arg.type.name(Context::Obj).ends_with?("*") && (arg.name.split("_")[0].in?("p", "v") || arg.name.in?("current_item", "col", "flags"))
     end
@@ -410,21 +407,15 @@ class COverload
       end
       outp2 = outp.dup
       outp2, rets = convert_returns!(outp2, rets)
-      ret_s = to_tuple(rets.map &.name(ctx).rchop("*"))
+      ret_s = to_tuple(rets.map &.name(ctx).rchop("*")) || "Void"
       any_outputter = self.parent.overloads.any?(&.input_output_arg?)
-      yield %(  def #{"self." if !inside_class}#{self.name(ctx)}#{"_" if any_outputter}(#{args.join(", ")}) : #{ret_s || "Void"})
+      yield %(  #{"pointer_wrapper " if any_outputter}def #{"self." if !inside_class}#{self.name(ctx)}(#{args.join(", ")}) : #{ret_s})
       call = %(    LibImGui.#{self.name(Context::Lib)}(#{call_args.join(", ")}))
       call = %(    result = #{call}) if outp.first? == "result" && outp2 != ["result"]
       yield call
       yield (assert to_tuple(outp2)) unless outp2.empty? || outp2 == ["result"]
       yield %(  end)
       yield %(  {% end %}) if as_datatype
-
-      if (i = self.input_output_arg?)
-        yield %(  macro #{self.name(ctx)}(*args, **kwargs, &block))
-        yield %(    ::ImGui._pointer_wrapper("::ImGui.#{self.name(ctx)}_", #{i}, #{self.args[i].type.c_name == "bool*"}, {{*args}}, {{**kwargs}}) {{block}})
-        yield %(  end)
-      end
     end
   end
 end

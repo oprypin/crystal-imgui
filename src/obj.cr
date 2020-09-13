@@ -2767,12 +2767,8 @@ module ImGui
     LibImGui.igArrowButton(str_id, dir)
   end
 
-  def self.begin_(name : String, p_open : Bool* = Pointer(Bool).null, flags : ImGuiWindowFlags = ImGuiWindowFlags.new(0)) : Bool
+  pointer_wrapper def self.begin(name : String, p_open : Bool* = Pointer(Bool).null, flags : ImGuiWindowFlags = ImGuiWindowFlags.new(0)) : Bool
     LibImGui.igBegin(name, p_open, flags)
-  end
-
-  macro begin(*args, **kwargs, &block)
-    ::ImGui._pointer_wrapper("::ImGui.begin_", 1, true, {{*args}}, {{**kwargs}}) {{block}}
   end
 
   def self.begin_child(str_id : String, size : ImVec2 = ImVec2.new(0, 0), border : Bool = false, flags : ImGuiWindowFlags = ImGuiWindowFlags.new(0)) : Bool
@@ -2831,24 +2827,16 @@ module ImGui
     LibImGui.igBeginPopupContextWindow(str_id, popup_flags)
   end
 
-  def self.begin_popup_modal_(name : String, p_open : Bool* = Pointer(Bool).null, flags : ImGuiWindowFlags = ImGuiWindowFlags.new(0)) : Bool
+  pointer_wrapper def self.begin_popup_modal(name : String, p_open : Bool* = Pointer(Bool).null, flags : ImGuiWindowFlags = ImGuiWindowFlags.new(0)) : Bool
     LibImGui.igBeginPopupModal(name, p_open, flags)
-  end
-
-  macro begin_popup_modal(*args, **kwargs, &block)
-    ::ImGui._pointer_wrapper("::ImGui.begin_popup_modal_", 1, true, {{*args}}, {{**kwargs}}) {{block}}
   end
 
   def self.begin_tab_bar(str_id : String, flags : ImGuiTabBarFlags = ImGuiTabBarFlags.new(0)) : Bool
     LibImGui.igBeginTabBar(str_id, flags)
   end
 
-  def self.begin_tab_item_(label : String, p_open : Bool* = Pointer(Bool).null, flags : ImGuiTabItemFlags = ImGuiTabItemFlags.new(0)) : Bool
+  pointer_wrapper def self.begin_tab_item(label : String, p_open : Bool* = Pointer(Bool).null, flags : ImGuiTabItemFlags = ImGuiTabItemFlags.new(0)) : Bool
     LibImGui.igBeginTabItem(label, p_open, flags)
-  end
-
-  macro begin_tab_item(*args, **kwargs, &block)
-    ::ImGui._pointer_wrapper("::ImGui.begin_tab_item_", 1, true, {{*args}}, {{**kwargs}}) {{block}}
   end
 
   def self.begin_tooltip : Void
@@ -2889,36 +2877,22 @@ module ImGui
     LibImGui.igCaptureMouseFromApp(want_capture_mouse_value)
   end
 
-  def self.checkbox_(label : String, v : Bool*) : Bool
+  pointer_wrapper def self.checkbox(label : String, v : Bool*) : Bool
     LibImGui.igCheckbox(label, v)
   end
-
-  macro checkbox(*args, **kwargs, &block)
-    ::ImGui._pointer_wrapper("::ImGui.checkbox_", 1, true, {{*args}}, {{**kwargs}}) {{block}}
-  end
-
-  def self.checkbox_flags_(label : String, flags : UInt32*, flags_value : UInt32) : Bool
+  pointer_wrapper def self.checkbox_flags(label : String, flags : UInt32*, flags_value : UInt32) : Bool
     LibImGui.igCheckboxFlags(label, flags, flags_value)
-  end
-
-  macro checkbox_flags(*args, **kwargs, &block)
-    ::ImGui._pointer_wrapper("::ImGui.checkbox_flags_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
   end
 
   def self.close_current_popup : Void
     LibImGui.igCloseCurrentPopup
   end
 
-  def self.collapsing_header_(label : String, flags : ImGuiTreeNodeFlags = ImGuiTreeNodeFlags.new(0)) : Bool
+  pointer_wrapper def self.collapsing_header(label : String, flags : ImGuiTreeNodeFlags = ImGuiTreeNodeFlags.new(0)) : Bool
     LibImGui.igCollapsingHeaderTreeNodeFlags(label, flags)
   end
-
-  def self.collapsing_header_(label : String, p_open : Bool*, flags : ImGuiTreeNodeFlags = ImGuiTreeNodeFlags.new(0)) : Bool
+  pointer_wrapper def self.collapsing_header(label : String, p_open : Bool*, flags : ImGuiTreeNodeFlags = ImGuiTreeNodeFlags.new(0)) : Bool
     LibImGui.igCollapsingHeaderBoolPtr(label, p_open, flags)
-  end
-
-  macro collapsing_header(*args, **kwargs, &block)
-    ::ImGui._pointer_wrapper("::ImGui.collapsing_header_", 1, true, {{*args}}, {{**kwargs}}) {{block}}
   end
 
   def self.color_button(desc_id : String, col : ImVec4, flags : ImGuiColorEditFlags = ImGuiColorEditFlags.new(0), size : ImVec2 = ImVec2.new(0, 0)) : Bool
@@ -2944,72 +2918,39 @@ module ImGui
     p_out
   end
 
-  def self.color_edit3_(label : String, col : ImVec4* | Indexable(Float32) | Float32*, flags : ImGuiColorEditFlags = ImGuiColorEditFlags.new(0)) : Bool
+  pointer_wrapper def self.color_edit3(label : String, col : ImVec4* | Indexable(Float32) | Float32*, flags : ImGuiColorEditFlags = ImGuiColorEditFlags.new(0)) : Bool
     LibImGui.igColorEdit3(label, col.is_a?(Indexable) ? (
       col.size == 3 ? col.to_unsafe : raise ArgumentError.new("Slice has wrong size #{col.size} (want 3)")
     ) : col.as(Float32*), flags)
   end
-
-  macro color_edit3(*args, **kwargs, &block)
-    ::ImGui._pointer_wrapper("::ImGui.color_edit3_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
-  end
-
-  def self.color_edit4_(label : String, col : ImVec4* | Indexable(Float32) | Float32*, flags : ImGuiColorEditFlags = ImGuiColorEditFlags.new(0)) : Bool
+  pointer_wrapper def self.color_edit4(label : String, col : ImVec4* | Indexable(Float32) | Float32*, flags : ImGuiColorEditFlags = ImGuiColorEditFlags.new(0)) : Bool
     LibImGui.igColorEdit4(label, col.is_a?(Indexable) ? (
       col.size == 4 ? col.to_unsafe : raise ArgumentError.new("Slice has wrong size #{col.size} (want 4)")
     ) : col.as(Float32*), flags)
   end
-
-  macro color_edit4(*args, **kwargs, &block)
-    ::ImGui._pointer_wrapper("::ImGui.color_edit4_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
-  end
-
-  def self.color_picker3_(label : String, col : ImVec4* | Indexable(Float32) | Float32*, flags : ImGuiColorEditFlags = ImGuiColorEditFlags.new(0)) : Bool
+  pointer_wrapper def self.color_picker3(label : String, col : ImVec4* | Indexable(Float32) | Float32*, flags : ImGuiColorEditFlags = ImGuiColorEditFlags.new(0)) : Bool
     LibImGui.igColorPicker3(label, col.is_a?(Indexable) ? (
       col.size == 3 ? col.to_unsafe : raise ArgumentError.new("Slice has wrong size #{col.size} (want 3)")
     ) : col.as(Float32*), flags)
   end
-
-  macro color_picker3(*args, **kwargs, &block)
-    ::ImGui._pointer_wrapper("::ImGui.color_picker3_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
-  end
-
-  def self.color_picker4_(label : String, col : ImVec4* | Indexable(Float32) | Float32*, flags : ImGuiColorEditFlags = ImGuiColorEditFlags.new(0), ref_col : Float32* = Pointer(Float32).null) : Bool
+  pointer_wrapper def self.color_picker4(label : String, col : ImVec4* | Indexable(Float32) | Float32*, flags : ImGuiColorEditFlags = ImGuiColorEditFlags.new(0), ref_col : Float32* = Pointer(Float32).null) : Bool
     LibImGui.igColorPicker4(label, col.is_a?(Indexable) ? (
       col.size == 4 ? col.to_unsafe : raise ArgumentError.new("Slice has wrong size #{col.size} (want 4)")
     ) : col.as(Float32*), flags, ref_col)
-  end
-
-  macro color_picker4(*args, **kwargs, &block)
-    ::ImGui._pointer_wrapper("::ImGui.color_picker4_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
   end
 
   def self.columns(count : Int32 = 1, id : String? = nil, border : Bool = true) : Void
     LibImGui.igColumns(count, id, border)
   end
 
-  def self.combo_(label : String, current_item : Int32*, items : Indexable(LibC::Char*), popup_max_height_in_items : Int32 = -1) : Bool
+  pointer_wrapper def self.combo(label : String, current_item : Int32*, items : Indexable(LibC::Char*), popup_max_height_in_items : Int32 = -1) : Bool
     LibImGui.igComboStr_arr(label, current_item, items, items.size, popup_max_height_in_items)
   end
-
-  macro combo(*args, **kwargs, &block)
-    ::ImGui._pointer_wrapper("::ImGui.combo_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
-  end
-
-  def self.combo_(label : String, current_item : Int32*, items_separated_by_zeros : String, popup_max_height_in_items : Int32 = -1) : Bool
+  pointer_wrapper def self.combo(label : String, current_item : Int32*, items_separated_by_zeros : String, popup_max_height_in_items : Int32 = -1) : Bool
     LibImGui.igComboStr(label, current_item, items_separated_by_zeros, popup_max_height_in_items)
   end
-
-  macro combo(*args, **kwargs, &block)
-    ::ImGui._pointer_wrapper("::ImGui.combo_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
-  end
-
-  def self.combo_(label : String, current_item : Int32*, items_getter : (Void*, Int32, LibC::Char**) -> Bool, data : Void*, items_count : Int32, popup_max_height_in_items : Int32 = -1) : Bool
+  pointer_wrapper def self.combo(label : String, current_item : Int32*, items_getter : (Void*, Int32, LibC::Char**) -> Bool, data : Void*, items_count : Int32, popup_max_height_in_items : Int32 = -1) : Bool
     LibImGui.igComboFnBoolPtr(label, current_item, items_getter, data, items_count, popup_max_height_in_items)
-  end
-
-  macro combo(*args, **kwargs, &block)
-    ::ImGui._pointer_wrapper("::ImGui.combo_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
   end
 
   def self.create_context(shared_font_atlas : ImFontAtlas? = nil) : LibImGui::ImGuiContext
@@ -3025,117 +2966,58 @@ module ImGui
     LibImGui.igDestroyContext(ctx)
   end
 
-  def self.drag_float_(label : String, v : Float32*, v_speed : Float32 = 1.0, v_min : Float32 = 0.0, v_max : Float32 = 0.0, format : String = "%.3f", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
+  pointer_wrapper def self.drag_float(label : String, v : Float32*, v_speed : Float32 = 1.0, v_min : Float32 = 0.0, v_max : Float32 = 0.0, format : String = "%.3f", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
     LibImGui.igDragFloat(label, v, v_speed, v_min, v_max, format, flags)
   end
-
-  macro drag_float(*args, **kwargs, &block)
-    ::ImGui._pointer_wrapper("::ImGui.drag_float_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
-  end
-
-  def self.drag_float2_(label : String, v : ImVec2* | Indexable(Float32) | Float32*, v_speed : Float32 = 1.0, v_min : Float32 = 0.0, v_max : Float32 = 0.0, format : String = "%.3f", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
+  pointer_wrapper def self.drag_float2(label : String, v : ImVec2* | Indexable(Float32) | Float32*, v_speed : Float32 = 1.0, v_min : Float32 = 0.0, v_max : Float32 = 0.0, format : String = "%.3f", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
     LibImGui.igDragFloat2(label, v.is_a?(Indexable) ? (
       v.size == 2 ? v.to_unsafe : raise ArgumentError.new("Slice has wrong size #{v.size} (want 2)")
     ) : v.as(Float32*), v_speed, v_min, v_max, format, flags)
   end
-
-  macro drag_float2(*args, **kwargs, &block)
-    ::ImGui._pointer_wrapper("::ImGui.drag_float2_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
-  end
-
-  def self.drag_float3_(label : String, v : Indexable(Float32) | Float32*, v_speed : Float32 = 1.0, v_min : Float32 = 0.0, v_max : Float32 = 0.0, format : String = "%.3f", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
+  pointer_wrapper def self.drag_float3(label : String, v : Indexable(Float32) | Float32*, v_speed : Float32 = 1.0, v_min : Float32 = 0.0, v_max : Float32 = 0.0, format : String = "%.3f", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
     LibImGui.igDragFloat3(label, v.is_a?(Indexable) ? (
       v.size == 3 ? v.to_unsafe : raise ArgumentError.new("Slice has wrong size #{v.size} (want 3)")
     ) : v.as(Float32*), v_speed, v_min, v_max, format, flags)
   end
-
-  macro drag_float3(*args, **kwargs, &block)
-    ::ImGui._pointer_wrapper("::ImGui.drag_float3_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
-  end
-
-  def self.drag_float4_(label : String, v : ImVec4* | Indexable(Float32) | Float32*, v_speed : Float32 = 1.0, v_min : Float32 = 0.0, v_max : Float32 = 0.0, format : String = "%.3f", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
+  pointer_wrapper def self.drag_float4(label : String, v : ImVec4* | Indexable(Float32) | Float32*, v_speed : Float32 = 1.0, v_min : Float32 = 0.0, v_max : Float32 = 0.0, format : String = "%.3f", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
     LibImGui.igDragFloat4(label, v.is_a?(Indexable) ? (
       v.size == 4 ? v.to_unsafe : raise ArgumentError.new("Slice has wrong size #{v.size} (want 4)")
     ) : v.as(Float32*), v_speed, v_min, v_max, format, flags)
   end
-
-  macro drag_float4(*args, **kwargs, &block)
-    ::ImGui._pointer_wrapper("::ImGui.drag_float4_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
-  end
-
-  def self.drag_float_range2_(label : String, v_current_min : Float32*, v_current_max : Float32*, v_speed : Float32 = 1.0, v_min : Float32 = 0.0, v_max : Float32 = 0.0, format : String = "%.3f", format_max : String? = nil, flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
+  pointer_wrapper def self.drag_float_range2(label : String, v_current_min : Float32*, v_current_max : Float32*, v_speed : Float32 = 1.0, v_min : Float32 = 0.0, v_max : Float32 = 0.0, format : String = "%.3f", format_max : String? = nil, flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
     LibImGui.igDragFloatRange2(label, v_current_min, v_current_max, v_speed, v_min, v_max, format, format_max, flags)
   end
-
-  macro drag_float_range2(*args, **kwargs, &block)
-    ::ImGui._pointer_wrapper("::ImGui.drag_float_range2_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
-  end
-
-  def self.drag_int_(label : String, v : Int32*, v_speed : Float32 = 1.0, v_min : Int32 = 0, v_max : Int32 = 0, format : String = "%d", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
+  pointer_wrapper def self.drag_int(label : String, v : Int32*, v_speed : Float32 = 1.0, v_min : Int32 = 0, v_max : Int32 = 0, format : String = "%d", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
     LibImGui.igDragInt(label, v, v_speed, v_min, v_max, format, flags)
   end
-
-  macro drag_int(*args, **kwargs, &block)
-    ::ImGui._pointer_wrapper("::ImGui.drag_int_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
-  end
-
-  def self.drag_int2_(label : String, v : Indexable(Int32) | Int32*, v_speed : Float32 = 1.0, v_min : Int32 = 0, v_max : Int32 = 0, format : String = "%d", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
+  pointer_wrapper def self.drag_int2(label : String, v : Indexable(Int32) | Int32*, v_speed : Float32 = 1.0, v_min : Int32 = 0, v_max : Int32 = 0, format : String = "%d", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
     LibImGui.igDragInt2(label, v.is_a?(Indexable) ? (
       v.size == 2 ? v.to_unsafe : raise ArgumentError.new("Slice has wrong size #{v.size} (want 2)")
     ) : v.as(Int32*), v_speed, v_min, v_max, format, flags)
   end
-
-  macro drag_int2(*args, **kwargs, &block)
-    ::ImGui._pointer_wrapper("::ImGui.drag_int2_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
-  end
-
-  def self.drag_int3_(label : String, v : Indexable(Int32) | Int32*, v_speed : Float32 = 1.0, v_min : Int32 = 0, v_max : Int32 = 0, format : String = "%d", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
+  pointer_wrapper def self.drag_int3(label : String, v : Indexable(Int32) | Int32*, v_speed : Float32 = 1.0, v_min : Int32 = 0, v_max : Int32 = 0, format : String = "%d", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
     LibImGui.igDragInt3(label, v.is_a?(Indexable) ? (
       v.size == 3 ? v.to_unsafe : raise ArgumentError.new("Slice has wrong size #{v.size} (want 3)")
     ) : v.as(Int32*), v_speed, v_min, v_max, format, flags)
   end
-
-  macro drag_int3(*args, **kwargs, &block)
-    ::ImGui._pointer_wrapper("::ImGui.drag_int3_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
-  end
-
-  def self.drag_int4_(label : String, v : Indexable(Int32) | Int32*, v_speed : Float32 = 1.0, v_min : Int32 = 0, v_max : Int32 = 0, format : String = "%d", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
+  pointer_wrapper def self.drag_int4(label : String, v : Indexable(Int32) | Int32*, v_speed : Float32 = 1.0, v_min : Int32 = 0, v_max : Int32 = 0, format : String = "%d", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
     LibImGui.igDragInt4(label, v.is_a?(Indexable) ? (
       v.size == 4 ? v.to_unsafe : raise ArgumentError.new("Slice has wrong size #{v.size} (want 4)")
     ) : v.as(Int32*), v_speed, v_min, v_max, format, flags)
   end
-
-  macro drag_int4(*args, **kwargs, &block)
-    ::ImGui._pointer_wrapper("::ImGui.drag_int4_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
-  end
-
-  def self.drag_int_range2_(label : String, v_current_min : Int32*, v_current_max : Int32*, v_speed : Float32 = 1.0, v_min : Int32 = 0, v_max : Int32 = 0, format : String = "%d", format_max : String? = nil, flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
+  pointer_wrapper def self.drag_int_range2(label : String, v_current_min : Int32*, v_current_max : Int32*, v_speed : Float32 = 1.0, v_min : Int32 = 0, v_max : Int32 = 0, format : String = "%d", format_max : String? = nil, flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
     LibImGui.igDragIntRange2(label, v_current_min, v_current_max, v_speed, v_min, v_max, format, format_max, flags)
   end
-
-  macro drag_int_range2(*args, **kwargs, &block)
-    ::ImGui._pointer_wrapper("::ImGui.drag_int_range2_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
-  end
-
   {% for k, t in {S8: Int8, U8: UInt8, S16: Int16, U16: UInt16, S32: Int32, U32: UInt32, S64: Int64, U64: UInt64, Float: Float32, Double: Float64} %}
-  def self.drag_scalar_(label : String, p_data : {{t}}*, v_speed : Float32, p_min : {{t}}? = nil, p_max : {{t}}? = nil, format : String? = nil, flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
+  pointer_wrapper def self.drag_scalar(label : String, p_data : {{t}}*, v_speed : Float32, p_min : {{t}}? = nil, p_max : {{t}}? = nil, format : String? = nil, flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
     LibImGui.igDragScalar(label, ImGuiDataType::{{k.id}}, p_data, v_speed, p_min ? (p_min_ = p_min; pointerof(p_min_)) : Pointer({{t}}).null, p_max ? (p_max_ = p_max; pointerof(p_max_)) : Pointer({{t}}).null, format, flags)
   end
   {% end %}
-
-  macro drag_scalar(*args, **kwargs, &block)
-    ::ImGui._pointer_wrapper("::ImGui.drag_scalar_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
-  end
-
   {% for k, t in {S8: Int8, U8: UInt8, S16: Int16, U16: UInt16, S32: Int32, U32: UInt32, S64: Int64, U64: UInt64, Float: Float32, Double: Float64} %}
-  def self.drag_scalar_n_(label : String, p_data : {{t}}*, components : Int32, v_speed : Float32, p_min : {{t}}* = Pointer({{t}}).null, p_max : {{t}}* = Pointer({{t}}).null, format : String? = nil, flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
+  pointer_wrapper def self.drag_scalar_n(label : String, p_data : {{t}}*, components : Int32, v_speed : Float32, p_min : {{t}}* = Pointer({{t}}).null, p_max : {{t}}* = Pointer({{t}}).null, format : String? = nil, flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
     LibImGui.igDragScalarN(label, ImGuiDataType::{{k.id}}, p_data, components, v_speed, p_min, p_max, format, flags)
   end
   {% end %}
-
-  macro drag_scalar_n(*args, **kwargs, &block)
-    ::ImGui._pointer_wrapper("::ImGui.drag_scalar_n_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
-  end
 
   def self.dummy(size : ImVec2) : Void
     LibImGui.igDummy(size)
@@ -3488,109 +3370,55 @@ module ImGui
     LibImGui.igIndent(indent_w)
   end
 
-  def self.input_double_(label : String, v : Float64*, step : Float64 = 0.0, step_fast : Float64 = 0.0, format : String = "%.6f", flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0)) : Bool
+  pointer_wrapper def self.input_double(label : String, v : Float64*, step : Float64 = 0.0, step_fast : Float64 = 0.0, format : String = "%.6f", flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0)) : Bool
     LibImGui.igInputDouble(label, v, step, step_fast, format, flags)
   end
-
-  macro input_double(*args, **kwargs, &block)
-    ::ImGui._pointer_wrapper("::ImGui.input_double_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
-  end
-
-  def self.input_float_(label : String, v : Float32*, step : Float32 = 0.0, step_fast : Float32 = 0.0, format : String = "%.3f", flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0)) : Bool
+  pointer_wrapper def self.input_float(label : String, v : Float32*, step : Float32 = 0.0, step_fast : Float32 = 0.0, format : String = "%.3f", flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0)) : Bool
     LibImGui.igInputFloat(label, v, step, step_fast, format, flags)
   end
-
-  macro input_float(*args, **kwargs, &block)
-    ::ImGui._pointer_wrapper("::ImGui.input_float_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
-  end
-
-  def self.input_float2_(label : String, v : ImVec2* | Indexable(Float32) | Float32*, format : String = "%.3f", flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0)) : Bool
+  pointer_wrapper def self.input_float2(label : String, v : ImVec2* | Indexable(Float32) | Float32*, format : String = "%.3f", flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0)) : Bool
     LibImGui.igInputFloat2(label, v.is_a?(Indexable) ? (
       v.size == 2 ? v.to_unsafe : raise ArgumentError.new("Slice has wrong size #{v.size} (want 2)")
     ) : v.as(Float32*), format, flags)
   end
-
-  macro input_float2(*args, **kwargs, &block)
-    ::ImGui._pointer_wrapper("::ImGui.input_float2_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
-  end
-
-  def self.input_float3_(label : String, v : Indexable(Float32) | Float32*, format : String = "%.3f", flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0)) : Bool
+  pointer_wrapper def self.input_float3(label : String, v : Indexable(Float32) | Float32*, format : String = "%.3f", flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0)) : Bool
     LibImGui.igInputFloat3(label, v.is_a?(Indexable) ? (
       v.size == 3 ? v.to_unsafe : raise ArgumentError.new("Slice has wrong size #{v.size} (want 3)")
     ) : v.as(Float32*), format, flags)
   end
-
-  macro input_float3(*args, **kwargs, &block)
-    ::ImGui._pointer_wrapper("::ImGui.input_float3_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
-  end
-
-  def self.input_float4_(label : String, v : ImVec4* | Indexable(Float32) | Float32*, format : String = "%.3f", flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0)) : Bool
+  pointer_wrapper def self.input_float4(label : String, v : ImVec4* | Indexable(Float32) | Float32*, format : String = "%.3f", flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0)) : Bool
     LibImGui.igInputFloat4(label, v.is_a?(Indexable) ? (
       v.size == 4 ? v.to_unsafe : raise ArgumentError.new("Slice has wrong size #{v.size} (want 4)")
     ) : v.as(Float32*), format, flags)
   end
-
-  macro input_float4(*args, **kwargs, &block)
-    ::ImGui._pointer_wrapper("::ImGui.input_float4_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
-  end
-
-  def self.input_int_(label : String, v : Int32*, step : Int32 = 1, step_fast : Int32 = 100, flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0)) : Bool
+  pointer_wrapper def self.input_int(label : String, v : Int32*, step : Int32 = 1, step_fast : Int32 = 100, flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0)) : Bool
     LibImGui.igInputInt(label, v, step, step_fast, flags)
   end
-
-  macro input_int(*args, **kwargs, &block)
-    ::ImGui._pointer_wrapper("::ImGui.input_int_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
-  end
-
-  def self.input_int2_(label : String, v : Indexable(Int32) | Int32*, flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0)) : Bool
+  pointer_wrapper def self.input_int2(label : String, v : Indexable(Int32) | Int32*, flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0)) : Bool
     LibImGui.igInputInt2(label, v.is_a?(Indexable) ? (
       v.size == 2 ? v.to_unsafe : raise ArgumentError.new("Slice has wrong size #{v.size} (want 2)")
     ) : v.as(Int32*), flags)
   end
-
-  macro input_int2(*args, **kwargs, &block)
-    ::ImGui._pointer_wrapper("::ImGui.input_int2_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
-  end
-
-  def self.input_int3_(label : String, v : Indexable(Int32) | Int32*, flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0)) : Bool
+  pointer_wrapper def self.input_int3(label : String, v : Indexable(Int32) | Int32*, flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0)) : Bool
     LibImGui.igInputInt3(label, v.is_a?(Indexable) ? (
       v.size == 3 ? v.to_unsafe : raise ArgumentError.new("Slice has wrong size #{v.size} (want 3)")
     ) : v.as(Int32*), flags)
   end
-
-  macro input_int3(*args, **kwargs, &block)
-    ::ImGui._pointer_wrapper("::ImGui.input_int3_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
-  end
-
-  def self.input_int4_(label : String, v : Indexable(Int32) | Int32*, flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0)) : Bool
+  pointer_wrapper def self.input_int4(label : String, v : Indexable(Int32) | Int32*, flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0)) : Bool
     LibImGui.igInputInt4(label, v.is_a?(Indexable) ? (
       v.size == 4 ? v.to_unsafe : raise ArgumentError.new("Slice has wrong size #{v.size} (want 4)")
     ) : v.as(Int32*), flags)
   end
-
-  macro input_int4(*args, **kwargs, &block)
-    ::ImGui._pointer_wrapper("::ImGui.input_int4_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
-  end
-
   {% for k, t in {S8: Int8, U8: UInt8, S16: Int16, U16: UInt16, S32: Int32, U32: UInt32, S64: Int64, U64: UInt64, Float: Float32, Double: Float64} %}
-  def self.input_scalar_(label : String, p_data : {{t}}*, p_step : {{t}}? = nil, p_step_fast : {{t}}? = nil, format : String? = nil, flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0)) : Bool
+  pointer_wrapper def self.input_scalar(label : String, p_data : {{t}}*, p_step : {{t}}? = nil, p_step_fast : {{t}}? = nil, format : String? = nil, flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0)) : Bool
     LibImGui.igInputScalar(label, ImGuiDataType::{{k.id}}, p_data, p_step ? (p_step_ = p_step; pointerof(p_step_)) : Pointer({{t}}).null, p_step_fast ? (p_step_fast_ = p_step_fast; pointerof(p_step_fast_)) : Pointer({{t}}).null, format, flags)
   end
   {% end %}
-
-  macro input_scalar(*args, **kwargs, &block)
-    ::ImGui._pointer_wrapper("::ImGui.input_scalar_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
-  end
-
   {% for k, t in {S8: Int8, U8: UInt8, S16: Int16, U16: UInt16, S32: Int32, U32: UInt32, S64: Int64, U64: UInt64, Float: Float32, Double: Float64} %}
-  def self.input_scalar_n_(label : String, p_data : {{t}}*, components : Int32, p_step : {{t}}* = Pointer({{t}}).null, p_step_fast : {{t}}* = Pointer({{t}}).null, format : String? = nil, flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0)) : Bool
+  pointer_wrapper def self.input_scalar_n(label : String, p_data : {{t}}*, components : Int32, p_step : {{t}}* = Pointer({{t}}).null, p_step_fast : {{t}}* = Pointer({{t}}).null, format : String? = nil, flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0)) : Bool
     LibImGui.igInputScalarN(label, ImGuiDataType::{{k.id}}, p_data, components, p_step, p_step_fast, format, flags)
   end
   {% end %}
-
-  macro input_scalar_n(*args, **kwargs, &block)
-    ::ImGui._pointer_wrapper("::ImGui.input_scalar_n_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
-  end
 
   def self.input_text(label : String, buf : Bytes, flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0), callback : ImGuiInputTextCallback? = nil, user_data : Void* = Pointer(Void).null) : Bool
     LibImGui.igInputText(label, buf, buf.size, flags, callback, user_data)
@@ -3736,20 +3564,11 @@ module ImGui
     LibImGui.igLabelText(label, fmt, *args._promote_va_args)
   end
 
-  def self.list_box_(label : String, current_item : Int32*, items : Indexable(LibC::Char*), height_in_items : Int32 = -1) : Bool
+  pointer_wrapper def self.list_box(label : String, current_item : Int32*, items : Indexable(LibC::Char*), height_in_items : Int32 = -1) : Bool
     LibImGui.igListBoxStr_arr(label, current_item, items, items.size, height_in_items)
   end
-
-  macro list_box(*args, **kwargs, &block)
-    ::ImGui._pointer_wrapper("::ImGui.list_box_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
-  end
-
-  def self.list_box_(label : String, current_item : Int32*, items_getter : (Void*, Int32, LibC::Char**) -> Bool, data : Void*, items_count : Int32, height_in_items : Int32 = -1) : Bool
+  pointer_wrapper def self.list_box(label : String, current_item : Int32*, items_getter : (Void*, Int32, LibC::Char**) -> Bool, data : Void*, items_count : Int32, height_in_items : Int32 = -1) : Bool
     LibImGui.igListBoxFnBoolPtr(label, current_item, items_getter, data, items_count, height_in_items)
-  end
-
-  macro list_box(*args, **kwargs, &block)
-    ::ImGui._pointer_wrapper("::ImGui.list_box_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
   end
 
   def self.list_box_footer : Void
@@ -3804,16 +3623,11 @@ module ImGui
     LibImGui.igMemFree(ptr)
   end
 
-  def self.menu_item_(label : String, shortcut : String? = nil, selected : Bool = false, enabled : Bool = true) : Bool
+  pointer_wrapper def self.menu_item(label : String, shortcut : String? = nil, selected : Bool = false, enabled : Bool = true) : Bool
     LibImGui.igMenuItemBool(label, shortcut, selected, enabled)
   end
-
-  def self.menu_item_(label : String, shortcut : String, p_selected : Bool*, enabled : Bool = true) : Bool
+  pointer_wrapper def self.menu_item(label : String, shortcut : String, p_selected : Bool*, enabled : Bool = true) : Bool
     LibImGui.igMenuItemBoolPtr(label, shortcut, p_selected, enabled)
-  end
-
-  macro menu_item(*args, **kwargs, &block)
-    ::ImGui._pointer_wrapper("::ImGui.menu_item_", 2, true, {{*args}}, {{**kwargs}}) {{block}}
   end
 
   def self.new_frame : Void
@@ -3948,16 +3762,11 @@ module ImGui
     LibImGui.igPushTextWrapPos(wrap_local_pos_x)
   end
 
-  def self.radio_button_(label : String, active : Bool) : Bool
+  pointer_wrapper def self.radio_button(label : String, active : Bool) : Bool
     LibImGui.igRadioButtonBool(label, active)
   end
-
-  def self.radio_button_(label : String, v : Int32*, v_button : Int32) : Bool
+  pointer_wrapper def self.radio_button(label : String, v : Int32*, v_button : Int32) : Bool
     LibImGui.igRadioButtonIntPtr(label, v, v_button)
-  end
-
-  macro radio_button(*args, **kwargs, &block)
-    ::ImGui._pointer_wrapper("::ImGui.radio_button_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
   end
 
   def self.render : Void
@@ -3981,16 +3790,11 @@ module ImGui
     {(s = result) ? String.new(s) : "", out_ini_size}
   end
 
-  def self.selectable_(label : String, selected : Bool = false, flags : ImGuiSelectableFlags = ImGuiSelectableFlags.new(0), size : ImVec2 = ImVec2.new(0, 0)) : Bool
+  pointer_wrapper def self.selectable(label : String, selected : Bool = false, flags : ImGuiSelectableFlags = ImGuiSelectableFlags.new(0), size : ImVec2 = ImVec2.new(0, 0)) : Bool
     LibImGui.igSelectableBool(label, selected, flags, size)
   end
-
-  def self.selectable_(label : String, p_selected : Bool*, flags : ImGuiSelectableFlags = ImGuiSelectableFlags.new(0), size : ImVec2 = ImVec2.new(0, 0)) : Bool
+  pointer_wrapper def self.selectable(label : String, p_selected : Bool*, flags : ImGuiSelectableFlags = ImGuiSelectableFlags.new(0), size : ImVec2 = ImVec2.new(0, 0)) : Bool
     LibImGui.igSelectableBoolPtr(label, p_selected, flags, size)
-  end
-
-  macro selectable(*args, **kwargs, &block)
-    ::ImGui._pointer_wrapper("::ImGui.selectable_", 1, true, {{*args}}, {{**kwargs}}) {{block}}
   end
 
   def self.separator : Void
@@ -4165,11 +3969,10 @@ module ImGui
     LibImGui.igSetWindowSizeStr(name, size, cond)
   end
 
-  def self.show_about_window(p_open : Bool* = Pointer(Bool).null) : Void
+  pointer_wrapper def self.show_about_window(p_open : Bool* = Pointer(Bool).null) : Void
     LibImGui.igShowAboutWindow(p_open)
   end
-
-  def self.show_demo_window(p_open : Bool* = Pointer(Bool).null) : Void
+  pointer_wrapper def self.show_demo_window(p_open : Bool* = Pointer(Bool).null) : Void
     LibImGui.igShowDemoWindow(p_open)
   end
 
@@ -4177,7 +3980,7 @@ module ImGui
     LibImGui.igShowFontSelector(label)
   end
 
-  def self.show_metrics_window(p_open : Bool* = Pointer(Bool).null) : Void
+  pointer_wrapper def self.show_metrics_window(p_open : Bool* = Pointer(Bool).null) : Void
     LibImGui.igShowMetricsWindow(p_open)
   end
 
@@ -4193,109 +3996,55 @@ module ImGui
     LibImGui.igShowUserGuide
   end
 
-  def self.slider_angle_(label : String, v_rad : Float32*, v_degrees_min : Float32 = -360.0, v_degrees_max : Float32 = +360.0, format : String = "%.0 deg", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
+  pointer_wrapper def self.slider_angle(label : String, v_rad : Float32*, v_degrees_min : Float32 = -360.0, v_degrees_max : Float32 = +360.0, format : String = "%.0 deg", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
     LibImGui.igSliderAngle(label, v_rad, v_degrees_min, v_degrees_max, format, flags)
   end
-
-  macro slider_angle(*args, **kwargs, &block)
-    ::ImGui._pointer_wrapper("::ImGui.slider_angle_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
-  end
-
-  def self.slider_float_(label : String, v : Float32*, v_min : Float32, v_max : Float32, format : String = "%.3f", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
+  pointer_wrapper def self.slider_float(label : String, v : Float32*, v_min : Float32, v_max : Float32, format : String = "%.3f", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
     LibImGui.igSliderFloat(label, v, v_min, v_max, format, flags)
   end
-
-  macro slider_float(*args, **kwargs, &block)
-    ::ImGui._pointer_wrapper("::ImGui.slider_float_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
-  end
-
-  def self.slider_float2_(label : String, v : ImVec2* | Indexable(Float32) | Float32*, v_min : Float32, v_max : Float32, format : String = "%.3f", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
+  pointer_wrapper def self.slider_float2(label : String, v : ImVec2* | Indexable(Float32) | Float32*, v_min : Float32, v_max : Float32, format : String = "%.3f", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
     LibImGui.igSliderFloat2(label, v.is_a?(Indexable) ? (
       v.size == 2 ? v.to_unsafe : raise ArgumentError.new("Slice has wrong size #{v.size} (want 2)")
     ) : v.as(Float32*), v_min, v_max, format, flags)
   end
-
-  macro slider_float2(*args, **kwargs, &block)
-    ::ImGui._pointer_wrapper("::ImGui.slider_float2_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
-  end
-
-  def self.slider_float3_(label : String, v : Indexable(Float32) | Float32*, v_min : Float32, v_max : Float32, format : String = "%.3f", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
+  pointer_wrapper def self.slider_float3(label : String, v : Indexable(Float32) | Float32*, v_min : Float32, v_max : Float32, format : String = "%.3f", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
     LibImGui.igSliderFloat3(label, v.is_a?(Indexable) ? (
       v.size == 3 ? v.to_unsafe : raise ArgumentError.new("Slice has wrong size #{v.size} (want 3)")
     ) : v.as(Float32*), v_min, v_max, format, flags)
   end
-
-  macro slider_float3(*args, **kwargs, &block)
-    ::ImGui._pointer_wrapper("::ImGui.slider_float3_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
-  end
-
-  def self.slider_float4_(label : String, v : ImVec4* | Indexable(Float32) | Float32*, v_min : Float32, v_max : Float32, format : String = "%.3f", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
+  pointer_wrapper def self.slider_float4(label : String, v : ImVec4* | Indexable(Float32) | Float32*, v_min : Float32, v_max : Float32, format : String = "%.3f", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
     LibImGui.igSliderFloat4(label, v.is_a?(Indexable) ? (
       v.size == 4 ? v.to_unsafe : raise ArgumentError.new("Slice has wrong size #{v.size} (want 4)")
     ) : v.as(Float32*), v_min, v_max, format, flags)
   end
-
-  macro slider_float4(*args, **kwargs, &block)
-    ::ImGui._pointer_wrapper("::ImGui.slider_float4_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
-  end
-
-  def self.slider_int_(label : String, v : Int32*, v_min : Int32, v_max : Int32, format : String = "%d", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
+  pointer_wrapper def self.slider_int(label : String, v : Int32*, v_min : Int32, v_max : Int32, format : String = "%d", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
     LibImGui.igSliderInt(label, v, v_min, v_max, format, flags)
   end
-
-  macro slider_int(*args, **kwargs, &block)
-    ::ImGui._pointer_wrapper("::ImGui.slider_int_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
-  end
-
-  def self.slider_int2_(label : String, v : Indexable(Int32) | Int32*, v_min : Int32, v_max : Int32, format : String = "%d", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
+  pointer_wrapper def self.slider_int2(label : String, v : Indexable(Int32) | Int32*, v_min : Int32, v_max : Int32, format : String = "%d", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
     LibImGui.igSliderInt2(label, v.is_a?(Indexable) ? (
       v.size == 2 ? v.to_unsafe : raise ArgumentError.new("Slice has wrong size #{v.size} (want 2)")
     ) : v.as(Int32*), v_min, v_max, format, flags)
   end
-
-  macro slider_int2(*args, **kwargs, &block)
-    ::ImGui._pointer_wrapper("::ImGui.slider_int2_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
-  end
-
-  def self.slider_int3_(label : String, v : Indexable(Int32) | Int32*, v_min : Int32, v_max : Int32, format : String = "%d", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
+  pointer_wrapper def self.slider_int3(label : String, v : Indexable(Int32) | Int32*, v_min : Int32, v_max : Int32, format : String = "%d", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
     LibImGui.igSliderInt3(label, v.is_a?(Indexable) ? (
       v.size == 3 ? v.to_unsafe : raise ArgumentError.new("Slice has wrong size #{v.size} (want 3)")
     ) : v.as(Int32*), v_min, v_max, format, flags)
   end
-
-  macro slider_int3(*args, **kwargs, &block)
-    ::ImGui._pointer_wrapper("::ImGui.slider_int3_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
-  end
-
-  def self.slider_int4_(label : String, v : Indexable(Int32) | Int32*, v_min : Int32, v_max : Int32, format : String = "%d", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
+  pointer_wrapper def self.slider_int4(label : String, v : Indexable(Int32) | Int32*, v_min : Int32, v_max : Int32, format : String = "%d", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
     LibImGui.igSliderInt4(label, v.is_a?(Indexable) ? (
       v.size == 4 ? v.to_unsafe : raise ArgumentError.new("Slice has wrong size #{v.size} (want 4)")
     ) : v.as(Int32*), v_min, v_max, format, flags)
   end
-
-  macro slider_int4(*args, **kwargs, &block)
-    ::ImGui._pointer_wrapper("::ImGui.slider_int4_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
-  end
-
   {% for k, t in {S8: Int8, U8: UInt8, S16: Int16, U16: UInt16, S32: Int32, U32: UInt32, S64: Int64, U64: UInt64, Float: Float32, Double: Float64} %}
-  def self.slider_scalar_(label : String, p_data : {{t}}*, p_min : {{t}}, p_max : {{t}}, format : String? = nil, flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
+  pointer_wrapper def self.slider_scalar(label : String, p_data : {{t}}*, p_min : {{t}}, p_max : {{t}}, format : String? = nil, flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
     LibImGui.igSliderScalar(label, ImGuiDataType::{{k.id}}, p_data, p_min ? (p_min_ = p_min; pointerof(p_min_)) : Pointer({{t}}).null, p_max ? (p_max_ = p_max; pointerof(p_max_)) : Pointer({{t}}).null, format, flags)
   end
   {% end %}
-
-  macro slider_scalar(*args, **kwargs, &block)
-    ::ImGui._pointer_wrapper("::ImGui.slider_scalar_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
-  end
-
   {% for k, t in {S8: Int8, U8: UInt8, S16: Int16, U16: UInt16, S32: Int32, U32: UInt32, S64: Int64, U64: UInt64, Float: Float32, Double: Float64} %}
-  def self.slider_scalar_n_(label : String, p_data : {{t}}*, components : Int32, p_min : {{t}}*, p_max : {{t}}*, format : String? = nil, flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
+  pointer_wrapper def self.slider_scalar_n(label : String, p_data : {{t}}*, components : Int32, p_min : {{t}}*, p_max : {{t}}*, format : String? = nil, flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
     LibImGui.igSliderScalarN(label, ImGuiDataType::{{k.id}}, p_data, components, p_min, p_max, format, flags)
   end
   {% end %}
-
-  macro slider_scalar_n(*args, **kwargs, &block)
-    ::ImGui._pointer_wrapper("::ImGui.slider_scalar_n_", 1, false, {{*args}}, {{**kwargs}}) {{block}}
-  end
 
   def self.small_button(label : String) : Bool
     LibImGui.igSmallButton(label)
@@ -4377,31 +4126,17 @@ module ImGui
     LibImGui.igUnindent(indent_w)
   end
 
-  def self.v_slider_float_(label : String, size : ImVec2, v : Float32*, v_min : Float32, v_max : Float32, format : String = "%.3f", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
+  pointer_wrapper def self.v_slider_float(label : String, size : ImVec2, v : Float32*, v_min : Float32, v_max : Float32, format : String = "%.3f", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
     LibImGui.igVSliderFloat(label, size, v, v_min, v_max, format, flags)
   end
-
-  macro v_slider_float(*args, **kwargs, &block)
-    ::ImGui._pointer_wrapper("::ImGui.v_slider_float_", 2, false, {{*args}}, {{**kwargs}}) {{block}}
-  end
-
-  def self.v_slider_int_(label : String, size : ImVec2, v : Int32*, v_min : Int32, v_max : Int32, format : String = "%d", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
+  pointer_wrapper def self.v_slider_int(label : String, size : ImVec2, v : Int32*, v_min : Int32, v_max : Int32, format : String = "%d", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
     LibImGui.igVSliderInt(label, size, v, v_min, v_max, format, flags)
   end
-
-  macro v_slider_int(*args, **kwargs, &block)
-    ::ImGui._pointer_wrapper("::ImGui.v_slider_int_", 2, false, {{*args}}, {{**kwargs}}) {{block}}
-  end
-
   {% for k, t in {S8: Int8, U8: UInt8, S16: Int16, U16: UInt16, S32: Int32, U32: UInt32, S64: Int64, U64: UInt64, Float: Float32, Double: Float64} %}
-  def self.v_slider_scalar_(label : String, size : ImVec2, p_data : {{t}}*, p_min : {{t}}, p_max : {{t}}, format : String? = nil, flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
+  pointer_wrapper def self.v_slider_scalar(label : String, size : ImVec2, p_data : {{t}}*, p_min : {{t}}, p_max : {{t}}, format : String? = nil, flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
     LibImGui.igVSliderScalar(label, size, ImGuiDataType::{{k.id}}, p_data, p_min ? (p_min_ = p_min; pointerof(p_min_)) : Pointer({{t}}).null, p_max ? (p_max_ = p_max; pointerof(p_max_)) : Pointer({{t}}).null, format, flags)
   end
   {% end %}
-
-  macro v_slider_scalar(*args, **kwargs, &block)
-    ::ImGui._pointer_wrapper("::ImGui.v_slider_scalar_", 2, false, {{*args}}, {{**kwargs}}) {{block}}
-  end
 
   def self.value(prefix : String, b : Bool) : Void
     LibImGui.igValueBool(prefix, b)

@@ -29,22 +29,32 @@ require "./lib"
 
 module ImGui
   # :nodoc:
-  macro _pointer_wrapper(call, arg_i, bool, *args, **kwargs, &block)
-    {% exp = nil %}
-    {% if (wrap = args[arg_i].is_a?(PointerOf)) %}
-      {% exp = args[arg_i].exp %}
-      %val = {{exp}}
-    {% end %}
-    if ({{call.id}}(
-      {% for arg, i in args %}{% if i == arg_i && exp %}pointerof(%val){% else %}{{arg}}{% end %}, {% end %}{{**kwargs}}
-    ) {{block}})
-      {% if exp %}
-        {% if bool && exp.id.ends_with?("?") %}{% exp = exp.id[0...-1] %}{% end %}
-        {{exp}} = %val
+  macro pointer_wrapper(f)
+    {{
+      f.id.split(f.name).map_with_index { |s, i|
+        s = "_" + s if i == 1
+        s
+      }.join(f.name).id # Paste the function but rename `def function_name` to `def function_name_`.
+    }}
+
+    macro {{f.name}}(*args, **kwargs, &block)
+      {% verbatim do %}
+        {% for arg in args %}{% if arg.is_a?(PointerOf) %}
+          %val{arg} = {{arg.exp}}
+        {% end %}{% end %}
       {% end %}
-      true
-    else
-      false
+      if {% if f.receiver %}::\{{@type.name}}.{% end %}{{f.name}}_{% verbatim do %}(
+        {% for arg, i in args %}{% if arg.is_a?(PointerOf) %}pointerof(%val{arg}){% else %}{{arg}}{% end %}, {% end %}{{**kwargs}}
+      ) {{block}}{% end %}
+        {% verbatim do %}
+          {% for arg in args %}{% if arg.is_a?(PointerOf) %}
+            {% if arg.exp.id.ends_with?("?") %}{{arg.exp.id[0...-1]}}{% else %}{{arg.exp}}{% end %} = %val{arg}
+          {% end %}{% end %}
+        {% end %}
+        true
+      else
+        false
+      end
     end
   end
 

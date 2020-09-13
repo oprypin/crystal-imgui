@@ -46,7 +46,7 @@ module ImGuiDemo
     ImGui.unindent
   end
 
-  def self.show_demo_window(p_open = Pointer(Bool).null)
+  ImGui.pointer_wrapper def self.show_demo_window(p_open = Pointer(Bool).null)
     assert(ImGui.get_current_context != nil && "Missing dear imgui context. Refer to examples app!")
 
     static show_app_main_menu_bar = false
@@ -66,37 +66,37 @@ module ImGuiDemo
       show_example_app_main_menu_bar()
     end
     if show_app_documents.val
-      show_example_app_documents(show_app_documents.to_unsafe)
+      show_example_app_documents(pointerof(show_app_documents.val))
     end
     if show_app_console.val
-      show_example_app_console(show_app_console.to_unsafe)
+      show_example_app_console(pointerof(show_app_console.val))
     end
     if show_app_log.val
-      show_example_app_log(show_app_log.to_unsafe)
+      show_example_app_log(pointerof(show_app_log.val))
     end
     if show_app_layout.val
-      show_example_app_layout(show_app_layout.to_unsafe)
+      show_example_app_layout(pointerof(show_app_layout.val))
     end
     if show_app_property_editor.val
-      show_example_app_property_editor(show_app_property_editor.to_unsafe)
+      show_example_app_property_editor(pointerof(show_app_property_editor.val))
     end
     if show_app_long_text.val
-      show_example_app_long_text(show_app_long_text.to_unsafe)
+      show_example_app_long_text(pointerof(show_app_long_text.val))
     end
     if show_app_auto_resize.val
-      show_example_app_auto_resize(show_app_auto_resize.to_unsafe)
+      show_example_app_auto_resize(pointerof(show_app_auto_resize.val))
     end
     if show_app_constrained_resize.val
-      show_example_app_constrained_resize(show_app_constrained_resize.to_unsafe)
+      show_example_app_constrained_resize(pointerof(show_app_constrained_resize.val))
     end
     if show_app_simple_overlay.val
-      show_example_app_simple_overlay(show_app_simple_overlay.to_unsafe)
+      show_example_app_simple_overlay(pointerof(show_app_simple_overlay.val))
     end
     if show_app_window_titles.val
-      show_example_app_window_titles(show_app_window_titles.to_unsafe)
+      show_example_app_window_titles(pointerof(show_app_window_titles.val))
     end
     if show_app_custom_rendering.val
-      show_example_app_custom_rendering(show_app_custom_rendering.to_unsafe)
+      show_example_app_custom_rendering(pointerof(show_app_custom_rendering.val))
     end
 
     static show_app_metrics = false
@@ -104,10 +104,10 @@ module ImGuiDemo
     static show_app_about = false
 
     if show_app_metrics.val
-      ImGui.show_metrics_window(show_app_metrics.to_unsafe)
+      ImGui.show_metrics_window(pointerof(show_app_metrics.val))
     end
     if show_app_about.val
-      show_about_window(show_app_about.to_unsafe)
+      show_about_window(pointerof(show_app_about.val))
     end
     if show_app_style_editor.val
       ImGui.begin("crystal-imgui Style Editor", pointerof(show_app_style_editor.val))
@@ -1281,9 +1281,9 @@ module ImGuiDemo
       static end_f = 90f32
       static begin_i = 100
       static end_i = 1000
-      ImGui.drag_float_range2("range float", pointerof(begin_f.val), end_f.to_unsafe, 0.25f32, 0.0f32, 100.0f32, "Min: %.1f %%", "Max: %.1f %%", ImGuiSliderFlags::ClampOnInput)
-      ImGui.drag_int_range2("range int", pointerof(begin_i.val), end_i.to_unsafe, 5, 0, 1000, "Min: %d units", "Max: %d units")
-      ImGui.drag_int_range2("range int (no bounds)", pointerof(begin_i.val), end_i.to_unsafe, 5, 0, 0, "Min: %d units", "Max: %d units")
+      ImGui.drag_float_range2("range float", pointerof(begin_f.val), pointerof(end_f.val), 0.25f32, 0.0f32, 100.0f32, "Min: %.1f %%", "Max: %.1f %%", ImGuiSliderFlags::ClampOnInput)
+      ImGui.drag_int_range2("range int", pointerof(begin_i.val), pointerof(end_i.val), 5, 0, 1000, "Min: %d units", "Max: %d units")
+      ImGui.drag_int_range2("range int (no bounds)", pointerof(begin_i.val), pointerof(end_i.val), 5, 0, 0, "Min: %d units", "Max: %d units")
       ImGui.tree_pop
     end
 
@@ -3200,7 +3200,7 @@ module ImGuiDemo
     end
   end
 
-  def self.show_about_window(p_open = Pointer(Bool).null)
+  ImGui.pointer_wrapper def self.show_about_window(p_open = Pointer(Bool).null)
     if !ImGui.begin("About crystal-imgui", p_open, ImGuiWindowFlags::AlwaysAutoResize)
       ImGui.end
       return
@@ -4037,7 +4037,7 @@ module ImGuiDemo
     end
   end
 
-  def self.show_example_app_console(p_open = Pointer(Bool).null)
+  ImGui.pointer_wrapper def self.show_example_app_console(p_open = Pointer(Bool).null)
     static console = ExampleAppConsole.new
     console.val.draw("Example: Console", p_open)
   end
@@ -4127,7 +4127,7 @@ module ImGuiDemo
     end
   end
 
-  def self.show_example_app_log(p_open = Pointer(Bool).null)
+  ImGui.pointer_wrapper def self.show_example_app_log(p_open = Pointer(Bool).null)
     static log = ExampleAppLog.new
 
     ImGui.set_next_window_size(ImGui.vec2(500, 400), ImGuiCond::FirstUseEver)
@@ -4149,7 +4149,7 @@ module ImGuiDemo
     log.val.draw("Example: Log", p_open)
   end
 
-  def self.show_example_app_layout(p_open = Pointer(Bool).null)
+  ImGui.pointer_wrapper def self.show_example_app_layout(p_open = Pointer(Bool).null)
     ImGui.set_next_window_size(ImGui.vec2(500, 440), ImGuiCond::FirstUseEver)
     if ImGui.begin("Example: Simple layout", p_open, ImGuiWindowFlags::MenuBar)
       if ImGui.begin_menu_bar
@@ -4236,7 +4236,7 @@ module ImGuiDemo
     ImGui.pop_id
   end
 
-  def self.show_example_app_property_editor(p_open = Pointer(Bool).null)
+  ImGui.pointer_wrapper def self.show_example_app_property_editor(p_open = Pointer(Bool).null)
     ImGui.set_next_window_size(ImGui.vec2(430, 450), ImGuiCond::FirstUseEver)
     if !ImGui.begin("Example: Property editor", p_open)
       ImGui.end
@@ -4263,7 +4263,7 @@ module ImGuiDemo
     ImGui.end
   end
 
-  def self.show_example_app_long_text(p_open = Pointer(Bool).null)
+  ImGui.pointer_wrapper def self.show_example_app_long_text(p_open = Pointer(Bool).null)
     ImGui.set_next_window_size(ImGui.vec2(520, 600), ImGuiCond::FirstUseEver)
     if !ImGui.begin("Example: Long text display", p_open)
       ImGui.end
@@ -4314,7 +4314,7 @@ module ImGuiDemo
     ImGui.end
   end
 
-  def self.show_example_app_auto_resize(p_open = Pointer(Bool).null)
+  ImGui.pointer_wrapper def self.show_example_app_auto_resize(p_open = Pointer(Bool).null)
     if !ImGui.begin("Example: Auto-resizing window", p_open, ImGuiWindowFlags::AlwaysAutoResize)
       ImGui.end
       return
@@ -4332,7 +4332,7 @@ module ImGuiDemo
     ImGui.end
   end
 
-  def self.show_example_app_constrained_resize(p_open = Pointer(Bool).null)
+  ImGui.pointer_wrapper def self.show_example_app_constrained_resize(p_open = Pointer(Bool).null)
     test_desc = [
       "Resize vertical only",
       "Resize horizontal only",
@@ -4399,7 +4399,7 @@ module ImGuiDemo
     ImGui.end
   end
 
-  def self.show_example_app_simple_overlay(p_open = Pointer(Bool).null)
+  ImGui.pointer_wrapper def self.show_example_app_simple_overlay(p_open = Pointer(Bool).null)
     distance = 10.0f32
     static corner = 0
     io = ImGui.get_io
@@ -4448,7 +4448,7 @@ module ImGuiDemo
     ImGui.end
   end
 
-  def self.show_example_app_window_titles(p_open = Pointer(Bool).null)
+  ImGui.pointer_wrapper def self.show_example_app_window_titles(p_open = Pointer(Bool).null)
     ImGui.set_next_window_pos(ImGui.vec2(100, 100), ImGuiCond::FirstUseEver)
     ImGui.begin("Same title as another window##1")
     ImGui.text("This is window 1.\nMy title is the same as window 2, but my identifier is unique.")
@@ -4466,7 +4466,7 @@ module ImGuiDemo
     ImGui.end
   end
 
-  def self.show_example_app_custom_rendering(p_open = Pointer(Bool).null)
+  ImGui.pointer_wrapper def self.show_example_app_custom_rendering(p_open = Pointer(Bool).null)
     if !ImGui.begin("Example: Custom rendering", p_open)
       ImGui.end
       return
@@ -4773,7 +4773,7 @@ module ImGuiDemo
     end
   end
 
-  def self.show_example_app_documents(p_open = Pointer(Bool).null)
+  ImGui.pointer_wrapper def self.show_example_app_documents(p_open = Pointer(Bool).null)
     static app = ExampleAppDocuments.new
 
     static opt_reorderable = true
