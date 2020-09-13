@@ -3810,10 +3810,6 @@ module ImGuiDemo
       add_log("Welcome to Dear ImGui!")
     end
 
-    def stricmp(s1, s2)
-      s1.upcase <=> s2.upcase
-    end
-
     def clear_log
       @items.clear
     end
@@ -3939,21 +3935,21 @@ module ImGuiDemo
 
       @history_pos = -1
       (@history.size - 1).downto(0) do |i|
-        if stricmp(@history[i], command_line) == 0
+        if @history[i].upcase == command_line.upcase
           @history.delete_at(i)
           break
         end
       end
       @history << command_line
 
-      if stricmp(command_line, "CLEAR") == 0
+      if command_line.upcase == "CLEAR"
         clear_log()
-      elsif stricmp(command_line, "HELP") == 0
+      elsif command_line.upcase == "HELP"
         add_log("Commands:")
         @commands.each do |cmd|
           add_log("- %s", cmd)
         end
-      elsif stricmp(command_line, "HISTORY") == 0
+      elsif command_line.upcase == "HISTORY"
         first = @history.size - 10
         ({first, 0}.max...@history.size).each do |i|
           add_log("%3d: %s\n", i, @history[i])
@@ -3981,13 +3977,13 @@ module ImGuiDemo
         candidates = [] of String
         @commands.each do |cmd|
           n = (word_end - word_start).to_i
-          if cmd[0, n].upcase == cmd[word_start, n].upcase == 0
+          if cmd[0, n].upcase == cmd[word_start, n].upcase
             candidates << cmd
           end
         end
 
         if candidates.size == 0
-          add_log("No match for \"%.*s\"!\n", word_end - word_start, data.buf + word_start)
+          add_log("No match for \"%s\"!\n", String.new(data.bytes[word_start...word_end]))
         elsif candidates.size == 1
           data.delete_chars(word_start, (word_end - word_start))
           data.insert_chars(data.cursor_pos, candidates[0])

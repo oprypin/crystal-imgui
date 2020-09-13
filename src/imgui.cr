@@ -133,6 +133,12 @@ module ImGui
     end
   end
 
+  struct ImGuiInputTextCallbackData
+    def bytes : Bytes
+      self.buf.to_slice(self.buf_text_len)
+    end
+  end
+
   class TextBuffer < IO
     private EMPTY_STRING = [0u8].to_unsafe
 
