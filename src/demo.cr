@@ -464,7 +464,7 @@ module ImGuiDemo
           "You can input value using the scientific notation,\n" +
           "  e.g. \"1e+8\" becomes \"100000000\".")
 
-        static vec4a = [0.10f32, 0.20f32, 0.30f32, 0.44f32]
+        static vec4a = Slice[0.10f32, 0.20f32, 0.30f32, 0.44f32]
         ImGui.input_float3("input float3", vec4a.val[...3])
       end
 
@@ -507,8 +507,8 @@ module ImGuiDemo
       end
 
       begin
-        static col1 = [1.0f32, 0.0f32, 0.2f32]
-        static col2 = [0.4f32, 0.7f32, 0.0f32, 0.5f32]
+        static col1 = Slice[1.0f32, 0.0f32, 0.2f32]
+        static col2 = Slice[0.4f32, 0.7f32, 0.0f32, 0.5f32]
         ImGui.color_edit3("color 1", col1.val)
         ImGui.same_line
         help_marker(
@@ -859,7 +859,7 @@ module ImGuiDemo
       end
       if ImGui.tree_node("In columns")
         ImGui.columns(3, nil, false)
-        static selected = [false] * 16
+        static selected = Slice.new(16, false)
         16.times do |i|
           label = sprintf("Item %d", i)
           if ImGui.selectable(label, pointerof(selected.val[i]))
@@ -870,14 +870,14 @@ module ImGuiDemo
         ImGui.tree_pop
       end
       if ImGui.tree_node("Grid")
-        static selected = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+        static selected = Slice[1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
         (4 * 4).times do |i|
           ImGui.push_id(i)
           if ImGui.selectable("Sailor", selected.val[i] != 0, size: ImVec2.new(50, 50))
             selected.val[i] ^= 1
 
             x = i % 4
-            y = i / 4
+            y = i // 4
             if x > 0
               selected.val[i - 1] ^= 1
             end
@@ -903,7 +903,7 @@ module ImGuiDemo
           "By default, Selectables uses style.SelectableTextAlign but it can be overridden on a per-item " +
           "basis using PushStyleVar(). You'll probably want to always keep your default situation to " +
           "left-align otherwise it becomes difficult to layout multiple items on a same line")
-        static selected = [true, false, true, false, true, false, true, false, true]
+        static selected = Slice[true, false, true, false, true, false, true, false, true]
         3.times do |y|
           3.times do |x|
             alignment = ImVec2.new(x / 2.0f32, y / 2.0f32)
@@ -994,7 +994,7 @@ module ImGuiDemo
       static arr = [0.6f32, 0.1f32, 1.0f32, 0.5f32, 0.92f32, 0.1f32, 0.2f32]
       ImGui.plot_lines("Frame Times", arr.val)
 
-      static values = [] of Float32
+      static values = Slice.new(90, 0.0f32)
       static values_offset = 0
       static refresh_time = 0.0
       if !animate.val || refresh_time.val == 0.0
@@ -1429,23 +1429,23 @@ module ImGuiDemo
     end
 
     if ImGui.tree_node("Multi-component Widgets")
-      static vec4f = [0.10f32, 0.20f32, 0.30f32, 0.44f32]
-      static vec4i = [1, 5, 100, 255]
+      static vec4f = Slice[0.10f32, 0.20f32, 0.30f32, 0.44f32]
+      static vec4i = Slice[1, 5, 100, 255]
 
-      ImGui.input_float2("input float2", vec4f.val)
-      ImGui.drag_float2("drag float2", vec4f.val, 0.01f32, 0.0f32, 1.0f32)
-      ImGui.slider_float2("slider float2", vec4f.val, 0.0f32, 1.0f32)
-      ImGui.input_int2("input int2", vec4i.val)
-      ImGui.drag_int2("drag int2", vec4i.val, 1, 0, 255)
-      ImGui.slider_int2("slider int2", vec4i.val, 0, 255)
+      ImGui.input_float2("input float2", vec4f.val[...2])
+      ImGui.drag_float2("drag float2", vec4f.val[...2], 0.01f32, 0.0f32, 1.0f32)
+      ImGui.slider_float2("slider float2", vec4f.val[...2], 0.0f32, 1.0f32)
+      ImGui.input_int2("input int2", vec4i.val[...2])
+      ImGui.drag_int2("drag int2", vec4i.val[...2], 1, 0, 255)
+      ImGui.slider_int2("slider int2", vec4i.val[...2], 0, 255)
       ImGui.spacing
 
-      ImGui.input_float3("input float3", vec4f.val)
-      ImGui.drag_float3("drag float3", vec4f.val, 0.01f32, 0.0f32, 1.0f32)
-      ImGui.slider_float3("slider float3", vec4f.val, 0.0f32, 1.0f32)
-      ImGui.input_int3("input int3", vec4i.val)
-      ImGui.drag_int3("drag int3", vec4i.val, 1, 0, 255)
-      ImGui.slider_int3("slider int3", vec4i.val, 0, 255)
+      ImGui.input_float3("input float3", vec4f.val[...3])
+      ImGui.drag_float3("drag float3", vec4f.val[...3], 0.01f32, 0.0f32, 1.0f32)
+      ImGui.slider_float3("slider float3", vec4f.val[...3], 0.0f32, 1.0f32)
+      ImGui.input_int3("input int3", vec4i.val[...3])
+      ImGui.drag_int3("drag int3", vec4i.val[...3], 1, 0, 255)
+      ImGui.slider_int3("slider int3", vec4i.val[...3], 0, 255)
       ImGui.spacing
 
       ImGui.input_float4("input float4", vec4f.val)
@@ -1528,8 +1528,8 @@ module ImGuiDemo
     if ImGui.tree_node("Drag and Drop")
       if ImGui.tree_node("Drag and drop in standard widgets")
         help_marker("You can drag from the colored squares.")
-        static col1 = [1.0f32, 0.0f32, 0.2f32]
-        static col2 = [0.4f32, 0.7f32, 0.0f32, 0.5f32]
+        static col1 = Slice[1.0f32, 0.0f32, 0.2f32]
+        static col2 = Slice[0.4f32, 0.7f32, 0.0f32, 0.5f32]
         ImGui.color_edit3("color 1", col1.val)
         ImGui.color_edit4("color 2", col2.val)
         ImGui.tree_pop
@@ -1630,7 +1630,7 @@ module ImGuiDemo
 
       ret = false
       static b = false
-      static col4f = [1.0f32, 0.5f32, 0.0f32, 1.0f32]
+      static col4f = Slice[1.0f32, 0.5f32, 0.0f32, 1.0f32]
       static str = ImGui::TextBuffer.new(16)
       if item_type.val == 0
         ImGui.text("ITEM: Text")
@@ -1656,7 +1656,7 @@ module ImGuiDemo
         ret = ImGui.input_float("ITEM: InputFloat", pointerof(col4f.val[0]), 1.0f32)
       end
       if item_type.val == 7
-        ret = ImGui.input_float3("ITEM: InputFloat3", col4f.val)
+        ret = ImGui.input_float3("ITEM: InputFloat3", col4f.val[...3])
       end
       if item_type.val == 8
         ret = ImGui.color_edit4("ITEM: ColorEdit4", col4f.val)
@@ -2029,7 +2029,7 @@ module ImGuiDemo
         ImGui.checkbox_flags("ImGuiTabBarFlags_AutoSelectNewTabs", pointerof(tab_bar_flags.val), ImGuiTabBarFlags::AutoSelectNewTabs)
         ImGui.checkbox_flags("ImGuiTabBarFlags_TabListPopupButton", pointerof(tab_bar_flags.val), ImGuiTabBarFlags::TabListPopupButton)
         ImGui.checkbox_flags("ImGuiTabBarFlags_NoCloseWithMiddleMouseButton", pointerof(tab_bar_flags.val), ImGuiTabBarFlags::NoCloseWithMiddleMouseButton)
-        if tab_bar_flags.val.includes? :FittingPolicyMask_
+        if !tab_bar_flags.val.includes? :FittingPolicyMask_
           tab_bar_flags.val |= ImGuiTabBarFlags::FittingPolicyDefault_
         end
         if ImGui.checkbox_flags("ImGuiTabBarFlags_FittingPolicyResizeDown", pointerof(tab_bar_flags.val), ImGuiTabBarFlags::FittingPolicyResizeDown)
@@ -2367,7 +2367,7 @@ module ImGuiDemo
           end
           ImGui.push_id(n + line * 1000)
           num_buf = sprintf("%d", n)
-          label = (!(n % 15)) ? "FizzBuzz" : (!(n % 3)) ? "Fizz" : (!(n % 5)) ? "Buzz" : num_buf
+          label = (n % 15 == 0) ? "FizzBuzz" : (n % 3 == 0) ? "Fizz" : (n % 5 == 0) ? "Buzz" : num_buf
           hue = n * 0.05f32
           ImGui.push_style_color(ImGuiCol::Button, ImGui.hsv(hue, 0.6f32, 0.6f32))
           ImGui.push_style_color(ImGuiCol::ButtonHovered, ImGui.hsv(hue, 0.7f32, 0.7f32))
@@ -2507,8 +2507,7 @@ module ImGuiDemo
 
         ImGui.invisible_button("##empty", size.val)
         if ImGui.is_item_active && ImGui.is_mouse_dragging(ImGuiMouseButton::Left)
-          offset.val.x += ImGui.get_io.mouse_delta.x
-          offset.val.y += ImGui.get_io.mouse_delta.y
+          offset.val = ImVec2.new(offset.val.x + ImGui.get_io.mouse_delta.x, offset.val.y + ImGui.get_io.mouse_delta.y)
         end
         p0 = ImGui.get_item_rect_min
         p1 = ImGui.get_item_rect_max
@@ -2526,7 +2525,6 @@ module ImGuiDemo
           draw_list.add_rect_filled(p0, p1, ImGui.col32(90, 90, 120, 255))
           draw_list.add_text(text_pos, ImGui.col32(255, 255, 255), text_str)
           ImGui.pop_clip_rect
-          break
         when 1
           help_marker(
             "Using ImDrawList::PushClipRect():\n" +
@@ -2536,7 +2534,6 @@ module ImGuiDemo
           draw_list.add_rect_filled(p0, p1, ImGui.col32(90, 90, 120, 255))
           draw_list.add_text(text_pos, ImGui.col32(255, 255, 255), text_str)
           draw_list.pop_clip_rect
-          break
         when 2
           help_marker(
             "Using ImDrawList::AddText() with a fine ClipRect:\n" +
@@ -2545,7 +2542,6 @@ module ImGuiDemo
           clip_rect = ImVec4.new(p0.x, p0.y, p1.x, p1.y)
           draw_list.add_rect_filled(p0, p1, ImGui.col32(90, 90, 120, 255))
           draw_list.add_text(ImGui.get_font, ImGui.get_font_size, text_pos, ImGui.col32(255, 255, 255), text_str, 0.0f32, pointerof(clip_rect))
-          break
         end
         ImGui.end_group
         ImGui.pop_id
@@ -2655,7 +2651,7 @@ module ImGuiDemo
       ImGui.open_popup_context_item("item context menu", ImGuiPopupFlags::MouseButtonRight)
 
       static name = ImGui::TextBuffer.new("Label1", 32)
-      buf = sprintf("Button: %s###Button", name.val)
+      buf = sprintf("Button: %s###Button", name.val.to_s)
       ImGui.button(buf)
       if ImGui.begin_popup_context_item
         ImGui.text("Edit name:")
@@ -2716,7 +2712,7 @@ module ImGuiDemo
         ImGui.text("Hello from Stacked The First\nUsing style.Colors[ImGuiCol_ModalWindowDimBg] behind it.")
 
         static item = 1
-        static color = [0.4f32, 0.7f32, 0.0f32, 0.5f32]
+        static color = Slice[0.4f32, 0.7f32, 0.0f32, 0.5f32]
         ImGui.combo("Combo", pointerof(item.val), "aaaa\0bbbb\0cccc\0dddd\0eeee\0\0")
         ImGui.color_edit4("color", color.val)
 
@@ -3144,7 +3140,7 @@ module ImGuiDemo
           ImGui.text("Item with focus: <none>")
         end
 
-        static f3 = [0.0f32, 0.0f32, 0.0f32]
+        static f3 = Slice[0.0f32, 0.0f32, 0.0f32]
         focus_ahead = -1
         if ImGui.button("Focus on X")
           focus_ahead = 0
@@ -3160,7 +3156,7 @@ module ImGuiDemo
         if focus_ahead != -1
           ImGui.set_keyboard_focus_here(focus_ahead)
         end
-        ImGui.slider_float3("Float3", pointerof(f3.val[0]), 0.0f32, 1.0f32)
+        ImGui.slider_float3("Float3", f3.val, 0.0f32, 1.0f32)
 
         ImGui.text_wrapped("NB: Cursor & selection are preserved when refocusing last used item in code.")
         ImGui.tree_pop
@@ -3417,7 +3413,7 @@ module ImGuiDemo
         base_pos = ImGui.get_cursor_screen_pos
         draw_list = ImGui.get_window_draw_list
         256.times do |n|
-          cell_p1 = ImVec2.new(base_pos.x + (n % 16) * (cell_size + cell_spacing), base_pos.y + (n / 16) * (cell_size + cell_spacing))
+          cell_p1 = ImVec2.new(base_pos.x + (n % 16) * (cell_size + cell_spacing), base_pos.y + (n // 16) * (cell_size + cell_spacing))
           cell_p2 = ImVec2.new(cell_p1.x + cell_size, cell_p1.y + cell_size)
           glyph = font.find_glyph_no_fallback((base + n).chr)
           draw_list.add_rect(cell_p1, cell_p2, glyph ? ImGui.col32(255, 255, 255, 100) : ImGui.col32(255, 255, 255, 50))
@@ -4637,8 +4633,7 @@ module ImGuiDemo
 
         mouse_threshold_for_pan = opt_enable_context_menu.val ? -1.0f32 : 0.0f32
         if is_active && ImGui.is_mouse_dragging(ImGuiMouseButton::Right, mouse_threshold_for_pan)
-          scrolling.val.x += io.mouse_delta.x
-          scrolling.val.y += io.mouse_delta.y
+          scrolling.val = ImVec2.new(scrolling.val.x + io.mouse_delta.x, scrolling.val.y + io.mouse_delta.y)
         end
 
         drag_delta = ImGui.get_mouse_drag_delta(ImGuiMouseButton::Right)
