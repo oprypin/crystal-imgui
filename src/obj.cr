@@ -2754,9 +2754,9 @@ module ImGui
     include StructType
   end
 
-  def self.accept_drag_drop_payload(type : String, flags : ImGuiDragDropFlags = ImGuiDragDropFlags.new(0)) : ImGuiPayload
+  def self.accept_drag_drop_payload(type : String, flags : ImGuiDragDropFlags = ImGuiDragDropFlags.new(0)) : ImGuiPayload?
     result = LibImGui.igAcceptDragDropPayload(type, flags)
-    ImGuiPayload.new(result)
+    result ? ImGuiPayload.new(result) : nil
   end
 
   def self.align_text_to_frame_padding : Void
@@ -2953,7 +2953,7 @@ module ImGui
     LibImGui.igComboFnBoolPtr(label, current_item, items_getter, data, items_count, popup_max_height_in_items)
   end
 
-  def self.create_context(shared_font_atlas : ImFontAtlas? = nil) : LibImGui::ImGuiContext
+  def self.create_context(shared_font_atlas : ImFontAtlas? = nil) : ImGuiContext
     result = LibImGui.igCreateContext(shared_font_atlas)
     result.value
   end
@@ -3131,7 +3131,7 @@ module ImGui
     p_out
   end
 
-  def self.get_current_context : LibImGui::ImGuiContext
+  def self.get_current_context : ImGuiContext
     result = LibImGui.igGetCurrentContext
     result.value
   end
@@ -3159,9 +3159,9 @@ module ImGui
     p_out
   end
 
-  def self.get_drag_drop_payload : ImGuiPayload
+  def self.get_drag_drop_payload : ImGuiPayload?
     result = LibImGui.igGetDragDropPayload
-    ImGuiPayload.new(result)
+    result ? ImGuiPayload.new(result) : nil
   end
 
   def self.get_draw_data : ImDrawData
@@ -3169,7 +3169,7 @@ module ImGui
     ImDrawData.new(result)
   end
 
-  def self.get_draw_list_shared_data : LibImGui::ImDrawListSharedData
+  def self.get_draw_list_shared_data : ImDrawListSharedData
     result = LibImGui.igGetDrawListSharedData
     result.value
   end

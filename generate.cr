@@ -407,7 +407,7 @@ class COverload
       end
       outp2 = outp.dup
       outp2, rets = convert_returns!(outp2, rets)
-      ret_s = to_tuple(rets.map &.name(ctx).rchop("*")) || "Void"
+      ret_s = to_tuple(rets.map &.rchop("*")) || "Void"
       any_outputter = self.parent.overloads.any?(&.input_output_arg?)
       yield %(  #{"pointer_wrapper " if any_outputter}def #{"self." if !inside_class}#{self.name(ctx)}(#{args.join(", ")}) : #{ret_s})
       call = %(    LibImGui.#{self.name(Context::Lib)}(#{call_args.join(", ")}))
@@ -424,17 +424,23 @@ def to_tuple(args : Array(String)) : String?
   args.size > 1 ? "{" + args.join(", ") + "}" : args.join(", ").presence
 end
 
-def convert_returns!(outp : Array(String), rets : Array(CType)) : {Array(String), Array(CType)}
+def convert_returns!(outp : Array(String), rets : Array(CType)) : {Array(String), Array(String)}
+  orig_rets = rets
+  rets = rets.map(&.name(Context::Obj))
   outp.each_with_index do |o, i|
-    ret = rets[i]
+    ret = orig_rets[i]
     if ret.c_name =~ /\d\]$/
       outp[i] = %(#{o}.to_slice)
-      rets[i] = CType.new("Slice(#{ret.name(Context::Obj).rchop("*")})")
+      rets[i] = "Slice(#{ret.name(Context::Obj).rchop("*")})"
     elsif (t = ret.try &.base_type.struct?)
       if t.class? && !t.internal?
         outp[i] = %(#{ret.name(Context::Obj)}.new(#{o}))
+        if ret.const?
+          outp[i] = %(#{o} ? #{outp[i]} : nil)
+          rets[i] += "?"
+        end
       else
-        rets[i] = CType.new(ret.name(Context::Obj).rchop("*"))
+        rets[i] = ret.name(Context::Obj).rchop("*")
         outp[i] = o + ".value" if ret.name.rchop?("*")
       end
     elsif ret.name(Context::Obj) == "String"
@@ -527,7 +533,7 @@ class CStructMember
       end
       call, rets = convert_returns!(["#{this}#{varname}"], [typ])
       call = call.first
-      typename = rets.first.name(ctx)
+      typename = rets.first
     end
     if ctx.ext? && !self.parent.class?
       yield %(#{self.internal? ? "@" : "property "}#{varname} : #{self.type.name(ctx)})
