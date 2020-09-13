@@ -39,22 +39,23 @@ module ImGui
 
     macro {{f.name}}(*args, **kwargs, &block)
       {% verbatim do %}
-        {% for arg in args %}{% if arg.is_a?(PointerOf) %}
-          %val{arg} = {{arg.exp}}
-        {% end %}{% end %}
+      {% for arg in args %}{% if arg.is_a?(PointerOf) %}
+        %val{arg} = {{arg.exp}}
+      {% end %}{% end %}
       {% end %}
-      if {% if f.receiver %}::\{{@type.name}}.{% end %}{{f.name}}_{% verbatim do %}(
+
+      \%result = {% if f.receiver %}::\{{@type.name}}.{% end %}{{f.name}}_{% verbatim do %}(
         {% for arg, i in args %}{% if arg.is_a?(PointerOf) %}pointerof(%val{arg}){% else %}{{arg}}{% end %}, {% end %}{{**kwargs}}
       ) {{block}}{% end %}
-        {% verbatim do %}
-          {% for arg in args %}{% if arg.is_a?(PointerOf) %}
-            {% if arg.exp.id.ends_with?("?") %}{{arg.exp.id[0...-1]}}{% else %}{{arg.exp}}{% end %} = %val{arg}
-          {% end %}{% end %}
-        {% end %}
-        true
-      else
-        false
-      end
+
+      {% verbatim do %}
+      {% for arg in args %}{% if arg.is_a?(PointerOf) %}
+        if (typeof(%result) == Bool ? %result : {{arg.exp}} != %val{arg})
+          {% if arg.exp.id.ends_with?("?") %}{{arg.exp.id[0...-1]}}{% else %}{{arg.exp}}{% end %} = %val{arg}
+        end
+      {% end %}{% end %}
+      %result
+      {% end %}
     end
   end
 
@@ -105,6 +106,11 @@ module ImGui
       @x = @y = 0
     end
 
+    def initialize(x : Number, y : Number)
+      @x = x.to_f32
+      @y = y.to_f32
+    end
+
     def to_unsafe : Float32*
       pointerof(@x)
     end
@@ -115,17 +121,16 @@ module ImGui
       @x = @y = @z = @w = 0
     end
 
+    def initialize(x : Number, y : Number, z : Number, w : Number)
+      @x = x.to_f32
+      @y = y.to_f32
+      @z = z.to_f32
+      @w = w.to_f32
+    end
+
     def to_unsafe : Float32*
       pointerof(@x)
     end
-  end
-
-  def self.vec2(x : Number, y : Number) : ImVec2
-    ImVec2.new(x.to_f32, y.to_f32)
-  end
-
-  def self.vec4(x : Number, y : Number, z : Number, w : Number) : ImVec4
-    ImVec4.new(x.to_f32, y.to_f32, z.to_f32, w.to_f32)
   end
 
   class TextBuffer < IO
@@ -322,7 +327,7 @@ module ImGui
   end
 
   def self.color(r : Int, g : Int, b : Int, a : Int = 255) : ImVec4
-    vec4(r / 255f32, g / 255f32, b / 255f32, a / 255f32)
+    ImVec4.new(r / 255f32, g / 255f32, b / 255f32, a / 255f32)
   end
 
   def self.color(col32 : UInt32) : ImVec4
@@ -337,12 +342,12 @@ module ImGui
   end
 
   def self.rgb(r : Number, g : Number, b : Number, a : Number = 1.0) : ImVec4
-    vec4(r, g, b, a)
+    ImVec4.new(r, g, b, a)
   end
 
   def self.hsv(h : Number, s : Number, v : Number, a : Number = 1.0) : ImVec4
     r, g, b = color_convert_hs_vto_rgb(h.to_f32, s.to_f32, v.to_f32)
-    vec4(r, g, b, a)
+    ImVec4.new(r, g, b, a)
   end
 
   PAYLOAD_TYPE_COLOR_3F = "_COL3F"

@@ -63,11 +63,12 @@ module ImGuiDemo
     static show_app_custom_rendering = false
 
     if show_app_main_menu_bar.val
-      show_example_app_main_menu_bar()
+      show_example_app_main_menu_bar
     end
     if show_app_documents.val
       show_example_app_documents(pointerof(show_app_documents.val))
     end
+
     if show_app_console.val
       show_example_app_console(pointerof(show_app_console.val))
     end
@@ -158,8 +159,8 @@ module ImGuiDemo
       p_open = Pointer(Bool).null
     end
 
-    ImGui.set_next_window_pos(ImGui.vec2(20, 20), ImGuiCond::FirstUseEver)
-    ImGui.set_next_window_size(ImGui.vec2(550, 680), ImGuiCond::FirstUseEver)
+    ImGui.set_next_window_pos(ImVec2.new(20, 20), ImGuiCond::FirstUseEver)
+    ImGui.set_next_window_size(ImVec2.new(550, 680), ImGuiCond::FirstUseEver)
 
     if !ImGui.begin("crystal-imgui Demo", p_open, window_flags)
       ImGui.end
@@ -170,7 +171,7 @@ module ImGuiDemo
 
     if ImGui.begin_menu_bar
       if ImGui.begin_menu("Menu")
-        show_example_menu_file()
+        show_example_menu_file
         ImGui.end_menu
       end
       if ImGui.begin_menu("Examples")
@@ -209,12 +210,12 @@ module ImGuiDemo
       ImGui.separator
 
       ImGui.text("PROGRAMMER GUIDE:")
-      ImGui.bullet_text("See the show_demo_window() code in src/demo.cr. <- you are here!")
+      ImGui.bullet_text("See the ShowDemoWindow() code in src/demo.cr. <- you are here!")
       ImGui.bullet_text("See comments in imgui.cpp.")
       ImGui.bullet_text("See example applications in the examples/ folder.")
       ImGui.bullet_text("Read the FAQ at http://www.dearimgui.org/faq/")
-      ImGui.bullet_text("Set 'io.config_flags |= NavEnableKeyboard' for keyboard controls.")
-      ImGui.bullet_text("Set 'io.config_flags |= NavEnableGamepad' for gamepad controls.")
+      ImGui.bullet_text("Set 'io.ConfigFlags |= NavEnableKeyboard' for keyboard controls.")
+      ImGui.bullet_text("Set 'io.ConfigFlags |= NavEnableGamepad' for gamepad controls.")
       ImGui.separator
 
       ImGui.text("USER GUIDE:")
@@ -225,14 +226,14 @@ module ImGuiDemo
       io = ImGui.get_io
 
       if ImGui.tree_node("Configuration##2")
-        ImGui.checkbox_flags("io.config_flags: NavEnableKeyboard", pointerof(io.config_flags), ImGuiConfigFlags::NavEnableKeyboard)
-        ImGui.checkbox_flags("io.config_flags: NavEnableGamepad", pointerof(io.config_flags), ImGuiConfigFlags::NavEnableGamepad)
+        ImGui.checkbox_flags("io.ConfigFlags: NavEnableKeyboard", pointerof(io.config_flags), ImGuiConfigFlags::NavEnableKeyboard)
+        ImGui.checkbox_flags("io.ConfigFlags: NavEnableGamepad", pointerof(io.config_flags), ImGuiConfigFlags::NavEnableGamepad)
         ImGui.same_line
-        help_marker("Required back-end to feed in gamepad inputs in io.nav_inputs[] and set io.backend_flags |= ImGuiBackendFlags::HasGamepad.\n\nRead instructions in imgui.cpp for details.")
-        ImGui.checkbox_flags("io.config_flags: NavEnableSetMousePos", pointerof(io.config_flags), ImGuiConfigFlags::NavEnableSetMousePos)
+        help_marker("Required back-end to feed in gamepad inputs in io.NavInputs[] and set io.BackendFlags |= ImGuiBackendFlags_HasGamepad.\n\nRead instructions in imgui.cpp for details.")
+        ImGui.checkbox_flags("io.ConfigFlags: NavEnableSetMousePos", pointerof(io.config_flags), ImGuiConfigFlags::NavEnableSetMousePos)
         ImGui.same_line
-        help_marker("Instruct navigation to move the mouse cursor. See comment for ImGuiConfigFlags::NavEnableSetMousePos.")
-        ImGui.checkbox_flags("io.config_flags: NoMouse", pointerof(io.config_flags), ImGuiConfigFlags::NoMouse)
+        help_marker("Instruct navigation to move the mouse cursor. See comment for ImGuiConfigFlags_NavEnableSetMousePos.")
+        ImGui.checkbox_flags("io.ConfigFlags: NoMouse", pointerof(io.config_flags), ImGuiConfigFlags::NoMouse)
 
         if io.config_flags.includes? :NoMouse
           if (ImGui.get_time % 0.40f32) < 0.20f32
@@ -243,17 +244,17 @@ module ImGuiDemo
             io.config_flags &= ~ImGuiConfigFlags::NoMouse
           end
         end
-        ImGui.checkbox_flags("io.config_flags: NoMouseCursorChange", pointerof(io.config_flags), ImGuiConfigFlags::NoMouseCursorChange)
+        ImGui.checkbox_flags("io.ConfigFlags: NoMouseCursorChange", pointerof(io.config_flags), ImGuiConfigFlags::NoMouseCursorChange)
         ImGui.same_line
         help_marker("Instruct back-end to not alter mouse cursor shape and visibility.")
-        ImGui.checkbox("io.config_input_text_cursor_blink", pointerof(io.config_input_text_cursor_blink))
+        ImGui.checkbox("io.ConfigInputTextCursorBlink", pointerof(io.config_input_text_cursor_blink))
         ImGui.same_line
         help_marker("Set to false to disable blinking cursor, for users who consider it distracting")
-        ImGui.checkbox("io.config_windows_resize_from_edges", pointerof(io.config_windows_resize_from_edges))
+        ImGui.checkbox("io.ConfigWindowsResizeFromEdges", pointerof(io.config_windows_resize_from_edges))
         ImGui.same_line
-        help_marker("Enable resizing of windows from their edges and from the lower-left corner.\nThis requires (io.backend_flags.includes? :HasMouseCursors) because it needs mouse cursor feedback.")
-        ImGui.checkbox("io.config_windows_move_from_title_bar_only", pointerof(io.config_windows_move_from_title_bar_only))
-        ImGui.checkbox("io.mouse_draw_cursor", pointerof(io.mouse_draw_cursor))
+        help_marker("Enable resizing of windows from their edges and from the lower-left corner.\nThis requires (io.BackendFlags & ImGuiBackendFlags_HasMouseCursors) because it needs mouse cursor feedback.")
+        ImGui.checkbox("io.ConfigWindowsMoveFromTitleBarOnly", pointerof(io.config_windows_move_from_title_bar_only))
+        ImGui.checkbox("io.MouseDrawCursor", pointerof(io.mouse_draw_cursor))
         ImGui.same_line
         help_marker("Instruct Dear ImGui to render a mouse cursor itself. Note that a mouse cursor rendered via your application GPU rendering path will feel more laggy than hardware cursor, but will be more in sync with your other visuals.\n\nSome desktop applications may use both kinds of cursors (e.g. enable software cursor only when resizing/dragging something).")
         ImGui.text("Also see Style->Rendering for rendering options.")
@@ -266,17 +267,17 @@ module ImGuiDemo
           "Those flags are set by the back-ends (imgui_impl_xxx files) to specify their capabilities.\n" +
           "Here we expose then as read-only fields to avoid breaking interactions with your back-end.")
 
-        ImGui.checkbox_flags("io.backend_flags: HasGamepad", pointerof(io.backend_flags), ImGuiBackendFlags::HasGamepad)
-        ImGui.checkbox_flags("io.backend_flags: HasMouseCursors", pointerof(io.backend_flags), ImGuiBackendFlags::HasMouseCursors)
-        ImGui.checkbox_flags("io.backend_flags: HasSetMousePos", pointerof(io.backend_flags), ImGuiBackendFlags::HasSetMousePos)
-        ImGui.checkbox_flags("io.backend_flags: RendererHasVtxOffset", pointerof(io.backend_flags), ImGuiBackendFlags::RendererHasVtxOffset)
+        ImGui.checkbox_flags("io.BackendFlags: HasGamepad", pointerof(io.backend_flags), ImGuiBackendFlags::HasGamepad)
+        ImGui.checkbox_flags("io.BackendFlags: HasMouseCursors", pointerof(io.backend_flags), ImGuiBackendFlags::HasMouseCursors)
+        ImGui.checkbox_flags("io.BackendFlags: HasSetMousePos", pointerof(io.backend_flags), ImGuiBackendFlags::HasSetMousePos)
+        ImGui.checkbox_flags("io.BackendFlags: RendererHasVtxOffset", pointerof(io.backend_flags), ImGuiBackendFlags::RendererHasVtxOffset)
         ImGui.tree_pop
         ImGui.separator
       end
 
       if ImGui.tree_node("Style")
-        help_marker("The same contents can be accessed in 'tools.style Editor' or by calling the show_style_editor() function.")
-        show_style_editor
+        help_marker("The same contents can be accessed in 'Tools->Style Editor' or by calling the ShowStyleEditor() function.")
+        ImGui.show_style_editor
         ImGui.tree_pop
         ImGui.separator
       end
@@ -288,7 +289,7 @@ module ImGuiDemo
           "Try opening any of the contents below in this window and then click one of the \"Log To\" button.")
         ImGui.log_buttons
 
-        help_marker("You can also call ImGui.log_text() to output directly to the log without a visual output.")
+        help_marker("You can also call ImGui::LogText() to output directly to the log without a visual output.")
         if ImGui.button("Copy \"Hello, world!\" to clipboard")
           ImGui.log_to_clipboard
           ImGui.log_text("Hello, world!")
@@ -317,11 +318,11 @@ module ImGuiDemo
       ImGui.checkbox("No bring to front", pointerof(no_bring_to_front.val))
     end
 
-    show_demo_window_widgets()
-    show_demo_window_layout()
-    show_demo_window_popups()
-    show_demo_window_columns()
-    show_demo_window_misc()
+    show_demo_window_widgets
+    show_demo_window_layout
+    show_demo_window_popups
+    show_demo_window_columns
+    show_demo_window_misc
 
     ImGui.end
   end
@@ -369,9 +370,9 @@ module ImGuiDemo
           ImGui.same_line
         end
         ImGui.push_id(i)
-        ImGui.push_style_color(ImGuiCol::Button, ImGui.col32(ImGui.hsv(i / 7.0f32, 0.6f32, 0.6f32)))
-        ImGui.push_style_color(ImGuiCol::ButtonHovered, ImGui.col32(ImGui.hsv(i / 7.0f32, 0.7f32, 0.7f32)))
-        ImGui.push_style_color(ImGuiCol::ButtonActive, ImGui.col32(ImGui.hsv(i / 7.0f32, 0.8f32, 0.8f32)))
+        ImGui.push_style_color(ImGuiCol::Button, ImGui.hsv(i / 7.0f32, 0.6f32, 0.6f32))
+        ImGui.push_style_color(ImGuiCol::ButtonHovered, ImGui.hsv(i / 7.0f32, 0.7f32, 0.7f32))
+        ImGui.push_style_color(ImGuiCol::ButtonActive, ImGui.hsv(i / 7.0f32, 0.8f32, 0.8f32))
         ImGui.button("Click")
         ImGui.pop_style_color(3)
         ImGui.pop_id
@@ -405,7 +406,7 @@ module ImGuiDemo
       if ImGui.is_item_hovered
         ImGui.begin_tooltip
         ImGui.text("I am a fancy tooltip")
-        static arr = [0.6, 0.1, 1.0, 0.5, 0.92, 0.1, 0.2] of Float32
+        static arr = [0.6f32, 0.1f32, 1.0f32, 0.5f32, 0.92f32, 0.1f32, 0.2f32]
         ImGui.plot_lines("Curve", arr.val)
         ImGui.end_tooltip
       end
@@ -435,7 +436,7 @@ module ImGuiDemo
           "CTRL+Z,CTRL+Y undo/redo.\n" +
           "ESCAPE to revert.\n\n" +
           "PROGRAMMER:\n" +
-          "You can use the ImGuiInputTextFlags::CallbackResize facility if you need to wire input_text() " +
+          "You can use the ImGuiInputTextFlags_CallbackResize facility if you need to wire InputText() " +
           "to a dynamic string type. See misc/cpp/imgui_stdlib.h for an example (this is not demonstrated " +
           "in src/demo.cr).")
 
@@ -553,12 +554,12 @@ module ImGuiDemo
         static base_flags = ImGuiTreeNodeFlags::OpenOnArrow | ImGuiTreeNodeFlags::OpenOnDoubleClick | ImGuiTreeNodeFlags::SpanAvailWidth
         static align_label_with_current_x_position = false
         static test_drag_and_drop = false
-        ImGui.checkbox_flags("ImGuiTreeNodeFlags::OpenOnArrow", pointerof(base_flags.val), ImGuiTreeNodeFlags::OpenOnArrow)
-        ImGui.checkbox_flags("ImGuiTreeNodeFlags::OpenOnDoubleClick", pointerof(base_flags.val), ImGuiTreeNodeFlags::OpenOnDoubleClick)
-        ImGui.checkbox_flags("ImGuiTreeNodeFlags::SpanAvailWidth", pointerof(base_flags.val), ImGuiTreeNodeFlags::SpanAvailWidth)
+        ImGui.checkbox_flags("ImGuiTreeNodeFlags_OpenOnArrow", pointerof(base_flags.val), ImGuiTreeNodeFlags::OpenOnArrow)
+        ImGui.checkbox_flags("ImGuiTreeNodeFlags_OpenOnDoubleClick", pointerof(base_flags.val), ImGuiTreeNodeFlags::OpenOnDoubleClick)
+        ImGui.checkbox_flags("ImGuiTreeNodeFlags_SpanAvailWidth", pointerof(base_flags.val), ImGuiTreeNodeFlags::SpanAvailWidth)
         ImGui.same_line
         help_marker("Extend hit area to all available width instead of allowing more items to be laid out after the node.")
-        ImGui.checkbox_flags("ImGuiTreeNodeFlags::SpanFullWidth", pointerof(base_flags.val), ImGuiTreeNodeFlags::SpanFullWidth)
+        ImGui.checkbox_flags("ImGuiTreeNodeFlags_SpanFullWidth", pointerof(base_flags.val), ImGuiTreeNodeFlags::SpanFullWidth)
         ImGui.checkbox("Align label with current X position", pointerof(align_label_with_current_x_position.val))
         ImGui.checkbox("Test tree node as drag source", pointerof(test_drag_and_drop.val))
         ImGui.text("Hello!")
@@ -651,8 +652,8 @@ module ImGuiDemo
 
     if ImGui.tree_node("Text")
       if ImGui.tree_node("Colored Text")
-        ImGui.text_colored(ImGui.vec4(1.0f32, 0.0f32, 1.0f32, 1.0f32), "Pink")
-        ImGui.text_colored(ImGui.vec4(1.0f32, 1.0f32, 0.0f32, 1.0f32), "Yellow")
+        ImGui.text_colored(ImVec4.new(1.0f32, 0.0f32, 1.0f32, 1.0f32), "Pink")
+        ImGui.text_colored(ImVec4.new(1.0f32, 1.0f32, 0.0f32, 1.0f32), "Yellow")
         ImGui.text_disabled("Disabled")
         ImGui.same_line
         help_marker("The TextDisabled color is stored in ImGuiStyle.")
@@ -670,8 +671,8 @@ module ImGuiDemo
         2.times do |n|
           ImGui.text("Test paragraph %d:", n)
           pos = ImGui.get_cursor_screen_pos
-          marker_min = ImGui.vec2(pos.x + wrap_width.val, pos.y)
-          marker_max = ImGui.vec2(pos.x + wrap_width.val + 10, pos.y + ImGui.get_text_line_height)
+          marker_min = ImVec2.new(pos.x + wrap_width.val, pos.y)
+          marker_max = ImVec2.new(pos.x + wrap_width.val + 10, pos.y + ImGui.get_text_line_height)
           ImGui.push_text_wrap_pos(ImGui.get_cursor_pos.x + wrap_width.val)
           if n == 0
             ImGui.text("The lazy dog is a good dog. This paragraph should fit within %.0f pixels. Testing a 1 character word. The quick brown fox jumps over the lazy dog.", wrap_width.val)
@@ -691,7 +692,7 @@ module ImGuiDemo
       if ImGui.tree_node("UTF-8 Text")
         ImGui.text_wrapped(
           "CJK text will only appears if the font was loaded with the appropriate CJK character ranges. " +
-          "Call io.font.add_font_from_file_ttf() manually to load extra character ranges. " +
+          "Call io.Font->AddFontFromFileTTF() manually to load extra character ranges. " +
           "Read docs/FONTS.md for details.")
         ImGui.text("Hiragana: かきくけこ (kakikukeko)")
         ImGui.text("Kanjis: 日本語 (nihongo)")
@@ -712,11 +713,11 @@ module ImGuiDemo
       begin
         ImGui.text("%.0fx%.0f", my_tex_w, my_tex_h)
         pos = ImGui.get_cursor_screen_pos
-        uv_min = ImGui.vec2(0.0f32, 0.0f32)
-        uv_max = ImGui.vec2(1.0f32, 1.0f32)
-        tint_col = ImGui.vec4(1.0f32, 1.0f32, 1.0f32, 1.0f32)
-        border_col = ImGui.vec4(1.0f32, 1.0f32, 1.0f32, 0.5f32)
-        ImGui.image(my_tex_id, ImGui.vec2(my_tex_w, my_tex_h), uv_min, uv_max, tint_col, border_col)
+        uv_min = ImVec2.new(0.0f32, 0.0f32)
+        uv_max = ImVec2.new(1.0f32, 1.0f32)
+        tint_col = ImVec4.new(1.0f32, 1.0f32, 1.0f32, 1.0f32)
+        border_col = ImVec4.new(1.0f32, 1.0f32, 1.0f32, 0.5f32)
+        ImGui.image(my_tex_id, ImVec2.new(my_tex_w, my_tex_h), uv_min, uv_max, tint_col, border_col)
         if ImGui.is_item_hovered
           ImGui.begin_tooltip
           region_sz = 32.0f32
@@ -735,9 +736,9 @@ module ImGuiDemo
           end
           ImGui.text("Min: (%.2f, %.2f)", region_x, region_y)
           ImGui.text("Max: (%.2f, %.2f)", region_x + region_sz, region_y + region_sz)
-          uv0 = ImGui.vec2((region_x) / my_tex_w, (region_y) / my_tex_h)
-          uv1 = ImGui.vec2((region_x + region_sz) / my_tex_w, (region_y + region_sz) / my_tex_h)
-          ImGui.image(my_tex_id, ImGui.vec2(region_sz * zoom, region_sz * zoom), uv0, uv1, tint_col, border_col)
+          uv0 = ImVec2.new((region_x) / my_tex_w, (region_y) / my_tex_h)
+          uv1 = ImVec2.new((region_x + region_sz) / my_tex_w, (region_y + region_sz) / my_tex_h)
+          ImGui.image(my_tex_id, ImVec2.new(region_sz * zoom, region_sz * zoom), uv0, uv1, tint_col, border_col)
           ImGui.end_tooltip
         end
       end
@@ -746,11 +747,11 @@ module ImGuiDemo
       8.times do |i|
         ImGui.push_id(i)
         frame_padding = -1 + i
-        size = ImGui.vec2(32.0f32, 32.0f32)
-        uv0 = ImGui.vec2(0.0f32, 0.0f32)
-        uv1 = ImGui.vec2(32.0f32 / my_tex_w, 32 / my_tex_h)
-        bg_col = ImGui.vec4(0.0f32, 0.0f32, 0.0f32, 1.0f32)
-        tint_col = ImGui.vec4(1.0f32, 1.0f32, 1.0f32, 1.0f32)
+        size = ImVec2.new(32.0f32, 32.0f32)
+        uv0 = ImVec2.new(0.0f32, 0.0f32)
+        uv1 = ImVec2.new(32.0f32 / my_tex_w, 32 / my_tex_h)
+        bg_col = ImVec4.new(0.0f32, 0.0f32, 0.0f32, 1.0f32)
+        tint_col = ImVec4.new(1.0f32, 1.0f32, 1.0f32, 1.0f32)
         if ImGui.image_button(my_tex_id, size, uv0, uv1, frame_padding, bg_col, tint_col)
           pressed_count.val += 1
         end
@@ -764,13 +765,13 @@ module ImGuiDemo
 
     if ImGui.tree_node("Combo")
       static flags = ImGuiComboFlags::None
-      ImGui.checkbox_flags("ImGuiComboFlags::PopupAlignLeft", pointerof(flags.val), ImGuiComboFlags::PopupAlignLeft)
+      ImGui.checkbox_flags("ImGuiComboFlags_PopupAlignLeft", pointerof(flags.val), ImGuiComboFlags::PopupAlignLeft)
       ImGui.same_line
       help_marker("Only makes a difference if the popup is larger than the combo")
-      if ImGui.checkbox_flags("ImGuiComboFlags::NoArrowButton", pointerof(flags.val), ImGuiComboFlags::NoArrowButton)
+      if ImGui.checkbox_flags("ImGuiComboFlags_NoArrowButton", pointerof(flags.val), ImGuiComboFlags::NoArrowButton)
         flags.val &= ~ImGuiComboFlags::NoPreview
       end
-      if ImGui.checkbox_flags("ImGuiComboFlags::NoPreview", pointerof(flags.val), ImGuiComboFlags::NoPreview)
+      if ImGui.checkbox_flags("ImGuiComboFlags_NoPreview", pointerof(flags.val), ImGuiComboFlags::NoPreview)
         flags.val &= ~ImGuiComboFlags::NoArrowButton
       end
 
@@ -822,7 +823,8 @@ module ImGuiDemo
       if ImGui.tree_node("Selection State: Single Selection")
         static selected = -1
         5.times do |n|
-          if ImGui.selectable("Object #{n}", selected.val == n)
+          buf = sprintf("Object %d", n)
+          if ImGui.selectable(buf, selected.val == n)
             selected.val = n
           end
         end
@@ -832,7 +834,8 @@ module ImGuiDemo
         help_marker("Hold CTRL and click to select multiple items.")
         static selection = [false, false, false, false, false]
         5.times do |n|
-          if ImGui.selectable("Object #{n}", selection.val[n])
+          buf = sprintf("Object %d", n)
+          if ImGui.selectable(buf, selection.val[n])
             if !ImGui.get_io.key_ctrl
               selection.val.map! { false }
             end
@@ -846,10 +849,10 @@ module ImGuiDemo
         ImGui.selectable("main.c", pointerof(selected.val[0]))
         ImGui.same_line(300)
         ImGui.text(" 2,345 bytes")
-        ImGui.selectable("hello.cpp", pointerof(selected.val[1]))
+        ImGui.selectable("Hello.cpp", pointerof(selected.val[1]))
         ImGui.same_line(300)
         ImGui.text("12,345 bytes")
-        ImGui.selectable("hello.h", pointerof(selected.val[2]))
+        ImGui.selectable("Hello.h", pointerof(selected.val[2]))
         ImGui.same_line(300)
         ImGui.text(" 2,345 bytes")
         ImGui.tree_pop
@@ -858,7 +861,8 @@ module ImGuiDemo
         ImGui.columns(3, nil, false)
         static selected = [false] * 16
         16.times do |i|
-          if ImGui.selectable("Item #{i}", pointerof(selected.val[i]))
+          label = sprintf("Item %d", i)
+          if ImGui.selectable(label, pointerof(selected.val[i]))
           end
           ImGui.next_column
         end
@@ -869,7 +873,7 @@ module ImGuiDemo
         static selected = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
         (4 * 4).times do |i|
           ImGui.push_id(i)
-          if ImGui.selectable("Sailor", selected.val[i] != 0, size: ImGui.vec2(50, 50))
+          if ImGui.selectable("Sailor", selected.val[i] != 0, size: ImVec2.new(50, 50))
             selected.val[i] ^= 1
 
             x = i % 4
@@ -896,19 +900,19 @@ module ImGuiDemo
       end
       if ImGui.tree_node("Alignment")
         help_marker(
-          "By default, Selectables uses style.selectable_text_align but it can be overridden on a per-item " +
-          "basis using push_style_var(). You'll probably want to always keep your default situation to " +
+          "By default, Selectables uses style.SelectableTextAlign but it can be overridden on a per-item " +
+          "basis using PushStyleVar(). You'll probably want to always keep your default situation to " +
           "left-align otherwise it becomes difficult to layout multiple items on a same line")
         static selected = [true, false, true, false, true, false, true, false, true]
         3.times do |y|
           3.times do |x|
-            alignment = ImGui.vec2(x / 2.0f32, y / 2.0f32)
-            name = "(%.1f,%.1f)" % {alignment.x, alignment.y}
+            alignment = ImVec2.new(x / 2.0f32, y / 2.0f32)
+            name = sprintf("(%.1f,%.1f)", alignment.x, alignment.y)
             if x > 0
               ImGui.same_line
             end
             ImGui.push_style_var(ImGuiStyleVar::SelectableTextAlign, alignment)
-            ImGui.selectable(name, pointerof(selected.val[3 * y + x]), ImGuiSelectableFlags::None, ImGui.vec2(80, 80))
+            ImGui.selectable(name, pointerof(selected.val[3 * y + x]), ImGuiSelectableFlags::None, ImVec2.new(80, 80))
             ImGui.pop_style_var
           end
         end
@@ -932,11 +936,11 @@ module ImGuiDemo
                       "\tlock cmpxchg8b eax\n"
 
         static flags = ImGuiInputTextFlags::AllowTabInput
-        help_marker("You can use the ImGuiInputTextFlags::CallbackResize facility if you need to wire input_text_multiline() to a dynamic string type. See misc/cpp/imgui_stdlib.h for an example. (This is not demonstrated in src/demo.cr because we don't want to include <string> in here)")
-        ImGui.checkbox_flags("ImGuiInputTextFlags::ReadOnly", pointerof(flags.val), ImGuiInputTextFlags::ReadOnly)
-        ImGui.checkbox_flags("ImGuiInputTextFlags::AllowTabInput", pointerof(flags.val), ImGuiInputTextFlags::AllowTabInput)
-        ImGui.checkbox_flags("ImGuiInputTextFlags::CtrlEnterForNewLine", pointerof(flags.val), ImGuiInputTextFlags::CtrlEnterForNewLine)
-        ImGui.input_text_multiline("##source", text.val, ImGui.vec2(-Float32::MIN_POSITIVE, ImGui.get_text_line_height * 16), flags.val)
+        help_marker("You can use the ImGuiInputTextFlags_CallbackResize facility if you need to wire InputTextMultiline() to a dynamic string type. See misc/cpp/imgui_stdlib.h for an example. (This is not demonstrated in src/demo.cr because we don't want to include <string> in here)")
+        ImGui.checkbox_flags("ImGuiInputTextFlags_ReadOnly", pointerof(flags.val), ImGuiInputTextFlags::ReadOnly)
+        ImGui.checkbox_flags("ImGuiInputTextFlags_AllowTabInput", pointerof(flags.val), ImGuiInputTextFlags::AllowTabInput)
+        ImGui.checkbox_flags("ImGuiInputTextFlags_CtrlEnterForNewLine", pointerof(flags.val), ImGuiInputTextFlags::CtrlEnterForNewLine)
+        ImGui.input_text_multiline("##source", text.val, ImVec2.new(-Float32::MIN_POSITIVE, ImGui.get_text_line_height * 16), flags.val)
         ImGui.tree_pop
       end
 
@@ -971,11 +975,11 @@ module ImGuiDemo
 
       if ImGui.tree_node("Resize Callback")
         help_marker(
-          "Using ImGuiInputTextFlags::CallbackResize to wire your custom string type to input_text().\n\n" +
-          "See misc/cpp/imgui_stdlib.h for an implementation of this for std.string.")
+          "Using ImGuiInputTextFlags_CallbackResize to wire your custom string type to InputText().\n\n" +
+          "See misc/cpp/imgui_stdlib.h for an implementation of this for std::string.")
 
         static my_str = ImGui::TextBuffer.new
-        ImGui.input_text_multiline("##MyStr", my_str.val, ImGui.vec2(-Float32::MIN_POSITIVE, ImGui.get_text_line_height * 16), ImGuiInputTextFlags::CallbackResize)
+        ImGui.input_text_multiline("##MyStr", my_str.val, ImVec2.new(-Float32::MIN_POSITIVE, ImGui.get_text_line_height * 16), ImGuiInputTextFlags::CallbackResize)
         ImGui.text("Data: %p\nSize: %d\nCapacity: %d", my_str.val.to_unsafe, my_str.val.bytesize, my_str.val.capacity)
         ImGui.tree_pop
       end
@@ -987,7 +991,7 @@ module ImGuiDemo
       static animate = true
       ImGui.checkbox("Animate", pointerof(animate.val))
 
-      static arr = [0.6, 0.1, 1.0, 0.5, 0.92, 0.1, 0.2] of Float32
+      static arr = [0.6f32, 0.1f32, 1.0f32, 0.5f32, 0.92f32, 0.1f32, 0.2f32]
       ImGui.plot_lines("Frame Times", arr.val)
 
       static values = [] of Float32
@@ -1010,22 +1014,27 @@ module ImGuiDemo
           average += values.val[n]
         end
         average /= values.val.size
-        ImGui.plot_lines("Lines", values.val, values_offset.val, "avg %f" % average, -1.0f32, 1.0f32, ImGui.vec2(0, 80.0f32))
+        overlay = sprintf("avg %f", average)
+        ImGui.plot_lines("Lines", values.val, values_offset.val, overlay, -1.0f32, 1.0f32, ImVec2.new(0, 80.0f32))
       end
-      ImGui.plot_histogram("Histogram", arr.val, 0, nil, 0.0f32, 1.0f32, ImGui.vec2(0, 80.0f32))
+      ImGui.plot_histogram("Histogram", arr.val, 0, nil, 0.0f32, 1.0f32, ImVec2.new(0, 80.0f32))
 
+      sin = ->(i : Int32) {
+        Math.sin(i * 0.1).to_f32
+      }
+      saw = ->(i : Int32) {
+        i.odd? ? 1.0f32 : -1.0f32
+      }
       static func_type = 0
       static display_count = 70
-      sin = ->(i : Int32) { Math.sin(i * 0.1).to_f32 }
-      saw = ->(i : Int32) { i.odd? ? 1.0f32 : -1.0f32 }
       ImGui.separator
       ImGui.set_next_item_width(100)
       ImGui.combo("func", pointerof(func_type.val), "Sin\0Saw\0")
       ImGui.same_line
       ImGui.slider_int("Sample count", pointerof(display_count.val), 1, 400)
       func = (func_type.val == 0) ? sin : saw
-      ImGui.plot_lines("Lines", display_count.val, 0, nil, -1.0f32, 1.0f32, ImGui.vec2(0, 80), &func)
-      ImGui.plot_histogram("Histogram", display_count.val, 0, nil, -1.0f32, 1.0f32, ImGui.vec2(0, 80), &func)
+      ImGui.plot_lines("Lines", display_count.val, 0, nil, -1.0f32, 1.0f32, ImVec2.new(0, 80), &func)
+      ImGui.plot_histogram("Histogram", display_count.val, 0, nil, -1.0f32, 1.0f32, ImVec2.new(0, 80), &func)
       ImGui.separator
 
       static progress = 0.0f32
@@ -1042,17 +1051,18 @@ module ImGuiDemo
         end
       end
 
-      ImGui.progress_bar(progress.val, ImGui.vec2(0.0f32, 0.0f32))
+      ImGui.progress_bar(progress.val, ImVec2.new(0.0f32, 0.0f32))
       ImGui.same_line(0.0f32, ImGui.get_style.item_inner_spacing.x)
       ImGui.text("Progress Bar")
 
       progress_saturated = progress.val.clamp(0.0f32, 1.0f32)
-      ImGui.progress_bar(progress.val, ImGui.vec2(0f32, 0f32), "#{(progress_saturated * 1753).to_i}/1753")
+      buf = sprintf("%d/%d", (progress_saturated * 1753).to_i, 1753)
+      ImGui.progress_bar(progress.val, ImVec2.new(0f32, 0f32), buf)
       ImGui.tree_pop
     end
 
     if ImGui.tree_node("Color/Picker Widgets")
-      static color = ImGui.vec4(114.0f32 / 255.0f32, 144.0f32 / 255.0f32, 154.0f32 / 255.0f32, 200.0f32 / 255.0f32)
+      static color = ImVec4.new(114.0f32 / 255.0f32, 144.0f32 / 255.0f32, 154.0f32 / 255.0f32, 200.0f32 / 255.0f32)
 
       static alpha_preview = true
       static alpha_half_preview = false
@@ -1081,13 +1091,13 @@ module ImGuiDemo
       ImGui.color_edit4("MyColor##2", pointerof(color.val), ImGuiColorEditFlags::DisplayHSV | misc_flags)
 
       ImGui.text("Color widget with Float Display:")
-      ImGui.color_edit4("MyColor##2", pointerof(color.val), ImGuiColorEditFlags::Float | misc_flags)
+      ImGui.color_edit4("MyColor##2f", pointerof(color.val), ImGuiColorEditFlags::Float | misc_flags)
 
       ImGui.text("Color button with Picker:")
       ImGui.same_line
       help_marker(
-        "With the ImGuiColorEditFlags::NoInputs flag you can hide all the slider/text inputs.\n" +
-        "With the ImGuiColorEditFlags::NoLabel flag you can pass a non-empty label which will only " +
+        "With the ImGuiColorEditFlags_NoInputs flag you can hide all the slider/text inputs.\n" +
+        "With the ImGuiColorEditFlags_NoLabel flag you can pass a non-empty label which will only " +
         "be used for the tooltip and picker popup.")
       ImGui.color_edit4("MyColor##3", pointerof(color.val), ImGuiColorEditFlags::NoInputs | ImGuiColorEditFlags::NoLabel | misc_flags)
 
@@ -1095,7 +1105,7 @@ module ImGuiDemo
 
       static saved_palette = Array(ImVec4).new(32) do |n|
         r, g, b = ImGui.color_convert_hs_vto_rgb(n / 31.0f32, 0.8f32, 0.8f32)
-        ImGui.vec4(r, g, b, 1.0f32)
+        ImVec4.new(r, g, b, 1.0f32)
       end
 
       static backup_color = ImVec4.new
@@ -1114,9 +1124,9 @@ module ImGuiDemo
 
         ImGui.begin_group
         ImGui.text("Current")
-        ImGui.color_button("##current", color.val, ImGuiColorEditFlags::NoPicker | ImGuiColorEditFlags::AlphaPreviewHalf, ImGui.vec2(60, 40))
+        ImGui.color_button("##current", color.val, ImGuiColorEditFlags::NoPicker | ImGuiColorEditFlags::AlphaPreviewHalf, ImVec2.new(60, 40))
         ImGui.text("Previous")
-        if ImGui.color_button("##previous", backup_color.val, ImGuiColorEditFlags::NoPicker | ImGuiColorEditFlags::AlphaPreviewHalf, ImGui.vec2(60, 40))
+        if ImGui.color_button("##previous", backup_color.val, ImGuiColorEditFlags::NoPicker | ImGuiColorEditFlags::AlphaPreviewHalf, ImVec2.new(60, 40))
           color.val = backup_color.val
         end
         ImGui.separator
@@ -1128,8 +1138,8 @@ module ImGuiDemo
           end
 
           palette_button_flags = ImGuiColorEditFlags::NoAlpha | ImGuiColorEditFlags::NoPicker | ImGuiColorEditFlags::NoTooltip
-          if ImGui.color_button("##palette", saved_palette.val[n], palette_button_flags, ImGui.vec2(20, 20))
-            color.val = ImGui.vec4(saved_palette.val[n].x, saved_palette.val[n].y, saved_palette.val[n].z, color.val.w)
+          if ImGui.color_button("##palette", saved_palette.val[n], palette_button_flags, ImVec2.new(20, 20))
+            color.val = ImVec4.new(saved_palette.val[n].x, saved_palette.val[n].y, saved_palette.val[n].z, color.val.w)
           end
 
           if ImGui.begin_drag_drop_target
@@ -1152,8 +1162,8 @@ module ImGuiDemo
 
       ImGui.text("Color button only:")
       static no_border = false
-      ImGui.checkbox("ImGuiColorEditFlags::NoBorder", pointerof(no_border.val))
-      ImGui.color_button("MyColor##3c", color.val, misc_flags | (no_border.val ? ImGuiColorEditFlags::NoBorder : ImGuiColorEditFlags::None), ImGui.vec2(80, 80))
+      ImGui.checkbox("ImGuiColorEditFlags_NoBorder", pointerof(no_border.val))
+      ImGui.color_button("MyColor##3c", color.val, misc_flags | (no_border.val ? ImGuiColorEditFlags::NoBorder : ImGuiColorEditFlags::None), ImVec2.new(80, 80))
 
       ImGui.text("Color picker:")
       static alpha = true
@@ -1179,7 +1189,7 @@ module ImGuiDemo
       help_marker(
         "ColorEdit defaults to displaying RGB inputs if you don't specify a display mode, " +
         "but the user can change it with a right-click.\n\nColorPicker defaults to displaying RGB+HSV+Hex " +
-        "if you don't specify a display mode.\n\nYou can change the defaults using set_color_edit_options().")
+        "if you don't specify a display mode.\n\nYou can change the defaults using SetColorEditOptions().")
       ImGui.combo("Picker Mode", pointerof(picker_mode.val), "Auto/Current\0Hue bar + SV rect\0Hue wheel + SV triangle\0")
       ImGui.same_line
       help_marker("User can right-click the picker to change mode.")
@@ -1216,7 +1226,7 @@ module ImGuiDemo
       ImGui.text("Set defaults in code:")
       ImGui.same_line
       help_marker(
-        "set_color_edit_options() is designed to allow you to set boot-time default.\n" +
+        "SetColorEditOptions() is designed to allow you to set boot-time default.\n" +
         "We don't have Push/Pop functions because you can force options on a per-widget basis if needed," +
         "and the user can change non-forced ones with the options menu.\nWe don't have a getter to avoid" +
         "encouraging you to persistently save values that aren't forward-compatible.")
@@ -1227,12 +1237,12 @@ module ImGuiDemo
         ImGui.set_color_edit_options(ImGuiColorEditFlags::Float | ImGuiColorEditFlags::HDR | ImGuiColorEditFlags::PickerHueWheel)
       end
 
-      static color_hsv = ImGui.vec4(0.23f32, 1.0f32, 1.0f32, 1.0f32)
+      static color_hsv = ImVec4.new(0.23f32, 1.0f32, 1.0f32, 1.0f32)
       ImGui.spacing
       ImGui.text("HSV encoded colors")
       ImGui.same_line
       help_marker(
-        "By default, colors are given to ColorEdit and ColorPicker in RGB, but ImGuiColorEditFlags::InputHSV" +
+        "By default, colors are given to ColorEdit and ColorPicker in RGB, but ImGuiColorEditFlags_InputHSV" +
         "allows you to store colors as HSV and pass them to ColorEdit and ColorPicker as HSV. This comes with the" +
         "added benefit that you can manipulate hue values with the picker even when saturation or value are zero.")
       ImGui.text("Color widget with InputHSV:")
@@ -1245,16 +1255,16 @@ module ImGuiDemo
 
     if ImGui.tree_node("Drag/Slider Flags")
       static flags = ImGuiSliderFlags::None
-      ImGui.checkbox_flags("ImGuiSliderFlags::ClampOnInput", pointerof(flags.val), ImGuiSliderFlags::ClampOnInput)
+      ImGui.checkbox_flags("ImGuiSliderFlags_ClampOnInput", pointerof(flags.val), ImGuiSliderFlags::ClampOnInput)
       ImGui.same_line
       help_marker("Always clamp value to min/max bounds (if any) when input manually with CTRL+Click.")
-      ImGui.checkbox_flags("ImGuiSliderFlags::Logarithmic", pointerof(flags.val), ImGuiSliderFlags::Logarithmic)
+      ImGui.checkbox_flags("ImGuiSliderFlags_Logarithmic", pointerof(flags.val), ImGuiSliderFlags::Logarithmic)
       ImGui.same_line
       help_marker("Enable logarithmic editing (more precision for small values).")
-      ImGui.checkbox_flags("ImGuiSliderFlags::NoRoundToFormat", pointerof(flags.val), ImGuiSliderFlags::NoRoundToFormat)
+      ImGui.checkbox_flags("ImGuiSliderFlags_NoRoundToFormat", pointerof(flags.val), ImGuiSliderFlags::NoRoundToFormat)
       ImGui.same_line
       help_marker("Disable rounding underlying value to match precision of the format string (e.g. %.3f values are rounded to those 3 digits).")
-      ImGui.checkbox_flags("ImGuiSliderFlags::NoInput", pointerof(flags.val), ImGuiSliderFlags::NoInput)
+      ImGui.checkbox_flags("ImGuiSliderFlags_NoInput", pointerof(flags.val), ImGuiSliderFlags::NoInput)
       ImGui.same_line
       help_marker("Disable CTRL+Click or Enter key allowing to input text directly into the widget.")
 
@@ -1277,11 +1287,11 @@ module ImGuiDemo
     end
 
     if ImGui.tree_node("Range Widgets")
-      static begin_f = 10f32
-      static end_f = 90f32
+      static begin_ = 10f32
+      static end_ = 90f32
       static begin_i = 100
       static end_i = 1000
-      ImGui.drag_float_range2("range float", pointerof(begin_f.val), pointerof(end_f.val), 0.25f32, 0.0f32, 100.0f32, "Min: %.1f %%", "Max: %.1f %%", ImGuiSliderFlags::ClampOnInput)
+      ImGui.drag_float_range2("range float", pointerof(begin_.val), pointerof(end_.val), 0.25f32, 0.0f32, 100.0f32, "Min: %.1f %%", "Max: %.1f %%", ImGuiSliderFlags::ClampOnInput)
       ImGui.drag_int_range2("range int", pointerof(begin_i.val), pointerof(end_i.val), 5, 0, 1000, "Min: %d units", "Max: %d units")
       ImGui.drag_int_range2("range int (no bounds)", pointerof(begin_i.val), pointerof(end_i.val), 5, 0, 0, "Min: %d units", "Max: %d units")
       ImGui.tree_pop
@@ -1450,24 +1460,24 @@ module ImGuiDemo
 
     if ImGui.tree_node("Vertical Sliders")
       spacing = 4
-      ImGui.push_style_var(ImGuiStyleVar::ItemSpacing, ImGui.vec2(spacing, spacing))
+      ImGui.push_style_var(ImGuiStyleVar::ItemSpacing, ImVec2.new(spacing, spacing))
 
       static int_value = 0
-      ImGui.v_slider_int("##int", ImGui.vec2(18, 160), pointerof(int_value.val), 0, 5)
+      ImGui.v_slider_int("##int", ImVec2.new(18, 160), pointerof(int_value.val), 0, 5)
       ImGui.same_line
 
-      static values = [0.0, 0.60, 0.35, 0.9, 0.70, 0.20, 0.0] of Float32
+      static values = [0.0f32, 0.60f32, 0.35f32, 0.9f32, 0.70f32, 0.20f32, 0.0f32]
       ImGui.push_id("set1")
       7.times do |i|
         if i > 0
           ImGui.same_line
         end
         ImGui.push_id(i)
-        ImGui.push_style_color(ImGuiCol::FrameBg, ImGui.col32(ImGui.hsv(i / 7.0f32, 0.5f32, 0.5f32)))
-        ImGui.push_style_color(ImGuiCol::FrameBgHovered, ImGui.col32(ImGui.hsv(i / 7.0f32, 0.6f32, 0.5f32)))
-        ImGui.push_style_color(ImGuiCol::FrameBgActive, ImGui.col32(ImGui.hsv(i / 7.0f32, 0.7f32, 0.5f32)))
-        ImGui.push_style_color(ImGuiCol::SliderGrab, ImGui.col32(ImGui.hsv(i / 7.0f32, 0.9f32, 0.9f32)))
-        ImGui.v_slider_float("##v", ImGui.vec2(18, 160), pointerof(values.val[i]), 0.0f32, 1.0f32, "")
+        ImGui.push_style_color(ImGuiCol::FrameBg, ImGui.hsv(i / 7.0f32, 0.5f32, 0.5f32))
+        ImGui.push_style_color(ImGuiCol::FrameBgHovered, ImGui.hsv(i / 7.0f32, 0.6f32, 0.5f32))
+        ImGui.push_style_color(ImGuiCol::FrameBgActive, ImGui.hsv(i / 7.0f32, 0.7f32, 0.5f32))
+        ImGui.push_style_color(ImGuiCol::SliderGrab, ImGui.hsv(i / 7.0f32, 0.9f32, 0.9f32))
+        ImGui.v_slider_float("##v", ImVec2.new(18, 160), pointerof(values.val[i]), 0.0f32, 1.0f32, "")
         if ImGui.is_item_active || ImGui.is_item_hovered
           ImGui.set_tooltip("%.3f", values.val[i])
         end
@@ -1480,7 +1490,7 @@ module ImGuiDemo
       ImGui.push_id("set2")
       static values2 = [0.20f32, 0.80f32, 0.40f32, 0.25f32]
       rows = 3
-      small_slider_size = ImGui.vec2(18, ((160.0f32 - (rows - 1) * spacing) / rows).to_i)
+      small_slider_size = ImVec2.new(18, ((160.0f32 - (rows - 1) * spacing) / rows).to_i)
       4.times do |nx|
         if nx > 0
           ImGui.same_line
@@ -1506,7 +1516,7 @@ module ImGuiDemo
         end
         ImGui.push_id(i)
         ImGui.push_style_var(ImGuiStyleVar::GrabMinSize, 40)
-        ImGui.v_slider_float("##v", ImGui.vec2(40, 160), pointerof(values.val[i]), 0.0f32, 1.0f32, "%.2f\nsec")
+        ImGui.v_slider_float("##v", ImVec2.new(40, 160), pointerof(values.val[i]), 0.0f32, 1.0f32, "%.2f\nsec")
         ImGui.pop_style_var
         ImGui.pop_id
       end
@@ -1544,9 +1554,9 @@ module ImGuiDemo
           if (n % 3) != 0
             ImGui.same_line
           end
-          ImGui.button(names.val[n], ImGui.vec2(60, 60))
+          ImGui.button(names.val[n], ImVec2.new(60, 60))
 
-          if ImGui.begin_drag_drop_source
+          if ImGui.begin_drag_drop_source(ImGuiDragDropFlags::None)
             ImGui.set_drag_drop_payload("DND_DEMO_CELL", pointerof(n).as(Void*), LibC::SizeT.new(sizeof(Int32)))
 
             if mode.val == Mode::Copy
@@ -1661,7 +1671,7 @@ module ImGuiDemo
         end
       end
       if item_type.val == 11
-        ret = ImGui.tree_node_ex("ITEM: TreeNode w/ ImGuiTreeNodeFlags::OpenOnDoubleClick", ImGuiTreeNodeFlags::OpenOnDoubleClick | ImGuiTreeNodeFlags::NoTreePushOnOpen)
+        ret = ImGui.tree_node_ex("ITEM: TreeNode w/ ImGuiTreeNodeFlags_OpenOnDoubleClick", ImGuiTreeNodeFlags::OpenOnDoubleClick | ImGuiTreeNodeFlags::NoTreePushOnOpen)
       end
       if item_type.val == 12
         items = ["Apple", "Banana", "Cherry", "Kiwi"]
@@ -1671,23 +1681,23 @@ module ImGuiDemo
 
       ImGui.bullet_text(
         "Return value = %d\n" +
-        "is_item_focused() = %d\n" +
-        "is_item_hovered() = %d\n" +
-        "is_item_hovered(_AllowWhenBlockedByPopup) = %d\n" +
-        "is_item_hovered(_AllowWhenBlockedByActiveItem) = %d\n" +
-        "is_item_hovered(_AllowWhenOverlapped) = %d\n" +
-        "is_item_hovered(_RectOnly) = %d\n" +
-        "is_item_active() = %d\n" +
-        "is_item_edited() = %d\n" +
-        "is_item_activated() = %d\n" +
-        "is_item_deactivated() = %d\n" +
-        "is_item_deactivated_after_edit() = %d\n" +
-        "is_item_visible() = %d\n" +
-        "is_item_clicked() = %d\n" +
-        "is_item_toggled_open() = %d\n" +
-        "get_item_rect_min() = (%.1f, %.1f)\n" +
-        "get_item_rect_max() = (%.1f, %.1f)\n" +
-        "get_item_rect_size() = (%.1f, %.1f)",
+        "IsItemFocused() = %d\n" +
+        "IsItemHovered() = %d\n" +
+        "IsItemHovered(_AllowWhenBlockedByPopup) = %d\n" +
+        "IsItemHovered(_AllowWhenBlockedByActiveItem) = %d\n" +
+        "IsItemHovered(_AllowWhenOverlapped) = %d\n" +
+        "IsItemHovered(_RectOnly) = %d\n" +
+        "IsItemActive() = %d\n" +
+        "IsItemEdited() = %d\n" +
+        "IsItemActivated() = %d\n" +
+        "IsItemDeactivated() = %d\n" +
+        "IsItemDeactivatedAfterEdit() = %d\n" +
+        "IsItemVisible() = %d\n" +
+        "IsItemClicked() = %d\n" +
+        "IsItemToggledOpen() = %d\n" +
+        "GetItemRectMin() = (%.1f, %.1f)\n" +
+        "GetItemRectMax() = (%.1f, %.1f)\n" +
+        "GetItemRectSize() = (%.1f, %.1f)",
         ret,
         ImGui.is_item_focused,
         ImGui.is_item_hovered,
@@ -1710,15 +1720,15 @@ module ImGuiDemo
       static embed_all_inside_a_child_window = false
       ImGui.checkbox("Embed everything inside a child window (for additional testing)", pointerof(embed_all_inside_a_child_window.val))
       if embed_all_inside_a_child_window.val
-        ImGui.begin_child("outer_child", ImGui.vec2(0, ImGui.get_font_size * 20.0f32), true)
+        ImGui.begin_child("outer_child", ImVec2.new(0, ImGui.get_font_size * 20.0f32), true)
       end
 
       ImGui.bullet_text(
-        "is_window_focused() = %d\n" +
-        "is_window_focused(_ChildWindows) = %d\n" +
-        "is_window_focused(_ChildWindows|_RootWindow) = %d\n" +
-        "is_window_focused(_RootWindow) = %d\n" +
-        "is_window_focused(_AnyWindow) = %d\n",
+        "IsWindowFocused() = %d\n" +
+        "IsWindowFocused(_ChildWindows) = %d\n" +
+        "IsWindowFocused(_ChildWindows|_RootWindow) = %d\n" +
+        "IsWindowFocused(_RootWindow) = %d\n" +
+        "IsWindowFocused(_AnyWindow) = %d\n",
         ImGui.is_window_focused,
         ImGui.is_window_focused(ImGuiFocusedFlags::ChildWindows),
         ImGui.is_window_focused(ImGuiFocusedFlags::ChildWindows | ImGuiFocusedFlags::RootWindow),
@@ -1726,14 +1736,14 @@ module ImGuiDemo
         ImGui.is_window_focused(ImGuiFocusedFlags::AnyWindow))
 
       ImGui.bullet_text(
-        "is_window_hovered() = %d\n" +
-        "is_window_hovered(_AllowWhenBlockedByPopup) = %d\n" +
-        "is_window_hovered(_AllowWhenBlockedByActiveItem) = %d\n" +
-        "is_window_hovered(_ChildWindows) = %d\n" +
-        "is_window_hovered(_ChildWindows|_RootWindow) = %d\n" +
-        "is_window_hovered(_ChildWindows|_AllowWhenBlockedByPopup) = %d\n" +
-        "is_window_hovered(_RootWindow) = %d\n" +
-        "is_window_hovered(_AnyWindow) = %d\n",
+        "IsWindowHovered() = %d\n" +
+        "IsWindowHovered(_AllowWhenBlockedByPopup) = %d\n" +
+        "IsWindowHovered(_AllowWhenBlockedByActiveItem) = %d\n" +
+        "IsWindowHovered(_ChildWindows) = %d\n" +
+        "IsWindowHovered(_ChildWindows|_RootWindow) = %d\n" +
+        "IsWindowHovered(_ChildWindows|_AllowWhenBlockedByPopup) = %d\n" +
+        "IsWindowHovered(_RootWindow) = %d\n" +
+        "IsWindowHovered(_AnyWindow) = %d\n",
         ImGui.is_window_hovered,
         ImGui.is_window_hovered(ImGuiHoveredFlags::AllowWhenBlockedByPopup),
         ImGui.is_window_hovered(ImGuiHoveredFlags::AllowWhenBlockedByActiveItem),
@@ -1743,7 +1753,7 @@ module ImGuiDemo
         ImGui.is_window_hovered(ImGuiHoveredFlags::RootWindow),
         ImGui.is_window_hovered(ImGuiHoveredFlags::AnyWindow))
 
-      ImGui.begin_child("child", ImGui.vec2(0, 50), true)
+      ImGui.begin_child("child", ImVec2.new(0, 50), true)
       ImGui.text("This is another child window for testing the _ChildWindows flag.")
       ImGui.end_child
       if embed_all_inside_a_child_window.val
@@ -1754,7 +1764,7 @@ module ImGuiDemo
       ImGui.input_text("unused", unused_str.val, ImGuiInputTextFlags::ReadOnly)
 
       static test_window = false
-      ImGui.checkbox("Hovered/Active tests after begin() for title bar testing", pointerof(test_window.val))
+      ImGui.checkbox("Hovered/Active tests after Begin() for title bar testing", pointerof(test_window.val))
       if test_window.val
         ImGui.begin("Title bar Hovered/Active tests", pointerof(test_window.val))
         if ImGui.begin_popup_context_item
@@ -1764,8 +1774,8 @@ module ImGuiDemo
           ImGui.end_popup
         end
         ImGui.text(
-          "is_item_hovered() after begin = %d (== is title bar hovered)\n" +
-          "is_item_active() after begin = %d (== is window being clicked/moved)\n",
+          "IsItemHovered() after begin = %d (== is title bar hovered)\n" +
+          "IsItemActive() after begin = %d (== is window being clicked/moved)\n",
           ImGui.is_item_hovered, ImGui.is_item_active)
         ImGui.end
       end
@@ -1791,7 +1801,7 @@ module ImGuiDemo
         if disable_mouse_wheel.val
           window_flags |= ImGuiWindowFlags::NoScrollWithMouse
         end
-        ImGui.begin_child("ChildL", ImGui.vec2(ImGui.get_window_content_region_width * 0.5f32, 260), false, window_flags)
+        ImGui.begin_child("ChildL", ImVec2.new(ImGui.get_window_content_region_width * 0.5f32, 260), false, window_flags)
         100.times do |i|
           ImGui.text("%04d: scrollable region", i)
         end
@@ -1809,17 +1819,18 @@ module ImGuiDemo
           window_flags |= ImGuiWindowFlags::MenuBar
         end
         ImGui.push_style_var(ImGuiStyleVar::ChildRounding, 5.0f32)
-        ImGui.begin_child("ChildR", ImGui.vec2(0, 260), true, window_flags)
+        ImGui.begin_child("ChildR", ImVec2.new(0, 260), true, window_flags)
         if !disable_menu.val && ImGui.begin_menu_bar
           if ImGui.begin_menu("Menu")
-            show_example_menu_file()
+            show_example_menu_file
             ImGui.end_menu
           end
           ImGui.end_menu_bar
         end
         ImGui.columns(2)
         100.times do |i|
-          ImGui.button("%03d" % i, ImGui.vec2(-Float32::MIN_POSITIVE, 0.0f32))
+          buf = sprintf("%03d", i)
+          ImGui.button(buf, ImVec2.new(-Float32::MIN_POSITIVE, 0.0f32))
           ImGui.next_column
         end
         ImGui.end_child
@@ -1834,7 +1845,7 @@ module ImGuiDemo
 
         ImGui.set_cursor_pos_x(ImGui.get_cursor_pos_x + offset_x.val)
         ImGui.push_style_color(ImGuiCol::ChildBg, ImGui.col32(255, 0, 0, 100))
-        ImGui.begin_child("Red", ImGui.vec2(200, 100), true, ImGuiWindowFlags::None)
+        ImGui.begin_child("Red", ImVec2.new(200, 100), true, ImGuiWindowFlags::None)
         50.times do |n|
           ImGui.text("Some test %d", n)
         end
@@ -1852,31 +1863,31 @@ module ImGuiDemo
 
     if ImGui.tree_node("Widgets Width")
       static f = 0.0f32
-      ImGui.text("SetNextItemWidth/push_item_width(100)")
+      ImGui.text("SetNextItemWidth/PushItemWidth(100)")
       ImGui.same_line
       help_marker("Fixed width.")
       ImGui.set_next_item_width(100)
       ImGui.drag_float("float##1", pointerof(f.val))
 
-      ImGui.text("SetNextItemWidth/push_item_width(get_window_width() * 0.5f32)")
+      ImGui.text("SetNextItemWidth/PushItemWidth(GetWindowWidth() * 0.5f)")
       ImGui.same_line
       help_marker("Half of window width.")
       ImGui.set_next_item_width(ImGui.get_window_width * 0.5f32)
       ImGui.drag_float("float##2", pointerof(f.val))
 
-      ImGui.text("SetNextItemWidth/push_item_width(get_content_region_avail().x * 0.5f32)")
+      ImGui.text("SetNextItemWidth/PushItemWidth(GetContentRegionAvail().x * 0.5f)")
       ImGui.same_line
       help_marker("Half of available width.\n(~ right-cursor_pos)\n(works within a column set)")
       ImGui.set_next_item_width(ImGui.get_content_region_avail.x * 0.5f32)
       ImGui.drag_float("float##3", pointerof(f.val))
 
-      ImGui.text("SetNextItemWidth/push_item_width(-100)")
+      ImGui.text("SetNextItemWidth/PushItemWidth(-100)")
       ImGui.same_line
       help_marker("Align to right edge minus 100")
       ImGui.set_next_item_width(-100)
       ImGui.drag_float("float##4", pointerof(f.val))
 
-      ImGui.text("SetNextItemWidth/push_item_width(-1)")
+      ImGui.text("SetNextItemWidth/PushItemWidth(-1)")
       ImGui.same_line
       help_marker("Align to right edge")
       ImGui.push_item_width(-1)
@@ -1889,15 +1900,15 @@ module ImGuiDemo
     end
 
     if ImGui.tree_node("Basic Horizontal Layout")
-      ImGui.text_wrapped("(Use ImGui.same_line() to keep adding items to the right of the preceding item)")
+      ImGui.text_wrapped("(Use ImGui::SameLine() to keep adding items to the right of the preceding item)")
 
       ImGui.text("Two items: Hello")
       ImGui.same_line
-      ImGui.text_colored(ImGui.vec4(1, 1, 0, 1), "Sailor")
+      ImGui.text_colored(ImVec4.new(1, 1, 0, 1), "Sailor")
 
       ImGui.text("More spacing: Hello")
       ImGui.same_line(0, 20)
-      ImGui.text_colored(ImGui.vec4(1, 1, 0, 1), "Sailor")
+      ImGui.text_colored(ImVec4.new(1, 1, 0, 1), "Sailor")
 
       ImGui.align_text_to_frame_padding
       ImGui.text("Normal buttons")
@@ -1965,7 +1976,7 @@ module ImGuiDemo
       end
       ImGui.pop_item_width
 
-      button_sz = ImGui.vec2(40, 40)
+      button_sz = ImVec2.new(40, 40)
       ImGui.button("A", button_sz)
       ImGui.same_line
       ImGui.dummy(button_sz)
@@ -2014,17 +2025,17 @@ module ImGuiDemo
 
       if ImGui.tree_node("Advanced & Close Button")
         static tab_bar_flags = ImGuiTabBarFlags::Reorderable
-        ImGui.checkbox_flags("ImGuiTabBarFlags::Reorderable", pointerof(tab_bar_flags.val), ImGuiTabBarFlags::Reorderable)
-        ImGui.checkbox_flags("ImGuiTabBarFlags::AutoSelectNewTabs", pointerof(tab_bar_flags.val), ImGuiTabBarFlags::AutoSelectNewTabs)
-        ImGui.checkbox_flags("ImGuiTabBarFlags::TabListPopupButton", pointerof(tab_bar_flags.val), ImGuiTabBarFlags::TabListPopupButton)
-        ImGui.checkbox_flags("ImGuiTabBarFlags::NoCloseWithMiddleMouseButton", pointerof(tab_bar_flags.val), ImGuiTabBarFlags::NoCloseWithMiddleMouseButton)
+        ImGui.checkbox_flags("ImGuiTabBarFlags_Reorderable", pointerof(tab_bar_flags.val), ImGuiTabBarFlags::Reorderable)
+        ImGui.checkbox_flags("ImGuiTabBarFlags_AutoSelectNewTabs", pointerof(tab_bar_flags.val), ImGuiTabBarFlags::AutoSelectNewTabs)
+        ImGui.checkbox_flags("ImGuiTabBarFlags_TabListPopupButton", pointerof(tab_bar_flags.val), ImGuiTabBarFlags::TabListPopupButton)
+        ImGui.checkbox_flags("ImGuiTabBarFlags_NoCloseWithMiddleMouseButton", pointerof(tab_bar_flags.val), ImGuiTabBarFlags::NoCloseWithMiddleMouseButton)
         if tab_bar_flags.val.includes? :FittingPolicyMask_
           tab_bar_flags.val |= ImGuiTabBarFlags::FittingPolicyDefault_
         end
-        if ImGui.checkbox_flags("ImGuiTabBarFlags::FittingPolicyResizeDown", pointerof(tab_bar_flags.val), ImGuiTabBarFlags::FittingPolicyResizeDown)
+        if ImGui.checkbox_flags("ImGuiTabBarFlags_FittingPolicyResizeDown", pointerof(tab_bar_flags.val), ImGuiTabBarFlags::FittingPolicyResizeDown)
           tab_bar_flags.val &= ~(ImGuiTabBarFlags::FittingPolicyMask_ ^ ImGuiTabBarFlags::FittingPolicyResizeDown)
         end
-        if ImGui.checkbox_flags("ImGuiTabBarFlags::FittingPolicyScroll", pointerof(tab_bar_flags.val), ImGuiTabBarFlags::FittingPolicyScroll)
+        if ImGui.checkbox_flags("ImGuiTabBarFlags_FittingPolicyScroll", pointerof(tab_bar_flags.val), ImGuiTabBarFlags::FittingPolicyScroll)
           tab_bar_flags.val &= ~(ImGuiTabBarFlags::FittingPolicyMask_ ^ ImGuiTabBarFlags::FittingPolicyScroll)
         end
 
@@ -2057,9 +2068,9 @@ module ImGuiDemo
 
     if ImGui.tree_node("Groups")
       help_marker(
-        "begin_group() basically locks the horizontal position for new line. " +
-        "end_group() bundles the whole group so that you can use \"item\" functions such as " +
-        "is_item_hovered()/is_item_active() or same_line() etc. on the whole group.")
+        "BeginGroup() basically locks the horizontal position for new line. " +
+        "EndGroup() bundles the whole group so that you can use \"item\" functions such as " +
+        "IsItemHovered()/IsItemActive() or SameLine() etc. on the whole group.")
       ImGui.begin_group
       begin
         ImGui.begin_group
@@ -2080,12 +2091,12 @@ module ImGuiDemo
       end
 
       size = ImGui.get_item_rect_size
-      values = [0.5, 0.20, 0.80, 0.60, 0.25] of Float32
+      values = [0.5f32, 0.20f32, 0.80f32, 0.60f32, 0.25f32]
       ImGui.plot_histogram("##values", values, 0, nil, 0.0f32, 1.0f32, size)
 
-      ImGui.button("ACTION", ImGui.vec2((size.x - ImGui.get_style.item_spacing.x) * 0.5f32, size.y))
+      ImGui.button("ACTION", ImVec2.new((size.x - ImGui.get_style.item_spacing.x) * 0.5f32, size.y))
       ImGui.same_line
-      ImGui.button("REACTION", ImGui.vec2((size.x - ImGui.get_style.item_spacing.x) * 0.5f32, size.y))
+      ImGui.button("REACTION", ImVec2.new((size.x - ImGui.get_style.item_spacing.x) * 0.5f32, size.y))
       ImGui.end_group
       ImGui.same_line
 
@@ -2121,7 +2132,7 @@ module ImGuiDemo
         ImGui.same_line
         ImGui.button("Some framed item")
         ImGui.same_line
-        help_marker("We call align_text_to_frame_padding() to vertically align the text baseline by +frame_padding.y")
+        help_marker("We call AlignTextToFramePadding() to vertically align the text baseline by +FramePadding.y")
 
         ImGui.button("TEST##1")
         ImGui.same_line
@@ -2182,13 +2193,13 @@ module ImGuiDemo
         ImGui.bullet_text("Misc items:")
         ImGui.indent
 
-        ImGui.button("80x80", ImGui.vec2(80, 80))
+        ImGui.button("80x80", ImVec2.new(80, 80))
         ImGui.same_line
-        ImGui.button("50x50", ImGui.vec2(50, 50))
+        ImGui.button("50x50", ImVec2.new(50, 50))
         ImGui.same_line
         ImGui.button("button()")
         ImGui.same_line
-        ImGui.small_button("small_button()")
+        ImGui.small_button("SmallButton()")
 
         spacing = ImGui.get_style.item_inner_spacing.x
         ImGui.button("Button##1")
@@ -2227,7 +2238,7 @@ module ImGuiDemo
     end
 
     if ImGui.tree_node("Scrolling")
-      help_marker("Use set_scroll_here_y() or set_scroll_from_pos_y() to scroll to a given vertical position.")
+      help_marker("Use SetScrollHereY() or SetScrollFromPosY() to scroll to a given vertical position.")
 
       static track_item = 50
       static enable_track = true
@@ -2271,7 +2282,7 @@ module ImGuiDemo
 
         child_flags = enable_extra_decorations.val ? ImGuiWindowFlags::MenuBar : ImGuiWindowFlags::None
         child_id = ImGui.get_id(i)
-        child_is_visible = ImGui.begin_child(child_id, ImGui.vec2(child_w, 200.0f32), true, child_flags)
+        child_is_visible = ImGui.begin_child(child_id, ImVec2.new(child_w, 200.0f32), true, child_flags)
         if ImGui.begin_menu_bar
           ImGui.text_unformatted("abc")
           ImGui.end_menu_bar
@@ -2285,7 +2296,7 @@ module ImGuiDemo
         if child_is_visible
           100.times do |item|
             if enable_track.val && item == track_item.val
-              ImGui.text_colored(ImGui.vec4(1, 1, 0, 1), "Item %d", item)
+              ImGui.text_colored(ImVec4.new(1, 1, 0, 1), "Item %d", item)
               ImGui.set_scroll_here_y(i * 0.25f32)
             else
               ImGui.text("Item %d", item)
@@ -2302,16 +2313,16 @@ module ImGuiDemo
 
       ImGui.spacing
       help_marker(
-        "Use set_scroll_here_x() or set_scroll_from_pos_x() to scroll to a given horizontal position.\n\n" +
+        "Use SetScrollHereX() or SetScrollFromPosX() to scroll to a given horizontal position.\n\n" +
         "Because the clipping rectangle of most window hides half worth of WindowPadding on the " +
-        "left/right, using set_scroll_from_pos_x(+1) will usually result in clipped text whereas the " +
-        "equivalent set_scroll_from_pos_y(+1) wouldn't.")
+        "left/right, using SetScrollFromPosX(+1) will usually result in clipped text whereas the " +
+        "equivalent SetScrollFromPosY(+1) wouldn't.")
       ImGui.push_id("##HorizontalScrolling")
       5.times do |i|
         child_height = ImGui.get_text_line_height + style.scrollbar_size + style.window_padding.y * 2.0f32
         child_flags = ImGuiWindowFlags::HorizontalScrollbar | (enable_extra_decorations.val ? ImGuiWindowFlags::AlwaysVerticalScrollbar : ImGuiWindowFlags::None)
         child_id = ImGui.get_id(i)
-        child_is_visible = ImGui.begin_child(child_id, ImGui.vec2(-100, child_height), true, child_flags)
+        child_is_visible = ImGui.begin_child(child_id, ImVec2.new(-100, child_height), true, child_flags)
         if scroll_to_off
           ImGui.set_scroll_x(scroll_to_off_px.val)
         end
@@ -2321,7 +2332,7 @@ module ImGuiDemo
         if child_is_visible
           100.times do |item|
             if enable_track.val && item == track_item.val
-              ImGui.text_colored(ImGui.vec4(1, 1, 0, 1), "Item %d", item)
+              ImGui.text_colored(ImVec4.new(1, 1, 0, 1), "Item %d", item)
               ImGui.set_scroll_here_x(i * 0.25f32)
             else
               ImGui.text("Item %d", item)
@@ -2340,13 +2351,13 @@ module ImGuiDemo
       ImGui.pop_id
 
       help_marker(
-        "Horizontal scrolling for a window is enabled via the ImGuiWindowFlags::HorizontalScrollbar flag.\n\n" +
-        "You may want to also explicitly specify content width by using set_next_window_content_width() before begin().")
+        "Horizontal scrolling for a window is enabled via the ImGuiWindowFlags_HorizontalScrollbar flag.\n\n" +
+        "You may want to also explicitly specify content width by using SetNextWindowContentWidth() before Begin().")
       static lines = 7
       ImGui.slider_int("Lines", pointerof(lines.val), 1, 15)
       ImGui.push_style_var(ImGuiStyleVar::FrameRounding, 3.0f32)
-      ImGui.push_style_var(ImGuiStyleVar::FramePadding, ImGui.vec2(2.0f32, 1.0f32))
-      scrolling_child_size = ImGui.vec2(0, ImGui.get_frame_height_with_spacing * 7 + 30)
+      ImGui.push_style_var(ImGuiStyleVar::FramePadding, ImVec2.new(2.0f32, 1.0f32))
+      scrolling_child_size = ImVec2.new(0, ImGui.get_frame_height_with_spacing * 7 + 30)
       ImGui.begin_child("scrolling", scrolling_child_size, true, ImGuiWindowFlags::HorizontalScrollbar)
       lines.val.times do |line|
         num_buttons = 10 + (line.odd? ? line * 9 : line * 3)
@@ -2355,12 +2366,13 @@ module ImGuiDemo
             ImGui.same_line
           end
           ImGui.push_id(n + line * 1000)
-          label = (!(n % 15)) ? "FizzBuzz" : (!(n % 3)) ? "Fizz" : (!(n % 5)) ? "Buzz" : "#{n}"
+          num_buf = sprintf("%d", n)
+          label = (!(n % 15)) ? "FizzBuzz" : (!(n % 3)) ? "Fizz" : (!(n % 5)) ? "Buzz" : num_buf
           hue = n * 0.05f32
-          ImGui.push_style_color(ImGuiCol::Button, ImGui.col32(ImGui.hsv(hue, 0.6f32, 0.6f32)))
-          ImGui.push_style_color(ImGuiCol::ButtonHovered, ImGui.col32(ImGui.hsv(hue, 0.7f32, 0.7f32)))
-          ImGui.push_style_color(ImGuiCol::ButtonActive, ImGui.col32(ImGui.hsv(hue, 0.8f32, 0.8f32)))
-          ImGui.button(label, ImGui.vec2(40.0f32 + Math.sin((line + n)) * 20.0f32, 0.0f32))
+          ImGui.push_style_color(ImGuiCol::Button, ImGui.hsv(hue, 0.6f32, 0.6f32))
+          ImGui.push_style_color(ImGuiCol::ButtonHovered, ImGui.hsv(hue, 0.7f32, 0.7f32))
+          ImGui.push_style_color(ImGuiCol::ButtonActive, ImGui.hsv(hue, 0.8f32, 0.8f32))
+          ImGui.button(label, ImVec2.new(40.0f32 + Math.sin((line + n)) * 20.0f32, 0.0f32))
           ImGui.pop_style_color(3)
           ImGui.pop_id
         end
@@ -2404,12 +2416,12 @@ module ImGuiDemo
         static explicit_content_size = false
         static contents_size_x = 300.0f32
         if explicit_content_size.val
-          ImGui.set_next_window_content_size(ImGui.vec2(contents_size_x.val, 0.0f32))
+          ImGui.set_next_window_content_size(ImVec2.new(contents_size_x.val, 0.0f32))
         end
         ImGui.begin("Horizontal contents size demo window", pointerof(show_horizontal_contents_size_demo_window.val), show_h_scrollbar.val ? ImGuiWindowFlags::HorizontalScrollbar : ImGuiWindowFlags::None)
-        ImGui.push_style_var(ImGuiStyleVar::ItemSpacing, ImGui.vec2(2, 0))
-        ImGui.push_style_var(ImGuiStyleVar::FramePadding, ImGui.vec2(2, 0))
-        help_marker("Test of different widgets react and impact the work rectangle growing when horizontal scrolling is enabled.\n\nUse 'metrics.tools.show windows rectangles' to visualize rectangles.")
+        ImGui.push_style_var(ImGuiStyleVar::ItemSpacing, ImVec2.new(2, 0))
+        ImGui.push_style_var(ImGuiStyleVar::FramePadding, ImVec2.new(2, 0))
+        help_marker("Test of different widgets react and impact the work rectangle growing when horizontal scrolling is enabled.\n\nUse 'Metrics->Tools->Show windows rectangles' to visualize rectangles.")
         ImGui.checkbox("H-scrollbar", pointerof(show_h_scrollbar.val))
         ImGui.checkbox("Button", pointerof(show_button.val))
         ImGui.checkbox("Tree nodes", pointerof(show_tree_nodes.val))
@@ -2424,14 +2436,14 @@ module ImGuiDemo
           ImGui.set_next_item_width(100)
           ImGui.drag_float("##csx", pointerof(contents_size_x.val))
           p = ImGui.get_cursor_screen_pos
-          ImGui.get_window_draw_list.add_rect_filled(p, ImGui.vec2(p.x + 10, p.y + 10), ImGui.col32(255, 255, 255))
-          ImGui.get_window_draw_list.add_rect_filled(ImGui.vec2(p.x + contents_size_x.val - 10, p.y), ImGui.vec2(p.x + contents_size_x.val, p.y + 10), ImGui.col32(255, 255, 255))
-          ImGui.dummy(ImGui.vec2(0, 10))
+          ImGui.get_window_draw_list.add_rect_filled(p, ImVec2.new(p.x + 10, p.y + 10), ImGui.col32(255, 255, 255))
+          ImGui.get_window_draw_list.add_rect_filled(ImVec2.new(p.x + contents_size_x.val - 10, p.y), ImVec2.new(p.x + contents_size_x.val, p.y + 10), ImGui.col32(255, 255, 255))
+          ImGui.dummy(ImVec2.new(0, 10))
         end
         ImGui.pop_style_var(2)
         ImGui.separator
         if show_button.val
-          ImGui.button("this is a 300-wide button", ImGui.vec2(300, 0))
+          ImGui.button("this is a 300-wide button", ImVec2.new(300, 0))
         end
         if show_tree_nodes.val
           open = true
@@ -2471,7 +2483,7 @@ module ImGuiDemo
           ImGui.end_tab_bar
         end
         if show_child.val
-          ImGui.begin_child("child", ImGui.vec2(0, 0), true)
+          ImGui.begin_child("child", ImVec2.new(0, 0), true)
           ImGui.end_child
         end
         ImGui.end
@@ -2501,13 +2513,13 @@ module ImGuiDemo
         p0 = ImGui.get_item_rect_min
         p1 = ImGui.get_item_rect_max
         text_str = "Line 1 hello\nLine 2 clip me!"
-        text_pos = ImGui.vec2(p0.x + offset.val.x, p0.y + offset.val.y)
+        text_pos = ImVec2.new(p0.x + offset.val.x, p0.y + offset.val.y)
         draw_list = ImGui.get_window_draw_list
 
         case n
         when 0
           help_marker(
-            "Using ImGui.push_clip_rect():\n" +
+            "Using ImGui::PushClipRect():\n" +
             "Will alter ImGui hit-testing logic + ImDrawList rendering.\n" +
             "(use this if you want your clipping rectangle to affect interactions)")
           ImGui.push_clip_rect(p0, p1, true)
@@ -2517,7 +2529,7 @@ module ImGuiDemo
           break
         when 1
           help_marker(
-            "Using ImDrawList.push_clip_rect():\n" +
+            "Using ImDrawList::PushClipRect():\n" +
             "Will alter ImDrawList rendering only.\n" +
             "(use this as a shortcut if you are only using ImDrawList calls)")
           draw_list.push_clip_rect(p0, p1, true)
@@ -2527,10 +2539,10 @@ module ImGuiDemo
           break
         when 2
           help_marker(
-            "Using ImDrawList.add_text() with a fine ClipRect:\n" +
-            "Will alter only this specific ImDrawList.add_text() rendering.\n" +
+            "Using ImDrawList::AddText() with a fine ClipRect:\n" +
+            "Will alter only this specific ImDrawList::AddText() rendering.\n" +
             "(this is often used internally to avoid altering the clipping rectangle and minimize draw calls)")
-          clip_rect = ImGui.vec4(p0.x, p0.y, p1.x, p1.y)
+          clip_rect = ImVec4.new(p0.x, p0.y, p1.x, p1.y)
           draw_list.add_rect_filled(p0, p1, ImGui.col32(90, 90, 120, 255))
           draw_list.add_text(ImGui.get_font, ImGui.get_font_size, text_pos, ImGui.col32(255, 255, 255), text_str, 0.0f32, pointerof(clip_rect))
           break
@@ -2617,7 +2629,7 @@ module ImGuiDemo
         ImGui.open_popup("my_file_popup")
       end
       if ImGui.begin_popup("my_file_popup")
-        show_example_menu_file()
+        show_example_menu_file
         ImGui.end_popup
       end
 
@@ -2643,7 +2655,8 @@ module ImGuiDemo
       ImGui.open_popup_context_item("item context menu", ImGuiPopupFlags::MouseButtonRight)
 
       static name = ImGui::TextBuffer.new("Label1", 32)
-      ImGui.button("Button: #{name.val}###Button")
+      buf = sprintf("Button: %s###Button", name.val)
+      ImGui.button(buf)
       if ImGui.begin_popup_context_item
         ImGui.text("Edit name:")
         ImGui.input_text("##edit", name.val)
@@ -2665,24 +2678,24 @@ module ImGuiDemo
         ImGui.open_popup("Delete?")
       end
 
-      center = ImGui.vec2(ImGui.get_io.display_size.x * 0.5f32, ImGui.get_io.display_size.y * 0.5f32)
-      ImGui.set_next_window_pos(center, ImGuiCond::Appearing, ImGui.vec2(0.5f32, 0.5f32))
+      center = ImVec2.new(ImGui.get_io.display_size.x * 0.5f32, ImGui.get_io.display_size.y * 0.5f32)
+      ImGui.set_next_window_pos(center, ImGuiCond::Appearing, ImVec2.new(0.5f32, 0.5f32))
 
       if ImGui.begin_popup_modal("Delete?", flags: ImGuiWindowFlags::AlwaysAutoResize)
         ImGui.text("All those beautiful files will be deleted.\nThis operation cannot be undone!\n\n")
         ImGui.separator
 
         static dont_ask_me_next_time = false
-        ImGui.push_style_var(ImGuiStyleVar::FramePadding, ImGui.vec2(0, 0))
+        ImGui.push_style_var(ImGuiStyleVar::FramePadding, ImVec2.new(0, 0))
         ImGui.checkbox("Don't ask me next time", pointerof(dont_ask_me_next_time.val))
         ImGui.pop_style_var
 
-        if ImGui.button("OK", ImGui.vec2(120, 0))
+        if ImGui.button("OK", ImVec2.new(120, 0))
           ImGui.close_current_popup
         end
         ImGui.set_item_default_focus
         ImGui.same_line
-        if ImGui.button("Cancel", ImGui.vec2(120, 0))
+        if ImGui.button("Cancel", ImVec2.new(120, 0))
           ImGui.close_current_popup
         end
         ImGui.end_popup
@@ -2700,7 +2713,7 @@ module ImGuiDemo
           end
           ImGui.end_menu_bar
         end
-        ImGui.text("Hello from Stacked The First\nUsing style.colors[ImGuiCol::ModalWindowDimBg] behind it.")
+        ImGui.text("Hello from Stacked The First\nUsing style.Colors[ImGuiCol_ModalWindowDimBg] behind it.")
 
         static item = 1
         static color = [0.4f32, 0.7f32, 0.0f32, 0.5f32]
@@ -2736,7 +2749,7 @@ module ImGuiDemo
       ImGui.push_id("foo")
       ImGui.menu_item("Menu item", "CTRL+M")
       if ImGui.begin_menu("Menu inside a regular window")
-        show_example_menu_file()
+        show_example_menu_file
         ImGui.end_menu
       end
       ImGui.pop_id
@@ -2765,7 +2778,8 @@ module ImGuiDemo
       ImGui.columns(3, "mycolumns3", false)
       ImGui.separator
       14.times do |n|
-        if ImGui.selectable("Item #{n}")
+        label = sprintf("Item %d", n)
+        if ImGui.selectable(label)
         end
 
         ImGui.next_column
@@ -2789,7 +2803,8 @@ module ImGuiDemo
       paths = ["/path/one", "/path/two", "/path/three"]
       static selected = -1
       3.times do |i|
-        if ImGui.selectable("%04d" % i, selected.val == i, ImGuiSelectableFlags::SpanAllColumns)
+        label = sprintf("%04d", i)
+        if ImGui.selectable(label, selected.val == i, ImGuiSelectableFlags::SpanAllColumns)
           selected.val = i
         end
         hovered = ImGui.is_item_hovered
@@ -2810,7 +2825,6 @@ module ImGuiDemo
       static h_borders = true
       static v_borders = true
       static columns_count = 4
-
       lines_count = 3
       ImGui.set_next_item_width(ImGui.get_font_size * 8)
       ImGui.drag_int("##columns_count", pointerof(columns_count.val), 0.1f32, 2, 10, "%d columns")
@@ -2831,7 +2845,7 @@ module ImGuiDemo
         ImGui.text("Avail %.2f", ImGui.get_content_region_avail.x)
         ImGui.text("Offset %.2f", ImGui.get_column_offset)
         ImGui.text("Long text that is likely to clip")
-        ImGui.button("Button", ImGui.vec2(-Float32::MIN_POSITIVE, 0.0f32))
+        ImGui.button("Button", ImVec2.new(-Float32::MIN_POSITIVE, 0.0f32))
         ImGui.next_column
       end
       ImGui.columns(1)
@@ -2892,8 +2906,8 @@ module ImGuiDemo
       ImGui.tree_pop
     end
     if ImGui.tree_node("Horizontal Scrolling")
-      ImGui.set_next_window_content_size(ImGui.vec2(1500.0f32, 0.0f32))
-      child_size = ImGui.vec2(0, ImGui.get_font_size * 20.0f32)
+      ImGui.set_next_window_content_size(ImVec2.new(1500.0f32, 0.0f32))
+      child_size = ImVec2.new(0, ImGui.get_font_size * 20.0f32)
       ImGui.begin_child("##ScrollingRegion", child_size, false, ImGuiWindowFlags::HorizontalScrollbar)
       ImGui.columns(10)
       items_count = 2000
@@ -3153,10 +3167,10 @@ module ImGuiDemo
       end
 
       if ImGui.tree_node("Dragging")
-        ImGui.text_wrapped("You can use ImGui.get_mouse_drag_delta(ImGuiMouseButton::Left) to query for the dragged amount on any widget.")
+        ImGui.text_wrapped("You can use ImGui::GetMouseDragDelta(0) to query for the dragged amount on any widget.")
         3.times do |button|
           button = ImGuiMouseButton.new(button)
-          ImGui.text("is_mouse_dragging(%d):", button)
+          ImGui.text("IsMouseDragging(%d):", button)
           ImGui.text("  w/ default threshold: %d,", ImGui.is_mouse_dragging(button))
           ImGui.text("  w/ zero threshold: %d,", ImGui.is_mouse_dragging(button, 0.0f32))
           ImGui.text("  w/ large threshold: %d,", ImGui.is_mouse_dragging(button, 20.0f32))
@@ -3170,10 +3184,10 @@ module ImGuiDemo
         value_raw = ImGui.get_mouse_drag_delta(ImGuiMouseButton::Left, 0.0f32)
         value_with_lock_threshold = ImGui.get_mouse_drag_delta(ImGuiMouseButton::Left)
         mouse_delta = io.mouse_delta
-        ImGui.text("get_mouse_drag_delta(0):")
+        ImGui.text("GetMouseDragDelta(0):")
         ImGui.text("  w/ default threshold: (%.1f, %.1f)", value_with_lock_threshold.x, value_with_lock_threshold.y)
         ImGui.text("  w/ zero threshold: (%.1f, %.1f)", value_raw.x, value_raw.y)
-        ImGui.text("io.mouse_delta: (%.1f, %.1f)", mouse_delta.x, mouse_delta.y)
+        ImGui.text("io.MouseDelta: (%.1f, %.1f)", mouse_delta.x, mouse_delta.y)
         ImGui.tree_pop
       end
 
@@ -3183,12 +3197,12 @@ module ImGuiDemo
         ImGui.text("Hover to see mouse cursors:")
         ImGui.same_line
         help_marker(
-          "Your application can render a different mouse cursor based on what ImGui.get_mouse_cursor() returns. " +
-          "If software cursor rendering (io.mouse_draw_cursor) is set ImGui will draw the right cursor for you, " +
+          "Your application can render a different mouse cursor based on what ImGui::GetMouseCursor() returns. " +
+          "If software cursor rendering (io.MouseDrawCursor) is set ImGui will draw the right cursor for you, " +
           "otherwise your backend needs to handle it.")
         ImGuiMouseCursor.each do |cur|
           next if cur == ImGuiMouseCursor::None
-          label = "Mouse cursor #{cur.to_i}: #{cur}"
+          label = sprintf("Mouse cursor %d: %s", cur.to_i, cur)
           ImGui.bullet
           ImGui.selectable(label, false)
           if ImGui.is_item_hovered || ImGui.is_item_focused
@@ -3201,7 +3215,7 @@ module ImGuiDemo
   end
 
   ImGui.pointer_wrapper def self.show_about_window(p_open = Pointer(Bool).null)
-    if !ImGui.begin("About crystal-imgui", p_open, ImGuiWindowFlags::AlwaysAutoResize)
+    if !ImGui.begin("About Dear ImGui", p_open, ImGuiWindowFlags::AlwaysAutoResize)
       ImGui.end
       return
     end
@@ -3217,7 +3231,7 @@ module ImGuiDemo
       style = ImGui.get_style
 
       copy_to_clipboard = ImGui.button("Copy to clipboard")
-      child_size = ImGui.vec2(0, ImGui.get_text_line_height_with_spacing * 18)
+      child_size = ImVec2.new(0, ImGui.get_text_line_height_with_spacing * 18)
       ImGui.begin_child_frame(ImGui.get_id("cfg_infos"), child_size, ImGuiWindowFlags::NoMove)
       if copy_to_clipboard
         ImGui.log_to_clipboard
@@ -3228,9 +3242,9 @@ module ImGuiDemo
       ImGui.separator
       ImGui.text("sizeof(size_t): %d, sizeof(ImDrawIdx): %d, sizeof(ImDrawVert): %d", sizeof(LibC::SizeT), sizeof(ImGui::ImDrawIdx), sizeof(ImDrawVert))
       ImGui.separator
-      ImGui.text("io.backend_platform_name: %s", io.backend_platform_name ? io.backend_platform_name : "nil")
-      ImGui.text("io.backend_renderer_name: %s", io.backend_renderer_name ? io.backend_renderer_name : "nil")
-      ImGui.text("io.config_flags: 0x%08X", io.config_flags)
+      ImGui.text("io.BackendPlatformName: %s", io.backend_platform_name ? io.backend_platform_name : "NULL")
+      ImGui.text("io.BackendRendererName: %s", io.backend_renderer_name ? io.backend_renderer_name : "NULL")
+      ImGui.text("io.ConfigFlags: 0x%08X", io.config_flags)
       if io.config_flags.includes? :NavEnableKeyboard
         ImGui.text(" NavEnableKeyboard")
       end
@@ -3250,24 +3264,24 @@ module ImGuiDemo
         ImGui.text(" NoMouseCursorChange")
       end
       if io.mouse_draw_cursor
-        ImGui.text("io.mouse_draw_cursor")
+        ImGui.text("io.MouseDrawCursor")
       end
       if io.config_mac_osx_behaviors
-        ImGui.text("io.config_mac_osx_behaviors")
+        ImGui.text("io.ConfigMacOSXBehaviors")
       end
       if io.config_input_text_cursor_blink
-        ImGui.text("io.config_input_text_cursor_blink")
+        ImGui.text("io.ConfigInputTextCursorBlink")
       end
       if io.config_windows_resize_from_edges
-        ImGui.text("io.config_windows_resize_from_edges")
+        ImGui.text("io.ConfigWindowsResizeFromEdges")
       end
       if io.config_windows_move_from_title_bar_only
-        ImGui.text("io.config_windows_move_from_title_bar_only")
+        ImGui.text("io.ConfigWindowsMoveFromTitleBarOnly")
       end
       if io.config_windows_memory_compact_timer >= 0.0f32
-        ImGui.text("io.config_windows_memory_compact_timer = %.1ff", io.config_windows_memory_compact_timer)
+        ImGui.text("io.ConfigWindowsMemoryCompactTimer = %.1ff", io.config_windows_memory_compact_timer)
       end
-      ImGui.text("io.backend_flags: 0x%08X", io.backend_flags)
+      ImGui.text("io.BackendFlags: 0x%08X", io.backend_flags)
       if io.backend_flags.includes? :HasGamepad
         ImGui.text(" HasGamepad")
       end
@@ -3281,17 +3295,17 @@ module ImGuiDemo
         ImGui.text(" RendererHasVtxOffset")
       end
       ImGui.separator
-      ImGui.text("io.fonts: %d fonts, Flags: 0x%08X, TexSize: %d,%d", io.fonts.fonts.size, io.fonts.flags, io.fonts.tex_width, io.fonts.tex_height)
-      ImGui.text("io.display_size: %.2f,%.2f", io.display_size.x, io.display_size.y)
-      ImGui.text("io.display_framebuffer_scale: %.2f,%.2f", io.display_framebuffer_scale.x, io.display_framebuffer_scale.y)
+      ImGui.text("io.Fonts: %d fonts, Flags: 0x%08X, TexSize: %d,%d", io.fonts.fonts.size, io.fonts.flags, io.fonts.tex_width, io.fonts.tex_height)
+      ImGui.text("io.DisplaySize: %.2f,%.2f", io.display_size.x, io.display_size.y)
+      ImGui.text("io.DisplayFramebufferScale: %.2f,%.2f", io.display_framebuffer_scale.x, io.display_framebuffer_scale.y)
       ImGui.separator
-      ImGui.text("style.window_padding: %.2f,%.2f", style.window_padding.x, style.window_padding.y)
-      ImGui.text("style.window_border_size: %.2f", style.window_border_size)
-      ImGui.text("style.frame_padding: %.2f,%.2f", style.frame_padding.x, style.frame_padding.y)
-      ImGui.text("style.frame_rounding: %.2f", style.frame_rounding)
-      ImGui.text("style.frame_border_size: %.2f", style.frame_border_size)
-      ImGui.text("style.item_spacing: %.2f,%.2f", style.item_spacing.x, style.item_spacing.y)
-      ImGui.text("style.item_inner_spacing: %.2f,%.2f", style.item_inner_spacing.x, style.item_inner_spacing.y)
+      ImGui.text("style.WindowPadding: %.2f,%.2f", style.window_padding.x, style.window_padding.y)
+      ImGui.text("style.WindowBorderSize: %.2f", style.window_border_size)
+      ImGui.text("style.FramePadding: %.2f,%.2f", style.frame_padding.x, style.frame_padding.y)
+      ImGui.text("style.FrameRounding: %.2f", style.frame_rounding)
+      ImGui.text("style.FrameBorderSize: %.2f", style.frame_border_size)
+      ImGui.text("style.ItemSpacing: %.2f,%.2f", style.item_spacing.x, style.item_spacing.y)
+      ImGui.text("style.ItemInnerSpacing: %.2f,%.2f", style.item_inner_spacing.x, style.item_inner_spacing.y)
 
       if copy_to_clipboard
         ImGui.log_text("\n```\n")
@@ -3334,10 +3348,10 @@ module ImGuiDemo
     end
     ImGui.same_line
     help_marker(
-      "- Load additional fonts with io.fonts.add_font_from_file_ttf().\n" +
-      "- The font atlas is built when calling io.fonts.get_tex_data_as_xxxx() or io.fonts.build().\n" +
+      "- Load additional fonts with io.Fonts->AddFontFromFileTTF().\n" +
+      "- The font atlas is built when calling io.Fonts->GetTexDataAsXXXX() or io.Fonts->Build().\n" +
       "- Read FAQ and docs/FONTS.md for more details.\n" +
-      "- If you need to add/remove fonts at runtime (e.g. for DPI change), do it before calling new_frame().")
+      "- If you need to add/remove fonts at runtime (e.g. for DPI change), do it before calling NewFrame().")
   end
 
   def self.node_font(font)
@@ -3403,8 +3417,8 @@ module ImGuiDemo
         base_pos = ImGui.get_cursor_screen_pos
         draw_list = ImGui.get_window_draw_list
         256.times do |n|
-          cell_p1 = ImGui.vec2(base_pos.x + (n % 16) * (cell_size + cell_spacing), base_pos.y + (n / 16) * (cell_size + cell_spacing))
-          cell_p2 = ImGui.vec2(cell_p1.x + cell_size, cell_p1.y + cell_size)
+          cell_p1 = ImVec2.new(base_pos.x + (n % 16) * (cell_size + cell_spacing), base_pos.y + (n / 16) * (cell_size + cell_spacing))
+          cell_p2 = ImVec2.new(cell_p1.x + cell_size, cell_p1.y + cell_size)
           glyph = font.find_glyph_no_fallback((base + n).chr)
           draw_list.add_rect(cell_p1, cell_p2, glyph ? ImGui.col32(255, 255, 255, 100) : ImGui.col32(255, 255, 255, 50))
           if glyph
@@ -3416,12 +3430,12 @@ module ImGuiDemo
             ImGui.separator
             ImGui.text("Visible: %d", glyph.visible)
             ImGui.text("AdvanceX: %.1f", glyph.advance_x)
-            ImGui.text("Pos: (%.2f,%.2f).(%.2f,%.2f)", glyph.x0, glyph.y0, glyph.x1, glyph.y1)
-            ImGui.text("UV: (%.3f,%.3f).(%.3f,%.3f)", glyph.u0, glyph.v0, glyph.u1, glyph.v1)
+            ImGui.text("Pos: (%.2f,%.2f)->(%.2f,%.2f)", glyph.x0, glyph.y0, glyph.x1, glyph.y1)
+            ImGui.text("UV: (%.3f,%.3f)->(%.3f,%.3f)", glyph.u0, glyph.v0, glyph.u1, glyph.v1)
             ImGui.end_tooltip
           end
         end
-        ImGui.dummy(ImGui.vec2((cell_size + cell_spacing) * 16, (cell_size + cell_spacing) * 16))
+        ImGui.dummy(ImVec2.new((cell_size + cell_spacing) * 16, (cell_size + cell_spacing) * 16))
         ImGui.tree_pop
       end
       ImGui.tree_pop
@@ -3549,7 +3563,7 @@ module ImGuiDemo
             col = style.colors[i]
             name = ImGui.get_style_color_name(col_i)
             if !output_only_modified.val || col != ref.colors[i]
-              ImGui.log_text("colors[ImGuiCol_%s]%*s= ImGui.vec4(%.2ff, %.2ff, %.2ff, %.2ff);\n",
+              ImGui.log_text("colors[ImGuiCol_%s]%*s= ImVec4(%.2ff, %.2ff, %.2ff, %.2ff);\n",
                 name, 23 - name.size, "", col.x, col.y, col.z, col.w)
             end
           end
@@ -3582,7 +3596,7 @@ module ImGuiDemo
           "Left-click on colored square to open color picker,\n" +
           "Right-click to open edit options menu.")
 
-        ImGui.begin_child("##colors", ImGui.vec2(0, 0), true, ImGuiWindowFlags::AlwaysVerticalScrollbar | ImGuiWindowFlags::AlwaysHorizontalScrollbar | ImGuiWindowFlags::NavFlattened)
+        ImGui.begin_child("##colors", ImVec2.new(0, 0), true, ImGuiWindowFlags::AlwaysVerticalScrollbar | ImGuiWindowFlags::AlwaysHorizontalScrollbar | ImGuiWindowFlags::NavFlattened)
         ImGui.push_item_width(-160)
         ImGuiCol.each do |col_i|
           i = col_i.to_i
@@ -3624,9 +3638,9 @@ module ImGuiDemo
           ImGui.pop_id
         end
         if ImGui.tree_node("Atlas texture", "Atlas texture (%dx%d pixels)", atlas.tex_width, atlas.tex_height)
-          tint_col = ImGui.vec4(1.0f32, 1.0f32, 1.0f32, 1.0f32)
-          border_col = ImGui.vec4(1.0f32, 1.0f32, 1.0f32, 0.5f32)
-          ImGui.image(atlas.tex_id, ImGui.vec2(atlas.tex_width, atlas.tex_height), ImGui.vec2(0, 0), ImGui.vec2(1, 1), tint_col, border_col)
+          tint_col = ImVec4.new(1.0f32, 1.0f32, 1.0f32, 1.0f32)
+          border_col = ImVec4.new(1.0f32, 1.0f32, 1.0f32, 0.5f32)
+          ImGui.image(atlas.tex_id, ImVec2.new(atlas.tex_width, atlas.tex_height), ImVec2.new(0, 0), ImVec2.new(1, 1), tint_col, border_col)
           ImGui.tree_pop
         end
 
@@ -3635,7 +3649,7 @@ module ImGuiDemo
         help_marker(
           "Those are old settings provided for convenience.\n" +
           "However, the _correct_ way of scaling your UI is currently to reload your font at the designed size, " +
-          "rebuild the font atlas, and call style.scale_all_sizes() on a reference ImGuiStyle structure.\n" +
+          "rebuild the font atlas, and call style.ScaleAllSizes() on a reference ImGuiStyle structure.\n" +
           "Using those settings here will give you poor quality results.")
         static window_scale = 1.0f32
         if ImGui.drag_float("window scale", pointerof(window_scale.val), 0.005f32, min_scale, max_scale, "%.2f", ImGuiSliderFlags::ClampOnInput)
@@ -3671,10 +3685,10 @@ module ImGuiDemo
           off_x = 10.0f32
           7.times do |n|
             rad = rad_min + (rad_max - rad_min) * n / (7.0f32 - 1.0f32)
-            ImGui.get_window_draw_list.add_circle(ImGui.vec2(p.x + off_x + rad, p.y + rad_max), rad, ImGui.get_color_u32(ImGuiCol::Text), 0)
+            ImGui.get_window_draw_list.add_circle(ImVec2.new(p.x + off_x + rad, p.y + rad_max), rad, ImGui.get_color_u32(ImGuiCol::Text), 0)
             off_x += 10.0f32 + rad * 2.0f32
           end
-          ImGui.dummy(ImGui.vec2(off_x, rad_max * 2.0f32))
+          ImGui.dummy(ImVec2.new(off_x, rad_max * 2.0f32))
           ImGui.end_tooltip
         end
         ImGui.same_line
@@ -3695,7 +3709,7 @@ module ImGuiDemo
   def self.show_example_app_main_menu_bar
     if ImGui.begin_main_menu_bar
       if ImGui.begin_menu("File")
-        show_example_menu_file()
+        show_example_menu_file
         ImGui.end_menu
       end
       if ImGui.begin_menu("Edit")
@@ -3730,7 +3744,7 @@ module ImGuiDemo
         ImGui.menu_item("Hello")
         ImGui.menu_item("Sailor")
         if ImGui.begin_menu("Recurse..")
-          show_example_menu_file()
+          show_example_menu_file
           ImGui.end_menu
         end
         ImGui.end_menu
@@ -3746,7 +3760,7 @@ module ImGuiDemo
     if ImGui.begin_menu("Options")
       static enabled = true
       ImGui.menu_item("Enabled", "", pointerof(enabled.val))
-      ImGui.begin_child("child", ImGui.vec2(0, 60), true)
+      ImGui.begin_child("child", ImVec2.new(0, 60), true)
       10.times do |i|
         ImGui.text("Scrolling Text %d", i)
       end
@@ -3764,8 +3778,8 @@ module ImGuiDemo
       ImGuiCol.values.each do |col_i|
         name = ImGui.get_style_color_name(col_i)
         p = ImGui.get_cursor_screen_pos
-        ImGui.get_window_draw_list.add_rect_filled(p, ImGui.vec2(p.x + sz, p.y + sz), ImGui.get_color_u32(col_i))
-        ImGui.dummy(ImGui.vec2(sz, sz))
+        ImGui.get_window_draw_list.add_rect_filled(p, ImVec2.new(p.x + sz, p.y + sz), ImGui.get_color_u32(col_i))
+        ImGui.dummy(ImVec2.new(sz, sz))
         ImGui.same_line
         ImGui.menu_item(name)
       end
@@ -3788,17 +3802,16 @@ module ImGuiDemo
   end
 
   class ExampleAppConsole
-    @input_buf = ImGui::TextBuffer.new(256)
-    @items = [] of String
-    @commands = ["HELP", "HISTORY", "CLEAR", "CLASSIFY"]
-    @history = [] of String
-    @history_pos = -1
-    @filter = ImGuiTextFilter.new
-    @auto_scroll = true
-    @scroll_to_bottom = false
-
     def initialize
-      add_log("Welcome to crystal-imgui!")
+      @input_buf = ImGui::TextBuffer.new(256)
+      @items = [] of String
+      @history = [] of String
+      @history_pos = -1
+      @filter = ImGuiTextFilter.new
+      @commands = ["HELP", "HISTORY", "CLEAR", "CLASSIFY"]
+      @auto_scroll = true
+      @scroll_to_bottom = false
+      add_log("Welcome to Dear ImGui!")
     end
 
     def stricmp(s1, s2)
@@ -3814,7 +3827,7 @@ module ImGuiDemo
     end
 
     def draw(title, p_open)
-      ImGui.set_next_window_size(ImGui.vec2(520, 600), ImGuiCond::FirstUseEver)
+      ImGui.set_next_window_size(ImVec2.new(520, 600), ImGuiCond::FirstUseEver)
       if !ImGui.begin(title, p_open)
         ImGui.end
         return
@@ -3843,7 +3856,7 @@ module ImGuiDemo
       end
       ImGui.same_line
       if ImGui.small_button("Clear")
-        clear_log()
+        clear_log
       end
       ImGui.same_line
       copy_to_clipboard = ImGui.small_button("Copy")
@@ -3863,14 +3876,14 @@ module ImGuiDemo
       ImGui.separator
 
       footer_height_to_reserve = ImGui.get_style.item_spacing.y + ImGui.get_frame_height_with_spacing
-      ImGui.begin_child("ScrollingRegion", ImGui.vec2(0, -footer_height_to_reserve), false, ImGuiWindowFlags::HorizontalScrollbar)
+      ImGui.begin_child("ScrollingRegion", ImVec2.new(0, -footer_height_to_reserve), false, ImGuiWindowFlags::HorizontalScrollbar)
       if ImGui.begin_popup_context_window
         if ImGui.selectable("Clear")
-          clear_log()
+          clear_log
         end
         ImGui.end_popup
       end
-      ImGui.push_style_var(ImGuiStyleVar::ItemSpacing, ImGui.vec2(4, 1))
+      ImGui.push_style_var(ImGuiStyleVar::ItemSpacing, ImVec2.new(4, 1))
       if copy_to_clipboard
         ImGui.log_to_clipboard
       end
@@ -3881,9 +3894,9 @@ module ImGuiDemo
 
         color = nil
         if item.includes?("[error]")
-          color = ImGui.vec4(1.0f32, 0.4f32, 0.4f32, 1.0f32)
+          color = ImVec4.new(1.0f32, 0.4f32, 0.4f32, 1.0f32)
         elsif item.starts_with?("# ")
-          color = ImGui.vec4(1.0f32, 0.8f32, 0.6f32, 1.0f32)
+          color = ImVec4.new(1.0f32, 0.8f32, 0.6f32, 1.0f32)
         end
         if color
           ImGui.push_style_color(ImGuiCol::Text, color)
@@ -4043,10 +4056,12 @@ module ImGuiDemo
   end
 
   class ExampleAppLog
-    @buf = ImGui::TextBuffer.new
-    @filter = ImGuiTextFilter.new
-    @line_offsets = [0]
-    @auto_scroll = true
+    def initialize
+      @buf = ImGui::TextBuffer.new
+      @filter = ImGuiTextFilter.new
+      @line_offsets = [0]
+      @auto_scroll = true
+    end
 
     def clear
       @buf.clear
@@ -4085,16 +4100,16 @@ module ImGuiDemo
       @filter.draw("Filter", -100.0f32)
 
       ImGui.separator
-      ImGui.begin_child("scrolling", ImGui.vec2(0, 0), false, ImGuiWindowFlags::HorizontalScrollbar)
+      ImGui.begin_child("scrolling", ImVec2.new(0, 0), false, ImGuiWindowFlags::HorizontalScrollbar)
 
       if clear
-        clear()
+        clear
       end
       if copy
         ImGui.log_to_clipboard
       end
 
-      ImGui.push_style_var(ImGuiStyleVar::ItemSpacing, ImGui.vec2(0, 0))
+      ImGui.push_style_var(ImGuiStyleVar::ItemSpacing, ImVec2.new(0, 0))
       buf = @buf.to_slice
       if @filter.is_active
         @line_offsets.size.times do |line_no|
@@ -4130,7 +4145,7 @@ module ImGuiDemo
   ImGui.pointer_wrapper def self.show_example_app_log(p_open = Pointer(Bool).null)
     static log = ExampleAppLog.new
 
-    ImGui.set_next_window_size(ImGui.vec2(500, 400), ImGuiCond::FirstUseEver)
+    ImGui.set_next_window_size(ImVec2.new(500, 400), ImGuiCond::FirstUseEver)
     ImGui.begin("Example: Log", p_open)
     if ImGui.small_button("[Debug] Add 5 entries")
       static counter = 0
@@ -4150,7 +4165,7 @@ module ImGuiDemo
   end
 
   ImGui.pointer_wrapper def self.show_example_app_layout(p_open = Pointer(Bool).null)
-    ImGui.set_next_window_size(ImGui.vec2(500, 440), ImGuiCond::FirstUseEver)
+    ImGui.set_next_window_size(ImVec2.new(500, 440), ImGuiCond::FirstUseEver)
     if ImGui.begin("Example: Simple layout", p_open, ImGuiWindowFlags::MenuBar)
       if ImGui.begin_menu_bar
         if ImGui.begin_menu("File")
@@ -4164,9 +4179,10 @@ module ImGuiDemo
 
       static selected = 0
       begin
-        ImGui.begin_child("left pane", ImGui.vec2(150, 0), true)
+        ImGui.begin_child("left pane", ImVec2.new(150, 0), true)
         100.times do |i|
-          if ImGui.selectable("MyObject #{i}", selected.val == i)
+          label = sprintf("MyObject %d", i)
+          if ImGui.selectable(label, selected.val == i)
             selected.val = i
           end
         end
@@ -4176,7 +4192,7 @@ module ImGuiDemo
 
       begin
         ImGui.begin_group
-        ImGui.begin_child("item view", ImGui.vec2(0, -ImGui.get_frame_height_with_spacing))
+        ImGui.begin_child("item view", ImVec2.new(0, -ImGui.get_frame_height_with_spacing))
         ImGui.text("MyObject: %d", selected.val)
         ImGui.separator
         if ImGui.begin_tab_bar("##Tabs", ImGuiTabBarFlags::None)
@@ -4211,7 +4227,7 @@ module ImGuiDemo
     ImGui.text("my sailor is rich")
     ImGui.next_column
     if node_open
-      static placeholder_members = [0.0, 0.0, 1.0, 3.1416, 100.0, 999.0, 0.0, 0.0] of Float32
+      static placeholder_members = [0.0f32, 0.0f32, 1.0f32, 3.1416f32, 100.0f32, 999.0f32, 0.0f32, 0.0f32]
       8.times do |i|
         ImGui.push_id(i)
         if i < 2
@@ -4237,7 +4253,7 @@ module ImGuiDemo
   end
 
   ImGui.pointer_wrapper def self.show_example_app_property_editor(p_open = Pointer(Bool).null)
-    ImGui.set_next_window_size(ImGui.vec2(430, 450), ImGuiCond::FirstUseEver)
+    ImGui.set_next_window_size(ImVec2.new(430, 450), ImGuiCond::FirstUseEver)
     if !ImGui.begin("Example: Property editor", p_open)
       ImGui.end
       return
@@ -4246,10 +4262,10 @@ module ImGuiDemo
     help_marker(
       "This example shows how you may implement a property editor using two columns.\n" +
       "All objects/fields data are dummies here.\n" +
-      "Remember that in many simple cases, you can use ImGui.same_line(xxx) to position\n" +
-      "your cursor horizontally instead of using the columns() API.")
+      "Remember that in many simple cases, you can use ImGui::SameLine(xxx) to position\n" +
+      "your cursor horizontally instead of using the Columns() API.")
 
-    ImGui.push_style_var(ImGuiStyleVar::FramePadding, ImGui.vec2(2, 2))
+    ImGui.push_style_var(ImGuiStyleVar::FramePadding, ImVec2.new(2, 2))
     ImGui.columns(2)
     ImGui.separator
 
@@ -4264,7 +4280,7 @@ module ImGuiDemo
   end
 
   ImGui.pointer_wrapper def self.show_example_app_long_text(p_open = Pointer(Bool).null)
-    ImGui.set_next_window_size(ImGui.vec2(520, 600), ImGuiCond::FirstUseEver)
+    ImGui.set_next_window_size(ImVec2.new(520, 600), ImGuiCond::FirstUseEver)
     if !ImGui.begin("Example: Long text display", p_open)
       ImGui.end
       return
@@ -4275,9 +4291,9 @@ module ImGuiDemo
     static lines = 0
     ImGui.text("Printing unusually long amount of text.")
     ImGui.combo("Test type", pointerof(test_type.val),
-      "Single call to text_unformatted()\0" +
-      "Multiple calls to text(), clipped\0" +
-      "Multiple calls to text(), not clipped (slow)\0")
+      "Single call to TextUnformatted()\0" +
+      "Multiple calls to Text(), clipped\0" +
+      "Multiple calls to Text(), not clipped (slow)\0")
     ImGui.text("Buffer contents: %d lines, %d bytes", lines.val, log.val.bytesize)
     if ImGui.button("Clear")
       log.val.clear
@@ -4286,7 +4302,7 @@ module ImGuiDemo
     ImGui.same_line
     if ImGui.button("Add 1000 lines")
       1000.times do |i|
-        log.val << (lines.val + i) << " The quick brown fox jumps over the lazy dog\n"
+        log.val.printf("%i The quick brown fox jumps over the lazy dog\n", lines.val + i)
       end
       lines.val += 1000
     end
@@ -4295,7 +4311,7 @@ module ImGuiDemo
     when 0
       ImGui.text_unformatted(log.val.to_slice)
     when 1
-      ImGui.push_style_var(ImGuiStyleVar::ItemSpacing, ImGui.vec2(0, 0))
+      ImGui.push_style_var(ImGuiStyleVar::ItemSpacing, ImVec2.new(0, 0))
       clipper = ImGuiListClipper.new(lines.val)
       while clipper.step
         (clipper.display_start...clipper.display_end).each do |i|
@@ -4304,7 +4320,7 @@ module ImGuiDemo
       end
       ImGui.pop_style_var
     when 2
-      ImGui.push_style_var(ImGuiStyleVar::ItemSpacing, ImGui.vec2(0, 0))
+      ImGui.push_style_var(ImGuiStyleVar::ItemSpacing, ImVec2.new(0, 0))
       lines.val.times do |i|
         ImGui.text("%i The quick brown fox jumps over the lazy dog", i)
       end
@@ -4333,6 +4349,15 @@ module ImGuiDemo
   end
 
   ImGui.pointer_wrapper def self.show_example_app_constrained_resize(p_open = Pointer(Bool).null)
+    square_constraint = ->(data : ImGuiSizeCallbackData) {
+      size = {data.desired_size.x, data.desired_size.y}.max
+      data.desired_size = ImVec2.new(size, size)
+    }
+    step = 100
+    step_constraint = ->(data : ImGuiSizeCallbackData) {
+      data.desired_size = ImVec2.new((data.desired_size.x / step + 0.5f32).to_i * step, (data.desired_size.y / step + 0.5f32).to_i * step)
+    }
+
     test_desc = [
       "Resize vertical only",
       "Resize horizontal only",
@@ -4347,45 +4372,39 @@ module ImGuiDemo
     static type = 0
     static display_lines = 10
     if type.val == 0
-      ImGui.set_next_window_size_constraints(ImGui.vec2(-1, 0), ImGui.vec2(-1, Float32::MAX))
+      ImGui.set_next_window_size_constraints(ImVec2.new(-1, 0), ImVec2.new(-1, Float32::MAX))
     end
     if type.val == 1
-      ImGui.set_next_window_size_constraints(ImGui.vec2(0, -1), ImGui.vec2(Float32::MAX, -1))
+      ImGui.set_next_window_size_constraints(ImVec2.new(0, -1), ImVec2.new(Float32::MAX, -1))
     end
     if type.val == 2
-      ImGui.set_next_window_size_constraints(ImGui.vec2(100, 100), ImGui.vec2(Float32::MAX, Float32::MAX))
+      ImGui.set_next_window_size_constraints(ImVec2.new(100, 100), ImVec2.new(Float32::MAX, Float32::MAX))
     end
     if type.val == 3
-      ImGui.set_next_window_size_constraints(ImGui.vec2(400, -1), ImGui.vec2(500, -1))
+      ImGui.set_next_window_size_constraints(ImVec2.new(400, -1), ImVec2.new(500, -1))
     end
     if type.val == 4
-      ImGui.set_next_window_size_constraints(ImGui.vec2(-1, 400), ImGui.vec2(-1, 500))
+      ImGui.set_next_window_size_constraints(ImVec2.new(-1, 400), ImVec2.new(-1, 500))
     end
     if type.val == 5
-      ImGui.set_next_window_size_constraints(ImGui.vec2(0, 0), ImGui.vec2(Float32::MAX, Float32::MAX)) do |data|
-        size = {data.desired_size.x, data.desired_size.y}.max
-        data.desired_size = ImGui.vec2(size, size)
-      end
+      ImGui.set_next_window_size_constraints(ImVec2.new(0, 0), ImVec2.new(Float32::MAX, Float32::MAX), &square_constraint)
     end
     if type.val == 6
-      step = 100
-      ImGui.set_next_window_size_constraints(ImGui.vec2(0, 0), ImGui.vec2(Float32::MAX, Float32::MAX)) do |data|
-        data.desired_size = ImGui.vec2((data.desired_size.x / step + 0.5f32).to_i * step, (data.desired_size.y / step + 0.5f32).to_i * step)
-      end
+      ImGui.set_next_window_size_constraints(ImVec2.new(0, 0), ImVec2.new(Float32::MAX, Float32::MAX), &step_constraint)
     end
 
     flags = auto_resize.val ? ImGuiWindowFlags::AlwaysAutoResize : ImGuiWindowFlags::None
     if ImGui.begin("Example: Constrained Resize", p_open, flags)
       if ImGui.button("200x200")
-        ImGui.set_window_size(ImGui.vec2(200, 200))
+        ImGui.set_window_size(ImVec2.new(200, 200))
       end
       ImGui.same_line
       if ImGui.button("500x500")
-        ImGui.set_window_size(ImGui.vec2(500, 500))
+        ImGui.set_window_size(ImVec2.new(500, 500))
       end
       ImGui.same_line
       if ImGui.button("800x200")
-        ImGui.set_window_size(ImGui.vec2(800, 200))
+        ImGui.set_window_size(ImVec2.new(800, 200))
       end
       ImGui.set_next_item_width(200)
       ImGui.combo("Constraint", pointerof(type.val), test_desc)
@@ -4404,8 +4423,8 @@ module ImGuiDemo
     static corner = 0
     io = ImGui.get_io
     if corner.val != -1
-      window_pos = ImGui.vec2((corner.val & 1) != 0 ? io.display_size.x - distance : distance, (corner.val & 2) != 0 ? io.display_size.y - distance : distance)
-      window_pos_pivot = ImGui.vec2((corner.val & 1) != 0 ? 1.0f32 : 0.0f32, (corner.val & 2) != 0 ? 1.0f32 : 0.0f32)
+      window_pos = ImVec2.new((corner.val & 1) != 0 ? io.display_size.x - distance : distance, (corner.val & 2) != 0 ? io.display_size.y - distance : distance)
+      window_pos_pivot = ImVec2.new((corner.val & 1) != 0 ? 1.0f32 : 0.0f32, (corner.val & 2) != 0 ? 1.0f32 : 0.0f32)
       ImGui.set_next_window_pos(window_pos, ImGuiCond::Always, window_pos_pivot)
     end
     ImGui.set_next_window_bg_alpha(0.35f32)
@@ -4449,19 +4468,19 @@ module ImGuiDemo
   end
 
   ImGui.pointer_wrapper def self.show_example_app_window_titles(p_open = Pointer(Bool).null)
-    ImGui.set_next_window_pos(ImGui.vec2(100, 100), ImGuiCond::FirstUseEver)
+    ImGui.set_next_window_pos(ImVec2.new(100, 100), ImGuiCond::FirstUseEver)
     ImGui.begin("Same title as another window##1")
     ImGui.text("This is window 1.\nMy title is the same as window 2, but my identifier is unique.")
     ImGui.end
 
-    ImGui.set_next_window_pos(ImGui.vec2(100, 200), ImGuiCond::FirstUseEver)
+    ImGui.set_next_window_pos(ImVec2.new(100, 200), ImGuiCond::FirstUseEver)
     ImGui.begin("Same title as another window##2")
     ImGui.text("This is window 2.\nMy title is the same as window 1, but my identifier is unique.")
     ImGui.end
 
-    spin = "|/-\\"[(ImGui.get_time / 0.25f32).to_i & 3]
-    ImGui.set_next_window_pos(ImGui.vec2(100, 300), ImGuiCond::FirstUseEver)
-    ImGui.begin("Animated title #{spin} #{ImGui.get_frame_count}###AnimatedTitle")
+    buf = sprintf("Animated title %c %d###AnimatedTitle", "|/-\\"[(ImGui.get_time / 0.25f32).to_i & 3], ImGui.get_frame_count)
+    ImGui.set_next_window_pos(ImVec2.new(100, 300), ImGuiCond::FirstUseEver)
+    ImGui.begin(buf)
     ImGui.text("This window has a changing title.")
     ImGui.end
   end
@@ -4478,10 +4497,10 @@ module ImGuiDemo
         draw_list = ImGui.get_window_draw_list
 
         ImGui.text("Gradients")
-        gradient_size = ImGui.vec2(ImGui.calc_item_width, ImGui.get_frame_height)
+        gradient_size = ImVec2.new(ImGui.calc_item_width, ImGui.get_frame_height)
         begin
           p0 = ImGui.get_cursor_screen_pos
-          p1 = ImGui.vec2(p0.x + gradient_size.x, p0.y + gradient_size.y)
+          p1 = ImVec2.new(p0.x + gradient_size.x, p0.y + gradient_size.y)
           col_a = ImGui.get_color_u32(ImGui.col32(0, 0, 0, 255))
           col_b = ImGui.get_color_u32(ImGui.col32(255, 255, 255, 255))
           draw_list.add_rect_filled_multi_color(p0, p1, col_a, col_b, col_b, col_a)
@@ -4489,7 +4508,7 @@ module ImGuiDemo
         end
         begin
           p0 = ImGui.get_cursor_screen_pos
-          p1 = ImGui.vec2(p0.x + gradient_size.x, p0.y + gradient_size.y)
+          p1 = ImVec2.new(p0.x + gradient_size.x, p0.y + gradient_size.y)
           col_a = ImGui.get_color_u32(ImGui.col32(0, 255, 0, 255))
           col_b = ImGui.get_color_u32(ImGui.col32(255, 0, 0, 255))
           draw_list.add_rect_filled_multi_color(p0, p1, col_a, col_b, col_b, col_a)
@@ -4502,7 +4521,7 @@ module ImGuiDemo
         static ngon_sides = 6
         static circle_segments_override = false
         static circle_segments_override_v = 12
-        static colf = ImGui.vec4(1.0f32, 1.0f32, 0.4f32, 1.0f32)
+        static colf = ImVec4.new(1.0f32, 1.0f32, 0.4f32, 1.0f32)
         ImGui.drag_float("Size", pointerof(sz.val), 0.2f32, 2.0f32, 72.0f32, "%.0f")
         ImGui.drag_float("Thickness", pointerof(thickness.val), 0.05f32, 1.0f32, 8.0f32, "%.02f")
         ImGui.slider_int("N-gon sides", pointerof(ngon_sides.val), 3, 12)
@@ -4524,51 +4543,51 @@ module ImGuiDemo
         y = p.y + 4.0f32
         2.times do |n|
           th = (n == 0) ? 1.0f32 : thickness.val
-          draw_list.add_ngon(ImGui.vec2(x + sz.val * 0.5f32, y + sz.val * 0.5f32), sz.val * 0.5f32, col, ngon_sides.val, th)
+          draw_list.add_ngon(ImVec2.new(x + sz.val * 0.5f32, y + sz.val * 0.5f32), sz.val * 0.5f32, col, ngon_sides.val, th)
           x += sz.val + spacing
-          draw_list.add_circle(ImGui.vec2(x + sz.val * 0.5f32, y + sz.val * 0.5f32), sz.val * 0.5f32, col, circle_segments, th)
+          draw_list.add_circle(ImVec2.new(x + sz.val * 0.5f32, y + sz.val * 0.5f32), sz.val * 0.5f32, col, circle_segments, th)
           x += sz.val + spacing
-          draw_list.add_rect(ImGui.vec2(x, y), ImGui.vec2(x + sz.val, y + sz.val), col, 0.0f32, corners_none, th)
+          draw_list.add_rect(ImVec2.new(x, y), ImVec2.new(x + sz.val, y + sz.val), col, 0.0f32, corners_none, th)
           x += sz.val + spacing
-          draw_list.add_rect(ImGui.vec2(x, y), ImGui.vec2(x + sz.val, y + sz.val), col, 10.0f32, corners_all, th)
+          draw_list.add_rect(ImVec2.new(x, y), ImVec2.new(x + sz.val, y + sz.val), col, 10.0f32, corners_all, th)
           x += sz.val + spacing
-          draw_list.add_rect(ImGui.vec2(x, y), ImGui.vec2(x + sz.val, y + sz.val), col, 10.0f32, corners_tl_br, th)
+          draw_list.add_rect(ImVec2.new(x, y), ImVec2.new(x + sz.val, y + sz.val), col, 10.0f32, corners_tl_br, th)
           x += sz.val + spacing
-          draw_list.add_triangle(ImGui.vec2(x + sz.val * 0.5f32, y), ImGui.vec2(x + sz.val, y + sz.val - 0.5f32), ImGui.vec2(x, y + sz.val - 0.5f32), col, th)
+          draw_list.add_triangle(ImVec2.new(x + sz.val * 0.5f32, y), ImVec2.new(x + sz.val, y + sz.val - 0.5f32), ImVec2.new(x, y + sz.val - 0.5f32), col, th)
           x += sz.val + spacing
 
-          draw_list.add_line(ImGui.vec2(x, y), ImGui.vec2(x + sz.val, y), col, th)
+          draw_list.add_line(ImVec2.new(x, y), ImVec2.new(x + sz.val, y), col, th)
           x += sz.val + spacing
-          draw_list.add_line(ImGui.vec2(x, y), ImGui.vec2(x, y + sz.val), col, th)
+          draw_list.add_line(ImVec2.new(x, y), ImVec2.new(x, y + sz.val), col, th)
           x += spacing
-          draw_list.add_line(ImGui.vec2(x, y), ImGui.vec2(x + sz.val, y + sz.val), col, th)
+          draw_list.add_line(ImVec2.new(x, y), ImVec2.new(x + sz.val, y + sz.val), col, th)
           x += sz.val + spacing
-          draw_list.add_bezier_curve(ImGui.vec2(x, y), ImGui.vec2(x + sz.val * 1.3f32, y + sz.val * 0.3f32), ImGui.vec2(x + sz.val - sz.val * 1.3f32, y + sz.val - sz.val * 0.3f32), ImGui.vec2(x + sz.val, y + sz.val), col, th)
+          draw_list.add_bezier_curve(ImVec2.new(x, y), ImVec2.new(x + sz.val * 1.3f32, y + sz.val * 0.3f32), ImVec2.new(x + sz.val - sz.val * 1.3f32, y + sz.val - sz.val * 0.3f32), ImVec2.new(x + sz.val, y + sz.val), col, th)
           x = p.x + 4
           y += sz.val + spacing
         end
-        draw_list.add_ngon_filled(ImGui.vec2(x + sz.val * 0.5f32, y + sz.val * 0.5f32), sz.val * 0.5f32, col, ngon_sides.val)
+        draw_list.add_ngon_filled(ImVec2.new(x + sz.val * 0.5f32, y + sz.val * 0.5f32), sz.val * 0.5f32, col, ngon_sides.val)
         x += sz.val + spacing
-        draw_list.add_circle_filled(ImGui.vec2(x + sz.val * 0.5f32, y + sz.val * 0.5f32), sz.val * 0.5f32, col, circle_segments)
+        draw_list.add_circle_filled(ImVec2.new(x + sz.val * 0.5f32, y + sz.val * 0.5f32), sz.val * 0.5f32, col, circle_segments)
         x += sz.val + spacing
-        draw_list.add_rect_filled(ImGui.vec2(x, y), ImGui.vec2(x + sz.val, y + sz.val), col)
+        draw_list.add_rect_filled(ImVec2.new(x, y), ImVec2.new(x + sz.val, y + sz.val), col)
         x += sz.val + spacing
-        draw_list.add_rect_filled(ImGui.vec2(x, y), ImGui.vec2(x + sz.val, y + sz.val), col, 10.0f32)
+        draw_list.add_rect_filled(ImVec2.new(x, y), ImVec2.new(x + sz.val, y + sz.val), col, 10.0f32)
         x += sz.val + spacing
-        draw_list.add_rect_filled(ImGui.vec2(x, y), ImGui.vec2(x + sz.val, y + sz.val), col, 10.0f32, corners_tl_br)
+        draw_list.add_rect_filled(ImVec2.new(x, y), ImVec2.new(x + sz.val, y + sz.val), col, 10.0f32, corners_tl_br)
         x += sz.val + spacing
-        draw_list.add_triangle_filled(ImGui.vec2(x + sz.val * 0.5f32, y), ImGui.vec2(x + sz.val, y + sz.val - 0.5f32), ImGui.vec2(x, y + sz.val - 0.5f32), col)
+        draw_list.add_triangle_filled(ImVec2.new(x + sz.val * 0.5f32, y), ImVec2.new(x + sz.val, y + sz.val - 0.5f32), ImVec2.new(x, y + sz.val - 0.5f32), col)
         x += sz.val + spacing
 
-        draw_list.add_rect_filled(ImGui.vec2(x, y), ImGui.vec2(x + sz.val, y + thickness.val), col)
+        draw_list.add_rect_filled(ImVec2.new(x, y), ImVec2.new(x + sz.val, y + thickness.val), col)
         x += sz.val + spacing
-        draw_list.add_rect_filled(ImGui.vec2(x, y), ImGui.vec2(x + thickness.val, y + sz.val), col)
+        draw_list.add_rect_filled(ImVec2.new(x, y), ImVec2.new(x + thickness.val, y + sz.val), col)
         x += spacing * 2.0f32
-        draw_list.add_rect_filled(ImGui.vec2(x, y), ImGui.vec2(x + 1, y + 1), col)
+        draw_list.add_rect_filled(ImVec2.new(x, y), ImVec2.new(x + 1, y + 1), col)
         x += sz.val
-        draw_list.add_rect_filled_multi_color(ImGui.vec2(x, y), ImGui.vec2(x + sz.val, y + sz.val), ImGui.col32(0, 0, 0, 255), ImGui.col32(255, 0, 0, 255), ImGui.col32(255, 255, 0, 255), ImGui.col32(0, 255, 0, 255))
+        draw_list.add_rect_filled_multi_color(ImVec2.new(x, y), ImVec2.new(x + sz.val, y + sz.val), ImGui.col32(0, 0, 0, 255), ImGui.col32(255, 0, 0, 255), ImGui.col32(255, 255, 0, 255), ImGui.col32(0, 255, 0, 255))
 
-        ImGui.dummy(ImGui.vec2((sz.val + spacing) * 8.8f32, (sz.val + spacing) * 3.0f32))
+        ImGui.dummy(ImVec2.new((sz.val + spacing) * 8.8f32, (sz.val + spacing) * 3.0f32))
         ImGui.pop_item_width
         ImGui.end_tab_item
       end
@@ -4591,7 +4610,7 @@ module ImGuiDemo
         if canvas_sz.y < 50.0f32
           canvas_sz.y = 50.0f32
         end
-        canvas_p1 = ImGui.vec2(canvas_p0.x + canvas_sz.x, canvas_p0.y + canvas_sz.y)
+        canvas_p1 = ImVec2.new(canvas_p0.x + canvas_sz.x, canvas_p0.y + canvas_sz.y)
 
         io = ImGui.get_io
         draw_list = ImGui.get_window_draw_list
@@ -4601,8 +4620,8 @@ module ImGuiDemo
         ImGui.invisible_button("canvas", canvas_sz, ImGuiButtonFlags::MouseButtonLeft | ImGuiButtonFlags::MouseButtonRight)
         is_hovered = ImGui.is_item_hovered
         is_active = ImGui.is_item_active
-        origin = ImGui.vec2(canvas_p0.x + scrolling.val.x, canvas_p0.y + scrolling.val.y)
-        mouse_pos_in_canvas = ImGui.vec2(io.mouse_pos.x - origin.x, io.mouse_pos.y - origin.y)
+        origin = ImVec2.new(canvas_p0.x + scrolling.val.x, canvas_p0.y + scrolling.val.y)
+        mouse_pos_in_canvas = ImVec2.new(io.mouse_pos.x - origin.x, io.mouse_pos.y - origin.y)
 
         if is_hovered && !adding_line.val && ImGui.is_mouse_clicked(ImGuiMouseButton::Left)
           points.val.push(mouse_pos_in_canvas)
@@ -4615,6 +4634,7 @@ module ImGuiDemo
             adding_line.val = false
           end
         end
+
         mouse_threshold_for_pan = opt_enable_context_menu.val ? -1.0f32 : 0.0f32
         if is_active && ImGui.is_mouse_dragging(ImGuiMouseButton::Right, mouse_threshold_for_pan)
           scrolling.val.x += io.mouse_delta.x
@@ -4644,17 +4664,17 @@ module ImGuiDemo
           grid_step = 64.0f32
           x = scrolling.val.x % grid_step
           while x < canvas_sz.x
-            draw_list.add_line(ImGui.vec2(canvas_p0.x + x, canvas_p0.y), ImGui.vec2(canvas_p0.x + x, canvas_p1.y), ImGui.col32(200, 200, 200, 40))
+            draw_list.add_line(ImVec2.new(canvas_p0.x + x, canvas_p0.y), ImVec2.new(canvas_p0.x + x, canvas_p1.y), ImGui.col32(200, 200, 200, 40))
             x += grid_step
           end
           y = scrolling.val.y % grid_step
           while y < canvas_sz.y
-            draw_list.add_line(ImGui.vec2(canvas_p0.x, canvas_p0.y + y), ImGui.vec2(canvas_p1.x, canvas_p0.y + y), ImGui.col32(200, 200, 200, 40))
+            draw_list.add_line(ImVec2.new(canvas_p0.x, canvas_p0.y + y), ImVec2.new(canvas_p1.x, canvas_p0.y + y), ImGui.col32(200, 200, 200, 40))
             y += grid_step
           end
         end
         (0...points.val.size).step(2) do |n|
-          draw_list.add_line(ImGui.vec2(origin.x + points.val[n].x, origin.y + points.val[n].y), ImGui.vec2(origin.x + points.val[n + 1].x, origin.y + points.val[n + 1].y), ImGui.col32(255, 255, 0, 255), 2.0f32)
+          draw_list.add_line(ImVec2.new(origin.x + points.val[n].x, origin.y + points.val[n].y), ImVec2.new(origin.x + points.val[n + 1].x, origin.y + points.val[n + 1].y), ImGui.col32(255, 255, 0, 255), 2.0f32)
         end
         draw_list.pop_clip_rect
 
@@ -4672,7 +4692,7 @@ module ImGuiDemo
         help_marker("The Foreground draw list will be rendered over every Dear ImGui windows.")
         window_pos = ImGui.get_window_pos
         window_size = ImGui.get_window_size
-        window_center = ImGui.vec2(window_pos.x + window_size.x * 0.5f32, window_pos.y + window_size.y * 0.5f32)
+        window_center = ImVec2.new(window_pos.x + window_size.x * 0.5f32, window_pos.y + window_size.y * 0.5f32)
         if draw_bg.val
           ImGui.get_background_draw_list.add_circle(window_center, window_size.x * 0.6f32, ImGui.col32(255, 0, 0, 200), 0, 10f32 + 4)
         end
@@ -4689,14 +4709,17 @@ module ImGuiDemo
   end
 
   class MyDocument
-    property? open, open_prev
     getter name
-    property? dirty = false
-    property? want_close = false
+    property? open
+    property? open_prev
+    property? dirty
+    property? want_close
     property color
 
-    def initialize(@name : String, @open = true, @color = ImGui.vec4(1.0f32, 1.0f32, 1.0f32, 1.0f32))
+    def initialize(@name : String, @open = true, @color = ImVec4.new(1.0f32, 1.0f32, 1.0f32, 1.0f32))
       @open_prev = open
+      @dirty = false
+      @want_close = false
     end
 
     def do_open
@@ -4722,11 +4745,11 @@ module ImGuiDemo
       ImGui.push_style_color(ImGuiCol::Text, doc.color)
       ImGui.text_wrapped("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.")
       ImGui.pop_style_color
-      if ImGui.button("Modify", ImGui.vec2(100, 0))
+      if ImGui.button("Modify", ImVec2.new(100, 0))
         doc.dirty = true
       end
       ImGui.same_line
-      if ImGui.button("Save", ImGui.vec2(100, 0))
+      if ImGui.button("Save", ImVec2.new(100, 0))
         doc.do_save
       end
       ImGui.color_edit3("color", pointerof(doc.color))
@@ -4738,7 +4761,8 @@ module ImGuiDemo
         return
       end
 
-      if ImGui.menu_item("Save #{doc.name}", "CTRL+S", false, doc.open?)
+      buf = sprintf("Save %s", doc.name)
+      if ImGui.menu_item(buf, "CTRL+S", false, doc.open?)
         doc.do_save
       end
       if ImGui.menu_item("Close", "CTRL+W", false, doc.open?)
@@ -4753,10 +4777,10 @@ module ImGuiDemo
 
     def initialize
       @documents = [
-        MyDocument.new("Lettuce", true, ImGui.vec4(0.4f32, 0.8f32, 0.4f32, 1.0f32)),
-        MyDocument.new("Eggplant", true, ImGui.vec4(0.8f32, 0.5f32, 1.0f32, 1.0f32)),
-        MyDocument.new("Carrot", true, ImGui.vec4(1.0f32, 0.8f32, 0.5f32, 1.0f32)),
-        MyDocument.new("Tomato", false, ImGui.vec4(1.0f32, 0.3f32, 0.4f32, 1.0f32)),
+        MyDocument.new("Lettuce", true, ImVec4.new(0.4f32, 0.8f32, 0.4f32, 1.0f32)),
+        MyDocument.new("Eggplant", true, ImVec4.new(0.8f32, 0.5f32, 1.0f32, 1.0f32)),
+        MyDocument.new("Carrot", true, ImVec4.new(1.0f32, 0.8f32, 0.5f32, 1.0f32)),
+        MyDocument.new("Tomato", false, ImVec4.new(1.0f32, 0.3f32, 0.4f32, 1.0f32)),
         MyDocument.new("A Rather Long Title", false),
         MyDocument.new("Some Document", false),
       ]
@@ -4903,7 +4927,7 @@ module ImGuiDemo
             ImGui.list_box_footer
           end
 
-          if ImGui.button("Yes", ImGui.vec2(80, 0))
+          if ImGui.button("Yes", ImVec2.new(80, 0))
             close_queue.val.size.times do |n|
               if close_queue.val[n].dirty?
                 close_queue.val[n].do_save
@@ -4914,7 +4938,7 @@ module ImGuiDemo
             ImGui.close_current_popup
           end
           ImGui.same_line
-          if ImGui.button("No", ImGui.vec2(80, 0))
+          if ImGui.button("No", ImVec2.new(80, 0))
             close_queue.val.size.times do |n|
               close_queue.val[n].do_force_close
             end
@@ -4922,7 +4946,7 @@ module ImGuiDemo
             ImGui.close_current_popup
           end
           ImGui.same_line
-          if ImGui.button("Cancel", ImGui.vec2(80, 0))
+          if ImGui.button("Cancel", ImVec2.new(80, 0))
             close_queue.val.clear
             ImGui.close_current_popup
           end
