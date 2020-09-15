@@ -926,35 +926,35 @@ module ImGui
       ImFontAtlasCustomRect.new(result)
     end
 
-    def get_glyph_ranges_chinese_full : ImWchar
+    def get_glyph_ranges_chinese_full : ImWchar*
       LibImGui.ImFontAtlas_GetGlyphRangesChineseFull(self)
     end
 
-    def get_glyph_ranges_chinese_simplified_common : ImWchar
+    def get_glyph_ranges_chinese_simplified_common : ImWchar*
       LibImGui.ImFontAtlas_GetGlyphRangesChineseSimplifiedCommon(self)
     end
 
-    def get_glyph_ranges_cyrillic : ImWchar
+    def get_glyph_ranges_cyrillic : ImWchar*
       LibImGui.ImFontAtlas_GetGlyphRangesCyrillic(self)
     end
 
-    def get_glyph_ranges_default : ImWchar
+    def get_glyph_ranges_default : ImWchar*
       LibImGui.ImFontAtlas_GetGlyphRangesDefault(self)
     end
 
-    def get_glyph_ranges_japanese : ImWchar
+    def get_glyph_ranges_japanese : ImWchar*
       LibImGui.ImFontAtlas_GetGlyphRangesJapanese(self)
     end
 
-    def get_glyph_ranges_korean : ImWchar
+    def get_glyph_ranges_korean : ImWchar*
       LibImGui.ImFontAtlas_GetGlyphRangesKorean(self)
     end
 
-    def get_glyph_ranges_thai : ImWchar
+    def get_glyph_ranges_thai : ImWchar*
       LibImGui.ImFontAtlas_GetGlyphRangesThai(self)
     end
 
-    def get_glyph_ranges_vietnamese : ImWchar
+    def get_glyph_ranges_vietnamese : ImWchar*
       LibImGui.ImFontAtlas_GetGlyphRangesVietnamese(self)
     end
 
@@ -1261,7 +1261,7 @@ module ImGui
 
     def build_ranges : ImVector
       LibImGui.ImFontGlyphRangesBuilder_BuildRanges(self, out out_ranges)
-      out_ranges.value
+      out_ranges
     end
 
     def clear : Void
@@ -2271,7 +2271,7 @@ module ImGui
       LibImGui.ImGuiStorage_GetBool(self, key, default_val)
     end
 
-    def get_bool_ref(key : ImGuiID, default_val : Bool = false) : Bool
+    def get_bool_ref(key : ImGuiID, default_val : Bool = false) : Bool*
       LibImGui.ImGuiStorage_GetBoolRef(self, key, default_val)
     end
 
@@ -2279,7 +2279,7 @@ module ImGui
       LibImGui.ImGuiStorage_GetFloat(self, key, default_val)
     end
 
-    def get_float_ref(key : ImGuiID, default_val : Float32 = 0.0) : Float32
+    def get_float_ref(key : ImGuiID, default_val : Float32 = 0.0) : Float32*
       LibImGui.ImGuiStorage_GetFloatRef(self, key, default_val)
     end
 
@@ -2287,15 +2287,15 @@ module ImGui
       LibImGui.ImGuiStorage_GetInt(self, key, default_val)
     end
 
-    def get_int_ref(key : ImGuiID, default_val : Int32 = 0) : Int32
+    def get_int_ref(key : ImGuiID, default_val : Int32 = 0) : Int32*
       LibImGui.ImGuiStorage_GetIntRef(self, key, default_val)
     end
 
-    def get_void_ptr(key : ImGuiID) : Void
+    def get_void_ptr(key : ImGuiID) : Void*
       LibImGui.ImGuiStorage_GetVoidPtr(self, key)
     end
 
-    def get_void_ptr_ref(key : ImGuiID, default_val : Void* = Pointer(Void).null) : Void*
+    def get_void_ptr_ref(key : ImGuiID, default_val : Void* = Pointer(Void).null) : Void**
       LibImGui.ImGuiStorage_GetVoidPtrRef(self, key, default_val)
     end
 
@@ -3615,7 +3615,7 @@ module ImGui
     LibImGui.igLogToTTY(auto_open_depth)
   end
 
-  def self.mem_alloc(size : LibC::SizeT) : Void
+  def self.mem_alloc(size : LibC::SizeT) : Void*
     LibImGui.igMemAlloc(size)
   end
 

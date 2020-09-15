@@ -66,8 +66,10 @@ The API surface follows [Dear ImGui][imgui] itself very closely. Main difference
 * Enums are namespaced.
 * **Important**: To faithfully preserve the APIs of ImGui where its functions accept pointers that are used both for input and output (and for lack of an obvious alternative), *crystal-imgui* also requires pointers to be passed to it in the same way.
     * **However**, since Crystal requires very prohibitive circumstances to be able to take an actual pointer, *crystal-imgui* actually wraps these functions into macros, for which `pointerof(foo.bar)` is just a fake syntax that will be transformed into a call to `foo.bar` for reading and a call to `foo.bar=(value)` for writing. As another example, `pointerof(arr[0])` also works - rewritten as `arr[0] = value`.
-* String buffers (particularly begin+end pairs) are abstracted as IO::Memory (imgui's own text buffer is discouraged).
-    * *crystal-imgui* even takes the liberty to implement the buffer resize callback for unbounded text inputs.
+    * If the input kind expects N values, then a `Slice` of N values should be passed directly instead.
+    * For editable strings, one should pass an `ImGui::TextBuffer` instead.
+* String buffers (particularly begin+end pairs) are abstracted as `Slice` or `ImGui::TextBuffer`.
+    * For the latter, *crystal-imgui* even takes the liberty to implement the buffer resize callback for unbounded text inputs.
 * `ImVector` is discouraged. Usually you can just work with `Array` or `Slice`.
 * `ImColor` is even more discouraged, in favor of `ImVec4`. See some color helper functions in _src/imgui.cr_.
 
@@ -77,7 +79,6 @@ The API surface follows [Dear ImGui][imgui] itself very closely. Main difference
 
 * Getters and setters of structs are very iffy.
     * In many cases they should be nilable but aren't.
-* Likely undiscovered bugs
 
 Contributing
 ------------
@@ -103,6 +104,7 @@ Credits
 [cimgui]: https://github.com/cimgui/cimgui
 [sfml]: https://www.sfml-dev.org/ "Simple and Fast Multimedia Library"
 [crystal-imgui-sfml]: https://github.com/oprypin/crystal-imgui-sfml
+[crsfml]: https://github.com/oprypin/crsfml
 
 [crystal]: https://crystal-lang.org/
 

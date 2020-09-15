@@ -334,7 +334,7 @@ class COverload
         if arg.name == "pOut" || arg.name.split("_").first == "out"
           outp << %(#{arg.name.underscore})
           call_args << %(out #{arg.name.underscore})
-          rets << CType.new(arg.type.name)
+          rets << CType.new(arg.type.name.rchop("*"))
           next
         end
         default = self.defaults[arg.name]?.try do |default| default
@@ -407,7 +407,7 @@ class COverload
       end
       outp2 = outp.dup
       outp2, rets = convert_returns!(outp2, rets)
-      ret_s = to_tuple(rets.map &.rchop("*")) || "Void"
+      ret_s = to_tuple(rets) || "Void"
       any_outputter = self.parent.overloads.any?(&.input_output_arg?)
       yield %(  #{"pointer_wrapper " if any_outputter}def #{"self." if !inside_class}#{self.name(ctx)}(#{args.join(", ")}) : #{ret_s})
       call = %(    LibImGui.#{self.name(Context::Lib)}(#{call_args.join(", ")}))
