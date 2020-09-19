@@ -128,7 +128,7 @@ module ImGui
     end
 
     def cmd_lists=(cmd_lists : Slice(ImDrawList))
-      @this.value.cmd_lists = cmd_lists
+      @this.value.cmd_lists, @this.value.cmd_lists_count = cmd_lists.to_unsafe, cmd_lists.bytesize
     end
 
     def cmd_lists_count : Int32
@@ -531,11 +531,11 @@ module ImGui
       @this.value.glyphs = glyphs.as(LibImGui::ImVectorInternal*).value
     end
 
-    def fallback_glyph : ImFontGlyph
-      @this.value.fallback_glyph.value
+    def fallback_glyph : ImFontGlyph?
+      (v = @this.value.fallback_glyph) ? v.value : nil
     end
 
-    def fallback_glyph=(fallback_glyph : ImFontGlyph)
+    def fallback_glyph=(fallback_glyph : ImFontGlyph?)
       @this.value.fallback_glyph = fallback_glyph
     end
 
@@ -560,7 +560,7 @@ module ImGui
     end
 
     def config_data=(config_data : Slice(ImFontConfig))
-      @this.value.config_data = config_data
+      @this.value.config_data, @this.value.config_data_count = config_data.to_unsafe, config_data.bytesize
     end
 
     def config_data_count : Int16
@@ -654,7 +654,7 @@ module ImGui
 
     def calc_word_wrap_position_a(scale : Float32, text : Bytes | String, wrap_width : Float32) : String
       result = LibImGui.ImFont_CalcWordWrapPositionA(self, scale, text, (text.to_unsafe + text.bytesize), wrap_width)
-      (s = result) ? String.new(s) : ""
+      String.new(result)
     end
 
     def clear_output_data : Void
@@ -677,7 +677,7 @@ module ImGui
 
     def get_debug_name : String
       result = LibImGui.ImFont_GetDebugName(self)
-      (s = result) ? String.new(s) : ""
+      String.new(result)
     end
 
     def grow_index(new_size : Int32) : Void
@@ -1333,19 +1333,19 @@ module ImGui
       @this.value.ini_saving_rate = ini_saving_rate
     end
 
-    def ini_filename : String
-      (s = @this.value.ini_filename) ? String.new(s) : ""
+    def ini_filename : String?
+      (v = @this.value.ini_filename) ? String.new(v) : nil
     end
 
-    def ini_filename=(ini_filename : String)
+    def ini_filename=(ini_filename : String?)
       @this.value.ini_filename = ini_filename
     end
 
-    def log_filename : String
-      (s = @this.value.log_filename) ? String.new(s) : ""
+    def log_filename : String?
+      (v = @this.value.log_filename) ? String.new(v) : nil
     end
 
-    def log_filename=(log_filename : String)
+    def log_filename=(log_filename : String?)
       @this.value.log_filename = log_filename
     end
 
@@ -1493,19 +1493,19 @@ module ImGui
       @this.value.config_windows_memory_compact_timer = config_windows_memory_compact_timer
     end
 
-    def backend_platform_name : String
-      (s = @this.value.backend_platform_name) ? String.new(s) : ""
+    def backend_platform_name : String?
+      (v = @this.value.backend_platform_name) ? String.new(v) : nil
     end
 
-    def backend_platform_name=(backend_platform_name : String)
+    def backend_platform_name=(backend_platform_name : String?)
       @this.value.backend_platform_name = backend_platform_name
     end
 
-    def backend_renderer_name : String
-      (s = @this.value.backend_renderer_name) ? String.new(s) : ""
+    def backend_renderer_name : String?
+      (v = @this.value.backend_renderer_name) ? String.new(v) : nil
     end
 
-    def backend_renderer_name=(backend_renderer_name : String)
+    def backend_renderer_name=(backend_renderer_name : String?)
       @this.value.backend_renderer_name = backend_renderer_name
     end
 
@@ -3090,7 +3090,7 @@ module ImGui
 
   def self.get_clipboard_text : String
     result = LibImGui.igGetClipboardText
-    (s = result) ? String.new(s) : ""
+    String.new(result)
   end
 
   def self.get_color_u32(idx : ImGuiCol, alpha_mul : Float32 = 1.0) : UInt32
@@ -3292,7 +3292,7 @@ module ImGui
 
   def self.get_style_color_name(idx : ImGuiCol) : String
     result = LibImGui.igGetStyleColorName(idx)
-    (s = result) ? String.new(s) : ""
+    String.new(result)
   end
 
   def self.get_style_color_vec4(idx : ImGuiCol) : ImVec4
@@ -3318,7 +3318,7 @@ module ImGui
 
   def self.get_version : String
     result = LibImGui.igGetVersion
-    (s = result) ? String.new(s) : ""
+    String.new(result)
   end
 
   def self.get_window_content_region_max : ImGui::ImVec2
@@ -3787,7 +3787,7 @@ module ImGui
 
   def self.save_ini_settings_to_memory : {String, LibC::SizeT}
     result = LibImGui.igSaveIniSettingsToMemory(out out_ini_size)
-    {(s = result) ? String.new(s) : "", out_ini_size}
+    {String.new(result), out_ini_size}
   end
 
   pointer_wrapper def self.selectable(label : String, selected : Bool = false, flags : ImGuiSelectableFlags = ImGuiSelectableFlags.new(0), size : ImVec2 = ImVec2.new(0, 0)) : Bool

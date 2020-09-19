@@ -3238,8 +3238,8 @@ module ImGuiDemo
       ImGui.separator
       ImGui.text("sizeof(size_t): %d, sizeof(ImDrawIdx): %d, sizeof(ImDrawVert): %d", sizeof(LibC::SizeT), sizeof(ImGui::ImDrawIdx), sizeof(ImDrawVert))
       ImGui.separator
-      ImGui.text("io.BackendPlatformName: %s", io.backend_platform_name ? io.backend_platform_name : "NULL")
-      ImGui.text("io.BackendRendererName: %s", io.backend_renderer_name ? io.backend_renderer_name : "NULL")
+      ImGui.text("io.BackendPlatformName: %s", io.backend_platform_name || "NULL")
+      ImGui.text("io.BackendRendererName: %s", io.backend_renderer_name || "NULL")
       ImGui.text("io.ConfigFlags: 0x%08X", io.config_flags)
       if io.config_flags.includes? :NavEnableKeyboard
         ImGui.text(" NavEnableKeyboard")

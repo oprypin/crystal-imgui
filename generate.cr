@@ -424,7 +424,7 @@ def to_tuple(args : Array(String)) : String?
   args.size > 1 ? "{" + args.join(", ") + "}" : args.join(", ").presence
 end
 
-def convert_returns!(outp : Array(String), rets : Array(CType)) : {Array(String), Array(String)}
+def convert_returns!(outp : Array(String), rets : Array(CType), member = false) : {Array(String), Array(String)}
   orig_rets = rets
   rets = rets.map(&.name(Context::Obj))
   outp.each_with_index do |o, i|
@@ -432,8 +432,8 @@ def convert_returns!(outp : Array(String), rets : Array(CType)) : {Array(String)
     if ret.c_name =~ /\d\]$/
       outp[i] = %(#{o}.to_slice)
       rets[i] = "Slice(#{ret.name(Context::Obj).rchop("*")})"
-    elsif (t = ret.try &.base_type.struct?)
-      if t.class? && !t.internal?
+    elsif (t = ret.base_type.struct?) || ret.name(Context::Obj) == "String"
+      if t && t.class? && !t.internal?
         outp[i] = %(#{ret.name(Context::Obj)}.new(#{o}))
         if ret.const?
           outp[i] = %(#{o} ? #{outp[i]} : nil)
@@ -441,12 +441,19 @@ def convert_returns!(outp : Array(String), rets : Array(CType)) : {Array(String)
         end
       else
         rets[i] = ret.name(Context::Obj).rchop("*")
-        outp[i] = o + ".value" if ret.name.rchop?("*")
+        if member && ret.name.rchop?("*")
+          rets[i] += "?"
+          if ret.name(Context::Obj) == "String"
+            outp[i] = %((v = #{o}) ? String.new(v) : nil)
+          else
+            outp[i] = %((v = #{o}) ? v.value : nil)
+          end
+        elsif ret.name(Context::Obj) == "String"
+          outp[i] = %(String.new(#{o}))
+        else
+          outp[i] = o + ".value" if ret.name.rchop?("*")
+        end
       end
-    elsif ret.name(Context::Obj) == "String"
-      outp[i] = %((s = #{o}) ? String.new(s) : "")
-    elsif ret.name(Context::Obj) == "String?"
-      outp[i] = %((s = #{o}) ? String.new(s) : nil)
     end
   end
   {outp, rets}
@@ -520,6 +527,7 @@ class CStructMember
     return if self.internal? && !ctx.ext?
     this = (self.parent.class? ? "@this.value." : "@")
     typeinternal = typ.name(Context::Ext)
+    set_call = %(#{this}#{varname} = #{varname})
     if {varname, typ.name(Context::Obj)} .in?({
       {"cmd_lists", "ImDrawList*"},
       {"config_data", "ImFontConfig"},
@@ -527,11 +535,12 @@ class CStructMember
       t = typ.name(Context::Obj).rchop("*")
       typename = "Slice(#{t})"
       call = %(Slice.new(#{this}#{varname}_count.to_i) { |i| #{t}.new(#{this}#{varname} + i) })
+      set_call = %(#{this}#{varname}, #{this}#{varname}_count = #{varname}.to_unsafe, #{varname}.bytesize)
     else
       if typ.class?
         typ = CType.new(typ.name + "*")
       end
-      call, rets = convert_returns!(["#{this}#{varname}"], [typ])
+      call, rets = convert_returns!(["#{this}#{varname}"], [typ], true)
       call = call.first
       typename = rets.first
     end
@@ -545,14 +554,14 @@ class CStructMember
         yield %(pointerof(t).as(#{typename}*).value)
         yield %(end)
         yield %(def #{varname}=(#{varname} : #{typename}))
-        yield %(#{this}#{varname} = #{varname}.as(#{typeinternal}*).value)
+        yield set_call += %(.as(#{typeinternal}*).value)
         yield %(end)
       elsif self.parent.class?
         yield %(def #{varname} : #{typename})
         yield call
         yield %(end)
         yield %(def #{varname}=(#{varname} : #{typename}))
-        yield %(#{this}#{varname} = #{varname})
+        yield set_call
         yield %(end)
       end
     end

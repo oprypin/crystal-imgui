@@ -73,13 +73,6 @@ The API surface follows [Dear ImGui][imgui] itself very closely. Main difference
 * `ImVector` is discouraged. Usually you can just work with `Array` or `Slice`.
 * `ImColor` is even more discouraged, in favor of `ImVec4`. See some color helper functions in _src/imgui.cr_.
 
-### Known issues
-
-(planned to be fixed)
-
-* Getters and setters of structs are very iffy.
-    * In many cases they should be nilable but aren't.
-
 Contributing
 ------------
 
