@@ -78,6 +78,7 @@ module ImGui
   include TopLevel
 end
 
+# :nodoc:
 struct Tuple
   # :nodoc:
   def _promote_va_args
