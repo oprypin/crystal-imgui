@@ -1,5 +1,5 @@
 unless File.exists? "imgui_demo.cpp"
-  `g++ -fpreprocessed -dD -E cimgui/imgui/imgui_demo.cpp > imgui_demo.cpp`  # Remove comments
+  `g++ -fpreprocessed -dD -E cimgui/imgui/imgui_demo.cpp > imgui_demo.cpp` # Remove comments
 
   `clang-tidy imgui_demo.cpp -fix -fix-errors -checks="readability-braces-around-statements,readability-isolate-declaration" -- -Icimgui/imgui`
 
@@ -155,7 +155,7 @@ File.each_line("imgui_demo.cpp") do |fline|
   line = line.gsub(/\b\(\)/, "")
 
   guarded_strings.each_with_index do |s, i|
-    line = line.sub(%(<STRING#{i+1}>), s)
+    line = line.sub(%(<STRING#{i + 1}>), s)
   end
 
   outp << " " * indent + line

@@ -25,27 +25,27 @@ end
 
 class CType
   NativeLib = {
-    "int" => "LibC::Int",
-    "unsigned int" => "LibC::UInt",
-    "short" => "LibC::Short",
+    "int"            => "LibC::Int",
+    "unsigned int"   => "LibC::UInt",
+    "short"          => "LibC::Short",
     "unsigned short" => "LibC::UShort",
-    "char" => "LibC::Char",
-    "unsigned char" => "LibC::UChar",
-    "signed char" => "LibC::SChar",
-    "size_t" => "LibC::SizeT",
-    "float" => "LibC::Float",
-    "double" => "LibC::Double",
-    "void" => "Void",
-    "bool" => "Bool",
-    "FILE" => "Void",
+    "char"           => "LibC::Char",
+    "unsigned char"  => "LibC::UChar",
+    "signed char"    => "LibC::SChar",
+    "size_t"         => "LibC::SizeT",
+    "float"          => "LibC::Float",
+    "double"         => "LibC::Double",
+    "void"           => "Void",
+    "bool"           => "Bool",
+    "FILE"           => "Void",
   }
   NativeCr = {
-    "int" => "Int32",
-    "unsigned int" => "UInt32",
-    "short" => "Int16",
+    "int"            => "Int32",
+    "unsigned int"   => "UInt32",
+    "short"          => "Int16",
     "unsigned short" => "UInt16",
-    "float" => "Float32",
-    "double" => "Float64",
+    "float"          => "Float32",
+    "double"         => "Float64",
   }
 
   def self.native?(type : String, ctx : Context) : String?
@@ -113,12 +113,15 @@ class CType
       AllEnums.values.find { |e| e.name == self.c_name }
     end
   end
+
   def struct? : CStruct?
     AllStructs[self.c_name.sub("[]", "*")]?
   end
+
   def class? : Bool
     !!(struct?.try &.class?)
   end
+
   def has_destructor? : Bool
     !!(AllFunctions.has_key?("#{self.base_type}_destroy"))
   end
@@ -165,6 +168,7 @@ class CArg
   include JSON::Serializable
 
   getter name : String
+
   def name : String
     name = previous_def
     name += "_" if name == "in"
@@ -172,6 +176,7 @@ class CArg
   end
 
   getter type : CType
+
   def type : CType
     if previous_def.c_name =~ /^(ImVector)_(\w+)(.*)/
       t = CType.new($2)
@@ -195,7 +200,7 @@ end
 class COverload
   include JSON::Serializable
 
-  #getter args : String
+  # getter args : String
 
   @[JSON::Field(key: "argsT")]
   getter args : Array(CArg)
@@ -208,11 +213,13 @@ class COverload
   @cimguiname : String
 
   getter defaults : Hash(String, String) | Array(String)
+
   def defaults : Hash(String, String)
     previous_def.as?(Hash) || {} of String => String
   end
 
   getter funcname : String?
+
   def funcname : String
     previous_def || begin
       assert self.c_name.ends_with?("_destroy")
@@ -221,6 +228,7 @@ class COverload
   end
 
   getter? location : String?
+
   def location : String
     location? || parent.overloads.find(&.location?).try &.location? || ""
   end
@@ -243,6 +251,7 @@ class COverload
   end
 
   getter ret : CType?
+
   def ret : CType?
     if (t = previous_def)
       t if (t.c_name) != "void"
@@ -255,6 +264,7 @@ class COverload
   getter signature : String
 
   @stname : String?
+
   def struct? : CStruct?
     if (stname = @stname.presence)
       AllStructs[stname]
@@ -282,6 +292,7 @@ class COverload
   getter namespace : String?
 
   property! parent : CFunction
+
   def parent=(parent : CFunction)
     assert parent.name == @cimguiname
     previous_def
@@ -337,13 +348,14 @@ class COverload
           rets << CType.new(arg.type.name.rchop("*"))
           next
         end
-        default = self.defaults[arg.name]?.try do |default| default
-          .gsub(/\b([0-9.]+)f\b(?!")/, "\\1")
-          .gsub(/\bImVec2\(/, "ImVec2.new(")
-          .gsub("(ImU32)", "UInt32.new")
-          .gsub("((void*)0)", "nil")
-          .gsub(/\bfloat\b/, "Float32")
-          .gsub(/\bFLT_MAX\b/, "Float32::MAX")
+        default = self.defaults[arg.name]?.try do |default|
+          default
+            .gsub(/\b([0-9.]+)f\b(?!")/, "\\1")
+            .gsub(/\bImVec2\(/, "ImVec2.new(")
+            .gsub("(ImU32)", "UInt32.new")
+            .gsub("((void*)0)", "nil")
+            .gsub(/\bfloat\b/, "Float32")
+            .gsub(/\bFLT_MAX\b/, "Float32::MAX")
         end
         typ = arg.type.name(ctx)
         callarg = arg.name
@@ -387,7 +399,7 @@ class COverload
           else
             callarg = "#{callarg} ? (#{callarg}_ = #{callarg}; pointerof(#{callarg}_)) : Pointer({{t}}).null"
           end
-#           callarg += ".as(Void*)"
+          #           callarg += ".as(Void*)"
         end
         if default == "nil"
           if (t = typ.rchop?("*"))
@@ -462,7 +474,7 @@ end
 class CFunction
   def_map_from_json(overloads : Array(COverload), parent)
 
-  def render(ctx, inside_class = false, &block : String->)
+  def render(ctx, inside_class = false, &block : String ->)
     self.overloads.each &.render(ctx, inside_class, &block)
   end
 
@@ -485,12 +497,14 @@ class CStructMember
 
   @[JSON::Field(key: "name")]
   getter c_name : String
+
   def name(ctx : Context) : String
     self.c_name.partition("[")[0].underscore.presence || "val"
   end
 
   @[JSON::Field(key: "type")]
   getter c_type : String
+
   def type : CType
     c_type = self.c_type
     c_type += "[#{self.size}]" if self.size
@@ -517,7 +531,7 @@ class CStructMember
     self.c_name.starts_with?("_")
   end
 
-  def render(ctx : Context, &block : String->)
+  def render(ctx : Context, &block : String ->)
     varname = self.name(ctx)
     typ = self.type
     if ctx.lib?
@@ -528,10 +542,10 @@ class CStructMember
     this = (self.parent.class? ? "@this.value." : "@")
     typeinternal = typ.name(Context::Ext)
     set_call = %(#{this}#{varname} = #{varname})
-    if {varname, typ.name(Context::Obj)} .in?({
-      {"cmd_lists", "ImDrawList*"},
-      {"config_data", "ImFontConfig"},
-    })
+    if {varname, typ.name(Context::Obj)}.in?({
+         {"cmd_lists", "ImDrawList*"},
+         {"config_data", "ImFontConfig"},
+       })
       t = typ.name(Context::Obj).rchop("*")
       typename = "Slice(#{t})"
       call = %(Slice.new(#{this}#{varname}_count.to_i) { |i| #{t}.new(#{this}#{varname} + i) })
@@ -571,7 +585,7 @@ end
 class CStruct
   def_map_from_json(members : Array(CStructMember), parent)
 
-  def render(ctx : Context, &block : String->)
+  def render(ctx : Context, &block : String ->)
     if self.internal?
       if ctx.lib?
         yield %(type #{self.name} = Void*)
@@ -614,6 +628,7 @@ class CStruct
   end
 
   property! location : String
+
   def internal? : Bool
     self.location == "internal" || self.name.in?("ImGuiStoragePair", "ImGuiTextRange", "ImGuiTextBuffer")
   end
@@ -639,6 +654,7 @@ class CEnumMember
 
   @[JSON::Field(key: "name")]
   getter c_name : String
+
   def name : String
     name = (assert self.c_name.lchop?(self.parent.name)).lchop("_")
     if (chop = name.lchop?("_"))
@@ -649,6 +665,7 @@ class CEnumMember
 
   @[JSON::Field(key: "value")]
   getter c_value : String | Int32
+
   def value : String
     val = self.c_value.to_s
     self.parent.members.each do |member|
@@ -667,7 +684,7 @@ class CEnum
     previous_def.rchop("_")
   end
 
-  def render(ctx : Context, &block : String->)
+  def render(ctx : Context, &block : String ->)
     return unless ctx.ext?
 
     return if self.name.ends_with?("Private")
@@ -685,6 +702,7 @@ class CEnum
   end
 
   property! location : String
+
   def internal? : Bool
     self.location == "internal"
   end
@@ -703,7 +721,7 @@ end
 class CTypedef
   def_map_from_json(type : CType)
 
-  def render(ctx : Context, &block : String->)
+  def render(ctx : Context, &block : String ->)
     return if CType.native?(self.name, ctx)
     return unless self.name[0].ascii_uppercase?
     return if AllEnums.has_key?(self.name + "_")
@@ -733,7 +751,7 @@ AllStructs.each_value do |str|
   assert str.class? || !CType.new(str.name).has_destructor?
 end
 
-def render(ctx : Context, &block : String->)
+def render(ctx : Context, &block : String ->)
   if ctx.lib?
     yield %(require "./custom")
     yield %(require "./types")
