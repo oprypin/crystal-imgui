@@ -52,6 +52,9 @@ jobs:
         run: |
           cmake -DCMAKE_CXX_FLAGS='-DIMGUI_USE_WCHAR32' .
           cmake --build . -j4
+      - name: Build docs
+        run: |
+          .util/build_docs.sh
       - name: Set up environment
         if: runner.os != 'Windows'
         working-directory: ./cimgui
@@ -70,3 +73,8 @@ jobs:
       - name: Build demo
         run: |
           crystal build --cross-compile examples/demo.cr
+      - name: Deploy docs to gh-pages
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master' && runner.os == 'Linux'
+        uses: oprypin/push-to-gh-pages@v3
+        with:
+          publish_dir: ./docs
