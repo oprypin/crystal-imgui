@@ -259,7 +259,7 @@ module ImGui
 
   make_input_text(:input_text_with_hint, label : String, hint : String, buf : TextBuffer, flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0))
 
-  def self.checkbox_flags_(label : String, flags : Enum*, flags_value : Enum) : Bool
+  pointer_wrapper def self.checkbox_flags(label : String, flags : Enum*, flags_value : Enum) : Bool
     LibImGui.igCheckboxFlags(label, flags.as(UInt32*), flags_value.to_u32!)
   end
 
@@ -286,7 +286,7 @@ module ImGui
   end
 
   private macro make_list_box(name, *args)
-    def self.{{name.id}}_({{*args}}, &block : Int32 -> (Slice(UInt8) | String)?) : Bool
+    pointer_wrapper def self.{{name.id}}({{*args}}, &block : Int32 -> (Slice(UInt8) | String)?) : Bool
       LibImGui.ig{{name.id.camelcase}}FnBoolPtr(
         {% for arg, i in args %}
           {% if i == 2 %}
@@ -308,13 +308,13 @@ module ImGui
 
   make_list_box(:combo, label : String, current_item : Int32*, items_count : Int32, popup_max_height_in_items : Int32 = -1)
 
-  def self.combo_(label : String, current_item : Int32*, items : Indexable(String), popup_max_height_in_items : Int32 = -1)
+  pointer_wrapper def self.combo(label : String, current_item : Int32*, items : Indexable(String), popup_max_height_in_items : Int32 = -1)
     combo_(label, current_item, items.size, popup_max_height_in_items) { |i| items[i] }
   end
 
   make_list_box(:list_box, label : String, current_item : Int32*, items_count : Int32, height_in_items : Int32 = -1)
 
-  def self.list_box_(label : String, current_item : Int32*, items : Indexable(String), height_in_items : Int32 = -1)
+  pointer_wrapper def self.list_box(label : String, current_item : Int32*, items : Indexable(String), height_in_items : Int32 = -1)
     list_box_(label, current_item, items.size, height_in_items) { |i| items[i] }
   end
 
