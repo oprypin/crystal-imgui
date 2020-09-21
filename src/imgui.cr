@@ -30,6 +30,10 @@ require "./lib"
 module ImGui
   # :nodoc:
   macro pointer_wrapper(f)
+    {% if flag?(:docs) %}
+    {{f}}
+    # :nodoc:
+    {% end %}
     {{
       f.id.split(f.name).map_with_index { |s, i|
         s = "_" + s if i == 1
