@@ -30,16 +30,7 @@ require "./lib"
 module ImGui
   # :nodoc:
   macro pointer_wrapper(f)
-    {% if flag?(:docs) %}
     {{f}}
-    # :nodoc:
-    {% end %}
-    {{
-      f.id.split(f.name).map_with_index { |s, i|
-        s = "_" + s if i == 1
-        s
-      }.join(f.name).id # Paste the function but rename `def function_name` to `def function_name_`.
-    }}
 
     macro {{f.name}}(*args, **kwargs, &block)
       {% verbatim do %}
@@ -48,7 +39,8 @@ module ImGui
       {% end %}{% end %}
       {% end %}
 
-      \%result = {% if f.receiver %}::\{{@type.name}}.{% end %}{{f.name}}_{% verbatim do %}(
+      # Wrapping the type into parentheses "breaks" detection of macro calls, so we can call the method shadowed by the macro.
+      \%result = (\{{@type.name}}).{{f.name}}{% verbatim do %}(
         {% for arg, i in args %}{% if arg.is_a?(PointerOf) %}pointerof(%val{arg}){% else %}{{arg}}{% end %}, {% end %}{{**kwargs}}
       ) {{block}}{% end %}
 
@@ -309,13 +301,13 @@ module ImGui
   make_list_box(:combo, label : String, current_item : Int32*, items_count : Int32, popup_max_height_in_items : Int32 = -1)
 
   pointer_wrapper def self.combo(label : String, current_item : Int32*, items : Indexable(String), popup_max_height_in_items : Int32 = -1)
-    combo_(label, current_item, items.size, popup_max_height_in_items) { |i| items[i] }
+    self.combo(label, current_item, items.size, popup_max_height_in_items) { |i| items[i] }
   end
 
   make_list_box(:list_box, label : String, current_item : Int32*, items_count : Int32, height_in_items : Int32 = -1)
 
   pointer_wrapper def self.list_box(label : String, current_item : Int32*, items : Indexable(String), height_in_items : Int32 = -1)
-    list_box_(label, current_item, items.size, height_in_items) { |i| items[i] }
+    self.list_box(label, current_item, items.size, height_in_items) { |i| items[i] }
   end
 
   def self.set_next_window_size_constraints(size_min : ImVec2, size_max : ImVec2, &block : ImGuiSizeCallbackData ->) : Void
