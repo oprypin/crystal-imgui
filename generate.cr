@@ -685,6 +685,7 @@ class CEnum
   end
 
   def render(ctx : Context, &block : String ->)
+    return if self.internal?
     return unless ctx.ext?
 
     return if self.name.ends_with?("Private")

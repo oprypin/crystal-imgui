@@ -32,13 +32,6 @@ module ImGui
   end
   alias TopLevel::ImFontAtlasFlags = ImGui::ImFontAtlasFlags
 
-  enum ImGuiAxis
-    None = -1
-    X    =  0
-    Y    =  1
-  end
-  alias TopLevel::ImGuiAxis = ImGui::ImGuiAxis
-
   @[Flags]
   enum ImGuiBackendFlags
     None                 = 0
@@ -147,17 +140,6 @@ module ImGui
   alias TopLevel::ImGuiColorEditFlags = ImGui::ImGuiColorEditFlags
 
   @[Flags]
-  enum ImGuiColumnsFlags
-    None                   = 0
-    NoBorder               = 1 << 0
-    NoResize               = 1 << 1
-    NoPreserveWidths       = 1 << 2
-    NoForceWithinWindow    = 1 << 3
-    GrowParentContentsSize = 1 << 4
-  end
-  alias TopLevel::ImGuiColumnsFlags = ImGui::ImGuiColumnsFlags
-
-  @[Flags]
   enum ImGuiComboFlags
     None           = 0
     PopupAlignLeft = 1 << 0
@@ -258,25 +240,6 @@ module ImGui
   end
   alias TopLevel::ImGuiHoveredFlags = ImGui::ImGuiHoveredFlags
 
-  enum ImGuiInputReadMode
-    Down       = 0
-    Pressed    = 1
-    Released   = 2
-    Repeat     = 3
-    RepeatSlow = 4
-    RepeatFast = 5
-  end
-  alias TopLevel::ImGuiInputReadMode = ImGui::ImGuiInputReadMode
-
-  enum ImGuiInputSource
-    None        = 0
-    Mouse       = 1
-    Nav         = 2
-    NavKeyboard = 3
-    NavGamepad  = 4
-  end
-  alias TopLevel::ImGuiInputSource = ImGui::ImGuiInputSource
-
   @[Flags]
   enum ImGuiInputTextFlags
     None                = 0
@@ -303,34 +266,6 @@ module ImGui
     NoMarkEdited        = 1 << 21
   end
   alias TopLevel::ImGuiInputTextFlags = ImGui::ImGuiInputTextFlags
-
-  @[Flags]
-  enum ImGuiItemFlags
-    None                     = 0
-    NoTabStop                = 1 << 0
-    ButtonRepeat             = 1 << 1
-    Disabled                 = 1 << 2
-    NoNav                    = 1 << 3
-    NoNavDefaultFocus        = 1 << 4
-    SelectableDontClosePopup = 1 << 5
-    MixedValue               = 1 << 6
-    ReadOnly                 = 1 << 7
-    Default_                 = 0
-  end
-  alias TopLevel::ImGuiItemFlags = ImGui::ImGuiItemFlags
-
-  @[Flags]
-  enum ImGuiItemStatusFlags
-    None             = 0
-    HoveredRect      = 1 << 0
-    HasDisplayRect   = 1 << 1
-    Edited           = 1 << 2
-    ToggledSelection = 1 << 3
-    ToggledOpen      = 1 << 4
-    HasDeactivated   = 1 << 5
-    Deactivated      = 1 << 6
-  end
-  alias TopLevel::ImGuiItemStatusFlags = ImGui::ImGuiItemStatusFlags
 
   @[Flags]
   enum ImGuiKeyModFlags
@@ -368,21 +303,6 @@ module ImGui
   end
   alias TopLevel::ImGuiKey = ImGui::ImGuiKey
 
-  enum ImGuiLayoutType
-    Horizontal = 0
-    Vertical   = 1
-  end
-  alias TopLevel::ImGuiLayoutType = ImGui::ImGuiLayoutType
-
-  enum ImGuiLogType
-    None      = 0
-    TTY       = 1
-    File      = 2
-    Buffer    = 3
-    Clipboard = 4
-  end
-  alias TopLevel::ImGuiLogType = ImGui::ImGuiLogType
-
   enum ImGuiMouseButton
     Left   = 0
     Right  = 1
@@ -403,32 +323,6 @@ module ImGui
     NotAllowed =  8
   end
   alias TopLevel::ImGuiMouseCursor = ImGui::ImGuiMouseCursor
-
-  @[Flags]
-  enum ImGuiNavDirSourceFlags
-    None      = 0
-    Keyboard  = 1 << 0
-    PadDPad   = 1 << 1
-    PadLStick = 1 << 2
-  end
-  alias TopLevel::ImGuiNavDirSourceFlags = ImGui::ImGuiNavDirSourceFlags
-
-  enum ImGuiNavForward
-    None          = 0
-    ForwardQueued = 1
-    ForwardActive = 2
-  end
-  alias TopLevel::ImGuiNavForward = ImGui::ImGuiNavForward
-
-  @[Flags]
-  enum ImGuiNavHighlightFlags
-    None        = 0
-    TypeDefault = 1 << 0
-    TypeThin    = 1 << 1
-    AlwaysDraw  = 1 << 2
-    NoRounding  = 1 << 3
-  end
-  alias TopLevel::ImGuiNavHighlightFlags = ImGui::ImGuiNavHighlightFlags
 
   enum ImGuiNavInput
     Activate       =  0
@@ -456,53 +350,6 @@ module ImGui
   end
   alias TopLevel::ImGuiNavInput = ImGui::ImGuiNavInput
 
-  enum ImGuiNavLayer
-    Main = 0
-    Menu = 1
-  end
-  alias TopLevel::ImGuiNavLayer = ImGui::ImGuiNavLayer
-
-  @[Flags]
-  enum ImGuiNavMoveFlags
-    None                = 0
-    LoopX               = 1 << 0
-    LoopY               = 1 << 1
-    WrapX               = 1 << 2
-    WrapY               = 1 << 3
-    AllowCurrentNavId   = 1 << 4
-    AlsoScoreVisibleSet = 1 << 5
-    ScrollToEdge        = 1 << 6
-  end
-  alias TopLevel::ImGuiNavMoveFlags = ImGui::ImGuiNavMoveFlags
-
-  @[Flags]
-  enum ImGuiNextItemDataFlags
-    None     = 0
-    HasWidth = 1 << 0
-    HasOpen  = 1 << 1
-  end
-  alias TopLevel::ImGuiNextItemDataFlags = ImGui::ImGuiNextItemDataFlags
-
-  @[Flags]
-  enum ImGuiNextWindowDataFlags
-    None              = 0
-    HasPos            = 1 << 0
-    HasSize           = 1 << 1
-    HasContentSize    = 1 << 2
-    HasCollapsed      = 1 << 3
-    HasSizeConstraint = 1 << 4
-    HasFocus          = 1 << 5
-    HasBgAlpha        = 1 << 6
-    HasScroll         = 1 << 7
-  end
-  alias TopLevel::ImGuiNextWindowDataFlags = ImGui::ImGuiNextWindowDataFlags
-
-  enum ImGuiPlotType
-    Lines     = 0
-    Histogram = 1
-  end
-  alias TopLevel::ImGuiPlotType = ImGui::ImGuiPlotType
-
   @[Flags]
   enum ImGuiPopupFlags
     None                    =    0
@@ -519,12 +366,6 @@ module ImGui
   end
   alias TopLevel::ImGuiPopupFlags = ImGui::ImGuiPopupFlags
 
-  enum ImGuiPopupPositionPolicy
-    Default  = 0
-    ComboBox = 1
-  end
-  alias TopLevel::ImGuiPopupPositionPolicy = ImGui::ImGuiPopupPositionPolicy
-
   @[Flags]
   enum ImGuiSelectableFlags
     None             = 0
@@ -535,15 +376,6 @@ module ImGui
     AllowItemOverlap = 1 << 4
   end
   alias TopLevel::ImGuiSelectableFlags = ImGui::ImGuiSelectableFlags
-
-  @[Flags]
-  enum ImGuiSeparatorFlags
-    None           = 0
-    Horizontal     = 1 << 0
-    Vertical       = 1 << 1
-    SpanAllColumns = 1 << 2
-  end
-  alias TopLevel::ImGuiSeparatorFlags = ImGui::ImGuiSeparatorFlags
 
   @[Flags]
   enum ImGuiSliderFlags
@@ -609,20 +441,6 @@ module ImGui
     NoTooltip                    = 1 << 4
   end
   alias TopLevel::ImGuiTabItemFlags = ImGui::ImGuiTabItemFlags
-
-  @[Flags]
-  enum ImGuiTextFlags
-    None                       = 0
-    NoWidthForLargeClippedText = 1 << 0
-  end
-  alias TopLevel::ImGuiTextFlags = ImGui::ImGuiTextFlags
-
-  @[Flags]
-  enum ImGuiTooltipFlags
-    None                    = 0
-    OverridePreviousTooltip = 1 << 0
-  end
-  alias TopLevel::ImGuiTooltipFlags = ImGui::ImGuiTooltipFlags
 
   @[Flags]
   enum ImGuiTreeNodeFlags
