@@ -428,6 +428,7 @@ class COverload
       outp2, rets = convert_returns!(outp2, rets)
       ret_s = to_tuple(rets) || "Void"
       any_outputter = self.parent.overloads.any?(&.input_output_arg?)
+      yield %(# #{self.location}) if self.location?
       yield %(  #{"pointer_wrapper " if any_outputter}def #{"self." if !inside_class}#{self.name(ctx)}(#{args.join(", ")}) : #{ret_s})
       call = %(    LibImGui.#{self.name(Context::Lib)}(#{call_args.join(", ")}))
       call = %(    result = #{call}) if outp.first? == "result" && outp2 != ["result"]
@@ -574,6 +575,7 @@ class CStructMember
     end
     if ctx.obj?
       if (self.type.is_a?(CTemplateType)) && ctx.obj?
+        # yield %(# #{self.location}) if self.location?
         yield %(def #{varname} : #{typename})
         yield %(t = #{this}#{varname})
         yield %(pointerof(t).as(#{typename}*).value)
@@ -582,6 +584,7 @@ class CStructMember
         yield set_call += %(.as(#{typeinternal}*).value)
         yield %(end)
       elsif self.parent.class?
+        # yield %(# #{self.location}) if self.location?
         yield %(def #{varname} : #{typename})
         yield call
         yield %(end)
@@ -604,6 +607,7 @@ class CStruct
         yield %(alias #{self.name} = LibImGui::#{self.name})
       end
     elsif ctx.obj?
+      yield %(# #{self.location}) if self.location?
       if self.class?
         yield %(struct #{self.name})
         yield %(include StructClassType(LibImGui::#{self.name}))
@@ -710,11 +714,13 @@ class CEnum
     return if self.name.ends_with?("Private")
 
     yield %()
+    yield %(# #{self.location}) if self.location?
     yield %(@[Flags]) if self.name.ends_with?("Flags")
 
     yield %(enum #{name})
     self.members.each do |member|
       next if member.name.in?("All", "COUNT")
+      # yield %(# #{self.location}) if self.location?
       yield %(#{member.name} = #{member.value})
     end
     yield %(end)
@@ -783,6 +789,10 @@ struct Location
   getter file : String
   getter line : Int32
 
+  class_getter version : String do
+    `cd cimgui/imgui && (git describe --tags --exact-match HEAD || git rev-parse HEAD)`.strip
+  end
+
   def initialize(@file, @line)
   end
 
@@ -797,6 +807,10 @@ struct Location
 
   def internal? : Bool
     self.file != "imgui.h"
+  end
+
+  def to_s(io)
+    io << "[[View C++ header](https://github.com/ocornut/imgui/blob/" << Location.version << "/" << self.file << "#L" << self.line << ")]"
   end
 end
 
