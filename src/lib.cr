@@ -339,7 +339,7 @@ lib LibImGui
   type StbTexteditRow = Void*
   type StbUndoRecord = Void*
   type StbUndoState = Void*
-  fun ImColor_HSV(pOut : ImGui::ImColor*, self : ImGui::ImColor*, h : LibC::Float, s : LibC::Float, v : LibC::Float, a : LibC::Float)
+  fun ImColor_HSV(pOut : ImGui::ImColor*, h : LibC::Float, s : LibC::Float, v : LibC::Float, a : LibC::Float)
   fun ImColor_ImColorNil : ImGui::ImColor*
   fun ImColor_ImColorInt(r : LibC::Int, g : LibC::Int, b : LibC::Int, a : LibC::Int) : ImGui::ImColor*
   fun ImColor_ImColorU32(rgba : UInt32) : ImGui::ImColor*

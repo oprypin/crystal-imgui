@@ -227,10 +227,14 @@ class COverload
     end
   end
 
-  getter? location : String?
+  property location : String?
 
-  def location : String
-    location? || parent.overloads.find(&.location?).try &.location? || ""
+  def location? : Location?
+    Location.new(@location) || parent.overloads.find(&.@location).try(&.location?)
+  end
+
+  def location : Location
+    self.location?.not_nil!
   end
 
   @[JSON::Field(key: "ov_cimguiname")]
@@ -267,7 +271,7 @@ class COverload
 
   def struct? : CStruct?
     if (stname = @stname.presence)
-      AllStructs[stname]
+      AllStructs[stname]?
     end
   end
 
@@ -299,7 +303,10 @@ class COverload
   end
 
   def internal? : Bool
-    self.location == "internal" || (self.funcname || "").starts_with?("_")
+    if self.destructor?
+      return true # TODO: add destructors
+    end
+    !!self.location?.try(&.internal?) || (self.funcname || "").starts_with?("_")
   end
 
   def input_output_arg? : Int32?
@@ -353,7 +360,7 @@ class COverload
             .gsub(/\b([0-9.]+)f\b(?!")/, "\\1")
             .gsub(/\bImVec2\(/, "ImVec2.new(")
             .gsub("(ImU32)", "UInt32.new")
-            .gsub("((void*)0)", "nil")
+            .gsub(/\bNULL\b/, "nil")
             .gsub(/\bfloat\b/, "Float32")
             .gsub(/\bFLT_MAX\b/, "Float32::MAX")
         end
@@ -490,7 +497,7 @@ end
 
 AllFunctions = Hash(String, CFunction).from_json(
   File.read("cimgui/generator/output/definitions.json")
-).reject { |k, v| v.overloads.reject!(&.internal?).all?(&.location.in?("internal", "")) }
+)
 
 class CStructMember
   include JSON::Serializable
@@ -498,8 +505,12 @@ class CStructMember
   @[JSON::Field(key: "name")]
   getter c_name : String
 
+  def c_name : String
+    previous_def.partition("[")[0]
+  end
+
   def name(ctx : Context) : String
-    self.c_name.partition("[")[0].underscore.presence || "val"
+    self.c_name.underscore.presence || "val"
   end
 
   @[JSON::Field(key: "type")]
@@ -627,10 +638,18 @@ class CStruct
     end
   end
 
-  property! location : String
+  property location : String?
+
+  def location? : Location?
+    Location.new(@location)
+  end
+
+  def location : Location
+    Location.new(@location.not_nil!)
+  end
 
   def internal? : Bool
-    self.location == "internal" || self.name.in?("ImGuiStoragePair", "ImGuiTextRange", "ImGuiTextBuffer")
+    !!self.location?.try(&.internal?) || self.name.in?("ImGuiStoragePair", "ImGuiTextRange", "ImGuiTextBuffer")
   end
 
   getter functions : Array(CFunction) do
@@ -645,7 +664,7 @@ end
 AllStructs = Hash(String, CStruct).from_json(
   File.read("cimgui/generator/output/structs_and_enums.json"), "structs"
 )
-AllStructs["ImVector"] = CStruct.new("ImVector", [] of CStructMember).tap(&.location = "")
+AllStructs["ImVector"] = CStruct.new("ImVector", [] of CStructMember)
 
 class CEnumMember
   include JSON::Serializable
@@ -702,10 +721,18 @@ class CEnum
     yield %(alias TopLevel::#{name} = ImGui::#{name})
   end
 
-  property! location : String
+  property location : String?
+
+  def location? : Location?
+    Location.new(@location)
+  end
+
+  def location : Location
+    Location.new(@location.not_nil!)
+  end
 
   def internal? : Bool
-    self.location == "internal"
+    !!self.location?.try(&.internal?)
   end
 end
 
@@ -750,6 +777,27 @@ AllTypedefs = Hash(String, String).from_json(
 AllStructs.each_value do |str|
   next if str.internal?
   assert str.class? || !CType.new(str.name).has_destructor?
+end
+
+struct Location
+  getter file : String
+  getter line : Int32
+
+  def initialize(@file, @line)
+  end
+
+  def self.new(pair : String) : Location?
+    file, _, line = pair.partition(":")
+    self.new("#{file}.h", line.to_i)
+  end
+
+  def self.new(pair : Nil) : Nil
+    nil
+  end
+
+  def internal? : Bool
+    self.file != "imgui.h"
+  end
 end
 
 def render(ctx : Context, &block : String ->)
