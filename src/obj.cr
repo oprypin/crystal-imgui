@@ -56,7 +56,7 @@ module ImGui
 
   # [[View C++ header](https://github.com/ocornut/imgui/blob/v1.78/imgui.h#L1976)]
   struct ImDrawCmd
-    include StructClassType(LibImGui::ImDrawCmd)
+    include ClassType(LibImGui::ImDrawCmd)
 
     def clip_rect : ImVec4
       @this.value.clip_rect
@@ -125,7 +125,7 @@ module ImGui
 
   # [[View C++ header](https://github.com/ocornut/imgui/blob/v1.78/imgui.h#L2183)]
   struct ImDrawData
-    include StructClassType(LibImGui::ImDrawData)
+    include ClassType(LibImGui::ImDrawData)
 
     def valid : Bool
       @this.value.valid
@@ -218,7 +218,7 @@ module ImGui
 
   # [[View C++ header](https://github.com/ocornut/imgui/blob/v1.78/imgui.h#L2069)]
   struct ImDrawList
-    include StructClassType(LibImGui::ImDrawList)
+    include ClassType(LibImGui::ImDrawList)
 
     def cmd_buffer : ImVector(LibImGui::ImDrawCmd)
       t = @this.value.cmd_buffer
@@ -519,8 +519,8 @@ module ImGui
   alias ImDrawListSharedData = LibImGui::ImDrawListSharedData
 
   # [[View C++ header](https://github.com/ocornut/imgui/blob/v1.78/imgui.h#L2021)]
-  struct ImDrawListSplitter
-    include StructClassType(LibImGui::ImDrawListSplitter)
+  class ImDrawListSplitter
+    include ClassType(LibImGui::ImDrawListSplitter)
 
     # [[View C++ header](https://github.com/ocornut/imgui/blob/v1.78/imgui.h#L2029)]
     def clear : Void
@@ -552,6 +552,11 @@ module ImGui
     def split(draw_list : ImDrawList, count : Int32) : Void
       LibImGui.ImDrawListSplitter_Split(self, draw_list, count)
     end
+
+    # [[View C++ header](https://github.com/ocornut/imgui/blob/v1.78/imgui.h#L2028)]
+    def finalize : Void
+      LibImGui.ImDrawListSplitter_destroy(self)
+    end
   end
 
   alias TopLevel::ImDrawListSplitter = ImGui::ImDrawListSplitter
@@ -563,7 +568,7 @@ module ImGui
 
   # [[View C++ header](https://github.com/ocornut/imgui/blob/v1.78/imgui.h#L2394)]
   struct ImFont
-    include StructClassType(LibImGui::ImFont)
+    include ClassType(LibImGui::ImFont)
 
     def index_advance_x : ImVector(Float32)
       t = @this.value.index_advance_x
@@ -812,8 +817,8 @@ module ImGui
   alias TopLevel::ImFont = ImGui::ImFont
 
   # [[View C++ header](https://github.com/ocornut/imgui/blob/v1.78/imgui.h#L2299)]
-  struct ImFontAtlas
-    include StructClassType(LibImGui::ImFontAtlas)
+  class ImFontAtlas
+    include ClassType(LibImGui::ImFontAtlas)
 
     def locked : Bool
       @this.value.locked
@@ -1110,13 +1115,18 @@ module ImGui
     def set_tex_id(id : ImTextureID) : Void
       LibImGui.ImFontAtlas_SetTexID(self, id)
     end
+
+    # [[View C++ header](https://github.com/ocornut/imgui/blob/v1.78/imgui.h#L2302)]
+    def finalize : Void
+      LibImGui.ImFontAtlas_destroy(self)
+    end
   end
 
   alias TopLevel::ImFontAtlas = ImGui::ImFontAtlas
 
   # [[View C++ header](https://github.com/ocornut/imgui/blob/v1.78/imgui.h#L2261)]
   struct ImFontAtlasCustomRect
-    include StructClassType(LibImGui::ImFontAtlasCustomRect)
+    include ClassType(LibImGui::ImFontAtlasCustomRect)
 
     def width : UInt16
       @this.value.width
@@ -1198,7 +1208,7 @@ module ImGui
 
   # [[View C++ header](https://github.com/ocornut/imgui/blob/v1.78/imgui.h#L2206)]
   struct ImFontConfig
-    include StructClassType(LibImGui::ImFontConfig)
+    include ClassType(LibImGui::ImFontConfig)
 
     def font_data : Void*
       @this.value.font_data
@@ -1432,7 +1442,7 @@ module ImGui
 
   # [[View C++ header](https://github.com/ocornut/imgui/blob/v1.78/imgui.h#L1493)]
   struct ImGuiIO
-    include StructClassType(LibImGui::ImGuiIO)
+    include ClassType(LibImGui::ImGuiIO)
 
     def config_flags : ImGuiConfigFlags
       @this.value.config_flags
@@ -2106,7 +2116,7 @@ module ImGui
 
   # [[View C++ header](https://github.com/ocornut/imgui/blob/v1.78/imgui.h#L1642)]
   struct ImGuiInputTextCallbackData
-    include StructClassType(LibImGui::ImGuiInputTextCallbackData)
+    include ClassType(LibImGui::ImGuiInputTextCallbackData)
 
     def event_flag : ImGuiInputTextFlags
       @this.value.event_flag
@@ -2274,7 +2284,7 @@ module ImGui
 
   # [[View C++ header](https://github.com/ocornut/imgui/blob/v1.78/imgui.h#L1680)]
   struct ImGuiPayload
-    include StructClassType(LibImGui::ImGuiPayload)
+    include ClassType(LibImGui::ImGuiPayload)
 
     def data : Void*
       @this.value.data
@@ -2375,7 +2385,7 @@ module ImGui
 
   # [[View C++ header](https://github.com/ocornut/imgui/blob/v1.78/imgui.h#L1671)]
   struct ImGuiSizeCallbackData
-    include StructClassType(LibImGui::ImGuiSizeCallbackData)
+    include ClassType(LibImGui::ImGuiSizeCallbackData)
 
     def user_data : Void*
       @this.value.user_data
@@ -2505,7 +2515,7 @@ module ImGui
 
   # [[View C++ header](https://github.com/ocornut/imgui/blob/v1.78/imgui.h#L1441)]
   struct ImGuiStyle
-    include StructClassType(LibImGui::ImGuiStyle)
+    include ClassType(LibImGui::ImGuiStyle)
 
     def alpha : Float32
       @this.value.alpha
@@ -2839,7 +2849,7 @@ module ImGui
 
   # [[View C++ header](https://github.com/ocornut/imgui/blob/v1.78/imgui.h#L1773)]
   struct ImGuiTextFilter
-    include StructClassType(LibImGui::ImGuiTextFilter)
+    include ClassType(LibImGui::ImGuiTextFilter)
 
     def input_buf : Slice(LibC::Char)
       @this.value.input_buf.to_slice
@@ -3519,7 +3529,7 @@ module ImGui
   end
 
   # [[View C++ header](https://github.com/ocornut/imgui/blob/v1.78/imgui.h#L420)]
-  def self.get_id(ptr_id : Reference | StructClassType | Int | Void*) : ImGuiID
+  def self.get_id(ptr_id : Reference | ClassType | Int | Void*) : ImGuiID
     LibImGui.igGetIDPtr(to_void_id(ptr_id))
   end
 
@@ -4160,7 +4170,7 @@ module ImGui
   end
 
   # [[View C++ header](https://github.com/ocornut/imgui/blob/v1.78/imgui.h#L415)]
-  def self.push_id(ptr_id : Reference | StructClassType | Int | Void*) : Void
+  def self.push_id(ptr_id : Reference | ClassType | Int | Void*) : Void
     LibImGui.igPushIDPtr(to_void_id(ptr_id))
   end
 
@@ -4614,7 +4624,7 @@ module ImGui
   end
 
   # [[View C++ header](https://github.com/ocornut/imgui/blob/v1.78/imgui.h#L539)]
-  def self.tree_node(ptr_id : Reference | StructClassType | Int | Void*, fmt : String, *args) : Bool
+  def self.tree_node(ptr_id : Reference | ClassType | Int | Void*, fmt : String, *args) : Bool
     LibImGui.igTreeNodePtr(to_void_id(ptr_id), fmt, *args._promote_va_args)
   end
 
@@ -4629,7 +4639,7 @@ module ImGui
   end
 
   # [[View C++ header](https://github.com/ocornut/imgui/blob/v1.78/imgui.h#L544)]
-  def self.tree_node_ex(ptr_id : Reference | StructClassType | Int | Void*, flags : ImGuiTreeNodeFlags, fmt : String, *args) : Bool
+  def self.tree_node_ex(ptr_id : Reference | ClassType | Int | Void*, flags : ImGuiTreeNodeFlags, fmt : String, *args) : Bool
     LibImGui.igTreeNodeExPtr(to_void_id(ptr_id), flags, fmt, *args._promote_va_args)
   end
 
@@ -4644,7 +4654,7 @@ module ImGui
   end
 
   # [[View C++ header](https://github.com/ocornut/imgui/blob/v1.78/imgui.h#L548)]
-  def self.tree_push(ptr_id : Reference | StructClassType | Int | Void* = Pointer(Reference | StructClassType | Int | Void).null) : Void
+  def self.tree_push(ptr_id : Reference | ClassType | Int | Void* = Pointer(Reference | ClassType | Int | Void).null) : Void
     LibImGui.igTreePushPtr(to_void_id(ptr_id))
   end
 

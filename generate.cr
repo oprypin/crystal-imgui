@@ -121,10 +121,6 @@ class CType
   def class? : Bool
     !!(struct?.try &.class?)
   end
-
-  def has_destructor? : Bool
-    !!(AllFunctions.has_key?("#{self.base_type}_destroy"))
-  end
 end
 
 class CTemplateType < CType
@@ -303,9 +299,6 @@ class COverload
   end
 
   def internal? : Bool
-    if self.destructor?
-      return true # TODO: add destructors
-    end
     !!self.location?.try(&.internal?) || (self.funcname || "").starts_with?("_")
   end
 
@@ -321,6 +314,9 @@ class COverload
 
   def render(ctx, inside_class = false, &block)
     return if self.templated? || self.internal?
+    if self.destructor? && !(assert self.struct?).destructor?
+      return
+    end
     return if self.args.any? { |arg| arg.type.c_name == "va_list" }
 
     if ctx.lib?
@@ -367,7 +363,7 @@ class COverload
         typ = arg.type.name(ctx)
         callarg = arg.name
         if arg.name == "ptr_id" && typ == "Void*"
-          typ = "Reference | StructClassType | Int | #{typ}"
+          typ = "Reference | ClassType | Int | #{typ}"
           callarg = "to_void_id(#{callarg})"
         elsif arg.type.c_name =~ /^(float|int)\[(\d+)\]$/
           t = typ.rchop("*")
@@ -609,8 +605,8 @@ class CStruct
     elsif ctx.obj?
       yield %(# #{self.location}) if self.location?
       if self.class?
-        yield %(struct #{self.name})
-        yield %(include StructClassType(LibImGui::#{self.name}))
+        yield %(#{self.destructor? ? "class" : "struct"} #{self.name})
+        yield %(include ClassType(LibImGui::#{self.name}))
       else
         yield %(struct #{self.name})
         yield %(include StructType)
@@ -662,6 +658,13 @@ class CStruct
 
   def class? : Bool
     !%w[ImVector ImVec2 ImVec4 ImColor ImDrawVert ImFontGlyph ImGuiTextRange ImGuiOnceUponAFrame ImGuiStorage ImGuiTextBuffer ImGuiListClipper ImFontGlyphRangesBuilder ImDrawChannel].includes?(self.name)
+  end
+
+  def destructor? : COverload?
+    # Discard destructors that were manually found to only free memory.
+    return nil if self.name.in?("ImVector", "ImDrawData", "ImDrawList", "ImFont", "ImGuiListClipper", "ImVector")
+    # Discard destructors without an actual body - also assumed to only free memory.
+    AllFunctions["#{self.name}_destroy"]?.try(&.overloads.find(&.location?))
   end
 end
 
@@ -780,9 +783,9 @@ AllTypedefs = Hash(String, String).from_json(
   {k, CTypedef.new(k, CType.new(v.rchop(";")))}
 }.to_h
 
-AllStructs.each_value do |str|
-  next if str.internal?
-  assert str.class? || !CType.new(str.name).has_destructor?
+AllStructs.each_value do |t|
+  next if t.internal?
+  assert t.class? || !t.destructor?
 end
 
 struct Location

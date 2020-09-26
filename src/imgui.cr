@@ -3,7 +3,7 @@ module ImGui
     GC.malloc(size)
   }, ->(ptr, data) {}, nil)
 
-  private module StructClassType(T)
+  private module ClassType(T)
     macro included
       @this : T*
 
@@ -59,7 +59,7 @@ module ImGui
     x.as(Void*)
   end
 
-  private def self.to_void_id(x : StructClassType)
+  private def self.to_void_id(x : ClassType)
     x.to_unsafe
   end
 
@@ -317,7 +317,7 @@ module ImGui
     }, Box.box(block))
   end
 
-  def self.push_id(ptr_id : StructClassType) : Void
+  def self.push_id(ptr_id : ClassType) : Void
     LibImGui.igPushIDPtr(ptr_id)
   end
 

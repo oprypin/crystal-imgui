@@ -357,6 +357,7 @@ lib LibImGui
   fun ImDrawListSplitter_Merge(self : ImDrawListSplitter*, draw_list : ImDrawList*)
   fun ImDrawListSplitter_SetCurrentChannel(self : ImDrawListSplitter*, draw_list : ImDrawList*, channel_idx : LibC::Int)
   fun ImDrawListSplitter_Split(self : ImDrawListSplitter*, draw_list : ImDrawList*, count : LibC::Int)
+  fun ImDrawListSplitter_destroy(self : ImDrawListSplitter*)
   fun ImDrawList_AddBezierCurve(self : ImDrawList*, p1 : ImGui::ImVec2, p2 : ImGui::ImVec2, p3 : ImGui::ImVec2, p4 : ImGui::ImVec2, col : UInt32, thickness : LibC::Float, num_segments : LibC::Int)
   fun ImDrawList_AddCallback(self : ImDrawList*, callback : ImDrawCallback, callback_data : Void*)
   fun ImDrawList_AddCircle(self : ImDrawList*, center : ImGui::ImVec2, radius : LibC::Float, col : UInt32, num_segments : LibC::Int, thickness : LibC::Float)
@@ -439,6 +440,7 @@ lib LibImGui
   fun ImFontAtlas_ImFontAtlas : ImFontAtlas*
   fun ImFontAtlas_IsBuilt(self : ImFontAtlas*) : Bool
   fun ImFontAtlas_SetTexID(self : ImFontAtlas*, id : ImTextureID)
+  fun ImFontAtlas_destroy(self : ImFontAtlas*)
   fun ImFontConfig_ImFontConfig : ImFontConfig*
   fun ImFontGlyphRangesBuilder_AddChar(self : ImGui::ImFontGlyphRangesBuilder*, c : ImWchar)
   fun ImFontGlyphRangesBuilder_AddRanges(self : ImGui::ImFontGlyphRangesBuilder*, ranges : ImWchar*)
