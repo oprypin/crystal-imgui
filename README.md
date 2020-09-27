@@ -12,6 +12,17 @@ This library lets you use [Dear ImGui][imgui] with the [Crystal][] programming l
 * [crystal-imgui-sfml][] - backend using [SFML][] (assumed through [CrSFML][]).  
   Please refer to its instructions primarily, as it takes over large parts of the installation.
 
+Documentation
+-------------
+
+**[API documentation](https://oprypin.github.io/crystal-imgui/)** is currently missing any actual descriptions, but it cross-links to the well-commented [imgui.h](https://github.com/ocornut/imgui/blob/master/imgui.h) header file.
+
+For guidance specific to Crystal and *crystal-imgui*, see [Usage](#usage).
+
+**Examples** of most possible usages of the library are covered in the extensive [src/demo.cr](src/demo.cr) (entry point [examples/demo.cr](examples/demo.cr)).
+
+There's also [a small self-contained example](https://github.com/oprypin/crystal-imgui-sfml/blob/master/example.cr) from [crystal-imgui-sfml][].
+
 Installation
 ------------
 
@@ -53,8 +64,6 @@ For your own project, *crystal-imgui* will be in a subdirectory, so adjust this 
 
 Usage
 -----
-
-Examples of most possible usages of the library are covered in the extensive [src/demo.cr](src/demo.cr) (entry point [examples/demo.cr](examples/demo.cr)).
 
 Using *crystal-imgui* is agnostic of the [backend](#introduction) for the most part, you invoke those just at the beginning of a frame, to process inputs, and at the end, to do the actual rendering (generally [imgui][] just builds up the things to be drawn until the end).
 
