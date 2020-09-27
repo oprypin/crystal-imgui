@@ -272,7 +272,7 @@ class COverload
       elsif self.constructor?
         "self.new"
       else
-        self.funcname.underscore
+        self.funcname.gsub(/(?<=[A-Z])to(?=[A-Z])/, "To").underscore
       end
     else
       self.c_name

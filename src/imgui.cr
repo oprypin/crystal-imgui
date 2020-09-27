@@ -349,7 +349,7 @@ module ImGui
   end
 
   def self.hsv(h : Number, s : Number, v : Number, a : Number = 1.0) : ImVec4
-    r, g, b = color_convert_hs_vto_rgb(h.to_f32, s.to_f32, v.to_f32)
+    r, g, b = color_convert_hsv_to_rgb(h.to_f32, s.to_f32, v.to_f32)
     ImVec4.new(r, g, b, a)
   end
 

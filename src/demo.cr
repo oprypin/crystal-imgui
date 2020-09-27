@@ -1104,7 +1104,7 @@ module ImGuiDemo
       ImGui.text("Color button with Custom Picker Popup:")
 
       static saved_palette = Array(ImVec4).new(32) do |n|
-        r, g, b = ImGui.color_convert_hs_vto_rgb(n / 31.0f32, 0.8f32, 0.8f32)
+        r, g, b = ImGui.color_convert_hsv_to_rgb(n / 31.0f32, 0.8f32, 0.8f32)
         ImVec4.new(r, g, b, 1.0f32)
       end
 

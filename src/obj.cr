@@ -2010,13 +2010,13 @@ module ImGui
   end
 
   # [ImGui::ColorConvertRGBtoHSV()](https://github.com/ocornut/imgui/blob/v1.78/imgui.h#L731)
-  def self.color_convert_rg_bto_hsv(r : Float32, g : Float32, b : Float32) : {LibC::Float, LibC::Float, LibC::Float}
+  def self.color_convert_rgb_to_hsv(r : Float32, g : Float32, b : Float32) : {LibC::Float, LibC::Float, LibC::Float}
     LibImGui.igColorConvertRGBtoHSV(r, g, b, out out_h, out out_s, out out_v)
     {out_h, out_s, out_v}
   end
 
   # [ImGui::ColorConvertHSVtoRGB()](https://github.com/ocornut/imgui/blob/v1.78/imgui.h#L732)
-  def self.color_convert_hs_vto_rgb(h : Float32, s : Float32, v : Float32) : {LibC::Float, LibC::Float, LibC::Float}
+  def self.color_convert_hsv_to_rgb(h : Float32, s : Float32, v : Float32) : {LibC::Float, LibC::Float, LibC::Float}
     LibImGui.igColorConvertHSVtoRGB(h, s, v, out out_r, out out_g, out out_b)
     {out_r, out_g, out_b}
   end
