@@ -45,14 +45,14 @@ macro with_location(url = true, &block)
     first_comment = IMGUI_H[self.location.line - 1].partition("// ").last
     unless first_comment.strip.empty?
       first_comment.split(" // ").each do |s|
-        yield "#" + s.strip unless s.strip.empty?
+        yield "  # " + s.strip unless s.strip.empty?
       end
       {% if url %}
-      yield "#"
+      yield "  #"
       {% end %}
     end
     {% if url %}
-    yield "#" + location.to_s
+    yield "  # [#{self.cpp_name}](#{location.url})"
     {% end %}
   end
 end
@@ -277,6 +277,10 @@ class COverload
     else
       self.c_name
     end
+  end
+
+  def cpp_name : String
+    "#{"ImGui::" if !@stname.presence}#{"~" if self.destructor?}" + [@stname.presence, @funcname].compact.join("::") + "()"
   end
 
   getter ret : CType?
@@ -678,6 +682,10 @@ class CStruct
     end
   end
 
+  def cpp_name : String
+    "struct #{self.name}"
+  end
+
   with_location
 
   def internal? : Bool
@@ -751,6 +759,10 @@ class CEnum
 
   def name : String
     previous_def.rchop("_")
+  end
+
+  def cpp_name : String
+    "enum #{@name}"
   end
 
   def render(ctx : Context, &block : String ->)
@@ -827,9 +839,7 @@ struct Location
   getter file : String
   getter line : Int32
 
-  class_getter version : String do
-    `cd cimgui/imgui && (git describe --tags --exact-match HEAD || git rev-parse HEAD)`.strip
-  end
+  VERSION = `cd cimgui/imgui && (git describe --tags --exact-match HEAD || git rev-parse HEAD)`.strip
 
   def initialize(@file, @line)
   end
@@ -847,8 +857,8 @@ struct Location
     self.file != "imgui.h"
   end
 
-  def to_s(io)
-    io << "[[View C++ header](https://github.com/ocornut/imgui/blob/" << Location.version << "/" << self.file << "#L" << self.line << ")]"
+  def url
+    "https://github.com/ocornut/imgui/blob/#{VERSION}/#{self.file}#L#{self.line}"
   end
 end
 
