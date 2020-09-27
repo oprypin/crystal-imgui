@@ -599,7 +599,7 @@ class CStruct
     if self.internal?
       if ctx.lib?
         yield %(type #{self.name} = Void*)
-      elsif ctx.obj?
+      elsif ctx.obj? && self.name.in?("ImGuiContext")
         yield %(alias #{self.name} = LibImGui::#{self.name})
       end
     elsif ctx.obj?

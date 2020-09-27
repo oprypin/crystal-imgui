@@ -1,8 +1,6 @@
 require "./lib"
 
 module ImGui
-  alias ImBitVector = LibImGui::ImBitVector
-
   # [[View C++ header](https://github.com/ocornut/imgui/blob/v1.78/imgui.h#L1927)]
   struct ImColor
     include StructType
@@ -214,7 +212,6 @@ module ImGui
   end
 
   alias TopLevel::ImDrawData = ImGui::ImDrawData
-  alias ImDrawDataBuilder = LibImGui::ImDrawDataBuilder
 
   # [[View C++ header](https://github.com/ocornut/imgui/blob/v1.78/imgui.h#L2069)]
   struct ImDrawList
@@ -516,7 +513,6 @@ module ImGui
   end
 
   alias TopLevel::ImDrawList = ImGui::ImDrawList
-  alias ImDrawListSharedData = LibImGui::ImDrawListSharedData
 
   # [[View C++ header](https://github.com/ocornut/imgui/blob/v1.78/imgui.h#L2021)]
   class ImDrawListSplitter
@@ -1432,13 +1428,7 @@ module ImGui
     end
   end
 
-  alias ImGuiColorMod = LibImGui::ImGuiColorMod
-  alias ImGuiColumnData = LibImGui::ImGuiColumnData
-  alias ImGuiColumns = LibImGui::ImGuiColumns
   alias ImGuiContext = LibImGui::ImGuiContext
-  alias ImGuiDataTypeInfo = LibImGui::ImGuiDataTypeInfo
-  alias ImGuiDataTypeTempStorage = LibImGui::ImGuiDataTypeTempStorage
-  alias ImGuiGroupData = LibImGui::ImGuiGroupData
 
   # [[View C++ header](https://github.com/ocornut/imgui/blob/v1.78/imgui.h#L1493)]
   struct ImGuiIO
@@ -2237,8 +2227,6 @@ module ImGui
   end
 
   alias TopLevel::ImGuiInputTextCallbackData = ImGui::ImGuiInputTextCallbackData
-  alias ImGuiInputTextState = LibImGui::ImGuiInputTextState
-  alias ImGuiLastItemDataBackup = LibImGui::ImGuiLastItemDataBackup
 
   # [[View C++ header](https://github.com/ocornut/imgui/blob/v1.78/imgui.h#L1883)]
   struct ImGuiListClipper
@@ -2265,11 +2253,6 @@ module ImGui
       LibImGui.ImGuiListClipper_Step(self)
     end
   end
-
-  alias ImGuiMenuColumns = LibImGui::ImGuiMenuColumns
-  alias ImGuiNavMoveResult = LibImGui::ImGuiNavMoveResult
-  alias ImGuiNextItemData = LibImGui::ImGuiNextItemData
-  alias ImGuiNextWindowData = LibImGui::ImGuiNextWindowData
 
   # [[View C++ header](https://github.com/ocornut/imgui/blob/v1.78/imgui.h#L1765)]
   struct ImGuiOnceUponAFrame
@@ -2378,10 +2361,6 @@ module ImGui
   end
 
   alias TopLevel::ImGuiPayload = ImGui::ImGuiPayload
-  alias ImGuiPopupData = LibImGui::ImGuiPopupData
-  alias ImGuiPtrOrIndex = LibImGui::ImGuiPtrOrIndex
-  alias ImGuiSettingsHandler = LibImGui::ImGuiSettingsHandler
-  alias ImGuiShrinkWidthItem = LibImGui::ImGuiShrinkWidthItem
 
   # [[View C++ header](https://github.com/ocornut/imgui/blob/v1.78/imgui.h#L1671)]
   struct ImGuiSizeCallbackData
@@ -2510,8 +2489,6 @@ module ImGui
       LibImGui.ImGuiStorage_SetVoidPtr(self, key, val)
     end
   end
-
-  alias ImGuiStoragePair = LibImGui::ImGuiStoragePair
 
   # [[View C++ header](https://github.com/ocornut/imgui/blob/v1.78/imgui.h#L1441)]
   struct ImGuiStyle
@@ -2842,10 +2819,6 @@ module ImGui
   end
 
   alias TopLevel::ImGuiStyle = ImGui::ImGuiStyle
-  alias ImGuiStyleMod = LibImGui::ImGuiStyleMod
-  alias ImGuiTabBar = LibImGui::ImGuiTabBar
-  alias ImGuiTabItem = LibImGui::ImGuiTabItem
-  alias ImGuiTextBuffer = LibImGui::ImGuiTextBuffer
 
   # [[View C++ header](https://github.com/ocornut/imgui/blob/v1.78/imgui.h#L1773)]
   struct ImGuiTextFilter
@@ -2909,12 +2882,6 @@ module ImGui
   end
 
   alias TopLevel::ImGuiTextFilter = ImGui::ImGuiTextFilter
-  alias ImGuiTextRange = LibImGui::ImGuiTextRange
-  alias ImGuiWindow = LibImGui::ImGuiWindow
-  alias ImGuiWindowSettings = LibImGui::ImGuiWindowSettings
-  alias ImGuiWindowTempData = LibImGui::ImGuiWindowTempData
-  alias ImRect = LibImGui::ImRect
-  alias ImVec1 = LibImGui::ImVec1
 
   # [[View C++ header](https://github.com/ocornut/imgui/blob/v1.78/imgui.h#L211)]
   struct ImVec2
@@ -2933,8 +2900,6 @@ module ImGui
     end
   end
 
-  alias ImVec2ih = LibImGui::ImVec2ih
-
   # [[View C++ header](https://github.com/ocornut/imgui/blob/v1.78/imgui.h#L224)]
   struct ImVec4
     include StructType
@@ -2951,11 +2916,6 @@ module ImGui
       result.value
     end
   end
-
-  alias STB_TexteditState = LibImGui::STB_TexteditState
-  alias StbTexteditRow = LibImGui::StbTexteditRow
-  alias StbUndoRecord = LibImGui::StbUndoRecord
-  alias StbUndoState = LibImGui::StbUndoState
 
   struct ImVector
     include StructType
