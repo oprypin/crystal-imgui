@@ -23,6 +23,40 @@ macro def_map_from_json(field, parent_field = nil)
   end
 end
 
+macro with_location(url = true, &block)
+  {% if !block %}
+    setter location : String?
+  {% end %}
+
+  def location? : Location?
+    {% if block %}
+      {{yield}}
+    {% else %}
+      Location.new(@location)
+    {% end %}
+  end
+
+  def location : Location
+    assert self.location?
+  end
+
+  def comment
+    return nil if self.location?.try(&.file) != "imgui.h"
+    first_comment = IMGUI_H[self.location.line - 1].partition("// ").last
+    unless first_comment.strip.empty?
+      first_comment.split(" // ").each do |s|
+        yield "#" + s.strip unless s.strip.empty?
+      end
+      {% if url %}
+      yield "#"
+      {% end %}
+    end
+    {% if url %}
+    yield "#" + location.to_s
+    {% end %}
+  end
+end
+
 class CType
   NativeLib = {
     "int"            => "LibC::Int",
@@ -224,13 +258,8 @@ class COverload
   end
 
   property location : String?
-
-  def location? : Location?
+  with_location do
     Location.new(@location) || parent.overloads.find(&.@location).try(&.location?)
-  end
-
-  def location : Location
-    self.location?.not_nil!
   end
 
   @[JSON::Field(key: "ov_cimguiname")]
@@ -312,7 +341,7 @@ class COverload
     idx
   end
 
-  def render(ctx, inside_class = false, &block)
+  def render(ctx, inside_class = false, &block : String ->)
     return if self.templated? || self.internal?
     if self.destructor? && !(assert self.struct?).destructor?
       return
@@ -424,7 +453,7 @@ class COverload
       outp2, rets = convert_returns!(outp2, rets)
       ret_s = to_tuple(rets) || "Void"
       any_outputter = self.parent.overloads.any?(&.input_output_arg?)
-      yield %(# #{self.location}) if self.location?
+      self.comment(&block)
       yield %(  #{"pointer_wrapper " if any_outputter}def #{"self." if !inside_class}#{self.name(ctx)}(#{args.join(", ")}) : #{ret_s})
       call = %(    LibImGui.#{self.name(Context::Lib)}(#{call_args.join(", ")}))
       call = %(    result = #{call}) if outp.first? == "result" && outp2 != ["result"]
@@ -532,6 +561,17 @@ class CStructMember
 
   property! parent : CStruct
 
+  with_location(url: false) do
+    return nil if parent.location?.try(&.file) != "imgui.h"
+    regex = /^[^{\/]*\b#{self.c_name}(\[[^\[\]]+\]|\)\(.+?\))*[;,]/
+    (parent.location.line + 1).step do |line|
+      if IMGUI_H[line - 1] =~ regex
+        return Location.new(parent.location.file, line)
+      end
+    end
+    nil
+  end
+
   def initialize(@c_type, @c_name)
   end
 
@@ -571,7 +611,7 @@ class CStructMember
     end
     if ctx.obj?
       if (self.type.is_a?(CTemplateType)) && ctx.obj?
-        # yield %(# #{self.location}) if self.location?
+        self.comment(&block)
         yield %(def #{varname} : #{typename})
         yield %(t = #{this}#{varname})
         yield %(pointerof(t).as(#{typename}*).value)
@@ -580,7 +620,7 @@ class CStructMember
         yield set_call += %(.as(#{typeinternal}*).value)
         yield %(end)
       elsif self.parent.class?
-        # yield %(# #{self.location}) if self.location?
+        self.comment(&block)
         yield %(def #{varname} : #{typename})
         yield call
         yield %(end)
@@ -603,7 +643,7 @@ class CStruct
         yield %(alias #{self.name} = LibImGui::#{self.name})
       end
     elsif ctx.obj?
-      yield %(# #{self.location}) if self.location?
+      self.comment(&block)
       if self.class?
         yield %(#{self.destructor? ? "class" : "struct"} #{self.name})
         yield %(include ClassType(LibImGui::#{self.name}))
@@ -638,15 +678,7 @@ class CStruct
     end
   end
 
-  property location : String?
-
-  def location? : Location?
-    Location.new(@location)
-  end
-
-  def location : Location
-    Location.new(@location.not_nil!)
-  end
+  with_location
 
   def internal? : Bool
     !!self.location?.try(&.internal?) || self.name.in?("ImGuiStoragePair", "ImGuiTextRange", "ImGuiTextBuffer")
@@ -701,6 +733,17 @@ class CEnumMember
   end
 
   property! parent : CEnum
+
+  with_location(url: false) do
+    return nil if parent.location?.try(&.file) != "imgui.h"
+    regex = /^ *#{self.c_name}\b/
+    (parent.location.line + 1).step do |line|
+      if IMGUI_H[line - 1] =~ regex
+        return Location.new(parent.location.file, line)
+      end
+    end
+    nil
+  end
 end
 
 class CEnum
@@ -717,28 +760,20 @@ class CEnum
     return if self.name.ends_with?("Private")
 
     yield %()
-    yield %(# #{self.location}) if self.location?
+    self.comment(&block)
     yield %(@[Flags]) if self.name.ends_with?("Flags")
 
     yield %(enum #{name})
     self.members.each do |member|
       next if member.name.in?("All", "COUNT")
-      # yield %(# #{self.location}) if self.location?
+      member.comment(&block)
       yield %(#{member.name} = #{member.value})
     end
     yield %(end)
     yield %(alias TopLevel::#{name} = ImGui::#{name})
   end
 
-  property location : String?
-
-  def location? : Location?
-    Location.new(@location)
-  end
-
-  def location : Location
-    Location.new(@location.not_nil!)
-  end
+  with_location
 
   def internal? : Bool
     !!self.location?.try(&.internal?)
@@ -816,6 +851,8 @@ struct Location
     io << "[[View C++ header](https://github.com/ocornut/imgui/blob/" << Location.version << "/" << self.file << "#L" << self.line << ")]"
   end
 end
+
+IMGUI_H = File.read_lines("cimgui/imgui/imgui.h")
 
 def render(ctx : Context, &block : String ->)
   if ctx.lib?
