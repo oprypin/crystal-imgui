@@ -515,6 +515,10 @@ class CFunction
     self.overloads.each &.render(ctx, inside_class, &block)
   end
 
+  def location? : Location?
+    self.overloads.find(&.location?).try(&.location)
+  end
+
   getter? struct : CStruct? do
     result : CStruct? = nil
     self.overloads.each do |overload|
@@ -656,7 +660,9 @@ class CStruct
         yield %(include StructType)
       end
       self.members.each &.render(ctx, &block)
-      self.functions.each &.render(ctx, true, &block)
+      self.functions.sort_by! { |x|
+        x.location? || Location.new(":0")
+      }.each &.render(ctx, true, &block)
       yield %(end)
       yield %(alias TopLevel::#{name} = ImGui::#{name}) if self.class?
     elsif self.class? && ctx.lib?
@@ -711,7 +717,9 @@ end
 AllStructs = Hash(String, CStruct).from_json(
   File.read("cimgui/generator/output/structs_and_enums.json"), "structs"
 )
-AllStructs["ImVector"] = CStruct.new("ImVector", [] of CStructMember)
+AllStructs["ImVector"] = CStruct.new("ImVector", [] of CStructMember).tap do |s|
+  s.location = "imgui:#{IMGUI_H.index("struct ImVector").not_nil! + 1}"
+end
 
 class CEnumMember
   include JSON::Serializable
@@ -822,6 +830,10 @@ class CTypedef
       end
     end
   end
+
+  def location? : Nil
+    nil
+  end
 end
 
 AllTypedefs = Hash(String, String).from_json(
@@ -842,6 +854,11 @@ struct Location
   VERSION = `cd cimgui/imgui && (git describe --tags --exact-match HEAD || git rev-parse HEAD)`.strip
 
   def initialize(@file, @line)
+  end
+
+  def <=>(other : Location)
+    return self.file <=> other.file if self.file != other.file
+    return self.line <=> other.line
   end
 
   def self.new(pair : String) : Location?
@@ -876,10 +893,16 @@ def render(ctx : Context, &block : String ->)
     yield %(module ImGui)
   end
 
-  AllEnums.each_value &.render(ctx, &block)
-  AllTypedefs.each_value &.render(ctx, &block)
-  AllStructs.each_value &.render(ctx, &block)
-  AllFunctions.each_value &.render(ctx, &block)
+  items = AllEnums.values + AllTypedefs.values + AllStructs.values + AllFunctions.values
+  items.sort_by! { |x| {x.location? || Location.new(":0"), x.name} }
+  items.each do |it|
+    case it
+    in CEnum    ; it.render(ctx, &block)
+    in CTypedef ; it.render(ctx, &block)
+    in CStruct  ; it.render(ctx, &block)
+    in CFunction; it.render(ctx, &block)
+    end
+  end
 
   yield %(end)
 end
