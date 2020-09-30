@@ -19,7 +19,7 @@ Documentation
 
 For guidance specific to Crystal and *crystal-imgui*, see [Usage](#usage).
 
-**Examples** of most possible usages of the library are covered in the extensive [src/demo.cr](src/demo.cr) (entry point [examples/demo.cr](examples/demo.cr)).
+**Examples** of most possible usages of the library are covered in the extensive [src/demo.cr](src/demo.cr) (entry point [examples/demo_sfml.cr](examples/demo_sfml.cr); note that it requires [crystal-imgui-sfml][]).
 
 There's also [a small self-contained example](https://github.com/oprypin/crystal-imgui-sfml/blob/master/example.cr) from [crystal-imgui-sfml][].
 
@@ -27,6 +27,8 @@ Installation
 ------------
 
 Following the installation process of [crystal-imgui-sfml][] is recommended instead (it even provides *libcimgui.so* automatically), but continue here if you want an alternate route.
+
+Repeat: **do not** follow these instructions if you're using [crystal-imgui-sfml][] (which in the current state of things you probably are).
 
 *crystal-imgui* actually binds to the [cimgui][] library. The supported version is bundled as a submodule (for other versions you can try your luck by [re-generating sources](#contributing)). This repository needs to have been cloned with submodules:
 
