@@ -1,4 +1,5 @@
 require "json"
+require "./tools/diff_util"
 
 enum Context
   Lib
@@ -851,8 +852,6 @@ struct Location
   getter file : String
   getter line : Int32
 
-  VERSION = `cd cimgui/imgui && (git describe --tags --exact-match HEAD || git rev-parse HEAD)`.strip
-
   def initialize(@file, @line)
   end
 
@@ -875,7 +874,7 @@ struct Location
   end
 
   def url
-    "https://github.com/ocornut/imgui/blob/#{VERSION}/#{self.file}#L#{self.line}"
+    github_file_url("cimgui/imgui", self.file, self.line)
   end
 end
 

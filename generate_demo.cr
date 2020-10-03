@@ -1,20 +1,32 @@
-unless File.exists? "imgui_demo.cpp"
-  `g++ -fpreprocessed -dD -E cimgui/imgui/imgui_demo.cpp > imgui_demo.cpp` # Remove comments
+require "digest/sha1"
+require "./tools/diff_util"
 
-  `clang-tidy imgui_demo.cpp -fix -fix-errors -checks="readability-braces-around-statements,readability-isolate-declaration" -- -Icimgui/imgui`
+file_url = github_file_url("cimgui/imgui", "imgui_demo.cpp")
+filename = File.join(Dir.tempdir, Digest::SHA1.hexdigest(file_url) + "_imgui_demo.cpp")
 
-  `clang-format -i imgui_demo.cpp -style='{ColumnLimit: 0, PointerAlignment: Left, SpacesBeforeTrailingComments: 2, AlignTrailingComments: false, AllowShortFunctionsOnASingleLine: None}'`
+unless File.file?(filename)
+  `g++ -fpreprocessed -dD -E cimgui/imgui/imgui_demo.cpp > #{Process.quote(filename)}` # Remove comments
+
+  `clang-tidy #{Process.quote(filename)} -fix -fix-errors -checks="readability-braces-around-statements,readability-isolate-declaration" -- -Icimgui/imgui`
+
+  `clang-format -i #{Process.quote(filename)} -style='{ColumnLimit: 0, PointerAlignment: Left, SpacesBeforeTrailingComments: 2, AlignTrailingComments: false, AllowShortFunctionsOnASingleLine: None}'`
 end
 
 static_names = Set(String).new
 
-outp = [%(require "./imgui"), %(require "./util"), %(), %(module ImGuiDemo), %(  include ImGui::TopLevel)]
+outp = [] of String
+
+outp << "# Based on #{file_url}" << ""
+outp << %(require "./imgui")
+outp << %(require "./util") << ""
+outp << "module ImGuiDemo"
+outp << "include ImGui::TopLevel"
 
 def get_indent(line)
   line.size - line.lstrip.size
 end
 
-File.each_line("imgui_demo.cpp") do |fline|
+File.each_line(filename) do |fline|
   line = fline.lstrip
   indent = get_indent(fline)
   indent += 2 unless line.empty?

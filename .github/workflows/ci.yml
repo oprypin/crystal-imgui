@@ -55,7 +55,7 @@ jobs:
           cmake --build . -j4
       - name: Build docs
         run: |
-          .util/build_docs.sh
+          tools/build_docs.sh
       - name: Set up environment
         if: runner.os != 'Windows'
         working-directory: ./cimgui
