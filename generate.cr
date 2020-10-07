@@ -243,11 +243,7 @@ class COverload
 
   @cimguiname : String
 
-  getter defaults : Hash(String, String) | Array(String)
-
-  def defaults : Hash(String, String)
-    previous_def.as?(Hash) || {} of String => String
-  end
+  getter defaults : Hash(String, String)
 
   getter funcname : String?
 
@@ -738,11 +734,10 @@ class CEnumMember
     name
   end
 
-  @[JSON::Field(key: "value")]
-  getter c_value : String | Int32
+  getter value : String
 
   def value : String
-    val = self.c_value.to_s
+    val = previous_def
     self.parent.members.each do |member|
       val = val.sub(member.c_name, member.name)
     end
