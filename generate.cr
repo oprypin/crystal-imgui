@@ -344,9 +344,7 @@ class COverload
 
   def render(ctx, inside_class = false, &block : String ->)
     return if self.templated? || self.internal?
-    if self.destructor? && !(assert self.struct?).destructor?
-      return
-    end
+    return if self.destructor?
     return if self.args.any? { |arg| arg.type.c_name == "va_list" }
 
     if ctx.lib?
@@ -650,7 +648,7 @@ class CStruct
     elsif ctx.obj?
       self.comment(&block)
       if self.class?
-        yield %(#{self.destructor? ? "class" : "struct"} #{self.name})
+        yield %(struct #{self.name})
         yield %(include ClassType(LibImGui::#{self.name}))
       else
         yield %(struct #{self.name})
@@ -701,13 +699,6 @@ class CStruct
 
   def class? : Bool
     !%w[ImVector ImVec2 ImVec4 ImColor ImDrawVert ImFontGlyph ImGuiTextRange ImGuiOnceUponAFrame ImGuiStorage ImGuiTextBuffer ImGuiListClipper ImFontGlyphRangesBuilder ImDrawChannel].includes?(self.name)
-  end
-
-  def destructor? : COverload?
-    # Discard destructors that were manually found to only free memory.
-    return nil if self.name.in?("ImVector", "ImDrawData", "ImDrawList", "ImFont", "ImGuiListClipper", "ImVector")
-    # Discard destructors without an actual body - also assumed to only free memory.
-    AllFunctions["#{self.name}_destroy"]?.try(&.overloads.find(&.location?))
   end
 end
 
@@ -837,11 +828,6 @@ AllTypedefs = Hash(String, String).from_json(
 ).map { |k, v|
   {k, CTypedef.new(k, CType.new(v.rchop(";")))}
 }.to_h
-
-AllStructs.each_value do |t|
-  next if t.internal?
-  assert t.class? || !t.destructor?
-end
 
 struct Location
   getter file : String

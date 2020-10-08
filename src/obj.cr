@@ -4032,18 +4032,13 @@ module ImGui
   end
 
   # [struct ImDrawListSplitter](https://github.com/ocornut/imgui/blob/v1.78/imgui.h#L2021)
-  class ImDrawListSplitter
+  struct ImDrawListSplitter
     include ClassType(LibImGui::ImDrawListSplitter)
 
     # [ImDrawListSplitter::ImDrawListSplitter()](https://github.com/ocornut/imgui/blob/v1.78/imgui.h#L2027)
     def self.new : ImDrawListSplitter
       result = LibImGui.ImDrawListSplitter_ImDrawListSplitter
       ImDrawListSplitter.new(result)
-    end
-
-    # [~ImDrawListSplitter()](https://github.com/ocornut/imgui/blob/v1.78/imgui.h#L2028)
-    def finalize : Void
-      LibImGui.ImDrawListSplitter_destroy(self)
     end
 
     # Do not clear Channels[] so our allocations are reused next frame
@@ -4879,7 +4874,7 @@ module ImGui
   alias TopLevel::ImFontAtlasCustomRect = ImGui::ImFontAtlasCustomRect
 
   # [struct ImFontAtlas](https://github.com/ocornut/imgui/blob/v1.78/imgui.h#L2299)
-  class ImFontAtlas
+  struct ImFontAtlas
     include ClassType(LibImGui::ImFontAtlas)
 
     # Marked as Locked by ImGui::NewFrame() so attempt to modify the atlas will assert.
@@ -5042,11 +5037,6 @@ module ImGui
     def self.new : ImFontAtlas
       result = LibImGui.ImFontAtlas_ImFontAtlas
       ImFontAtlas.new(result)
-    end
-
-    # [~ImFontAtlas()](https://github.com/ocornut/imgui/blob/v1.78/imgui.h#L2302)
-    def finalize : Void
-      LibImGui.ImFontAtlas_destroy(self)
     end
 
     # [ImFontAtlas::AddFont()](https://github.com/ocornut/imgui/blob/v1.78/imgui.h#L2303)

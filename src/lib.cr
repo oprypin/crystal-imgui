@@ -612,7 +612,6 @@ lib LibImGui
   end
 
   fun ImDrawListSplitter_ImDrawListSplitter : ImDrawListSplitter*
-  fun ImDrawListSplitter_destroy(self : ImDrawListSplitter*)
   fun ImDrawListSplitter_Clear(self : ImDrawListSplitter*)
   fun ImDrawListSplitter_ClearFreeMemory(self : ImDrawListSplitter*)
   fun ImDrawListSplitter_Split(self : ImDrawListSplitter*, draw_list : ImDrawList*, count : LibC::Int)
@@ -771,7 +770,6 @@ lib LibImGui
   end
 
   fun ImFontAtlas_ImFontAtlas : ImFontAtlas*
-  fun ImFontAtlas_destroy(self : ImFontAtlas*)
   fun ImFontAtlas_AddFont(self : ImFontAtlas*, font_cfg : ImFontConfig*) : ImFont*
   fun ImFontAtlas_AddFontDefault(self : ImFontAtlas*, font_cfg : ImFontConfig*) : ImFont*
   fun ImFontAtlas_AddFontFromFileTTF(self : ImFontAtlas*, filename : LibC::Char*, size_pixels : LibC::Float, font_cfg : ImFontConfig*, glyph_ranges : ImWchar*) : ImFont*
