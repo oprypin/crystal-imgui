@@ -252,7 +252,7 @@ lib LibImGui
   fun igBeginPopupModal(name : LibC::Char*, p_open : Bool*, flags : ImGui::ImGuiWindowFlags) : Bool
   fun igEndPopup
   fun igOpenPopup(str_id : LibC::Char*, popup_flags : ImGui::ImGuiPopupFlags)
-  fun igOpenPopupContextItem(str_id : LibC::Char*, popup_flags : ImGui::ImGuiPopupFlags) : Bool
+  fun igOpenPopupOnItemClick(str_id : LibC::Char*, popup_flags : ImGui::ImGuiPopupFlags)
   fun igCloseCurrentPopup
   fun igBeginPopupContextItem(str_id : LibC::Char*, popup_flags : ImGui::ImGuiPopupFlags) : Bool
   fun igBeginPopupContextWindow(str_id : LibC::Char*, popup_flags : ImGui::ImGuiPopupFlags) : Bool
@@ -270,6 +270,7 @@ lib LibImGui
   fun igEndTabBar
   fun igBeginTabItem(label : LibC::Char*, p_open : Bool*, flags : ImGui::ImGuiTabItemFlags) : Bool
   fun igEndTabItem
+  fun igTabItemButton(label : LibC::Char*, flags : ImGui::ImGuiTabItemFlags) : Bool
   fun igSetTabItemClosed(tab_or_docked_window_label : LibC::Char*)
   fun igLogToTTY(auto_open_depth : LibC::Int)
   fun igLogToFile(auto_open_depth : LibC::Int, filename : LibC::Char*)
@@ -382,7 +383,7 @@ lib LibImGui
     log_slider_deadzone : LibC::Float
     tab_rounding : LibC::Float
     tab_border_size : LibC::Float
-    tab_min_width_for_unselected_close_button : LibC::Float
+    tab_min_width_for_close_button : LibC::Float
     color_button_position : ImGui::ImGuiDir
     button_text_align : ImGui::ImVec2
     selectable_text_align : ImGui::ImVec2
@@ -507,6 +508,8 @@ lib LibImGui
   fun ImGuiInputTextCallbackData_ImGuiInputTextCallbackData : ImGuiInputTextCallbackData*
   fun ImGuiInputTextCallbackData_DeleteChars(self : ImGuiInputTextCallbackData*, pos : LibC::Int, bytes_count : LibC::Int)
   fun ImGuiInputTextCallbackData_InsertChars(self : ImGuiInputTextCallbackData*, pos : LibC::Int, text : LibC::Char*, text_end : LibC::Char*)
+  fun ImGuiInputTextCallbackData_SelectAll(self : ImGuiInputTextCallbackData*)
+  fun ImGuiInputTextCallbackData_ClearSelection(self : ImGuiInputTextCallbackData*)
   fun ImGuiInputTextCallbackData_HasSelection(self : ImGuiInputTextCallbackData*) : Bool
 
   struct ImGuiSizeCallbackData
@@ -581,10 +584,10 @@ lib LibImGui
   fun ImGuiStorage_GetVoidPtrRef(self : ImGui::ImGuiStorage*, key : ImGuiID, default_val : Void*) : Void**
   fun ImGuiStorage_SetAllInt(self : ImGui::ImGuiStorage*, val : LibC::Int)
   fun ImGuiStorage_BuildSortByKey(self : ImGui::ImGuiStorage*)
-  fun ImGuiListClipper_ImGuiListClipper(items_count : LibC::Int, items_height : LibC::Float) : ImGui::ImGuiListClipper*
-  fun ImGuiListClipper_Step(self : ImGui::ImGuiListClipper*) : Bool
+  fun ImGuiListClipper_ImGuiListClipper : ImGui::ImGuiListClipper*
   fun ImGuiListClipper_Begin(self : ImGui::ImGuiListClipper*, items_count : LibC::Int, items_height : LibC::Float)
   fun ImGuiListClipper_End(self : ImGui::ImGuiListClipper*)
+  fun ImGuiListClipper_Step(self : ImGui::ImGuiListClipper*) : Bool
   fun ImColor_ImColorNil : ImGui::ImColor*
   fun ImColor_ImColorInt(r : LibC::Int, g : LibC::Int, b : LibC::Int, a : LibC::Int) : ImGui::ImColor*
   fun ImColor_ImColorU32(rgba : UInt32) : ImGui::ImColor*
@@ -806,7 +809,6 @@ lib LibImGui
     index_lookup : ImVectorInternal
     glyphs : ImVectorInternal
     fallback_glyph : ImGui::ImFontGlyph*
-    display_offset : ImGui::ImVec2
     container_atlas : ImFontAtlas*
     config_data : ImFontConfig*
     config_data_count : LibC::Short
