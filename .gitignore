@@ -1,5 +1,5 @@
 /docs/
-/lib/
+lib/
 /bin/
 /.shards/
 /.crystal/
