@@ -317,6 +317,15 @@ module ImGui
     }, Box.box(block))
   end
 
+  struct ImDrawList
+    def add_callback(&block : (ImDrawList, ImDrawCmd) ->) : Void
+      LibImGui.ImDrawList_AddCallback(self, ->(parent_list, cmd) {
+        block2 = Box(typeof(block)).unbox(cmd.value.user_callback_data)
+        block2.call(ImDrawList.new(parent_list), ImDrawCmd.new(cmd))
+      }, Box.box(block))
+    end
+  end
+
   def self.push_id(ptr_id : ClassType) : Void
     LibImGui.igPushIDPtr(ptr_id)
   end
