@@ -61,12 +61,12 @@ jobs:
         working-directory: ./cimgui
         run: |
           ln -s {,lib}$(ls cimgui.so cimgui.dylib)
-          echo "::set-env name=LIBRARY_PATH::$(pwd)"
-          echo "::set-env name=LD_LIBRARY_PATH::$(pwd)"
+          echo "LIBRARY_PATH=$(pwd)" >>$GITHUB_ENV
+          echo "LD_LIBRARY_PATH=$(pwd)" >>$GITHUB_ENV
       - name: Set up environment
         if: runner.os == 'Windows'
         run: |
-          echo "::set-env name=LIB::$(pwd)\cimgui\Debug;${env:LIB}"
+          echo "LIB=$(pwd)\cimgui\Debug;${env:LIB}" >>${env:GITHUB_ENV}
       - name: Run example
         if: runner.os == 'Linux'
         run: |
