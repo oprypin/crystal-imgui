@@ -6,6 +6,17 @@
 
 require "./diff_util"
 
-merge_upstream("cimgui/imgui", "src/demo.cr") do
-  `crystal generate_demo.cr`
+DEMO = "src/demo.cr"
+
+merger = UpstreamMerger(String).new("cimgui/imgui", File.open(DEMO, &.read_line))
+merger.set_modified DEMO, content: File.read(DEMO)
+
+merger.checkout_old
+merger.set_old DEMO, content: `git show HEAD:generate_demo.cr | crystal eval`
+
+merger.checkout_new
+merger.set_new DEMO, content: `crystal generate_demo.cr`
+
+merger.merge do |file, content|
+  File.write(file, content)
 end

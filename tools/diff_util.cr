@@ -41,52 +41,59 @@ def github_file_url(dir : String, file : String, line : Int? = nil) : String
 end
 
 private def github_file_url_regex
-  %r(#{github_remote_regex}/blob/([^/\s]+?)/([^\s]+))
+  %r(#{github_remote_regex}/(?:blob|tree)/([^/\s]+?)/([^\s]+))
 end
 
 # Get the {version, path} of the original file referred to by a url, assuming *dir* is a Git repo with a matching remote
-def get_file_url_path(url : String, dir : String)
+def get_file_url_path(url : String, dir : String? = nil)
   assert url =~ github_file_url_regex
-  assert $1 == github_url(dir)
+  assert $1 == github_url(dir) if dir
   {$2, $3}
 end
 
-def merge_upstream(dir : String, files : Enumerable(String), url : String, &generator : String -> String) : Hash(String, String)
-  current_version = git_tag(dir)
+class UpstreamMerger(T)
+  def initialize(@dir : String, url : String)
+    @old_version, _ = get_file_url_path(url, dir)
+    @new_version = git_tag(dir)
+  end
 
-  version, path = get_file_url_path(url, dir)
+  {% for kind in ["old", "new"] %}
+    {% var = "@#{kind.id}_version".id %}
+    {{var}} : String
 
-  contents = files.map do |f|
-    {f, {"modified" => File.read(f)}}
-  end.to_h
-
-  assert Process.run("git", ["checkout", version], chdir: dir).success?
-  begin
-    files.each do |file|
-      contents[file]["old upstream"] = yield file
+    def checkout_{{kind.id}} : Nil
+      assert Process.run("git", ["checkout", {{var}}], chdir: @dir).success?
     end
-  ensure
-    assert Process.run("git", ["checkout", current_version], chdir: dir).success?
-  end
-  files.each do |file|
-    contents[file]["new upstream"] = yield file
-  end
+  {% end %}
 
-  Dir.mkdir(tmp_dir = File.tempname)
-  Hash(String, String).new.tap do |result|
-    Dir.cd(tmp_dir) do
-      contents.each do |file, subfiles|
-        subfiles.each do |subfile, content|
-          File.write(subfile, content)
+  @contents = {} of T => Hash(Symbol, String)
+  private SUBFILES = [:"modified", :"old upstream", :"new upstream"]
+
+  {% for kind in SUBFILES %}
+    def set_{{kind.split(' ')[0].id}}(file : T, content : String)
+      group = @contents[file] ||= {} of Symbol => String
+      assert !group[{{kind}}]?
+      group[{{kind}}] = content
+    end
+  {% end %}
+
+  def merge(&block : (T, String)->)
+    Dir.mkdir(tmp_dir = File.tempname)
+    @contents.each do |file, subfiles|
+      file_names = SUBFILES.map do |subfile|
+        if (content = subfiles[subfile]?)
+          File.write(File.join(tmp_dir, subfile.to_s), content)
+          subfile.to_s
+        else
+          File::NULL
         end
+      end
 
-        Process.run("git", ["merge-file", "--diff3", "-p", "modified", "old upstream", "new upstream"], output: (io = IO::Memory.new))
-        result[file] = io.to_s
+      Process.run("git", ["merge-file", "--diff3", "-p"] + file_names, chdir: tmp_dir, output: (io = IO::Memory.new))
+      result = io.to_s
+      unless result.empty? && !subfiles[:"new upstream"]?
+        yield file, result
       end
     end
   end
-end
-
-def merge_upstream(dir : String, file : String, &generator : -> String)
-  File.write(file, merge_upstream(dir, [file], File.open(file, &.read_line), &generator)[file])
 end
