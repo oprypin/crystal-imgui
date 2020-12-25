@@ -1,3 +1,5 @@
 #!/bin/sh
+set -e
 
 crystal tool format --check
+crystal docs --format=json --project-name= >/dev/null
