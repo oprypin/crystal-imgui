@@ -201,7 +201,7 @@ class CArg
   getter name : String
 
   def name : String
-    name = previous_def
+    name = @name
     name += "_" if name == "in"
     name
   end
@@ -209,12 +209,12 @@ class CArg
   getter type : CType
 
   def type : CType
-    if previous_def.c_name =~ /^(ImVector)_(\w+)(.*)/
+    if @type.c_name =~ /^(ImVector)_(\w+)(.*)/
       t = CType.new($2)
       assert !t.class?
       CTemplateType.new("#{$1}#{$3}", t)
     else
-      previous_def
+      @type
     end
   end
 
@@ -248,7 +248,7 @@ class COverload
   getter funcname : String?
 
   def funcname : String
-    previous_def || begin
+    @funcname || begin
       assert self.c_name.ends_with?("_destroy")
       "destroy"
     end
@@ -283,7 +283,7 @@ class COverload
   getter ret : CType?
 
   def ret : CType?
-    if (t = previous_def)
+    if (t = @ret)
       t if (t.c_name) != "void"
     else
       assert self.parent.name == "#{self.funcname}_#{self.funcname}"
@@ -325,7 +325,7 @@ class COverload
 
   def parent=(parent : CFunction)
     assert parent.name == @cimguiname
-    previous_def
+    @parent = parent
   end
 
   def internal? : Bool
@@ -535,7 +535,7 @@ class CStructMember
   getter c_name : String
 
   def c_name : String
-    previous_def.partition("[")[0]
+    @c_name.partition("[")[0]
   end
 
   def name(ctx : Context) : String
@@ -728,7 +728,7 @@ class CEnumMember
   getter value : String
 
   def value : String
-    val = previous_def
+    val = @value
     self.parent.members.each do |member|
       val = val.sub(member.c_name, member.name)
     end
@@ -753,7 +753,7 @@ class CEnum
   def_map_from_json(members : Array(CEnumMember), parent)
 
   def name : String
-    previous_def.rchop("_")
+    @name.rchop("_")
   end
 
   def cpp_name : String

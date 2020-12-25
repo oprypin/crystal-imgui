@@ -77,7 +77,7 @@ class UpstreamMerger(T)
     end
   {% end %}
 
-  def merge(&block : (T, String)->)
+  def merge(&block : (T, String) ->)
     Dir.mkdir(tmp_dir = File.tempname)
     @contents.each do |file, subfiles|
       file_names = SUBFILES.map do |subfile|
