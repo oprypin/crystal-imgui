@@ -251,8 +251,8 @@ module ImGui
 
   make_input_text(:input_text_with_hint, label : String, hint : String, buf : TextBuffer, flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0))
 
-  pointer_wrapper def self.checkbox_flags(label : String, flags : Enum*, flags_value : Enum) : Bool
-    LibImGui.igCheckboxFlags(label, flags.as(UInt32*), flags_value.to_u32!)
+  pointer_wrapper def self.checkbox_flags(label : String, flags : Pointer, flags_value : Enum) : Bool
+    LibImGui.igCheckboxFlags(label, flags.as(UInt32*), flags_value.as(Enum).to_u32!)
   end
 
   private macro make_plot(name, *args)
