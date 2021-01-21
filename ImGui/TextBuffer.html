@@ -1133,7 +1133,7 @@ IO object.</p>
           
           <p>Writes the contents of <em>slice</em> into this <code>IO</code>.</p>
 
-<pre><code>io <span class="o">=</span> <span class="t">IO</span><span class="t">::</span><span class="t">Memory</span>.<span class="k">new</span>
+<pre><code class="language-crystal">io <span class="o">=</span> <span class="t">IO</span><span class="t">::</span><span class="t">Memory</span>.<span class="k">new</span>
 slice <span class="o">=</span> <span class="t">Bytes</span>.<span class="k">new</span>(<span class="n">4</span>) { <span class="o">|</span>i<span class="o">|</span> (<span class="s">&#39;a&#39;</span>.ord <span class="o">+</span> i).to_u8 }
 io.write(slice)
 io.to_s <span class="c"># =&gt; &quot;abcd&quot;</span></code></pre>
