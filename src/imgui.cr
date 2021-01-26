@@ -253,7 +253,7 @@ module ImGui
 
   pointer_wrapper def self.checkbox_flags(label : String, flags : T*, flags_value : T) : Bool forall T
     typeof(flags_value.to_i32)
-    LibImGui.igCheckboxFlags(label, flags.as(UInt32*), flags_value.to_u32!)
+    LibImGui.igCheckboxFlagsUintPtr(label, flags.as(UInt32*), flags_value.to_u32!)
   end
 
   pointer_wrapper def self.radio_button(label : String, v : T*, v_button : T) : Bool forall T

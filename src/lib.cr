@@ -6,9 +6,14 @@ lib LibImGui
   alias ImDrawCallback = (ImDrawList*, ImDrawCmd*) -> Void
   alias ImDrawIdx = LibC::UShort
   alias ImFileHandle = Void*
+  alias ImGuiContextHookCallback = (ImGuiContext*, ImGuiContextHook*) -> Void
+  alias ImGuiErrorLogCallback = (Void*, LibC::Char*) -> Void
   alias ImGuiID = LibC::UInt
   alias ImGuiInputTextCallback = (ImGuiInputTextCallbackData*) -> LibC::Int
   alias ImGuiSizeCallback = (ImGuiSizeCallbackData*) -> Void
+  alias ImGuiTableColumnIdx = Int8
+  alias ImGuiTableColumnsSettings = Void
+  alias ImGuiTableDrawChannelIdx = UInt8
   alias ImPoolIdx = LibC::Int
   alias ImTextureID = Void*
   alias ImWchar16 = LibC::UShort
@@ -28,16 +33,16 @@ lib LibImGui
   fun igRender
   fun igGetDrawData : ImDrawData*
   fun igShowDemoWindow(p_open : Bool*)
-  fun igShowAboutWindow(p_open : Bool*)
   fun igShowMetricsWindow(p_open : Bool*)
+  fun igShowAboutWindow(p_open : Bool*)
   fun igShowStyleEditor(ref : ImGuiStyle*)
   fun igShowStyleSelector(label : LibC::Char*) : Bool
   fun igShowFontSelector(label : LibC::Char*)
   fun igShowUserGuide
   fun igGetVersion : LibC::Char*
   fun igStyleColorsDark(dst : ImGuiStyle*)
-  fun igStyleColorsClassic(dst : ImGuiStyle*)
   fun igStyleColorsLight(dst : ImGuiStyle*)
+  fun igStyleColorsClassic(dst : ImGuiStyle*)
   fun igBegin(name : LibC::Char*, p_open : Bool*, flags : ImGui::ImGuiWindowFlags) : Bool
   fun igEnd
   fun igBeginChildStr(str_id : LibC::Char*, size : ImGui::ImVec2, border : Bool, flags : ImGui::ImGuiWindowFlags) : Bool
@@ -68,17 +73,17 @@ lib LibImGui
   fun igSetWindowFocusNil
   fun igSetWindowFocusStr(name : LibC::Char*)
   fun igSetWindowFontScale(scale : LibC::Float)
-  fun igGetContentRegionMax(pOut : ImGui::ImVec2*)
   fun igGetContentRegionAvail(pOut : ImGui::ImVec2*)
+  fun igGetContentRegionMax(pOut : ImGui::ImVec2*)
   fun igGetWindowContentRegionMin(pOut : ImGui::ImVec2*)
   fun igGetWindowContentRegionMax(pOut : ImGui::ImVec2*)
   fun igGetWindowContentRegionWidth : LibC::Float
   fun igGetScrollX : LibC::Float
   fun igGetScrollY : LibC::Float
-  fun igGetScrollMaxX : LibC::Float
-  fun igGetScrollMaxY : LibC::Float
   fun igSetScrollXFloat(scroll_x : LibC::Float)
   fun igSetScrollYFloat(scroll_y : LibC::Float)
+  fun igGetScrollMaxX : LibC::Float
+  fun igGetScrollMaxY : LibC::Float
   fun igSetScrollHereX(center_x_ratio : LibC::Float)
   fun igSetScrollHereY(center_y_ratio : LibC::Float)
   fun igSetScrollFromPosXFloat(local_x : LibC::Float, center_x_ratio : LibC::Float)
@@ -91,23 +96,23 @@ lib LibImGui
   fun igPushStyleVarFloat(idx : ImGui::ImGuiStyleVar, val : LibC::Float)
   fun igPushStyleVarVec2(idx : ImGui::ImGuiStyleVar, val : ImGui::ImVec2)
   fun igPopStyleVar(count : LibC::Int)
-  fun igGetStyleColorVec4(idx : ImGui::ImGuiCol) : ImGui::ImVec4*
-  fun igGetFont : ImFont*
-  fun igGetFontSize : LibC::Float
-  fun igGetFontTexUvWhitePixel(pOut : ImGui::ImVec2*)
-  fun igGetColorU32Col(idx : ImGui::ImGuiCol, alpha_mul : LibC::Float) : UInt32
-  fun igGetColorU32Vec4(col : ImGui::ImVec4) : UInt32
-  fun igGetColorU32U32(col : UInt32) : UInt32
+  fun igPushAllowKeyboardFocus(allow_keyboard_focus : Bool)
+  fun igPopAllowKeyboardFocus
+  fun igPushButtonRepeat(repeat : Bool)
+  fun igPopButtonRepeat
   fun igPushItemWidth(item_width : LibC::Float)
   fun igPopItemWidth
   fun igSetNextItemWidth(item_width : LibC::Float)
   fun igCalcItemWidth : LibC::Float
   fun igPushTextWrapPos(wrap_local_pos_x : LibC::Float)
   fun igPopTextWrapPos
-  fun igPushAllowKeyboardFocus(allow_keyboard_focus : Bool)
-  fun igPopAllowKeyboardFocus
-  fun igPushButtonRepeat(repeat : Bool)
-  fun igPopButtonRepeat
+  fun igGetFont : ImFont*
+  fun igGetFontSize : LibC::Float
+  fun igGetFontTexUvWhitePixel(pOut : ImGui::ImVec2*)
+  fun igGetColorU32Col(idx : ImGui::ImGuiCol, alpha_mul : LibC::Float) : UInt32
+  fun igGetColorU32Vec4(col : ImGui::ImVec4) : UInt32
+  fun igGetColorU32U32(col : UInt32) : UInt32
+  fun igGetStyleColorVec4(idx : ImGui::ImGuiCol) : ImGui::ImVec4*
   fun igSeparator
   fun igSameLine(offset_from_start_x : LibC::Float, spacing : LibC::Float)
   fun igNewLine
@@ -153,7 +158,8 @@ lib LibImGui
   fun igImage(user_texture_id : ImTextureID, size : ImGui::ImVec2, uv0 : ImGui::ImVec2, uv1 : ImGui::ImVec2, tint_col : ImGui::ImVec4, border_col : ImGui::ImVec4)
   fun igImageButton(user_texture_id : ImTextureID, size : ImGui::ImVec2, uv0 : ImGui::ImVec2, uv1 : ImGui::ImVec2, frame_padding : LibC::Int, bg_col : ImGui::ImVec4, tint_col : ImGui::ImVec4) : Bool
   fun igCheckbox(label : LibC::Char*, v : Bool*) : Bool
-  fun igCheckboxFlags(label : LibC::Char*, flags : LibC::UInt*, flags_value : LibC::UInt) : Bool
+  fun igCheckboxFlagsIntPtr(label : LibC::Char*, flags : LibC::Int*, flags_value : LibC::Int) : Bool
+  fun igCheckboxFlagsUintPtr(label : LibC::Char*, flags : LibC::UInt*, flags_value : LibC::UInt) : Bool
   fun igRadioButtonBool(label : LibC::Char*, active : Bool) : Bool
   fun igRadioButtonIntPtr(label : LibC::Char*, v : LibC::Int*, v_button : LibC::Int) : Bool
   fun igProgressBar(fraction : LibC::Float, size_arg : ImGui::ImVec2, overlay : LibC::Char*)
@@ -220,7 +226,7 @@ lib LibImGui
   fun igTreePop
   fun igGetTreeNodeToLabelSpacing : LibC::Float
   fun igCollapsingHeaderTreeNodeFlags(label : LibC::Char*, flags : ImGui::ImGuiTreeNodeFlags) : Bool
-  fun igCollapsingHeaderBoolPtr(label : LibC::Char*, p_open : Bool*, flags : ImGui::ImGuiTreeNodeFlags) : Bool
+  fun igCollapsingHeaderBoolPtr(label : LibC::Char*, p_visible : Bool*, flags : ImGui::ImGuiTreeNodeFlags) : Bool
   fun igSetNextItemOpen(is_open : Bool, cond : ImGui::ImGuiCond)
   fun igSelectableBool(label : LibC::Char*, selected : Bool, flags : ImGui::ImGuiSelectableFlags, size : ImGui::ImVec2) : Bool
   fun igSelectableBoolPtr(label : LibC::Char*, p_selected : Bool*, flags : ImGui::ImGuiSelectableFlags, size : ImGui::ImVec2) : Bool
@@ -258,6 +264,22 @@ lib LibImGui
   fun igBeginPopupContextWindow(str_id : LibC::Char*, popup_flags : ImGui::ImGuiPopupFlags) : Bool
   fun igBeginPopupContextVoid(str_id : LibC::Char*, popup_flags : ImGui::ImGuiPopupFlags) : Bool
   fun igIsPopupOpenStr(str_id : LibC::Char*, flags : ImGui::ImGuiPopupFlags) : Bool
+  fun igBeginTable(str_id : LibC::Char*, column : LibC::Int, flags : ImGui::ImGuiTableFlags, outer_size : ImGui::ImVec2, inner_width : LibC::Float) : Bool
+  fun igEndTable
+  fun igTableNextRow(row_flags : ImGui::ImGuiTableRowFlags, min_row_height : LibC::Float)
+  fun igTableNextColumn : Bool
+  fun igTableSetColumnIndex(column_n : LibC::Int) : Bool
+  fun igTableSetupColumn(label : LibC::Char*, flags : ImGui::ImGuiTableColumnFlags, init_width_or_weight : LibC::Float, user_id : UInt32)
+  fun igTableSetupScrollFreeze(cols : LibC::Int, rows : LibC::Int)
+  fun igTableHeadersRow
+  fun igTableHeader(label : LibC::Char*)
+  fun igTableGetSortSpecs : ImGuiTableSortSpecs*
+  fun igTableGetColumnCount : LibC::Int
+  fun igTableGetColumnIndex : LibC::Int
+  fun igTableGetRowIndex : LibC::Int
+  fun igTableGetColumnNameInt(column_n : LibC::Int) : LibC::Char*
+  fun igTableGetColumnFlags(column_n : LibC::Int) : ImGui::ImGuiTableColumnFlags
+  fun igTableSetBgColor(target : ImGui::ImGuiTableBgTarget, color : UInt32, column_n : LibC::Int)
   fun igColumns(count : LibC::Int, id : LibC::Char*, border : Bool)
   fun igNextColumn
   fun igGetColumnIndex : LibC::Int
@@ -373,6 +395,7 @@ lib LibImGui
     frame_border_size : LibC::Float
     item_spacing : ImGui::ImVec2
     item_inner_spacing : ImGui::ImVec2
+    cell_padding : ImGui::ImVec2
     touch_extra_padding : ImGui::ImVec2
     indent_spacing : LibC::Float
     columns_min_spacing : LibC::Float
@@ -395,7 +418,7 @@ lib LibImGui
     anti_aliased_fill : Bool
     curve_tessellation_tol : LibC::Float
     circle_segment_max_error : LibC::Float
-    colors : ImGui::ImVec4[48]
+    colors : ImGui::ImVec4[53]
   end
 
   fun ImGuiStyle_ImGuiStyle : ImGuiStyle*
@@ -424,9 +447,10 @@ lib LibImGui
     mouse_draw_cursor : Bool
     config_mac_osx_behaviors : Bool
     config_input_text_cursor_blink : Bool
+    config_drag_click_to_input_text : Bool
     config_windows_resize_from_edges : Bool
     config_windows_move_from_title_bar_only : Bool
-    config_windows_memory_compact_timer : LibC::Float
+    config_memory_compact_timer : LibC::Float
     backend_platform_name : LibC::Char*
     backend_renderer_name : LibC::Char*
     backend_platform_user_data : Void*
@@ -437,7 +461,6 @@ lib LibImGui
     clipboard_user_data : Void*
     ime_set_input_screen_pos_fn : (LibC::Int, LibC::Int) -> Void
     ime_window_handle : Void*
-    render_draw_lists_fn_unused : Void*
     mouse_pos : ImGui::ImVec2
     mouse_down : Bool[5]
     mouse_wheel : LibC::Float
@@ -535,6 +558,23 @@ lib LibImGui
   fun ImGuiPayload_IsDataType(self : ImGuiPayload*, type : LibC::Char*) : Bool
   fun ImGuiPayload_IsPreview(self : ImGuiPayload*) : Bool
   fun ImGuiPayload_IsDelivery(self : ImGuiPayload*) : Bool
+
+  struct ImGuiTableColumnSortSpecs
+    column_user_id : ImGuiID
+    column_index : Int16
+    sort_order : Int16
+    sort_direction : ImGui::ImGuiSortDirection
+  end
+
+  fun ImGuiTableColumnSortSpecs_ImGuiTableColumnSortSpecs : ImGuiTableColumnSortSpecs*
+
+  struct ImGuiTableSortSpecs
+    specs : ImGuiTableColumnSortSpecs*
+    specs_count : LibC::Int
+    specs_dirty : Bool
+  end
+
+  fun ImGuiTableSortSpecs_ImGuiTableSortSpecs : ImGuiTableSortSpecs*
   fun ImGuiOnceUponAFrame_ImGuiOnceUponAFrame : ImGui::ImGuiOnceUponAFrame*
 
   struct ImGuiTextFilter
@@ -608,6 +648,12 @@ lib LibImGui
 
   fun ImDrawCmd_ImDrawCmd : ImDrawCmd*
 
+  struct ImDrawCmdHeader
+    clip_rect : ImGui::ImVec4
+    texture_id : ImTextureID
+    vtx_offset : LibC::UInt
+  end
+
   struct ImDrawListSplitter
     _current : LibC::Int
     _count : LibC::Int
@@ -626,16 +672,17 @@ lib LibImGui
     idx_buffer : ImVectorInternal
     vtx_buffer : ImVectorInternal
     flags : ImGui::ImDrawListFlags
+    _vtx_current_idx : LibC::UInt
     _data : ImDrawListSharedData*
     _owner_name : LibC::Char*
-    _vtx_current_idx : LibC::UInt
     _vtx_write_ptr : ImGui::ImDrawVert*
     _idx_write_ptr : ImDrawIdx*
     _clip_rect_stack : ImVectorInternal
     _texture_id_stack : ImVectorInternal
     _path : ImVectorInternal
-    _cmd_header : ImDrawCmd
+    _cmd_header : ImDrawCmdHeader
     _splitter : ImDrawListSplitter
+    _fringe_scale : LibC::Float
   end
 
   fun ImDrawList_ImDrawList(shared_data : ImDrawListSharedData*) : ImDrawList*
@@ -662,7 +709,8 @@ lib LibImGui
   fun ImDrawList_AddTextFontPtr(self : ImDrawList*, font : ImFont*, font_size : LibC::Float, pos : ImGui::ImVec2, col : UInt32, text_begin : LibC::Char*, text_end : LibC::Char*, wrap_width : LibC::Float, cpu_fine_clip_rect : ImGui::ImVec4*)
   fun ImDrawList_AddPolyline(self : ImDrawList*, points : ImGui::ImVec2*, num_points : LibC::Int, col : UInt32, closed : Bool, thickness : LibC::Float)
   fun ImDrawList_AddConvexPolyFilled(self : ImDrawList*, points : ImGui::ImVec2*, num_points : LibC::Int, col : UInt32)
-  fun ImDrawList_AddBezierCurve(self : ImDrawList*, p1 : ImGui::ImVec2, p2 : ImGui::ImVec2, p3 : ImGui::ImVec2, p4 : ImGui::ImVec2, col : UInt32, thickness : LibC::Float, num_segments : LibC::Int)
+  fun ImDrawList_AddBezierCubic(self : ImDrawList*, p1 : ImGui::ImVec2, p2 : ImGui::ImVec2, p3 : ImGui::ImVec2, p4 : ImGui::ImVec2, col : UInt32, thickness : LibC::Float, num_segments : LibC::Int)
+  fun ImDrawList_AddBezierQuadratic(self : ImDrawList*, p1 : ImGui::ImVec2, p2 : ImGui::ImVec2, p3 : ImGui::ImVec2, col : UInt32, thickness : LibC::Float, num_segments : LibC::Int)
   fun ImDrawList_AddImage(self : ImDrawList*, user_texture_id : ImTextureID, p_min : ImGui::ImVec2, p_max : ImGui::ImVec2, uv_min : ImGui::ImVec2, uv_max : ImGui::ImVec2, col : UInt32)
   fun ImDrawList_AddImageQuad(self : ImDrawList*, user_texture_id : ImTextureID, p1 : ImGui::ImVec2, p2 : ImGui::ImVec2, p3 : ImGui::ImVec2, p4 : ImGui::ImVec2, uv1 : ImGui::ImVec2, uv2 : ImGui::ImVec2, uv3 : ImGui::ImVec2, uv4 : ImGui::ImVec2, col : UInt32)
   fun ImDrawList_AddImageRounded(self : ImDrawList*, user_texture_id : ImTextureID, p_min : ImGui::ImVec2, p_max : ImGui::ImVec2, uv_min : ImGui::ImVec2, uv_max : ImGui::ImVec2, col : UInt32, rounding : LibC::Float, rounding_corners : ImGui::ImDrawCornerFlags)
@@ -673,7 +721,8 @@ lib LibImGui
   fun ImDrawList_PathStroke(self : ImDrawList*, col : UInt32, closed : Bool, thickness : LibC::Float)
   fun ImDrawList_PathArcTo(self : ImDrawList*, center : ImGui::ImVec2, radius : LibC::Float, a_min : LibC::Float, a_max : LibC::Float, num_segments : LibC::Int)
   fun ImDrawList_PathArcToFast(self : ImDrawList*, center : ImGui::ImVec2, radius : LibC::Float, a_min_of_12 : LibC::Int, a_max_of_12 : LibC::Int)
-  fun ImDrawList_PathBezierCurveTo(self : ImDrawList*, p2 : ImGui::ImVec2, p3 : ImGui::ImVec2, p4 : ImGui::ImVec2, num_segments : LibC::Int)
+  fun ImDrawList_PathBezierCubicCurveTo(self : ImDrawList*, p2 : ImGui::ImVec2, p3 : ImGui::ImVec2, p4 : ImGui::ImVec2, num_segments : LibC::Int)
+  fun ImDrawList_PathBezierQuadraticCurveTo(self : ImDrawList*, p2 : ImGui::ImVec2, p3 : ImGui::ImVec2, num_segments : LibC::Int)
   fun ImDrawList_PathRect(self : ImDrawList*, rect_min : ImGui::ImVec2, rect_max : ImGui::ImVec2, rounding : LibC::Float, rounding_corners : ImGui::ImDrawCornerFlags)
   fun ImDrawList_AddCallback(self : ImDrawList*, callback : ImDrawCallback, callback_data : Void*)
   fun ImDrawList_AddDrawCmd(self : ImDrawList*)
@@ -859,16 +908,24 @@ lib LibImGui
   type ImGuiNextItemData = Void*
   type ImGuiShrinkWidthItem = Void*
   type ImGuiPtrOrIndex = Void*
-  type ImGuiColumnData = Void*
-  type ImGuiColumns = Void*
+  type ImGuiOldColumnData = Void*
+  type ImGuiOldColumns = Void*
   type ImGuiWindowSettings = Void*
   type ImGuiSettingsHandler = Void*
+  type ImGuiMetricsConfig = Void*
+  type ImGuiStackSizes = Void*
+  type ImGuiContextHook = Void*
   type ImGuiContext = Void*
   type ImGuiWindowTempData = Void*
   type ImGuiWindow = Void*
   type ImGuiLastItemDataBackup = Void*
   type ImGuiTabItem = Void*
   type ImGuiTabBar = Void*
+  type ImGuiTableColumn = Void*
+  type ImGuiTableCellData = Void*
+  type ImGuiTable = Void*
+  type ImGuiTableColumnSettings = Void*
+  type ImGuiTableSettings = Void*
   type StbUndoRecord = Void*
   type StbUndoState = Void*
   type STB_TexteditState = Void*

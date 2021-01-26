@@ -387,6 +387,7 @@ class COverload
             .gsub(/\bNULL\b/, "nil")
             .gsub(/\bfloat\b/, "Float32")
             .gsub(/\bFLT_MAX\b/, "Float32::MAX")
+            .gsub(/\bFLT_MIN\b/, "Float32::MIN_POSITIVE")
         end
         typ = arg.type.name(ctx)
         callarg = arg.name
@@ -569,7 +570,7 @@ class CStructMember
 
   with_location(url: false) do
     return nil if parent.location?.try(&.file) != "imgui.h"
-    regex = /^[^{\/]*\b#{self.c_name}(\[[^\[\]]+\]|\)\(.+?\))*[;,]/
+    regex = /^[^{\/]*\b#{self.c_name}(\[[^\[\]]+\]|\)\(.+?\))*( : \d+)?[;,]/
     (parent.location.line + 1).step do |line|
       if IMGUI_H[line - 1] =~ regex
         return Location.new(parent.location.file, line)
@@ -599,6 +600,7 @@ class CStructMember
     if {varname, typ.name(Context::Obj)}.in?({
          {"cmd_lists", "ImDrawList*"},
          {"config_data", "ImFontConfig"},
+         {"specs", "ImGuiTableColumnSortSpecs"},
        })
       t = typ.name(Context::Obj).rchop("*")
       typename = "Slice(#{t})"
@@ -810,7 +812,7 @@ class CTypedef
     type_name = self.type.name(ctx)
     if self.name == self.type.c_name
       return if AllStructs.has_key?(self.name)
-      yield %(alias #{self.name} = Void)
+      yield %(alias #{self.name} = Void) if ctx.lib?
     else
       if ctx.lib?
         return if self.name == "ImWchar"
