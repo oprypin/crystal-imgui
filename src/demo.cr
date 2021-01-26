@@ -1,4 +1,4 @@
-# Based on https://github.com/ocornut/imgui/blob/v1.79/imgui_demo.cpp
+# Based on https://github.com/ocornut/imgui/blob/v1.80/imgui_demo.cpp
 
 require "./imgui"
 require "./util"
@@ -192,7 +192,7 @@ module ImGuiDemo
         ImGui.end_menu
       end
       if ImGui.begin_menu("Tools")
-        ImGui.menu_item("Metrics", "", pointerof(show_app_metrics.val))
+        ImGui.menu_item("Metrics/Debugger", "", pointerof(show_app_metrics.val))
         ImGui.menu_item("Style Editor", "", pointerof(show_app_style_editor.val))
         ImGui.menu_item("About Dear ImGui", "", pointerof(show_app_about.val))
         ImGui.end_menu
@@ -208,7 +208,7 @@ module ImGuiDemo
       ImGui.bullet_text("Sections below are demonstrating many aspects of the library.")
       ImGui.bullet_text("The \"Examples\" menu above leads to more demo contents.")
       ImGui.bullet_text("The \"Tools\" menu above gives access to: About Box, Style Editor,\n" +
-                        "and Metrics (general purpose Dear ImGui debugging tool).")
+                        "and Metrics/Debugger (general purpose Dear ImGui debugging tool).")
       ImGui.separator
 
       ImGui.text("PROGRAMMER GUIDE:")
@@ -229,14 +229,15 @@ module ImGuiDemo
 
       if ImGui.tree_node("Configuration##2")
         ImGui.checkbox_flags("io.ConfigFlags: NavEnableKeyboard", pointerof(io.config_flags), ImGuiConfigFlags::NavEnableKeyboard)
+        ImGui.same_line
+        help_marker("Enable keyboard controls.")
         ImGui.checkbox_flags("io.ConfigFlags: NavEnableGamepad", pointerof(io.config_flags), ImGuiConfigFlags::NavEnableGamepad)
         ImGui.same_line
-        help_marker("Required back-end to feed in gamepad inputs in io.NavInputs[] and set io.BackendFlags |= ImGuiBackendFlags_HasGamepad.\n\nRead instructions in imgui.cpp for details.")
+        help_marker("Enable gamepad controls. Require backend to set io.BackendFlags |= ImGuiBackendFlags_HasGamepad.\n\nRead instructions in imgui.cpp for details.")
         ImGui.checkbox_flags("io.ConfigFlags: NavEnableSetMousePos", pointerof(io.config_flags), ImGuiConfigFlags::NavEnableSetMousePos)
         ImGui.same_line
         help_marker("Instruct navigation to move the mouse cursor. See comment for ImGuiConfigFlags_NavEnableSetMousePos.")
         ImGui.checkbox_flags("io.ConfigFlags: NoMouse", pointerof(io.config_flags), ImGuiConfigFlags::NoMouse)
-
         if io.config_flags.includes? :NoMouse
           if (ImGui.get_time % 0.40f32) < 0.20f32
             ImGui.same_line
@@ -248,10 +249,13 @@ module ImGuiDemo
         end
         ImGui.checkbox_flags("io.ConfigFlags: NoMouseCursorChange", pointerof(io.config_flags), ImGuiConfigFlags::NoMouseCursorChange)
         ImGui.same_line
-        help_marker("Instruct back-end to not alter mouse cursor shape and visibility.")
+        help_marker("Instruct backend to not alter mouse cursor shape and visibility.")
         ImGui.checkbox("io.ConfigInputTextCursorBlink", pointerof(io.config_input_text_cursor_blink))
         ImGui.same_line
-        help_marker("Set to false to disable blinking cursor, for users who consider it distracting")
+        help_marker("Enable blinking cursor (optional as some users consider it to be distracting)")
+        ImGui.checkbox("io.ConfigDragClickToInputText", pointerof(io.config_drag_click_to_input_text))
+        ImGui.same_line
+        help_marker("Enable turning DragXXX widgets into text input with a simple mouse click-release (without moving).")
         ImGui.checkbox("io.ConfigWindowsResizeFromEdges", pointerof(io.config_windows_resize_from_edges))
         ImGui.same_line
         help_marker("Enable resizing of windows from their edges and from the lower-left corner.\nThis requires (io.BackendFlags & ImGuiBackendFlags_HasMouseCursors) because it needs mouse cursor feedback.")
@@ -266,8 +270,8 @@ module ImGuiDemo
 
       if ImGui.tree_node("Backend Flags")
         help_marker(
-          "Those flags are set by the back-ends (imgui_impl_xxx files) to specify their capabilities.\n" +
-          "Here we expose then as read-only fields to avoid breaking interactions with your back-end.")
+          "Those flags are set by the backends (imgui_impl_xxx files) to specify their capabilities.\n" +
+          "Here we expose then as read-only fields to avoid breaking interactions with your backend.")
 
         ImGui.checkbox_flags("io.BackendFlags: HasGamepad", pointerof(io.backend_flags), ImGuiBackendFlags::HasGamepad)
         ImGui.checkbox_flags("io.BackendFlags: HasMouseCursors", pointerof(io.backend_flags), ImGuiBackendFlags::HasMouseCursors)
@@ -302,30 +306,38 @@ module ImGuiDemo
     end
 
     if ImGui.collapsing_header("Window options")
-      ImGui.checkbox("No titlebar", pointerof(no_titlebar.val))
-      ImGui.same_line(150)
-      ImGui.checkbox("No scrollbar", pointerof(no_scrollbar.val))
-      ImGui.same_line(300)
-      ImGui.checkbox("No menu", pointerof(no_menu.val))
-      ImGui.checkbox("No move", pointerof(no_move.val))
-      ImGui.same_line(150)
-      ImGui.checkbox("No resize", pointerof(no_resize.val))
-      ImGui.same_line(300)
-      ImGui.checkbox("No collapse", pointerof(no_collapse.val))
-      ImGui.checkbox("No close", pointerof(no_close.val))
-      ImGui.same_line(150)
-      ImGui.checkbox("No nav", pointerof(no_nav.val))
-      ImGui.same_line(300)
-      ImGui.checkbox("No background", pointerof(no_background.val))
-      ImGui.checkbox("No bring to front", pointerof(no_bring_to_front.val))
+      if ImGui.begin_table("split", 3)
+        ImGui.table_next_column
+        ImGui.checkbox("No titlebar", pointerof(no_titlebar.val))
+        ImGui.table_next_column
+        ImGui.checkbox("No scrollbar", pointerof(no_scrollbar.val))
+        ImGui.table_next_column
+        ImGui.checkbox("No menu", pointerof(no_menu.val))
+        ImGui.table_next_column
+        ImGui.checkbox("No move", pointerof(no_move.val))
+        ImGui.table_next_column
+        ImGui.checkbox("No resize", pointerof(no_resize.val))
+        ImGui.table_next_column
+        ImGui.checkbox("No collapse", pointerof(no_collapse.val))
+        ImGui.table_next_column
+        ImGui.checkbox("No close", pointerof(no_close.val))
+        ImGui.table_next_column
+        ImGui.checkbox("No nav", pointerof(no_nav.val))
+        ImGui.table_next_column
+        ImGui.checkbox("No background", pointerof(no_background.val))
+        ImGui.table_next_column
+        ImGui.checkbox("No bring to front", pointerof(no_bring_to_front.val))
+        ImGui.end_table
+      end
     end
 
     show_demo_window_widgets
     show_demo_window_layout
     show_demo_window_popups
-    show_demo_window_columns
+    show_demo_window_tables
     show_demo_window_misc
 
+    ImGui.pop_item_width
     ImGui.end
   end
 
@@ -516,9 +528,9 @@ module ImGuiDemo
         ImGui.color_edit3("color 1", col1.val)
         ImGui.same_line
         help_marker(
-          "Click on the colored square to open a color picker.\n" +
+          "Click on the color square to open a color picker.\n" +
           "Click and hold to use drag and drop.\n" +
-          "Right-click on the colored square to show options.\n" +
+          "Right-click on the color square to show options.\n" +
           "CTRL+click on individual component to input value.\n")
 
         ImGui.color_edit4("color 2", col2.val)
@@ -655,7 +667,7 @@ module ImGuiDemo
     end
 
     if ImGui.tree_node("Text")
-      if ImGui.tree_node("Colored Text")
+      if ImGui.tree_node("Colorful Text")
         ImGui.text_colored(ImVec4.new(1.0f32, 0.0f32, 1.0f32, 1.0f32), "Pink")
         ImGui.text_colored(ImVec4.new(1.0f32, 1.0f32, 0.0f32, 1.0f32), "Yellow")
         ImGui.text_disabled("Disabled")
@@ -866,15 +878,30 @@ module ImGuiDemo
         ImGui.tree_pop
       end
       if ImGui.tree_node("In columns")
-        ImGui.columns(3, nil, false)
         static selected = Slice.new(16, false)
-        16.times do |i|
-          label = sprintf("Item %d", i)
-          if ImGui.selectable(label, pointerof(selected.val[i]))
+
+        if ImGui.begin_table("split1", 3, ImGuiTableFlags::Resizable | ImGuiTableFlags::NoSavedSettings)
+          10.times do |i|
+            label = sprintf("Item %d", i)
+            ImGui.table_next_column
+            ImGui.selectable(label, pointerof(selected.val[i]))
           end
-          ImGui.next_column
+          ImGui.end_table
         end
-        ImGui.columns(1)
+        ImGui.separator
+        if ImGui.begin_table("split2", 3, ImGuiTableFlags::Resizable | ImGuiTableFlags::NoSavedSettings)
+          10.times do |i|
+            label = sprintf("Item %d", i)
+            ImGui.table_next_row
+            ImGui.table_next_column
+            ImGui.selectable(label, pointerof(selected.val[i]), ImGuiSelectableFlags::SpanAllColumns)
+            ImGui.table_next_column
+            ImGui.text("Some other contents")
+            ImGui.table_next_column
+            ImGui.text("123456")
+          end
+          ImGui.end_table
+        end
         ImGui.tree_pop
       end
       if ImGui.tree_node("Grid")
@@ -1054,6 +1081,135 @@ module ImGuiDemo
       ImGui.tree_pop
     end
 
+    if ImGui.tree_node("Tabs")
+      if ImGui.tree_node("Basic")
+        tab_bar_flags = ImGuiTabBarFlags::None
+        if ImGui.begin_tab_bar("MyTabBar", tab_bar_flags)
+          if ImGui.begin_tab_item("Avocado")
+            ImGui.text("This is the Avocado tab!\nblah blah blah blah blah")
+            ImGui.end_tab_item
+          end
+          if ImGui.begin_tab_item("Broccoli")
+            ImGui.text("This is the Broccoli tab!\nblah blah blah blah blah")
+            ImGui.end_tab_item
+          end
+          if ImGui.begin_tab_item("Cucumber")
+            ImGui.text("This is the Cucumber tab!\nblah blah blah blah blah")
+            ImGui.end_tab_item
+          end
+          ImGui.end_tab_bar
+        end
+        ImGui.separator
+        ImGui.tree_pop
+      end
+
+      if ImGui.tree_node("Advanced & Close Button")
+        static tab_bar_flags = ImGuiTabBarFlags::Reorderable
+        ImGui.checkbox_flags("ImGuiTabBarFlags_Reorderable", pointerof(tab_bar_flags.val), ImGuiTabBarFlags::Reorderable)
+        ImGui.checkbox_flags("ImGuiTabBarFlags_AutoSelectNewTabs", pointerof(tab_bar_flags.val), ImGuiTabBarFlags::AutoSelectNewTabs)
+        ImGui.checkbox_flags("ImGuiTabBarFlags_TabListPopupButton", pointerof(tab_bar_flags.val), ImGuiTabBarFlags::TabListPopupButton)
+        ImGui.checkbox_flags("ImGuiTabBarFlags_NoCloseWithMiddleMouseButton", pointerof(tab_bar_flags.val), ImGuiTabBarFlags::NoCloseWithMiddleMouseButton)
+        if (tab_bar_flags.val.includes? :FittingPolicyMask_)
+          tab_bar_flags.val |= ImGuiTabBarFlags::FittingPolicyDefault_
+        end
+        if ImGui.checkbox_flags("ImGuiTabBarFlags_FittingPolicyResizeDown", pointerof(tab_bar_flags.val), ImGuiTabBarFlags::FittingPolicyResizeDown)
+          tab_bar_flags.val &= ~(ImGuiTabBarFlags::FittingPolicyMask_ ^ ImGuiTabBarFlags::FittingPolicyResizeDown)
+        end
+        if ImGui.checkbox_flags("ImGuiTabBarFlags_FittingPolicyScroll", pointerof(tab_bar_flags.val), ImGuiTabBarFlags::FittingPolicyScroll)
+          tab_bar_flags.val &= ~(ImGuiTabBarFlags::FittingPolicyMask_ ^ ImGuiTabBarFlags::FittingPolicyScroll)
+        end
+
+        names = ["Artichoke", "Beetroot", "Celery", "Daikon"]
+        static opened = [true, true, true, true]
+        opened.val.size.times do |n|
+          if n > 0
+            ImGui.same_line
+          end
+          ImGui.checkbox(names[n], pointerof(opened.val[n]))
+        end
+
+        if ImGui.begin_tab_bar("MyTabBar", tab_bar_flags.val)
+          opened.val.size.times do |n|
+            if opened.val[n] && ImGui.begin_tab_item(names[n], pointerof(opened.val[n]), ImGuiTabItemFlags::None)
+              ImGui.text("This is the %s tab!", names[n])
+              if n.odd?
+                ImGui.text("I am an odd tab.")
+              end
+              ImGui.end_tab_item
+            end
+          end
+          ImGui.end_tab_bar
+        end
+        ImGui.separator
+        ImGui.tree_pop
+      end
+
+      if ImGui.tree_node("TabItemButton & Leading/Trailing flags")
+        static active_tabs = [] of Int32
+        static next_tab_id = 0
+        if next_tab_id.val == 0
+          3.times do |i|
+            active_tabs.val << next_tab_id.val
+            next_tab_id.val += 1
+          end
+        end
+
+        static show_leading_button = true
+        static show_trailing_button = true
+        ImGui.checkbox("Show Leading TabItemButton()", pointerof(show_leading_button.val))
+        ImGui.checkbox("Show Trailing TabItemButton()", pointerof(show_trailing_button.val))
+
+        static tab_bar_flags = ImGuiTabBarFlags::AutoSelectNewTabs | ImGuiTabBarFlags::Reorderable | ImGuiTabBarFlags::FittingPolicyResizeDown
+        ImGui.checkbox_flags("ImGuiTabBarFlags_TabListPopupButton", pointerof(tab_bar_flags.val), ImGuiTabBarFlags::TabListPopupButton)
+        if ImGui.checkbox_flags("ImGuiTabBarFlags_FittingPolicyResizeDown", pointerof(tab_bar_flags.val), ImGuiTabBarFlags::FittingPolicyResizeDown)
+          tab_bar_flags.val &= ~(ImGuiTabBarFlags::FittingPolicyMask_ ^ ImGuiTabBarFlags::FittingPolicyResizeDown)
+        end
+        if ImGui.checkbox_flags("ImGuiTabBarFlags_FittingPolicyScroll", pointerof(tab_bar_flags.val), ImGuiTabBarFlags::FittingPolicyScroll)
+          tab_bar_flags.val &= ~(ImGuiTabBarFlags::FittingPolicyMask_ ^ ImGuiTabBarFlags::FittingPolicyScroll)
+        end
+
+        if ImGui.begin_tab_bar("MyTabBar", tab_bar_flags.val)
+          if show_leading_button.val
+            if ImGui.tab_item_button("?", ImGuiTabItemFlags::Leading | ImGuiTabItemFlags::NoTooltip)
+              ImGui.open_popup("MyHelpMenu")
+            end
+          end
+          if ImGui.begin_popup("MyHelpMenu")
+            ImGui.selectable("Hello!")
+            ImGui.end_popup
+          end
+
+          if show_trailing_button.val
+            if ImGui.tab_item_button("+", ImGuiTabItemFlags::Trailing | ImGuiTabItemFlags::NoTooltip)
+              active_tabs.val << next_tab_id.val
+              next_tab_id.val += 1
+            end
+          end
+
+          n = 0
+          while n < active_tabs.val.size
+            open = true
+            name = sprintf("%04d", active_tabs.val[n])
+            if ImGui.begin_tab_item(name, pointerof(open), ImGuiTabItemFlags::None)
+              ImGui.text("This is the %s tab!", name)
+              ImGui.end_tab_item
+            end
+
+            if !open
+              active_tabs.val.delete_at(n)
+            else
+              n += 1
+            end
+          end
+
+          ImGui.end_tab_bar
+        end
+        ImGui.separator
+        ImGui.tree_pop
+      end
+      ImGui.tree_pop
+    end
+
     if ImGui.tree_node("Plots Widgets")
       static animate = true
       ImGui.checkbox("Animate", pointerof(animate.val))
@@ -1150,7 +1306,7 @@ module ImGuiDemo
       ImGui.text("Color widget:")
       ImGui.same_line
       help_marker(
-        "Click on the colored square to open a color picker.\n" +
+        "Click on the color square to open a color picker.\n" +
         "CTRL+click on individual component to input value.\n")
       ImGui.color_edit3("MyColor##1", pointerof(color.val), misc_flags)
 
@@ -1604,7 +1760,7 @@ module ImGuiDemo
 
     if ImGui.tree_node("Drag and Drop")
       if ImGui.tree_node("Drag and drop in standard widgets")
-        help_marker("You can drag from the colored squares.")
+        help_marker("You can drag from the color squares.")
         static col1 = Slice[1.0f32, 0.0f32, 0.2f32]
         static col2 = Slice[0.4f32, 0.7f32, 0.0f32, 0.5f32]
         ImGui.color_edit3("color 1", col1.val)
@@ -1695,15 +1851,15 @@ module ImGuiDemo
       ImGui.tree_pop
     end
 
-    if ImGui.tree_node("Querying Status (Active/Focused/Hovered etc.)")
+    if ImGui.tree_node("Querying Status (Edited/Active/Focused/Hovered etc.)")
       item_names = [
         "Text", "Button", "Button (w/ repeat)", "Checkbox", "SliderFloat", "InputText", "InputFloat",
-        "InputFloat3", "ColorEdit4", "MenuItem", "TreeNode", "TreeNode (w/ double-click)", "ListBox",
+        "InputFloat3", "ColorEdit4", "MenuItem", "TreeNode", "TreeNode (w/ double-click)", "Combo", "ListBox",
       ]
       static item_type = 1
       ImGui.combo("Item Type", pointerof(item_type.val), item_names, item_names.size)
       ImGui.same_line
-      help_marker("Testing how various types of items are interacting with the IsItemXXX functions.")
+      help_marker("Testing how various types of items are interacting with the IsItemXXX functions. Note that the bool return value of most ImGui function is generally equivalent to calling ImGui::IsItemHovered().")
 
       ret = false
       static b = false
@@ -1751,6 +1907,11 @@ module ImGuiDemo
         ret = ImGui.tree_node_ex("ITEM: TreeNode w/ ImGuiTreeNodeFlags_OpenOnDoubleClick", ImGuiTreeNodeFlags::OpenOnDoubleClick | ImGuiTreeNodeFlags::NoTreePushOnOpen)
       end
       if item_type.val == 12
+        items = ["Apple", "Banana", "Cherry", "Kiwi"]
+        static current = 1
+        ret = ImGui.combo("ITEM: Combo", pointerof(current.val), items)
+      end
+      if item_type.val == 13
         items = ["Apple", "Banana", "Cherry", "Kiwi"]
         static current = 1
         ret = ImGui.list_box("ITEM: ListBox", pointerof(current.val), items, items.size)
@@ -1904,11 +2065,13 @@ module ImGuiDemo
           end
           ImGui.end_menu_bar
         end
-        ImGui.columns(2)
-        100.times do |i|
-          buf = sprintf("%03d", i)
-          ImGui.button(buf, ImVec2.new(-Float32::MIN_POSITIVE, 0.0f32))
-          ImGui.next_column
+        if ImGui.begin_table("split", 2, ImGuiTableFlags::Resizable | ImGuiTableFlags::NoSavedSettings)
+          100.times do |i|
+            buf = sprintf("%03d", i)
+            ImGui.table_next_column
+            ImGui.button(buf, ImVec2.new(-Float32::MIN_POSITIVE, 0.0f32))
+          end
+          ImGui.end_table
         end
         ImGui.end_child
         ImGui.pop_style_var
@@ -1940,37 +2103,67 @@ module ImGuiDemo
 
     if ImGui.tree_node("Widgets Width")
       static f = 0.0f32
+      static show_indented_items = true
+      ImGui.checkbox("Show indented items", pointerof(show_indented_items.val))
+
       ImGui.text("SetNextItemWidth/PushItemWidth(100)")
       ImGui.same_line
       help_marker("Fixed width.")
-      ImGui.set_next_item_width(100)
-      ImGui.drag_float("float##1", pointerof(f.val))
-
-      ImGui.text("SetNextItemWidth/PushItemWidth(GetWindowWidth() * 0.5f)")
-      ImGui.same_line
-      help_marker("Half of window width.")
-      ImGui.set_next_item_width(ImGui.get_window_width * 0.5f32)
-      ImGui.drag_float("float##2", pointerof(f.val))
-
-      ImGui.text("SetNextItemWidth/PushItemWidth(GetContentRegionAvail().x * 0.5f)")
-      ImGui.same_line
-      help_marker("Half of available width.\n(~ right-cursor_pos)\n(works within a column set)")
-      ImGui.set_next_item_width(ImGui.get_content_region_avail.x * 0.5f32)
-      ImGui.drag_float("float##3", pointerof(f.val))
+      ImGui.push_item_width(100)
+      ImGui.drag_float("float##1b", pointerof(f.val))
+      if show_indented_items.val
+        ImGui.indent
+        ImGui.drag_float("float (indented)##1b", pointerof(f.val))
+        ImGui.unindent
+      end
+      ImGui.pop_item_width
 
       ImGui.text("SetNextItemWidth/PushItemWidth(-100)")
       ImGui.same_line
       help_marker("Align to right edge minus 100")
-      ImGui.set_next_item_width(-100)
-      ImGui.drag_float("float##4", pointerof(f.val))
+      ImGui.push_item_width(-100)
+      ImGui.drag_float("float##2a", pointerof(f.val))
+      if show_indented_items.val
+        ImGui.indent
+        ImGui.drag_float("float (indented)##2b", pointerof(f.val))
+        ImGui.unindent
+      end
+      ImGui.pop_item_width
 
-      ImGui.text("SetNextItemWidth/PushItemWidth(-1)")
+      ImGui.text("SetNextItemWidth/PushItemWidth(GetContentRegionAvail().x * 0.5f)")
+      ImGui.same_line
+      help_marker("Half of available width.\n(~ right-cursor_pos)\n(works within a column set)")
+      ImGui.push_item_width(ImGui.get_content_region_avail.x * 0.5f32)
+      ImGui.drag_float("float##3a", pointerof(f.val))
+      if show_indented_items.val
+        ImGui.indent
+        ImGui.drag_float("float (indented)##3b", pointerof(f.val))
+        ImGui.unindent
+      end
+      ImGui.pop_item_width
+
+      ImGui.text("SetNextItemWidth/PushItemWidth(-GetContentRegionAvail().x * 0.5f)")
+      ImGui.same_line
+      help_marker("Align to right edge minus half")
+      ImGui.push_item_width(-ImGui.get_content_region_avail.x * 0.5f32)
+      ImGui.drag_float("float##4a", pointerof(f.val))
+      if show_indented_items.val
+        ImGui.indent
+        ImGui.drag_float("float (indented)##4b", pointerof(f.val))
+        ImGui.unindent
+      end
+      ImGui.pop_item_width
+
+      ImGui.text("SetNextItemWidth/PushItemWidth(-FLT_MIN)")
       ImGui.same_line
       help_marker("Align to right edge")
-      ImGui.push_item_width(-1)
+      ImGui.push_item_width(-Float32::MIN_POSITIVE)
       ImGui.drag_float("##float5a", pointerof(f.val))
-      ImGui.drag_float("##float5b", pointerof(f.val))
-      ImGui.drag_float("##float5c", pointerof(f.val))
+      if show_indented_items.val
+        ImGui.indent
+        ImGui.drag_float("float (indented)##5b", pointerof(f.val))
+        ImGui.unindent
+      end
       ImGui.pop_item_width
 
       ImGui.tree_pop
@@ -2075,135 +2268,6 @@ module ImGuiDemo
         ImGui.pop_id
       end
 
-      ImGui.tree_pop
-    end
-
-    if ImGui.tree_node("Tabs")
-      if ImGui.tree_node("Basic")
-        tab_bar_flags = ImGuiTabBarFlags::None
-        if ImGui.begin_tab_bar("MyTabBar", tab_bar_flags)
-          if ImGui.begin_tab_item("Avocado")
-            ImGui.text("This is the Avocado tab!\nblah blah blah blah blah")
-            ImGui.end_tab_item
-          end
-          if ImGui.begin_tab_item("Broccoli")
-            ImGui.text("This is the Broccoli tab!\nblah blah blah blah blah")
-            ImGui.end_tab_item
-          end
-          if ImGui.begin_tab_item("Cucumber")
-            ImGui.text("This is the Cucumber tab!\nblah blah blah blah blah")
-            ImGui.end_tab_item
-          end
-          ImGui.end_tab_bar
-        end
-        ImGui.separator
-        ImGui.tree_pop
-      end
-
-      if ImGui.tree_node("Advanced & Close Button")
-        static tab_bar_flags = ImGuiTabBarFlags::Reorderable
-        ImGui.checkbox_flags("ImGuiTabBarFlags_Reorderable", pointerof(tab_bar_flags.val), ImGuiTabBarFlags::Reorderable)
-        ImGui.checkbox_flags("ImGuiTabBarFlags_AutoSelectNewTabs", pointerof(tab_bar_flags.val), ImGuiTabBarFlags::AutoSelectNewTabs)
-        ImGui.checkbox_flags("ImGuiTabBarFlags_TabListPopupButton", pointerof(tab_bar_flags.val), ImGuiTabBarFlags::TabListPopupButton)
-        ImGui.checkbox_flags("ImGuiTabBarFlags_NoCloseWithMiddleMouseButton", pointerof(tab_bar_flags.val), ImGuiTabBarFlags::NoCloseWithMiddleMouseButton)
-        if !tab_bar_flags.val.includes? :FittingPolicyMask_
-          tab_bar_flags.val |= ImGuiTabBarFlags::FittingPolicyDefault_
-        end
-        if ImGui.checkbox_flags("ImGuiTabBarFlags_FittingPolicyResizeDown", pointerof(tab_bar_flags.val), ImGuiTabBarFlags::FittingPolicyResizeDown)
-          tab_bar_flags.val &= ~(ImGuiTabBarFlags::FittingPolicyMask_ ^ ImGuiTabBarFlags::FittingPolicyResizeDown)
-        end
-        if ImGui.checkbox_flags("ImGuiTabBarFlags_FittingPolicyScroll", pointerof(tab_bar_flags.val), ImGuiTabBarFlags::FittingPolicyScroll)
-          tab_bar_flags.val &= ~(ImGuiTabBarFlags::FittingPolicyMask_ ^ ImGuiTabBarFlags::FittingPolicyScroll)
-        end
-
-        names = ["Artichoke", "Beetroot", "Celery", "Daikon"]
-        static opened = [true, true, true, true]
-        opened.val.size.times do |n|
-          if n > 0
-            ImGui.same_line
-          end
-          ImGui.checkbox(names[n], pointerof(opened.val[n]))
-        end
-
-        if ImGui.begin_tab_bar("MyTabBar", tab_bar_flags.val)
-          opened.val.size.times do |n|
-            if opened.val[n] && ImGui.begin_tab_item(names[n], pointerof(opened.val[n]), ImGuiTabItemFlags::None)
-              ImGui.text("This is the %s tab!", names[n])
-              if n.odd?
-                ImGui.text("I am an odd tab.")
-              end
-              ImGui.end_tab_item
-            end
-          end
-          ImGui.end_tab_bar
-        end
-        ImGui.separator
-        ImGui.tree_pop
-      end
-
-      if ImGui.tree_node("TabItemButton & Leading/Trailing flags")
-        static active_tabs = [] of Int32
-        static next_tab_id = 0
-        if next_tab_id.val == 0
-          3.times do |i|
-            active_tabs.val.push(next_tab_id.val)
-            next_tab_id.val += 1
-          end
-        end
-
-        static show_leading_button = true
-        static show_trailing_button = true
-        ImGui.checkbox("Show Leading TabItemButton()", pointerof(show_leading_button.val))
-        ImGui.checkbox("Show Trailing TabItemButton()", pointerof(show_trailing_button.val))
-
-        static tab_bar_flags = ImGuiTabBarFlags::AutoSelectNewTabs | ImGuiTabBarFlags::Reorderable | ImGuiTabBarFlags::FittingPolicyResizeDown
-        ImGui.checkbox_flags("ImGuiTabBarFlags_TabListPopupButton", pointerof(tab_bar_flags.val), ImGuiTabBarFlags::TabListPopupButton)
-        if ImGui.checkbox_flags("ImGuiTabBarFlags_FittingPolicyResizeDown", pointerof(tab_bar_flags.val), ImGuiTabBarFlags::FittingPolicyResizeDown)
-          tab_bar_flags.val &= ~(ImGuiTabBarFlags::FittingPolicyMask_ ^ ImGuiTabBarFlags::FittingPolicyResizeDown)
-        end
-        if ImGui.checkbox_flags("ImGuiTabBarFlags_FittingPolicyScroll", pointerof(tab_bar_flags.val), ImGuiTabBarFlags::FittingPolicyScroll)
-          tab_bar_flags.val &= ~(ImGuiTabBarFlags::FittingPolicyMask_ ^ ImGuiTabBarFlags::FittingPolicyScroll)
-        end
-
-        if ImGui.begin_tab_bar("MyTabBar", tab_bar_flags.val)
-          if show_leading_button.val
-            if ImGui.tab_item_button("?", ImGuiTabItemFlags::Leading | ImGuiTabItemFlags::NoTooltip)
-              ImGui.open_popup("MyHelpMenu")
-            end
-          end
-          if ImGui.begin_popup("MyHelpMenu")
-            ImGui.selectable("Hello!")
-            ImGui.end_popup
-          end
-
-          if show_trailing_button.val
-            if ImGui.tab_item_button("+", ImGuiTabItemFlags::Trailing | ImGuiTabItemFlags::NoTooltip)
-              active_tabs.val.push(next_tab_id.val)
-              next_tab_id.val += 1
-            end
-          end
-
-          n = 0
-          while n < active_tabs.val.size
-            open = true
-            name = sprintf("%04d", active_tabs.val[n])
-            if ImGui.begin_tab_item(name, pointerof(open), ImGuiTabItemFlags::None)
-              ImGui.text("This is the %s tab!", name)
-              ImGui.end_tab_item
-            end
-
-            if !open
-              active_tabs.val.delete_at(n)
-            else
-              n += 1
-            end
-          end
-
-          ImGui.end_tab_bar
-        end
-        ImGui.separator
-        ImGui.tree_pop
-      end
       ImGui.tree_pop
     end
 
@@ -2601,6 +2665,15 @@ module ImGuiDemo
           ImGui.text_wrapped("This text should automatically wrap on the edge of the work rectangle.")
         end
         if show_columns.val
+          ImGui.text("Tables:")
+          if ImGui.begin_table("table", 4, ImGuiTableFlags::Borders)
+            4.times do |n|
+              ImGui.table_next_column
+              ImGui.text("Width %.2f", ImGui.get_content_region_avail.x)
+            end
+            ImGui.end_table
+          end
+          ImGui.text("Columns:")
           ImGui.columns(4)
           4.times do |n|
             ImGui.text("Width %.2f", ImGui.get_column_width)
@@ -2895,19 +2968,1662 @@ module ImGuiDemo
     end
   end
 
-  def self.show_demo_window_columns
-    if !ImGui.collapsing_header("Columns")
+  private enum MyItemColumnID
+    ID
+    Name
+    Action
+    Quantity
+    Description
+  end
+
+  private class MyItem
+    def initialize(
+      @id : Int32,
+      @name : String,
+      @quantity : Int32
+    )
+    end
+
+    property id, name, quantity
+    class_property! s_current_sort_specs : ImGuiTableSortSpecs?
+
+    def <=>(rhs)
+      a = self
+      b = rhs
+      MyItem.s_current_sort_specs.specs_count.times do |n|
+        sort_spec = MyItem.s_current_sort_specs.specs[n]
+        delta = 0
+        case MyItemColumnID.new(sort_spec.column_user_id.to_i)
+        when MyItemColumnID::ID
+          delta = (a.id - b.id)
+        when MyItemColumnID::Name
+          delta = (a.name <=> b.name)
+        when MyItemColumnID::Quantity
+          delta = (a.quantity - b.quantity)
+        when MyItemColumnID::Description
+          delta = (a.name <=> b.name)
+        else
+          ImGuiDemo.assert(false)
+        end
+        if delta > 0
+          return (sort_spec.sort_direction == ImGuiSortDirection::Ascending) ? +1 : -1
+        end
+        if delta < 0
+          return (sort_spec.sort_direction == ImGuiSortDirection::Ascending) ? -1 : +1
+        end
+      end
+
+      return (a.id - b.id)
+    end
+  end
+
+  def self.push_style_compact
+    style = ImGui.get_style
+    ImGui.push_style_var(ImGuiStyleVar::FramePadding, ImVec2.new(style.frame_padding.x, (style.frame_padding.y * 0.60f32).to_i))
+    ImGui.push_style_var(ImGuiStyleVar::ItemSpacing, ImVec2.new(style.item_spacing.x, (style.item_spacing.y * 0.60f32).to_i))
+  end
+
+  def self.pop_style_compact
+    ImGui.pop_style_var(2)
+  end
+
+  private record EnumDesc,
+    value : ImGuiTableFlags,
+    name : String,
+    tooltip : String
+
+  ImGui.pointer_wrapper def self.edit_table_sizing_flags(p_flags)
+    policies = [
+      EnumDesc.new(ImGuiTableFlags::None, "Default", "Use default sizing policy:\n- ImGuiTableFlags_SizingFixedFit if ScrollX is on or if host window has ImGuiWindowFlags_AlwaysAutoResize.\n- ImGuiTableFlags_SizingStretchSame otherwise."),
+      EnumDesc.new(ImGuiTableFlags::SizingFixedFit, "ImGuiTableFlags_SizingFixedFit", "Columns default to _WidthFixed (if resizable) or _WidthAuto (if not resizable), matching contents width."),
+      EnumDesc.new(ImGuiTableFlags::SizingFixedSame, "ImGuiTableFlags_SizingFixedSame", "Columns are all the same width, matching the maximum contents width.\nImplicitly disable ImGuiTableFlags_Resizable and enable ImGuiTableFlags_NoKeepColumnsVisible."),
+      EnumDesc.new(ImGuiTableFlags::SizingStretchProp, "ImGuiTableFlags_SizingStretchProp", "Columns default to _WidthStretch with weights proportional to their widths."),
+      EnumDesc.new(ImGuiTableFlags::SizingStretchSame, "ImGuiTableFlags_SizingStretchSame", "Columns default to _WidthStretch with same weights."),
+    ]
+    idx = policies.index do |pol|
+      pol.value == (p_flags.value & ImGuiTableFlags::SizingMask_)
+    end || policies.size
+    preview_text = (idx < policies.size) ? policies[idx].name[(idx > 0 ? "ImGuiTableFlags".size : 0)..] : ""
+    if ImGui.begin_combo("Sizing Policy", preview_text)
+      policies.size.times do |n|
+        if ImGui.selectable(policies[n].name, idx == n)
+          p_flags.value = (p_flags.value & ~ImGuiTableFlags::SizingMask_) | policies[n].value
+        end
+      end
+      ImGui.end_combo
+    end
+    ImGui.same_line
+    ImGui.text_disabled("(?)")
+    if ImGui.is_item_hovered
+      ImGui.begin_tooltip
+      ImGui.push_text_wrap_pos(ImGui.get_font_size * 50.0f32)
+      policies.size.times do |m|
+        ImGui.separator
+        ImGui.text("%s:", policies[m].name)
+        ImGui.separator
+        ImGui.set_cursor_pos_x(ImGui.get_cursor_pos_x + ImGui.get_style.indent_spacing * 0.5f32)
+        ImGui.text_unformatted(policies[m].tooltip)
+      end
+      ImGui.pop_text_wrap_pos
+      ImGui.end_tooltip
+    end
+  end
+
+  ImGui.pointer_wrapper def self.edit_table_columns_flags(p_flags)
+    ImGui.checkbox_flags("_DefaultHide", p_flags, ImGuiTableColumnFlags::DefaultHide)
+    ImGui.checkbox_flags("_DefaultSort", p_flags, ImGuiTableColumnFlags::DefaultSort)
+    if ImGui.checkbox_flags("_WidthStretch", p_flags, ImGuiTableColumnFlags::WidthStretch)
+      p_flags.value &= ~(ImGuiTableColumnFlags::WidthMask_ ^ ImGuiTableColumnFlags::WidthStretch)
+    end
+    if ImGui.checkbox_flags("_WidthFixed", p_flags, ImGuiTableColumnFlags::WidthFixed)
+      p_flags.value &= ~(ImGuiTableColumnFlags::WidthMask_ ^ ImGuiTableColumnFlags::WidthFixed)
+    end
+    ImGui.checkbox_flags("_NoResize", p_flags, ImGuiTableColumnFlags::NoResize)
+    ImGui.checkbox_flags("_NoReorder", p_flags, ImGuiTableColumnFlags::NoReorder)
+    ImGui.checkbox_flags("_NoHide", p_flags, ImGuiTableColumnFlags::NoHide)
+    ImGui.checkbox_flags("_NoClip", p_flags, ImGuiTableColumnFlags::NoClip)
+    ImGui.checkbox_flags("_NoSort", p_flags, ImGuiTableColumnFlags::NoSort)
+    ImGui.checkbox_flags("_NoSortAscending", p_flags, ImGuiTableColumnFlags::NoSortAscending)
+    ImGui.checkbox_flags("_NoSortDescending", p_flags, ImGuiTableColumnFlags::NoSortDescending)
+    ImGui.checkbox_flags("_NoHeaderWidth", p_flags, ImGuiTableColumnFlags::NoHeaderWidth)
+    ImGui.checkbox_flags("_PreferSortAscending", p_flags, ImGuiTableColumnFlags::PreferSortAscending)
+    ImGui.checkbox_flags("_PreferSortDescending", p_flags, ImGuiTableColumnFlags::PreferSortDescending)
+    ImGui.checkbox_flags("_IndentEnable", p_flags, ImGuiTableColumnFlags::IndentEnable)
+    ImGui.same_line
+    help_marker("Default for column 0")
+    ImGui.checkbox_flags("_IndentDisable", p_flags, ImGuiTableColumnFlags::IndentDisable)
+    ImGui.same_line
+    help_marker("Default for column >0")
+  end
+
+  def self.show_table_columns_status_flags(flags)
+    ImGui.checkbox_flags("_IsEnabled", pointerof(flags), ImGuiTableColumnFlags::IsEnabled)
+    ImGui.checkbox_flags("_IsVisible", pointerof(flags), ImGuiTableColumnFlags::IsVisible)
+    ImGui.checkbox_flags("_IsSorted", pointerof(flags), ImGuiTableColumnFlags::IsSorted)
+    ImGui.checkbox_flags("_IsHovered", pointerof(flags), ImGuiTableColumnFlags::IsHovered)
+  end
+
+  private enum ContentsType1
+    Text
+    FillButton
+  end
+
+  private enum ContentsType2
+    ShowWidth
+    ShortText
+    LongText
+    Button
+    FillButton
+    InputText
+  end
+
+  private enum ContentsType3
+    Text
+    Button
+    SmallButton
+    FillButton
+    Selectable
+    SelectableSpanRow
+  end
+
+  private class MyTreeNode
+    def initialize(
+      @name : String,
+      @type : String,
+      @size : Int32,
+      @child_idx : Int32,
+      @child_count : Int32
+    )
+    end
+
+    getter name, type, size, child_idx, child_count
+
+    def self.display_node(node, all_nodes)
+      ImGui.table_next_row
+      ImGui.table_next_column
+      is_folder = (node.child_count > 0)
+      if is_folder
+        open = ImGui.tree_node_ex(node.name, ImGuiTreeNodeFlags::SpanFullWidth)
+        ImGui.table_next_column
+        ImGui.text_disabled("--")
+        ImGui.table_next_column
+        ImGui.text_unformatted(node.type)
+        if open
+          node.child_count.times do |child_n|
+            display_node(all_nodes[node.child_idx + child_n], all_nodes)
+          end
+          ImGui.tree_pop
+        end
+      else
+        ImGui.tree_node_ex(node.name, ImGuiTreeNodeFlags::Leaf | ImGuiTreeNodeFlags::Bullet | ImGuiTreeNodeFlags::NoTreePushOnOpen | ImGuiTreeNodeFlags::SpanFullWidth)
+        ImGui.table_next_column
+        ImGui.text("%d", node.size)
+        ImGui.table_next_column
+        ImGui.text_unformatted(node.type)
+      end
+    end
+  end
+
+  def self.show_demo_window_tables
+    text_base_width = ImGui.calc_text_size("A").x
+    text_base_height = ImGui.get_text_line_height_with_spacing
+
+    if !ImGui.collapsing_header("Tables & Columns")
       return
     end
 
-    ImGui.push_id("Columns")
+    ImGui.push_id("Tables")
+
+    open_action = -1
+    if ImGui.button("Open all")
+      open_action = 1
+    end
+    ImGui.same_line
+    if ImGui.button("Close all")
+      open_action = 0
+    end
+    ImGui.same_line
 
     static disable_indent = false
     ImGui.checkbox("Disable tree indentation", pointerof(disable_indent.val))
     ImGui.same_line
-    help_marker("Disable the indenting of tree nodes so demo columns can use the full window width.")
+    help_marker("Disable the indenting of tree nodes so demo tables can use the full window width.")
+    ImGui.separator
     if disable_indent.val
       ImGui.push_style_var(ImGuiStyleVar::IndentSpacing, 0.0f32)
+    end
+    if open_action != -1
+      ImGui.set_next_item_open(open_action != 0)
+    end
+    if ImGui.tree_node("Basic")
+      help_marker("Using TableNextRow() + calling TableSetColumnIndex() _before_ each cell, in a loop.")
+      if ImGui.begin_table("table1", 3)
+        4.times do |row|
+          ImGui.table_next_row
+          3.times do |column|
+            ImGui.table_set_column_index(column)
+            ImGui.text("Row %d Column %d", row, column)
+          end
+        end
+        ImGui.end_table
+      end
+
+      help_marker("Using TableNextRow() + calling TableNextColumn() _before_ each cell, manually.")
+      if ImGui.begin_table("table2", 3)
+        4.times do |row|
+          ImGui.table_next_row
+          ImGui.table_next_column
+          ImGui.text("Row %d", row)
+          ImGui.table_next_column
+          ImGui.text("Some contents")
+          ImGui.table_next_column
+          ImGui.text("123.456")
+        end
+        ImGui.end_table
+      end
+
+      help_marker(
+        "Only using TableNextColumn(), which tends to be convenient for tables where every cells contains the same type of contents.\n" +
+        "This is also more similar to the old NextColumn() function of the Columns API, and provided to facilitate the Columns->Tables API transition.")
+      if ImGui.begin_table("table3", 3)
+        14.times do |item|
+          ImGui.table_next_column
+          ImGui.text("Item %d", item)
+        end
+        ImGui.end_table
+      end
+
+      ImGui.tree_pop
+    end
+
+    if open_action != -1
+      ImGui.set_next_item_open(open_action != 0)
+    end
+    if ImGui.tree_node("Borders, background")
+      static flags = ImGuiTableFlags::Borders | ImGuiTableFlags::RowBg
+      static display_headers = false
+      static contents_type = ContentsType1::Text
+
+      push_style_compact
+      ImGui.checkbox_flags("ImGuiTableFlags_RowBg", pointerof(flags.val), ImGuiTableFlags::RowBg)
+      ImGui.checkbox_flags("ImGuiTableFlags_Borders", pointerof(flags.val), ImGuiTableFlags::Borders)
+      ImGui.same_line
+      help_marker("ImGuiTableFlags_Borders\n = ImGuiTableFlags_BordersInnerV\n | ImGuiTableFlags_BordersOuterV\n | ImGuiTableFlags_BordersInnerV\n | ImGuiTableFlags_BordersOuterH")
+      ImGui.indent
+
+      ImGui.checkbox_flags("ImGuiTableFlags_BordersH", pointerof(flags.val), ImGuiTableFlags::BordersH)
+      ImGui.indent
+      ImGui.checkbox_flags("ImGuiTableFlags_BordersOuterH", pointerof(flags.val), ImGuiTableFlags::BordersOuterH)
+      ImGui.checkbox_flags("ImGuiTableFlags_BordersInnerH", pointerof(flags.val), ImGuiTableFlags::BordersInnerH)
+      ImGui.unindent
+
+      ImGui.checkbox_flags("ImGuiTableFlags_BordersV", pointerof(flags.val), ImGuiTableFlags::BordersV)
+      ImGui.indent
+      ImGui.checkbox_flags("ImGuiTableFlags_BordersOuterV", pointerof(flags.val), ImGuiTableFlags::BordersOuterV)
+      ImGui.checkbox_flags("ImGuiTableFlags_BordersInnerV", pointerof(flags.val), ImGuiTableFlags::BordersInnerV)
+      ImGui.unindent
+
+      ImGui.checkbox_flags("ImGuiTableFlags_BordersOuter", pointerof(flags.val), ImGuiTableFlags::BordersOuter)
+      ImGui.checkbox_flags("ImGuiTableFlags_BordersInner", pointerof(flags.val), ImGuiTableFlags::BordersInner)
+      ImGui.unindent
+
+      ImGui.align_text_to_frame_padding
+      ImGui.text("Cell contents:")
+      ImGui.same_line
+      ImGui.radio_button("Text", pointerof(contents_type.val), ContentsType1::Text)
+      ImGui.same_line
+      ImGui.radio_button("FillButton", pointerof(contents_type.val), ContentsType1::FillButton)
+      ImGui.checkbox("Display headers", pointerof(display_headers.val))
+      ImGui.checkbox_flags("ImGuiTableFlags_NoBordersInBody", pointerof(flags.val), ImGuiTableFlags::NoBordersInBody)
+      ImGui.same_line
+      help_marker("Disable vertical borders in columns Body (borders will always appears in Headers")
+      pop_style_compact
+
+      if ImGui.begin_table("table1", 3, flags.val)
+        if display_headers.val
+          ImGui.table_setup_column("One")
+          ImGui.table_setup_column("Two")
+          ImGui.table_setup_column("Three")
+          ImGui.table_headers_row
+        end
+
+        5.times do |row|
+          ImGui.table_next_row
+          3.times do |column|
+            ImGui.table_set_column_index(column)
+            buf = sprintf("Hello %d,%d", column, row)
+            if contents_type.val == ContentsType1::Text
+              ImGui.text_unformatted(buf)
+            elsif contents_type.val
+              ImGui.button(buf, ImVec2.new(-Float32::MIN_POSITIVE, 0.0f32))
+            end
+          end
+        end
+        ImGui.end_table
+      end
+      ImGui.tree_pop
+    end
+
+    if open_action != -1
+      ImGui.set_next_item_open(open_action != 0)
+    end
+    if ImGui.tree_node("Resizable, stretch")
+      static flags = ImGuiTableFlags::SizingStretchSame | ImGuiTableFlags::Resizable | ImGuiTableFlags::BordersOuter | ImGuiTableFlags::BordersV | ImGuiTableFlags::ContextMenuInBody
+      push_style_compact
+      ImGui.checkbox_flags("ImGuiTableFlags_Resizable", pointerof(flags.val), ImGuiTableFlags::Resizable)
+      ImGui.checkbox_flags("ImGuiTableFlags_BordersV", pointerof(flags.val), ImGuiTableFlags::BordersV)
+      ImGui.same_line
+      help_marker("Using the _Resizable flag automatically enables the _BordersInnerV flag as well, this is why the resize borders are still showing when unchecking this.")
+      pop_style_compact
+
+      if ImGui.begin_table("table1", 3, flags.val)
+        5.times do |row|
+          ImGui.table_next_row
+          3.times do |column|
+            ImGui.table_set_column_index(column)
+            ImGui.text("Hello %d,%d", column, row)
+          end
+        end
+        ImGui.end_table
+      end
+      ImGui.tree_pop
+    end
+
+    if open_action != -1
+      ImGui.set_next_item_open(open_action != 0)
+    end
+    if ImGui.tree_node("Resizable, fixed")
+      help_marker(
+        "Using _Resizable + _SizingFixedFit flags.\n" +
+        "Fixed-width columns generally makes more sense if you want to use horizontal scrolling.\n\n" +
+        "Double-click a column border to auto-fit the column to its contents.")
+      push_style_compact
+      static flags = ImGuiTableFlags::SizingFixedFit | ImGuiTableFlags::Resizable | ImGuiTableFlags::BordersOuter | ImGuiTableFlags::BordersV | ImGuiTableFlags::ContextMenuInBody
+      ImGui.checkbox_flags("ImGuiTableFlags_NoHostExtendX", pointerof(flags.val), ImGuiTableFlags::NoHostExtendX)
+      pop_style_compact
+
+      if ImGui.begin_table("table1", 3, flags.val)
+        5.times do |row|
+          ImGui.table_next_row
+          3.times do |column|
+            ImGui.table_set_column_index(column)
+            ImGui.text("Hello %d,%d", column, row)
+          end
+        end
+        ImGui.end_table
+      end
+      ImGui.tree_pop
+    end
+
+    if open_action != -1
+      ImGui.set_next_item_open(open_action != 0)
+    end
+    if ImGui.tree_node("Resizable, mixed")
+      help_marker(
+        "Using TableSetupColumn() to alter resizing policy on a per-column basis.\n\n" +
+        "When combining Fixed and Stretch columns, generally you only want one, maybe two trailing columns to use _WidthStretch.")
+      static flags = ImGuiTableFlags::SizingFixedFit | ImGuiTableFlags::RowBg | ImGuiTableFlags::Borders | ImGuiTableFlags::Resizable | ImGuiTableFlags::Reorderable | ImGuiTableFlags::Hideable
+
+      if ImGui.begin_table("table1", 3, flags.val)
+        ImGui.table_setup_column("AAA", ImGuiTableColumnFlags::WidthFixed)
+        ImGui.table_setup_column("BBB", ImGuiTableColumnFlags::WidthFixed)
+        ImGui.table_setup_column("CCC", ImGuiTableColumnFlags::WidthStretch)
+        ImGui.table_headers_row
+        5.times do |row|
+          ImGui.table_next_row
+          3.times do |column|
+            ImGui.table_set_column_index(column)
+            ImGui.text("%s %d,%d", (column == 2) ? "Stretch" : "Fixed", column, row)
+          end
+        end
+        ImGui.end_table
+      end
+      if ImGui.begin_table("table2", 6, flags.val)
+        ImGui.table_setup_column("AAA", ImGuiTableColumnFlags::WidthFixed)
+        ImGui.table_setup_column("BBB", ImGuiTableColumnFlags::WidthFixed)
+        ImGui.table_setup_column("CCC", ImGuiTableColumnFlags::WidthFixed | ImGuiTableColumnFlags::DefaultHide)
+        ImGui.table_setup_column("DDD", ImGuiTableColumnFlags::WidthStretch)
+        ImGui.table_setup_column("EEE", ImGuiTableColumnFlags::WidthStretch)
+        ImGui.table_setup_column("FFF", ImGuiTableColumnFlags::WidthStretch | ImGuiTableColumnFlags::DefaultHide)
+        ImGui.table_headers_row
+        5.times do |row|
+          ImGui.table_next_row
+          6.times do |column|
+            ImGui.table_set_column_index(column)
+            ImGui.text("%s %d,%d", (column >= 3) ? "Stretch" : "Fixed", column, row)
+          end
+        end
+        ImGui.end_table
+      end
+      ImGui.tree_pop
+    end
+
+    if open_action != -1
+      ImGui.set_next_item_open(open_action != 0)
+    end
+    if ImGui.tree_node("Reorderable, hideable, with headers")
+      help_marker(
+        "Click and drag column headers to reorder columns.\n\n" +
+        "Right-click on a header to open a context menu.")
+      static flags = ImGuiTableFlags::Resizable | ImGuiTableFlags::Reorderable | ImGuiTableFlags::Hideable | ImGuiTableFlags::BordersOuter | ImGuiTableFlags::BordersV
+      push_style_compact
+      ImGui.checkbox_flags("ImGuiTableFlags_Resizable", pointerof(flags.val), ImGuiTableFlags::Resizable)
+      ImGui.checkbox_flags("ImGuiTableFlags_Reorderable", pointerof(flags.val), ImGuiTableFlags::Reorderable)
+      ImGui.checkbox_flags("ImGuiTableFlags_Hideable", pointerof(flags.val), ImGuiTableFlags::Hideable)
+      ImGui.checkbox_flags("ImGuiTableFlags_NoBordersInBody", pointerof(flags.val), ImGuiTableFlags::NoBordersInBody)
+      ImGui.checkbox_flags("ImGuiTableFlags_NoBordersInBodyUntilResize", pointerof(flags.val), ImGuiTableFlags::NoBordersInBodyUntilResize)
+      ImGui.same_line
+      help_marker("Disable vertical borders in columns Body until hovered for resize (borders will always appears in Headers)")
+      pop_style_compact
+
+      if ImGui.begin_table("table1", 3, flags.val)
+        ImGui.table_setup_column("One")
+        ImGui.table_setup_column("Two")
+        ImGui.table_setup_column("Three")
+        ImGui.table_headers_row
+        6.times do |row|
+          ImGui.table_next_row
+          3.times do |column|
+            ImGui.table_set_column_index(column)
+            ImGui.text("Hello %d,%d", column, row)
+          end
+        end
+        ImGui.end_table
+      end
+
+      if ImGui.begin_table("table2", 3, flags.val | ImGuiTableFlags::SizingFixedFit, ImVec2.new(0.0f32, 0.0f32))
+        ImGui.table_setup_column("One")
+        ImGui.table_setup_column("Two")
+        ImGui.table_setup_column("Three")
+        ImGui.table_headers_row
+        6.times do |row|
+          ImGui.table_next_row
+          3.times do |column|
+            ImGui.table_set_column_index(column)
+            ImGui.text("Fixed %d,%d", column, row)
+          end
+        end
+        ImGui.end_table
+      end
+      ImGui.tree_pop
+    end
+
+    if open_action != -1
+      ImGui.set_next_item_open(open_action != 0)
+    end
+    if ImGui.tree_node("Padding")
+      help_marker(
+        "We often want outer padding activated when any using features which makes the edges of a column visible:\n" +
+        "e.g.:\n" +
+        "- BorderOuterV\n" +
+        "- any form of row selection\n" +
+        "Because of this, activating BorderOuterV sets the default to PadOuterX. Using PadOuterX or NoPadOuterX you can override the default.\n\n" +
+        "Actual padding values are using style.CellPadding.\n\n" +
+        "In this demo we don't show horizontal borders to emphasis how they don't affect default horizontal padding.")
+
+      static flags1 = ImGuiTableFlags::BordersV
+      push_style_compact
+      ImGui.checkbox_flags("ImGuiTableFlags_PadOuterX", pointerof(flags1.val), ImGuiTableFlags::PadOuterX)
+      ImGui.same_line
+      help_marker("Enable outer-most padding (default if ImGuiTableFlags_BordersOuterV is set)")
+      ImGui.checkbox_flags("ImGuiTableFlags_NoPadOuterX", pointerof(flags1.val), ImGuiTableFlags::NoPadOuterX)
+      ImGui.same_line
+      help_marker("Disable outer-most padding (default if ImGuiTableFlags_BordersOuterV is not set)")
+      ImGui.checkbox_flags("ImGuiTableFlags_NoPadInnerX", pointerof(flags1.val), ImGuiTableFlags::NoPadInnerX)
+      ImGui.same_line
+      help_marker("Disable inner padding between columns (double inner padding if BordersOuterV is on, single inner padding if BordersOuterV is off)")
+      ImGui.checkbox_flags("ImGuiTableFlags_BordersOuterV", pointerof(flags1.val), ImGuiTableFlags::BordersOuterV)
+      ImGui.checkbox_flags("ImGuiTableFlags_BordersInnerV", pointerof(flags1.val), ImGuiTableFlags::BordersInnerV)
+      static show_headers = false
+      ImGui.checkbox("show_headers", pointerof(show_headers.val))
+      pop_style_compact
+
+      if ImGui.begin_table("table_padding", 3, flags1.val)
+        if show_headers.val
+          ImGui.table_setup_column("One")
+          ImGui.table_setup_column("Two")
+          ImGui.table_setup_column("Three")
+          ImGui.table_headers_row
+        end
+
+        5.times do |row|
+          ImGui.table_next_row
+          3.times do |column|
+            ImGui.table_set_column_index(column)
+            if row == 0
+              ImGui.text("Avail %.2f", ImGui.get_content_region_avail.x)
+            else
+              buf = sprintf("Hello %d,%d", column, row)
+              ImGui.button(buf, ImVec2.new(-Float32::MIN_POSITIVE, 0.0f32))
+            end
+          end
+        end
+        ImGui.end_table
+      end
+
+      help_marker("Setting style.CellPadding to (0,0) or a custom value.")
+      static flags2 = ImGuiTableFlags::Borders | ImGuiTableFlags::RowBg
+      static cell_padding = ImVec2.new(0.0f32, 0.0f32)
+      static show_widget_frame_bg = true
+
+      push_style_compact
+      ImGui.checkbox_flags("ImGuiTableFlags_Borders", pointerof(flags2.val), ImGuiTableFlags::Borders)
+      ImGui.checkbox_flags("ImGuiTableFlags_BordersH", pointerof(flags2.val), ImGuiTableFlags::BordersH)
+      ImGui.checkbox_flags("ImGuiTableFlags_BordersV", pointerof(flags2.val), ImGuiTableFlags::BordersV)
+      ImGui.checkbox_flags("ImGuiTableFlags_BordersInner", pointerof(flags2.val), ImGuiTableFlags::BordersInner)
+      ImGui.checkbox_flags("ImGuiTableFlags_BordersOuter", pointerof(flags2.val), ImGuiTableFlags::BordersOuter)
+      ImGui.checkbox_flags("ImGuiTableFlags_RowBg", pointerof(flags2.val), ImGuiTableFlags::RowBg)
+      ImGui.checkbox_flags("ImGuiTableFlags_Resizable", pointerof(flags2.val), ImGuiTableFlags::Resizable)
+      ImGui.checkbox("show_widget_frame_bg", pointerof(show_widget_frame_bg.val))
+      ImGui.slider_float2("CellPadding", pointerof(cell_padding.val.x), 0.0f32, 10.0f32, "%.0f")
+      pop_style_compact
+
+      ImGui.push_style_var(ImGuiStyleVar::CellPadding, cell_padding.val)
+      if ImGui.begin_table("table_padding_2", 3, flags2.val)
+        static text_bufs = Array.new(3 * 5) { ImGui::TextBuffer.new(16) }
+        static init = true
+        if !show_widget_frame_bg.val
+          ImGui.push_style_color(ImGuiCol::FrameBg, 0)
+        end
+        (3 * 5).times do |cell|
+          ImGui.table_next_column
+          if init.val
+            text_bufs.val[cell].clear
+            text_bufs.val[cell] << "edit me"
+          end
+          ImGui.set_next_item_width(-Float32::MIN_POSITIVE)
+          ImGui.push_id(cell)
+          ImGui.input_text("##cell", text_bufs.val[cell])
+          ImGui.pop_id
+        end
+        if !show_widget_frame_bg.val
+          ImGui.pop_style_color
+        end
+        init.val = false
+        ImGui.end_table
+      end
+      ImGui.pop_style_var
+
+      ImGui.tree_pop
+    end
+
+    if open_action != -1
+      ImGui.set_next_item_open(open_action != 0)
+    end
+    if ImGui.tree_node("Sizing policies")
+      static flags1 = ImGuiTableFlags::BordersV | ImGuiTableFlags::BordersOuterH | ImGuiTableFlags::RowBg | ImGuiTableFlags::ContextMenuInBody
+      push_style_compact
+      ImGui.checkbox_flags("ImGuiTableFlags_Resizable", pointerof(flags1.val), ImGuiTableFlags::Resizable)
+      ImGui.checkbox_flags("ImGuiTableFlags_NoHostExtendX", pointerof(flags1.val), ImGuiTableFlags::NoHostExtendX)
+      pop_style_compact
+
+      static sizing_policy_flags = [ImGuiTableFlags::SizingFixedFit, ImGuiTableFlags::SizingFixedSame, ImGuiTableFlags::SizingStretchProp, ImGuiTableFlags::SizingStretchSame]
+      4.times do |table_n|
+        ImGui.push_id(table_n)
+        ImGui.set_next_item_width(text_base_width * 30)
+        edit_table_sizing_flags(pointerof(sizing_policy_flags.val[table_n]))
+
+        if ImGui.begin_table("table1", 3, sizing_policy_flags.val[table_n] | flags1.val)
+          3.times do |row|
+            ImGui.table_next_row
+            ImGui.table_next_column
+            ImGui.text("Oh dear")
+            ImGui.table_next_column
+            ImGui.text("Oh dear")
+            ImGui.table_next_column
+            ImGui.text("Oh dear")
+          end
+          ImGui.end_table
+        end
+        if ImGui.begin_table("table2", 3, sizing_policy_flags.val[table_n] | flags1.val)
+          3.times do |row|
+            ImGui.table_next_row
+            ImGui.table_next_column
+            ImGui.text("AAAA")
+            ImGui.table_next_column
+            ImGui.text("BBBBBBBB")
+            ImGui.table_next_column
+            ImGui.text("CCCCCCCCCCCC")
+          end
+          ImGui.end_table
+        end
+        ImGui.pop_id
+      end
+
+      ImGui.spacing
+      ImGui.text_unformatted("Advanced")
+      ImGui.same_line
+      help_marker("This section allows you to interact and see the effect of various sizing policies depending on whether Scroll is enabled and the contents of your columns.")
+
+      static flags = ImGuiTableFlags::ScrollY | ImGuiTableFlags::Borders | ImGuiTableFlags::RowBg | ImGuiTableFlags::Resizable
+      static contents_type = ContentsType2::ShowWidth
+      static column_count = 3
+
+      push_style_compact
+      ImGui.push_id("Advanced")
+      ImGui.push_item_width(text_base_width * 30)
+      edit_table_sizing_flags(pointerof(flags.val))
+      ImGui.combo("Contents", pointerof(contents_type.val), "Show width\0Short Text\0Long Text\0Button\0Fill Button\0InputText\0")
+      if contents_type.val == ContentsType2::FillButton
+        ImGui.same_line
+        help_marker("Be mindful that using right-alignment (e.g. size.x = -FLT_MIN) creates a feedback loop where contents width can feed into auto-column width can feed into contents width.")
+      end
+      ImGui.drag_int("Columns", pointerof(column_count.val), 0.1f32, 1, 64, "%d", ImGuiSliderFlags::AlwaysClamp)
+      ImGui.checkbox_flags("ImGuiTableFlags_Resizable", pointerof(flags.val), ImGuiTableFlags::Resizable)
+      ImGui.checkbox_flags("ImGuiTableFlags_PreciseWidths", pointerof(flags.val), ImGuiTableFlags::PreciseWidths)
+      ImGui.same_line
+      help_marker("Disable distributing remainder width to stretched columns (width allocation on a 100-wide table with 3 columns: Without this flag: 33,33,34. With this flag: 33,33,33). With larger number of columns, resizing will appear to be less smooth.")
+      ImGui.checkbox_flags("ImGuiTableFlags_ScrollX", pointerof(flags.val), ImGuiTableFlags::ScrollX)
+      ImGui.checkbox_flags("ImGuiTableFlags_ScrollY", pointerof(flags.val), ImGuiTableFlags::ScrollY)
+      ImGui.checkbox_flags("ImGuiTableFlags_NoClip", pointerof(flags.val), ImGuiTableFlags::NoClip)
+      ImGui.pop_item_width
+      ImGui.pop_id
+      pop_style_compact
+
+      if ImGui.begin_table("table2", column_count.val, flags.val, ImVec2.new(0.0f32, text_base_height * 7))
+        (10 * column_count.val).times do |cell|
+          ImGui.table_next_column
+          column = ImGui.table_get_column_index
+          row = ImGui.table_get_row_index
+
+          ImGui.push_id(cell)
+          static text_buf = ImGui::TextBuffer.new(32)
+          label = sprintf("Hello %d,%d", column, row)
+          case contents_type.val
+          when ContentsType2::ShortText
+            ImGui.text_unformatted(label)
+          when ContentsType2::LongText
+            ImGui.text("Some %s text %d,%d\nOver two lines..", column == 0 ? "long" : "longeeer", column, row)
+          when ContentsType2::ShowWidth
+            ImGui.text("W: %.1f", ImGui.get_content_region_avail.x)
+          when ContentsType2::Button
+            ImGui.button(label)
+          when ContentsType2::FillButton
+            ImGui.button(label, ImVec2.new(-Float32::MIN_POSITIVE, 0.0f32))
+          when ContentsType2::InputText
+            ImGui.set_next_item_width(-Float32::MIN_POSITIVE)
+            ImGui.input_text("##", text_buf.val)
+          end
+          ImGui.pop_id
+        end
+        ImGui.end_table
+      end
+      ImGui.tree_pop
+    end
+
+    if open_action != -1
+      ImGui.set_next_item_open(open_action != 0)
+    end
+    if ImGui.tree_node("Vertical scrolling, with clipping")
+      help_marker("Here we activate ScrollY, which will create a child window container to allow hosting scrollable contents.\n\nWe also demonstrate using ImGuiListClipper to virtualize the submission of many items.")
+      static flags = ImGuiTableFlags::ScrollY | ImGuiTableFlags::RowBg | ImGuiTableFlags::BordersOuter | ImGuiTableFlags::BordersV | ImGuiTableFlags::Resizable | ImGuiTableFlags::Reorderable | ImGuiTableFlags::Hideable
+
+      push_style_compact
+      ImGui.checkbox_flags("ImGuiTableFlags_ScrollY", pointerof(flags.val), ImGuiTableFlags::ScrollY)
+      pop_style_compact
+
+      outer_size = ImVec2.new(0.0f32, text_base_height * 8)
+      if ImGui.begin_table("table_scrolly", 3, flags.val, outer_size)
+        ImGui.table_setup_scroll_freeze(0, 1)
+        ImGui.table_setup_column("One", ImGuiTableColumnFlags::None)
+        ImGui.table_setup_column("Two", ImGuiTableColumnFlags::None)
+        ImGui.table_setup_column("Three", ImGuiTableColumnFlags::None)
+        ImGui.table_headers_row
+
+        clipper = ImGuiListClipper.new
+        clipper.begin(1000)
+        while clipper.step
+          (clipper.display_start...clipper.display_end).each do |row|
+            ImGui.table_next_row
+            3.times do |column|
+              ImGui.table_set_column_index(column)
+              ImGui.text("Hello %d,%d", column, row)
+            end
+          end
+        end
+        ImGui.end_table
+      end
+      ImGui.tree_pop
+    end
+
+    if open_action != -1
+      ImGui.set_next_item_open(open_action != 0)
+    end
+    if ImGui.tree_node("Horizontal scrolling")
+      help_marker(
+        "When ScrollX is enabled, the default sizing policy becomes ImGuiTableFlags_SizingFixedFit, " +
+        "as automatically stretching columns doesn't make much sense with horizontal scrolling.\n\n" +
+        "Also note that as of the current version, you will almost always want to enable ScrollY along with ScrollX," +
+        "because the container window won't automatically extend vertically to fix contents (this may be improved in future versions).")
+      static flags = ImGuiTableFlags::ScrollX | ImGuiTableFlags::ScrollY | ImGuiTableFlags::RowBg | ImGuiTableFlags::BordersOuter | ImGuiTableFlags::BordersV | ImGuiTableFlags::Resizable | ImGuiTableFlags::Reorderable | ImGuiTableFlags::Hideable
+      static freeze_cols = 1
+      static freeze_rows = 1
+
+      push_style_compact
+      ImGui.checkbox_flags("ImGuiTableFlags_Resizable", pointerof(flags.val), ImGuiTableFlags::Resizable)
+      ImGui.checkbox_flags("ImGuiTableFlags_ScrollX", pointerof(flags.val), ImGuiTableFlags::ScrollX)
+      ImGui.checkbox_flags("ImGuiTableFlags_ScrollY", pointerof(flags.val), ImGuiTableFlags::ScrollY)
+      ImGui.set_next_item_width(ImGui.get_frame_height)
+      ImGui.drag_int("freeze_cols", pointerof(freeze_cols.val), 0.2f32, 0, 9, flags: ImGuiSliderFlags::NoInput)
+      ImGui.set_next_item_width(ImGui.get_frame_height)
+      ImGui.drag_int("freeze_rows", pointerof(freeze_rows.val), 0.2f32, 0, 9, flags: ImGuiSliderFlags::NoInput)
+      pop_style_compact
+
+      outer_size = ImVec2.new(0.0f32, text_base_height * 8)
+      if ImGui.begin_table("table_scrollx", 7, flags.val, outer_size)
+        ImGui.table_setup_scroll_freeze(freeze_cols.val, freeze_rows.val)
+        ImGui.table_setup_column("Line #", ImGuiTableColumnFlags::NoHide)
+        ImGui.table_setup_column("One")
+        ImGui.table_setup_column("Two")
+        ImGui.table_setup_column("Three")
+        ImGui.table_setup_column("Four")
+        ImGui.table_setup_column("Five")
+        ImGui.table_setup_column("Six")
+        ImGui.table_headers_row
+        20.times do |row|
+          ImGui.table_next_row
+          7.times do |column|
+            if !ImGui.table_set_column_index(column) && column > 0
+              next
+            end
+            if column == 0
+              ImGui.text("Line %d", row)
+            else
+              ImGui.text("Hello world %d,%d", column, row)
+            end
+          end
+        end
+        ImGui.end_table
+      end
+
+      ImGui.spacing
+      ImGui.text_unformatted("Stretch + ScrollX")
+      ImGui.same_line
+      help_marker(
+        "Showcase using Stretch columns + ScrollX together: " +
+        "this is rather unusual and only makes sense when specifying an 'inner_width' for the table!\n" +
+        "Without an explicit value, inner_width is == outer_size.x and therefore using Stretch columns + ScrollX together doesn't make sense.")
+      static flags2 = ImGuiTableFlags::SizingStretchSame | ImGuiTableFlags::ScrollX | ImGuiTableFlags::ScrollY | ImGuiTableFlags::BordersOuter | ImGuiTableFlags::RowBg | ImGuiTableFlags::ContextMenuInBody
+      static inner_width = 1000.0f32
+      push_style_compact
+      ImGui.push_id("flags3")
+      ImGui.push_item_width(text_base_width * 30)
+      ImGui.checkbox_flags("ImGuiTableFlags_ScrollX", pointerof(flags2.val), ImGuiTableFlags::ScrollX)
+      ImGui.drag_float("inner_width", pointerof(inner_width.val), 1.0f32, 0.0f32, Float32::MAX, "%.1f")
+      ImGui.pop_item_width
+      ImGui.pop_id
+      pop_style_compact
+      if ImGui.begin_table("table2", 7, flags2.val, outer_size, inner_width.val)
+        (20 * 7).times do |cell|
+          ImGui.table_next_column
+          ImGui.text("Hello world %d,%d", ImGui.table_get_column_index, ImGui.table_get_row_index)
+        end
+        ImGui.end_table
+      end
+      ImGui.tree_pop
+    end
+
+    if open_action != -1
+      ImGui.set_next_item_open(open_action != 0)
+    end
+    if ImGui.tree_node("Columns flags")
+      column_count = 3
+      column_names = ["One", "Two", "Three"]
+      static column_flags = Slice[ImGuiTableColumnFlags::DefaultSort, ImGuiTableColumnFlags::None, ImGuiTableColumnFlags::DefaultHide]
+      static column_flags_out = Slice.new(3, ImGuiTableColumnFlags::None)
+
+      if ImGui.begin_table("table_columns_flags_checkboxes", column_count, ImGuiTableFlags::None)
+        push_style_compact
+        column_count.times do |column|
+          ImGui.table_next_column
+          ImGui.push_id(column)
+          ImGui.align_text_to_frame_padding
+          ImGui.text("'%s'", column_names[column])
+          ImGui.spacing
+          ImGui.text("Input flags:")
+          edit_table_columns_flags(pointerof(column_flags.val[column]))
+          ImGui.spacing
+          ImGui.text("Output flags:")
+          show_table_columns_status_flags(column_flags_out.val[column])
+          ImGui.pop_id
+        end
+        pop_style_compact
+        ImGui.end_table
+      end
+
+      flags = ImGuiTableFlags::SizingFixedFit | ImGuiTableFlags::ScrollX | ImGuiTableFlags::ScrollY | ImGuiTableFlags::RowBg | ImGuiTableFlags::BordersOuter | ImGuiTableFlags::BordersV | ImGuiTableFlags::Resizable | ImGuiTableFlags::Reorderable | ImGuiTableFlags::Hideable | ImGuiTableFlags::Sortable
+      outer_size = ImVec2.new(0.0f32, text_base_height * 9)
+      if ImGui.begin_table("table_columns_flags", column_count, flags, outer_size)
+        column_count.times do |column|
+          ImGui.table_setup_column(column_names[column], column_flags.val[column])
+        end
+        ImGui.table_headers_row
+        column_count.times do |column|
+          column_flags_out.val[column] = ImGui.table_get_column_flags(column)
+        end
+        indent_step = (text_base_width.to_i / 2f32)
+        8.times do |row|
+          ImGui.indent(indent_step)
+          ImGui.table_next_row
+          column_count.times do |column|
+            ImGui.table_set_column_index(column)
+            ImGui.text("%s %s", (column == 0) ? "Indented" : "Hello", ImGui.table_get_column_name(column))
+          end
+        end
+        ImGui.unindent(indent_step * 8.0f32)
+
+        ImGui.end_table
+      end
+      ImGui.tree_pop
+    end
+
+    if open_action != -1
+      ImGui.set_next_item_open(open_action != 0)
+    end
+    if ImGui.tree_node("Columns widths")
+      help_marker("Using TableSetupColumn() to setup default width.")
+
+      static flags1 = ImGuiTableFlags::Borders | ImGuiTableFlags::NoBordersInBodyUntilResize
+      push_style_compact
+      ImGui.checkbox_flags("ImGuiTableFlags_Resizable", pointerof(flags1.val), ImGuiTableFlags::Resizable)
+      ImGui.checkbox_flags("ImGuiTableFlags_NoBordersInBodyUntilResize", pointerof(flags1.val), ImGuiTableFlags::NoBordersInBodyUntilResize)
+      pop_style_compact
+      if ImGui.begin_table("table1", 3, flags1.val)
+        ImGui.table_setup_column("one", ImGuiTableColumnFlags::WidthFixed, 100.0f32)
+        ImGui.table_setup_column("two", ImGuiTableColumnFlags::WidthFixed, 200.0f32)
+        ImGui.table_setup_column("three", ImGuiTableColumnFlags::WidthFixed)
+        ImGui.table_headers_row
+        4.times do |row|
+          ImGui.table_next_row
+          3.times do |column|
+            ImGui.table_set_column_index(column)
+            if row == 0
+              ImGui.text("(w: %5.1f)", ImGui.get_content_region_avail.x)
+            else
+              ImGui.text("Hello %d,%d", column, row)
+            end
+          end
+        end
+        ImGui.end_table
+      end
+
+      help_marker("Using TableSetupColumn() to setup explicit width.\n\nUnless _NoKeepColumnsVisible is set, fixed columns with set width may still be shrunk down if there's not enough space in the host.")
+
+      static flags2 = ImGuiTableFlags::None
+      push_style_compact
+      ImGui.checkbox_flags("ImGuiTableFlags_NoKeepColumnsVisible", pointerof(flags2.val), ImGuiTableFlags::NoKeepColumnsVisible)
+      ImGui.checkbox_flags("ImGuiTableFlags_BordersInnerV", pointerof(flags2.val), ImGuiTableFlags::BordersInnerV)
+      ImGui.checkbox_flags("ImGuiTableFlags_BordersOuterV", pointerof(flags2.val), ImGuiTableFlags::BordersOuterV)
+      pop_style_compact
+      if ImGui.begin_table("table2", 4, flags2.val)
+        ImGui.table_setup_column("", ImGuiTableColumnFlags::WidthFixed, 100.0f32)
+        ImGui.table_setup_column("", ImGuiTableColumnFlags::WidthFixed, text_base_width * 15.0f32)
+        ImGui.table_setup_column("", ImGuiTableColumnFlags::WidthFixed, text_base_width * 30.0f32)
+        ImGui.table_setup_column("", ImGuiTableColumnFlags::WidthFixed, text_base_width * 15.0f32)
+        5.times do |row|
+          ImGui.table_next_row
+          4.times do |column|
+            ImGui.table_set_column_index(column)
+            if row == 0
+              ImGui.text("(w: %5.1f)", ImGui.get_content_region_avail.x)
+            else
+              ImGui.text("Hello %d,%d", column, row)
+            end
+          end
+        end
+        ImGui.end_table
+      end
+      ImGui.tree_pop
+    end
+
+    if open_action != -1
+      ImGui.set_next_item_open(open_action != 0)
+    end
+    if ImGui.tree_node("Nested tables")
+      help_marker("This demonstrate embedding a table into another table cell.")
+
+      if ImGui.begin_table("table_nested1", 2, ImGuiTableFlags::Borders | ImGuiTableFlags::Resizable | ImGuiTableFlags::Reorderable | ImGuiTableFlags::Hideable)
+        ImGui.table_setup_column("A0")
+        ImGui.table_setup_column("A1")
+        ImGui.table_headers_row
+
+        ImGui.table_next_column
+        ImGui.text("A0 Cell 0")
+        begin
+          rows_height = text_base_height * 2
+          if ImGui.begin_table("table_nested2", 2, ImGuiTableFlags::Borders | ImGuiTableFlags::Resizable | ImGuiTableFlags::Reorderable | ImGuiTableFlags::Hideable)
+            ImGui.table_setup_column("B0")
+            ImGui.table_setup_column("B1")
+            ImGui.table_headers_row
+
+            ImGui.table_next_row(ImGuiTableRowFlags::None, rows_height)
+            ImGui.table_next_column
+            ImGui.text("B0 Cell 0")
+            ImGui.table_next_column
+            ImGui.text("B0 Cell 1")
+            ImGui.table_next_row(ImGuiTableRowFlags::None, rows_height)
+            ImGui.table_next_column
+            ImGui.text("B1 Cell 0")
+            ImGui.table_next_column
+            ImGui.text("B1 Cell 1")
+
+            ImGui.end_table
+          end
+        end
+        ImGui.table_next_column
+        ImGui.text("A0 Cell 1")
+        ImGui.table_next_column
+        ImGui.text("A1 Cell 0")
+        ImGui.table_next_column
+        ImGui.text("A1 Cell 1")
+        ImGui.end_table
+      end
+      ImGui.tree_pop
+    end
+
+    if open_action != -1
+      ImGui.set_next_item_open(open_action != 0)
+    end
+    if ImGui.tree_node("Row height")
+      help_marker("You can pass a 'min_row_height' to TableNextRow().\n\nRows are padded with 'style.CellPadding.y' on top and bottom, so effectively the minimum row height will always be >= 'style.CellPadding.y * 2.0f'.\n\nWe cannot honor a _maximum_ row height as that would requires a unique clipping rectangle per row.")
+      if ImGui.begin_table("table_row_height", 1, ImGuiTableFlags::BordersOuter | ImGuiTableFlags::BordersInnerV)
+        10.times do |row|
+          min_row_height = (text_base_height * 0.30f32 * row).to_i.to_f32
+          ImGui.table_next_row(ImGuiTableRowFlags::None, min_row_height)
+          ImGui.table_next_column
+          ImGui.text("min_row_height = %.2f", min_row_height)
+        end
+        ImGui.end_table
+      end
+      ImGui.tree_pop
+    end
+
+    if open_action != -1
+      ImGui.set_next_item_open(open_action != 0)
+    end
+    if ImGui.tree_node("Outer size")
+      ImGui.text("Using NoHostExtendX and NoHostExtendY:")
+      push_style_compact
+      static flags = ImGuiTableFlags::Borders | ImGuiTableFlags::Resizable | ImGuiTableFlags::ContextMenuInBody | ImGuiTableFlags::RowBg | ImGuiTableFlags::SizingFixedFit | ImGuiTableFlags::NoHostExtendX
+      ImGui.checkbox_flags("ImGuiTableFlags_NoHostExtendX", pointerof(flags.val), ImGuiTableFlags::NoHostExtendX)
+      ImGui.same_line
+      help_marker("Make outer width auto-fit to columns, overriding outer_size.x value.\n\nOnly available when ScrollX/ScrollY are disabled and Stretch columns are not used.")
+      ImGui.checkbox_flags("ImGuiTableFlags_NoHostExtendY", pointerof(flags.val), ImGuiTableFlags::NoHostExtendY)
+      ImGui.same_line
+      help_marker("Make outer height stop exactly at outer_size.y (prevent auto-extending table past the limit).\n\nOnly available when ScrollX/ScrollY are disabled. Data below the limit will be clipped and not visible.")
+      pop_style_compact
+
+      outer_size = ImVec2.new(0.0f32, text_base_height * 5.5f32)
+      if ImGui.begin_table("table1", 3, flags.val, outer_size)
+        10.times do |row|
+          ImGui.table_next_row
+          3.times do |column|
+            ImGui.table_next_column
+            ImGui.text("Cell %d,%d", column, row)
+          end
+        end
+        ImGui.end_table
+      end
+      ImGui.same_line
+      ImGui.text("Hello!")
+
+      ImGui.spacing
+
+      ImGui.text("Using explicit size:")
+      if ImGui.begin_table("table2", 3, ImGuiTableFlags::Borders | ImGuiTableFlags::RowBg, ImVec2.new(text_base_width * 30, 0.0f32))
+        5.times do |row|
+          ImGui.table_next_row
+          3.times do |column|
+            ImGui.table_next_column
+            ImGui.text("Cell %d,%d", column, row)
+          end
+        end
+        ImGui.end_table
+      end
+      ImGui.same_line
+      if ImGui.begin_table("table3", 3, ImGuiTableFlags::Borders | ImGuiTableFlags::RowBg, ImVec2.new(text_base_width * 30, 0.0f32))
+        3.times do |row|
+          ImGui.table_next_row(:None, text_base_height * 1.5f32)
+          3.times do |column|
+            ImGui.table_next_column
+            ImGui.text("Cell %d,%d", column, row)
+          end
+        end
+        ImGui.end_table
+      end
+
+      ImGui.tree_pop
+    end
+
+    if open_action != -1
+      ImGui.set_next_item_open(open_action != 0)
+    end
+    if ImGui.tree_node("Background color")
+      static flags = ImGuiTableFlags::RowBg
+      static row_bg_type = 1
+      static row_bg_target = 1
+      static cell_bg_type = 1
+
+      push_style_compact
+      ImGui.checkbox_flags("ImGuiTableFlags_Borders", pointerof(flags.val), ImGuiTableFlags::Borders)
+      ImGui.checkbox_flags("ImGuiTableFlags_RowBg", pointerof(flags.val), ImGuiTableFlags::RowBg)
+      ImGui.same_line
+      help_marker("ImGuiTableFlags_RowBg automatically sets RowBg0 to alternative colors pulled from the Style.")
+      ImGui.combo("row bg type", pointerof(row_bg_type.val), "None\0Red\0Gradient\0")
+      ImGui.combo("row bg target", pointerof(row_bg_target.val), "RowBg0\0RowBg1\0")
+      ImGui.same_line
+      help_marker("Target RowBg0 to override the alternating odd/even colors,\nTarget RowBg1 to blend with them.")
+      ImGui.combo("cell bg type", pointerof(cell_bg_type.val), "None\0Blue\0")
+      ImGui.same_line
+      help_marker("We are colorizing cells to B1->C2 here.")
+      assert(row_bg_type.val >= 0 && row_bg_type.val <= 2)
+      assert(row_bg_target.val >= 0 && row_bg_target.val <= 1)
+      assert(cell_bg_type.val >= 0 && cell_bg_type.val <= 1)
+      pop_style_compact
+
+      if ImGui.begin_table("table1", 5, flags.val)
+        6.times do |row|
+          ImGui.table_next_row
+
+          if row_bg_type.val != 0
+            row_bg_color = ImGui.get_color_u32(row_bg_type.val == 1 ? ImVec4.new(0.7f32, 0.3f32, 0.3f32, 0.65f32) : ImVec4.new(0.2f32 + row * 0.1f32, 0.2f32, 0.2f32, 0.65f32))
+            ImGui.table_set_bg_color(ImGuiTableBgTarget::RowBg0 + row_bg_target.val, row_bg_color)
+          end
+
+          5.times do |column|
+            ImGui.table_set_column_index(column)
+            ImGui.text("%c%c", 'A' + row, '0' + column)
+
+            if row >= 1 && row <= 2 && column >= 1 && column <= 2 && cell_bg_type.val == 1
+              cell_bg_color = ImGui.get_color_u32(ImVec4.new(0.3f32, 0.3f32, 0.7f32, 0.65f32))
+              ImGui.table_set_bg_color(ImGuiTableBgTarget::CellBg, cell_bg_color)
+            end
+          end
+        end
+        ImGui.end_table
+      end
+      ImGui.tree_pop
+    end
+
+    if open_action != -1
+      ImGui.set_next_item_open(open_action != 0)
+    end
+    if ImGui.tree_node("Tree view")
+      static flags = ImGuiTableFlags::BordersV | ImGuiTableFlags::BordersOuterH | ImGuiTableFlags::Resizable | ImGuiTableFlags::RowBg | ImGuiTableFlags::NoBordersInBody
+
+      if ImGui.begin_table("3ways", 3, flags.val)
+        ImGui.table_setup_column("Name", ImGuiTableColumnFlags::NoHide)
+        ImGui.table_setup_column("Size", ImGuiTableColumnFlags::WidthFixed, text_base_width * 12.0f32)
+        ImGui.table_setup_column("Type", ImGuiTableColumnFlags::WidthFixed, text_base_width * 18.0f32)
+        ImGui.table_headers_row
+
+        static nodes = [
+          MyTreeNode.new("Root", "Folder", -1, 1, 3),
+          MyTreeNode.new("Music", "Folder", -1, 4, 2),
+          MyTreeNode.new("Textures", "Folder", -1, 6, 3),
+          MyTreeNode.new("desktop.ini", "System file", 1024, -1, -1),
+          MyTreeNode.new("File1_a.wav", "Audio file", 123000, -1, -1),
+          MyTreeNode.new("File1_b.wav", "Audio file", 456000, -1, -1),
+          MyTreeNode.new("Image001.png", "Image file", 203128, -1, -1),
+          MyTreeNode.new("Copy of Image001.png", "Image file", 203256, -1, -1),
+          MyTreeNode.new("Copy of Image001 (Final2).png", "Image file", 203512, -1, -1),
+        ]
+
+        MyTreeNode.display_node(nodes.val[0], nodes.val)
+
+        ImGui.end_table
+      end
+      ImGui.tree_pop
+    end
+
+    if open_action != -1
+      ImGui.set_next_item_open(open_action != 0)
+    end
+    if ImGui.tree_node("Item width")
+      help_marker(
+        "Showcase using PushItemWidth() and how it is preserved on a per-column basis.\n\n" +
+        "Note that on auto-resizing non-resizable fixed columns, querying the content width for e.g. right-alignment doesn't make sense.")
+      if ImGui.begin_table("table_item_width", 3, ImGuiTableFlags::Borders)
+        ImGui.table_setup_column("small")
+        ImGui.table_setup_column("half")
+        ImGui.table_setup_column("right-align")
+        ImGui.table_headers_row
+
+        3.times do |row|
+          ImGui.table_next_row
+          if row == 0
+            ImGui.table_set_column_index(0)
+            ImGui.push_item_width(text_base_width * 3.0f32)
+            ImGui.table_set_column_index(1)
+            ImGui.push_item_width(-ImGui.get_content_region_avail.x * 0.5f32)
+            ImGui.table_set_column_index(2)
+            ImGui.push_item_width(-Float32::MIN_POSITIVE)
+          end
+
+          static dummy_f = 0.0f32
+          ImGui.push_id(row)
+          ImGui.table_set_column_index(0)
+          ImGui.slider_float("float0", pointerof(dummy_f.val), 0.0f32, 1.0f32)
+          ImGui.table_set_column_index(1)
+          ImGui.slider_float("float1", pointerof(dummy_f.val), 0.0f32, 1.0f32)
+          ImGui.table_set_column_index(2)
+          ImGui.slider_float("float2", pointerof(dummy_f.val), 0.0f32, 1.0f32)
+          ImGui.pop_id
+        end
+        ImGui.end_table
+      end
+      ImGui.tree_pop
+    end
+
+    if open_action != -1
+      ImGui.set_next_item_open(open_action != 0)
+    end
+    if ImGui.tree_node("Custom headers")
+      columns_count = 3
+      if ImGui.begin_table("table_custom_headers", columns_count, ImGuiTableFlags::Borders | ImGuiTableFlags::Reorderable | ImGuiTableFlags::Hideable)
+        ImGui.table_setup_column("Apricot")
+        ImGui.table_setup_column("Banana")
+        ImGui.table_setup_column("Cherry")
+
+        static column_selected = Slice.new(3, false)
+        ImGui.table_next_row(ImGuiTableRowFlags::Headers)
+        columns_count.times do |column|
+          ImGui.table_set_column_index(column)
+          column_name = ImGui.table_get_column_name(column)
+          ImGui.push_id(column)
+          ImGui.push_style_var(ImGuiStyleVar::FramePadding, ImVec2.new(0, 0))
+          ImGui.checkbox("##checkall", pointerof(column_selected.val[column]))
+          ImGui.pop_style_var
+          ImGui.same_line(0.0f32, ImGui.get_style.item_inner_spacing.x)
+          ImGui.table_header(column_name)
+          ImGui.pop_id
+        end
+
+        5.times do |row|
+          ImGui.table_next_row
+          3.times do |column|
+            buf = sprintf("Cell %d,%d", column, row)
+            ImGui.table_set_column_index(column)
+            ImGui.selectable(buf, column_selected.val[column])
+          end
+        end
+        ImGui.end_table
+      end
+      ImGui.tree_pop
+    end
+
+    if open_action != -1
+      ImGui.set_next_item_open(open_action != 0)
+    end
+    if ImGui.tree_node("Context menus")
+      help_marker("By default, right-clicking over a TableHeadersRow()/TableHeader() line will open the default context-menu.\nUsing ImGuiTableFlags_ContextMenuInBody we also allow right-clicking over columns body.")
+      static flags1 = ImGuiTableFlags::Resizable | ImGuiTableFlags::Reorderable | ImGuiTableFlags::Hideable | ImGuiTableFlags::Borders | ImGuiTableFlags::ContextMenuInBody
+
+      push_style_compact
+      ImGui.checkbox_flags("ImGuiTableFlags_ContextMenuInBody", pointerof(flags1.val), ImGuiTableFlags::ContextMenuInBody)
+      pop_style_compact
+
+      columns_count = 3
+      if ImGui.begin_table("table_context_menu", columns_count, flags1.val)
+        ImGui.table_setup_column("One")
+        ImGui.table_setup_column("Two")
+        ImGui.table_setup_column("Three")
+
+        ImGui.table_headers_row
+
+        4.times do |row|
+          ImGui.table_next_row
+          columns_count.times do |column|
+            ImGui.table_set_column_index(column)
+            ImGui.text("Cell %d,%d", column, row)
+          end
+        end
+        ImGui.end_table
+      end
+
+      help_marker("Demonstrate mixing table context menu (over header), item context button (over button) and custom per-colum context menu (over column body).")
+      flags2 = ImGuiTableFlags::Resizable | ImGuiTableFlags::SizingFixedFit | ImGuiTableFlags::Reorderable | ImGuiTableFlags::Hideable | ImGuiTableFlags::Borders
+      if ImGui.begin_table("table_context_menu_2", columns_count, flags2)
+        ImGui.table_setup_column("One")
+        ImGui.table_setup_column("Two")
+        ImGui.table_setup_column("Three")
+
+        ImGui.table_headers_row
+        4.times do |row|
+          ImGui.table_next_row
+          columns_count.times do |column|
+            ImGui.table_set_column_index(column)
+            ImGui.text("Cell %d,%d", column, row)
+            ImGui.same_line
+
+            ImGui.push_id(row * columns_count + column)
+            ImGui.small_button("..")
+            if ImGui.begin_popup_context_item
+              ImGui.text("This is the popup for Button(\"..\") in Cell %d,%d", column, row)
+              if ImGui.button("Close")
+                ImGui.close_current_popup
+              end
+              ImGui.end_popup
+            end
+            ImGui.pop_id
+          end
+        end
+
+        hovered_column = -1
+        (columns_count + 1).times do |column|
+          ImGui.push_id(column)
+          if ImGui.table_get_column_flags(column).includes? :IsHovered
+            hovered_column = column
+          end
+          if hovered_column == column && !ImGui.is_any_item_hovered && ImGui.is_mouse_released(:Right)
+            ImGui.open_popup("MyPopup")
+          end
+          if ImGui.begin_popup("MyPopup")
+            if column == columns_count
+              ImGui.text("This is a custom popup for unused space after the last column.")
+            else
+              ImGui.text("This is a custom popup for Column %d", column)
+            end
+            if ImGui.button("Close")
+              ImGui.close_current_popup
+            end
+            ImGui.end_popup
+          end
+          ImGui.pop_id
+        end
+
+        ImGui.end_table
+        ImGui.text("Hovered column: %d", hovered_column)
+      end
+      ImGui.tree_pop
+    end
+
+    if open_action != -1
+      ImGui.set_next_item_open(open_action != 0)
+    end
+    if ImGui.tree_node("Synced instances")
+      help_marker("Multiple tables with the same identifier will share their settings, width, visibility, order etc.")
+      3.times do |n|
+        buf = sprintf("Synced Table %d", n)
+        open = ImGui.collapsing_header(buf, ImGuiTreeNodeFlags::DefaultOpen)
+        if open && ImGui.begin_table("Table", 3, ImGuiTableFlags::Resizable | ImGuiTableFlags::Reorderable | ImGuiTableFlags::Hideable | ImGuiTableFlags::Borders | ImGuiTableFlags::SizingFixedFit | ImGuiTableFlags::NoSavedSettings)
+          ImGui.table_setup_column("One")
+          ImGui.table_setup_column("Two")
+          ImGui.table_setup_column("Three")
+          ImGui.table_headers_row
+          9.times do |cell|
+            ImGui.table_next_column
+            ImGui.text("this cell %d", cell)
+          end
+          ImGui.end_table
+        end
+      end
+      ImGui.tree_pop
+    end
+
+    template_items_names = [
+      "Banana", "Apple", "Cherry", "Watermelon", "Grapefruit", "Strawberry", "Mango",
+      "Kiwi", "Orange", "Pineapple", "Blueberry", "Plum", "Coconut", "Pear", "Apricot",
+    ]
+    if open_action != -1
+      ImGui.set_next_item_open(open_action != 0)
+    end
+    if ImGui.tree_node("Sorting")
+      static items = p! Array(MyItem).new(50) { |n|
+        template_n = n % template_items_names.size
+        MyItem.new(
+          id: n,
+          name: template_items_names[template_n],
+          quantity: (n * n - n) % 20,
+        )
+      }
+
+      static flags = ImGuiTableFlags::Resizable | ImGuiTableFlags::Reorderable | ImGuiTableFlags::Hideable | ImGuiTableFlags::Sortable | ImGuiTableFlags::SortMulti | ImGuiTableFlags::RowBg | ImGuiTableFlags::BordersOuter | ImGuiTableFlags::BordersV | ImGuiTableFlags::NoBordersInBody | ImGuiTableFlags::ScrollY
+      push_style_compact
+      ImGui.checkbox_flags("ImGuiTableFlags_SortMulti", pointerof(flags.val), ImGuiTableFlags::SortMulti)
+      ImGui.same_line
+      help_marker("When sorting is enabled: hold shift when clicking headers to sort on multiple column. TableGetSortSpecs() may return specs where (SpecsCount > 1).")
+      ImGui.checkbox_flags("ImGuiTableFlags_SortTristate", pointerof(flags.val), ImGuiTableFlags::SortTristate)
+      ImGui.same_line
+      help_marker("When sorting is enabled: allow no sorting, disable default sorting. TableGetSortSpecs() may return specs where (SpecsCount == 0).")
+      pop_style_compact
+
+      if ImGui.begin_table("table_sorting", 4, flags.val, ImVec2.new(0.0f32, text_base_height * 15), 0.0f32)
+        ImGui.table_setup_column("ID", ImGuiTableColumnFlags::DefaultSort | ImGuiTableColumnFlags::WidthFixed, 0.0f32, MyItemColumnID::ID.to_u32)
+        ImGui.table_setup_column("Name", ImGuiTableColumnFlags::WidthFixed, 0.0f32, MyItemColumnID::Name.to_u32)
+        ImGui.table_setup_column("Action", ImGuiTableColumnFlags::NoSort | ImGuiTableColumnFlags::WidthFixed, 0.0f32, MyItemColumnID::Action.to_u32)
+        ImGui.table_setup_column("Quantity", ImGuiTableColumnFlags::PreferSortDescending | ImGuiTableColumnFlags::WidthStretch, 0.0f32, MyItemColumnID::Quantity.to_u32)
+        ImGui.table_setup_scroll_freeze(0, 1)
+        ImGui.table_headers_row
+
+        if (sorts_specs = ImGui.table_get_sort_specs)
+          if sorts_specs.specs_dirty
+            MyItem.s_current_sort_specs = sorts_specs
+            if items.val.size > 1
+              items.val.sort!
+            end
+            MyItem.s_current_sort_specs = nil
+            sorts_specs.specs_dirty = false
+          end
+        end
+
+        clipper = ImGuiListClipper.new
+        clipper.begin(items.val.size)
+        while clipper.step
+          (clipper.display_start...clipper.display_end).each do |row_n|
+            item = items.val[row_n]
+            ImGui.push_id(item.id)
+            ImGui.table_next_row
+            ImGui.table_next_column
+            ImGui.text("%04d", item.id)
+            ImGui.table_next_column
+            ImGui.text_unformatted(item.name)
+            ImGui.table_next_column
+            ImGui.small_button("None")
+            ImGui.table_next_column
+            ImGui.text("%d", item.quantity)
+            ImGui.pop_id
+          end
+        end
+        ImGui.end_table
+      end
+      ImGui.tree_pop
+    end
+
+    if open_action != -1
+      ImGui.set_next_item_open(open_action != 0)
+    end
+    if ImGui.tree_node("Advanced")
+      static flags = ImGuiTableFlags::Resizable | ImGuiTableFlags::Reorderable | ImGuiTableFlags::Hideable | ImGuiTableFlags::Sortable | ImGuiTableFlags::SortMulti | ImGuiTableFlags::RowBg | ImGuiTableFlags::Borders | ImGuiTableFlags::NoBordersInBody | ImGuiTableFlags::ScrollX | ImGuiTableFlags::ScrollY | ImGuiTableFlags::SizingFixedFit
+
+      static contents_type = ContentsType3::SelectableSpanRow
+      contents_type_names = ["Text", "Button", "SmallButton", "FillButton", "Selectable", "Selectable (span row)"]
+      static freeze_cols = 1
+      static freeze_rows = 1
+      static items_count = template_items_names.size * 2
+      static outer_size_value = ImVec2.new(0.0f32, text_base_height * 12)
+      static row_min_height = 0.0f32
+      static inner_width_with_scroll = 0.0f32
+      static outer_size_enabled = true
+      static show_headers = true
+      static show_wrapped_text = false
+
+      if ImGui.tree_node("Options")
+        push_style_compact
+        ImGui.push_item_width(text_base_width * 28.0f32)
+
+        if ImGui.tree_node_ex("Features:", ImGuiTreeNodeFlags::DefaultOpen)
+          ImGui.checkbox_flags("ImGuiTableFlags_Resizable", pointerof(flags.val), ImGuiTableFlags::Resizable)
+          ImGui.checkbox_flags("ImGuiTableFlags_Reorderable", pointerof(flags.val), ImGuiTableFlags::Reorderable)
+          ImGui.checkbox_flags("ImGuiTableFlags_Hideable", pointerof(flags.val), ImGuiTableFlags::Hideable)
+          ImGui.checkbox_flags("ImGuiTableFlags_Sortable", pointerof(flags.val), ImGuiTableFlags::Sortable)
+          ImGui.checkbox_flags("ImGuiTableFlags_NoSavedSettings", pointerof(flags.val), ImGuiTableFlags::NoSavedSettings)
+          ImGui.checkbox_flags("ImGuiTableFlags_ContextMenuInBody", pointerof(flags.val), ImGuiTableFlags::ContextMenuInBody)
+          ImGui.tree_pop
+        end
+
+        if ImGui.tree_node_ex("Decorations:", ImGuiTreeNodeFlags::DefaultOpen)
+          ImGui.checkbox_flags("ImGuiTableFlags_RowBg", pointerof(flags.val), ImGuiTableFlags::RowBg)
+          ImGui.checkbox_flags("ImGuiTableFlags_BordersV", pointerof(flags.val), ImGuiTableFlags::BordersV)
+          ImGui.checkbox_flags("ImGuiTableFlags_BordersOuterV", pointerof(flags.val), ImGuiTableFlags::BordersOuterV)
+          ImGui.checkbox_flags("ImGuiTableFlags_BordersInnerV", pointerof(flags.val), ImGuiTableFlags::BordersInnerV)
+          ImGui.checkbox_flags("ImGuiTableFlags_BordersH", pointerof(flags.val), ImGuiTableFlags::BordersH)
+          ImGui.checkbox_flags("ImGuiTableFlags_BordersOuterH", pointerof(flags.val), ImGuiTableFlags::BordersOuterH)
+          ImGui.checkbox_flags("ImGuiTableFlags_BordersInnerH", pointerof(flags.val), ImGuiTableFlags::BordersInnerH)
+          ImGui.checkbox_flags("ImGuiTableFlags_NoBordersInBody", pointerof(flags.val), ImGuiTableFlags::NoBordersInBody)
+          ImGui.same_line
+          help_marker("Disable vertical borders in columns Body (borders will always appears in Headers")
+          ImGui.checkbox_flags("ImGuiTableFlags_NoBordersInBodyUntilResize", pointerof(flags.val), ImGuiTableFlags::NoBordersInBodyUntilResize)
+          ImGui.same_line
+          help_marker("Disable vertical borders in columns Body until hovered for resize (borders will always appears in Headers)")
+          ImGui.tree_pop
+        end
+
+        if ImGui.tree_node_ex("Sizing:", ImGuiTreeNodeFlags::DefaultOpen)
+          edit_table_sizing_flags(pointerof(flags.val))
+          ImGui.same_line
+          help_marker("In the Advanced demo we override the policy of each column so those table-wide settings have less effect that typical.")
+          ImGui.checkbox_flags("ImGuiTableFlags_NoHostExtendX", pointerof(flags.val), ImGuiTableFlags::NoHostExtendX)
+          ImGui.same_line
+          help_marker("Make outer width auto-fit to columns, overriding outer_size.x value.\n\nOnly available when ScrollX/ScrollY are disabled and Stretch columns are not used.")
+          ImGui.checkbox_flags("ImGuiTableFlags_NoHostExtendY", pointerof(flags.val), ImGuiTableFlags::NoHostExtendY)
+          ImGui.same_line
+          help_marker("Make outer height stop exactly at outer_size.y (prevent auto-extending table past the limit).\n\nOnly available when ScrollX/ScrollY are disabled. Data below the limit will be clipped and not visible.")
+          ImGui.checkbox_flags("ImGuiTableFlags_NoKeepColumnsVisible", pointerof(flags.val), ImGuiTableFlags::NoKeepColumnsVisible)
+          ImGui.same_line
+          help_marker("Only available if ScrollX is disabled.")
+          ImGui.checkbox_flags("ImGuiTableFlags_PreciseWidths", pointerof(flags.val), ImGuiTableFlags::PreciseWidths)
+          ImGui.same_line
+          help_marker("Disable distributing remainder width to stretched columns (width allocation on a 100-wide table with 3 columns: Without this flag: 33,33,34. With this flag: 33,33,33). With larger number of columns, resizing will appear to be less smooth.")
+          ImGui.checkbox_flags("ImGuiTableFlags_NoClip", pointerof(flags.val), ImGuiTableFlags::NoClip)
+          ImGui.same_line
+          help_marker("Disable clipping rectangle for every individual columns (reduce draw command count, items will be able to overflow into other columns). Generally incompatible with ScrollFreeze options.")
+          ImGui.tree_pop
+        end
+
+        if ImGui.tree_node_ex("Padding:", ImGuiTreeNodeFlags::DefaultOpen)
+          ImGui.checkbox_flags("ImGuiTableFlags_PadOuterX", pointerof(flags.val), ImGuiTableFlags::PadOuterX)
+          ImGui.checkbox_flags("ImGuiTableFlags_NoPadOuterX", pointerof(flags.val), ImGuiTableFlags::NoPadOuterX)
+          ImGui.checkbox_flags("ImGuiTableFlags_NoPadInnerX", pointerof(flags.val), ImGuiTableFlags::NoPadInnerX)
+          ImGui.tree_pop
+        end
+
+        if ImGui.tree_node_ex("Scrolling:", ImGuiTreeNodeFlags::DefaultOpen)
+          ImGui.checkbox_flags("ImGuiTableFlags_ScrollX", pointerof(flags.val), ImGuiTableFlags::ScrollX)
+          ImGui.same_line
+          ImGui.set_next_item_width(ImGui.get_frame_height)
+          ImGui.drag_int("freeze_cols", pointerof(freeze_cols.val), 0.2f32, 0, 9, flags: ImGuiSliderFlags::NoInput)
+          ImGui.checkbox_flags("ImGuiTableFlags_ScrollY", pointerof(flags.val), ImGuiTableFlags::ScrollY)
+          ImGui.same_line
+          ImGui.set_next_item_width(ImGui.get_frame_height)
+          ImGui.drag_int("freeze_rows", pointerof(freeze_rows.val), 0.2f32, 0, 9, flags: ImGuiSliderFlags::NoInput)
+          ImGui.tree_pop
+        end
+
+        if ImGui.tree_node_ex("Sorting:", ImGuiTreeNodeFlags::DefaultOpen)
+          ImGui.checkbox_flags("ImGuiTableFlags_SortMulti", pointerof(flags.val), ImGuiTableFlags::SortMulti)
+          ImGui.same_line
+          help_marker("When sorting is enabled: hold shift when clicking headers to sort on multiple column. TableGetSortSpecs() may return specs where (SpecsCount > 1).")
+          ImGui.checkbox_flags("ImGuiTableFlags_SortTristate", pointerof(flags.val), ImGuiTableFlags::SortTristate)
+          ImGui.same_line
+          help_marker("When sorting is enabled: allow no sorting, disable default sorting. TableGetSortSpecs() may return specs where (SpecsCount == 0).")
+          ImGui.tree_pop
+        end
+
+        if ImGui.tree_node_ex("Other:", ImGuiTreeNodeFlags::DefaultOpen)
+          ImGui.checkbox("show_headers", pointerof(show_headers.val))
+          ImGui.checkbox("show_wrapped_text", pointerof(show_wrapped_text.val))
+
+          ImGui.drag_float2("##OuterSize", pointerof(outer_size_value.val.x))
+          ImGui.same_line(0.0f32, ImGui.get_style.item_inner_spacing.x)
+          ImGui.checkbox("outer_size", pointerof(outer_size_enabled.val))
+          ImGui.same_line
+          help_marker("If scrolling is disabled (ScrollX and ScrollY not set):\n" +
+                      "- The table is output directly in the parent window.\n" +
+                      "- OuterSize.x < 0.0f will right-align the table.\n" +
+                      "- OuterSize.x = 0.0f will narrow fit the table unless there are any Stretch column.\n" +
+                      "- OuterSize.y then becomes the minimum size for the table, which will extend vertically if there are more rows (unless NoHostExtendY is set).")
+
+          ImGui.drag_float("inner_width (when ScrollX active)", pointerof(inner_width_with_scroll.val), 1.0f32, 0.0f32, Float32::MAX)
+
+          ImGui.drag_float("row_min_height", pointerof(row_min_height.val), 1.0f32, 0.0f32, Float32::MAX)
+          ImGui.same_line
+          help_marker("Specify height of the Selectable item.")
+
+          ImGui.drag_int("items_count", pointerof(items_count.val), 0.1f32, 0, 9999)
+          ImGui.combo("items_type (first column)", pointerof(contents_type.val), contents_type_names)
+
+          ImGui.tree_pop
+        end
+
+        ImGui.pop_item_width
+        pop_style_compact
+        ImGui.spacing
+        ImGui.tree_pop
+      end
+
+      static items = [] of MyItem
+      static selection = [] of Int32
+      static items_need_sort = false
+      if items.val.size != items_count.val
+        items.val = Array(MyItem).new(items_count.val) do |n|
+          template_n = n % template_items_names.size
+          MyItem.new(
+            id: n,
+            name: template_items_names[template_n],
+            quantity: (template_n == 3) ? 10 : (template_n == 4) ? 20 : 0,
+          )
+        end
+      end
+
+      parent_draw_list = ImGui.get_window_draw_list
+      parent_draw_list_draw_cmd_count = parent_draw_list.cmd_buffer.size
+      table_scroll_cur = ImVec2.new
+      table_scroll_max = ImVec2.new
+      table_draw_list = nil
+
+      inner_width_to_use = (flags.val.includes? :ScrollX) ? inner_width_with_scroll.val : 0.0f32
+      if ImGui.begin_table("table_advanced", 6, flags.val, outer_size_enabled.val ? outer_size_value.val : ImVec2.new(0, 0), inner_width_to_use)
+        ImGui.table_setup_column("ID", ImGuiTableColumnFlags::DefaultSort | ImGuiTableColumnFlags::WidthFixed | ImGuiTableColumnFlags::NoHide, 0.0f32, MyItemColumnID::ID.to_u32)
+        ImGui.table_setup_column("Name", ImGuiTableColumnFlags::WidthFixed, 0.0f32, MyItemColumnID::Name.to_u32)
+        ImGui.table_setup_column("Action", ImGuiTableColumnFlags::NoSort | ImGuiTableColumnFlags::WidthFixed, 0.0f32, MyItemColumnID::Action.to_u32)
+        ImGui.table_setup_column("Quantity", ImGuiTableColumnFlags::PreferSortDescending, 0.0f32, MyItemColumnID::Quantity.to_u32)
+        ImGui.table_setup_column("Description", (flags.val.includes? :NoHostExtendX) ? ImGuiTableColumnFlags::None : ImGuiTableColumnFlags::WidthStretch, 0.0f32, MyItemColumnID::Description.to_u32)
+        ImGui.table_setup_column("Hidden", ImGuiTableColumnFlags::DefaultHide | ImGuiTableColumnFlags::NoSort)
+        ImGui.table_setup_scroll_freeze(freeze_cols.val, freeze_rows.val)
+
+        sorts_specs = ImGui.table_get_sort_specs
+        if sorts_specs && sorts_specs.specs_dirty
+          items_need_sort.val = true
+        end
+        if sorts_specs && items_need_sort.val && items.val.size > 1
+          MyItem.s_current_sort_specs = sorts_specs
+          items.val.sort!
+          MyItem.s_current_sort_specs = nil
+          sorts_specs.specs_dirty = false
+        end
+        items_need_sort.val = false
+
+        sorts_specs_using_quantity = (ImGui.table_get_column_flags(3).includes? :IsSorted)
+
+        if show_headers.val
+          ImGui.table_headers_row
+        end
+
+        ImGui.push_button_repeat(true)
+
+        clipper = ImGuiListClipper.new
+        clipper.begin(items.val.size)
+        while clipper.step
+          (clipper.display_start...clipper.display_end).each do |row_n|
+            item = items.val[row_n]
+
+            item_is_selected = selection.val.includes?(item.id)
+            ImGui.push_id(item.id)
+            ImGui.table_next_row(ImGuiTableRowFlags::None, row_min_height.val)
+            ImGui.table_next_column
+
+            label = sprintf("%04d", item.id)
+            if contents_type.val == ContentsType3::Text
+              ImGui.text_unformatted(label)
+            elsif contents_type.val == ContentsType3::Button
+              ImGui.button(label)
+            elsif contents_type.val == ContentsType3::SmallButton
+              ImGui.small_button(label)
+            elsif contents_type.val == ContentsType3::FillButton
+              ImGui.button(label, ImVec2.new(-Float32::MIN_POSITIVE, 0.0f32))
+            elsif contents_type.val == ContentsType3::Selectable || contents_type.val == ContentsType3::SelectableSpanRow
+              selectable_flags = (contents_type.val == ContentsType3::SelectableSpanRow) ? ImGuiSelectableFlags::SpanAllColumns | ImGuiSelectableFlags::AllowItemOverlap : ImGuiSelectableFlags::None
+              if ImGui.selectable(label, item_is_selected, selectable_flags, ImVec2.new(0, row_min_height.val))
+                if ImGui.get_io.key_ctrl
+                  if item_is_selected
+                    selection.val.delete(item.id)
+                  else
+                    selection.val << item.id
+                  end
+                else
+                  selection.val.clear
+                  selection.val << item.id
+                end
+              end
+            end
+
+            if ImGui.table_next_column
+              ImGui.text_unformatted(item.name)
+            end
+
+            if ImGui.table_next_column
+              if ImGui.small_button("Chop")
+                item.quantity += 1
+              end
+              if sorts_specs_using_quantity && ImGui.is_item_deactivated
+                items_need_sort.val = true
+              end
+              ImGui.same_line
+              if ImGui.small_button("Eat")
+                item.quantity -= 1
+              end
+              if sorts_specs_using_quantity && ImGui.is_item_deactivated
+                items_need_sort.val = true
+              end
+            end
+
+            if ImGui.table_next_column
+              ImGui.text("%d", item.quantity)
+            end
+
+            ImGui.table_next_column
+            if show_wrapped_text.val
+              ImGui.text_wrapped("Lorem ipsum dolor sit amet")
+            else
+              ImGui.text("Lorem ipsum dolor sit amet")
+            end
+
+            if ImGui.table_next_column
+              ImGui.text("1234")
+            end
+
+            ImGui.pop_id
+          end
+        end
+        ImGui.pop_button_repeat
+
+        table_scroll_cur = ImVec2.new(ImGui.get_scroll_x, ImGui.get_scroll_y)
+        table_scroll_max = ImVec2.new(ImGui.get_scroll_max_x, ImGui.get_scroll_max_y)
+        table_draw_list = ImGui.get_window_draw_list
+        ImGui.end_table
+      end
+      static show_debug_details = false
+      ImGui.checkbox("Debug details", pointerof(show_debug_details.val))
+      if show_debug_details.val && table_draw_list
+        ImGui.same_line(0.0f32, 0.0f32)
+        table_draw_list_draw_cmd_count = table_draw_list.cmd_buffer.size
+        if table_draw_list == parent_draw_list
+          ImGui.text(": DrawCmd: +%d (in same window)",
+            table_draw_list_draw_cmd_count - parent_draw_list_draw_cmd_count)
+        else
+          ImGui.text(": DrawCmd: +%d (in child window), Scroll: (%.f/%.f) (%.f/%.f)",
+            table_draw_list_draw_cmd_count - 1, table_scroll_cur.x, table_scroll_max.x, table_scroll_cur.y, table_scroll_max.y)
+        end
+      end
+      ImGui.tree_pop
+    end
+
+    ImGui.pop_id
+
+    show_demo_window_columns
+
+    if disable_indent.val
+      ImGui.pop_style_var
+    end
+  end
+
+  def self.show_demo_window_columns
+    open = ImGui.tree_node("Legacy Columns API")
+    ImGui.same_line
+    help_marker("Columns() is an old API! Prefer using the more flexible and powerful BeginTable() API!")
+    if !open
+      return
     end
 
     if ImGui.tree_node("Basic")
@@ -3042,11 +4758,13 @@ module ImGuiDemo
       ImGui.separator
       ImGui.tree_pop
     end
+
     if ImGui.tree_node("Horizontal Scrolling")
       ImGui.set_next_window_content_size(ImVec2.new(1500.0f32, 0.0f32))
       child_size = ImVec2.new(0, ImGui.get_font_size * 20.0f32)
       ImGui.begin_child("##ScrollingRegion", child_size, false, ImGuiWindowFlags::HorizontalScrollbar)
       ImGui.columns(10)
+
       items_count = 2000
       clipper = ImGuiListClipper.new
       clipper.begin(items_count)
@@ -3094,10 +4812,7 @@ module ImGuiDemo
       ImGui.tree_pop
     end
 
-    if disable_indent.val
-      ImGui.pop_style_var
-    end
-    ImGui.pop_id
+    ImGui.tree_pop
   end
 
   def self.show_demo_window_misc
@@ -3343,7 +5058,7 @@ module ImGuiDemo
           label = sprintf("Mouse cursor %d: %s", cur.to_i, cur)
           ImGui.bullet
           ImGui.selectable(label, false)
-          if ImGui.is_item_hovered || ImGui.is_item_focused
+          if ImGui.is_item_hovered
             ImGui.set_mouse_cursor(cur)
           end
         end
@@ -3416,8 +5131,8 @@ module ImGuiDemo
       if io.config_windows_move_from_title_bar_only
         ImGui.text("io.ConfigWindowsMoveFromTitleBarOnly")
       end
-      if io.config_windows_memory_compact_timer >= 0.0f32
-        ImGui.text("io.ConfigWindowsMemoryCompactTimer = %.1ff", io.config_windows_memory_compact_timer)
+      if io.config_memory_compact_timer >= 0.0f32
+        ImGui.text("io.ConfigMemoryCompactTimer = %.1f", io.config_memory_compact_timer)
       end
       ImGui.text("io.BackendFlags: 0x%08X", io.backend_flags)
       if io.backend_flags.includes? :HasGamepad
@@ -3456,14 +5171,14 @@ module ImGuiDemo
 
   def self.show_style_selector(label)
     static style_idx = -1
-    if ImGui.combo(label, pointerof(style_idx.val), "Classic\0Dark\0Light\0")
+    if ImGui.combo(label, pointerof(style_idx.val), "Dark\0Light\0Classic\0")
       case style_idx.val
       when 0
-        ImGui.style_colors_classic
-      when 1
         ImGui.style_colors_dark
-      when 2
+      when 1
         ImGui.style_colors_light
+      when 2
+        ImGui.style_colors_classic
       end
       return true
     end
@@ -3641,6 +5356,7 @@ module ImGuiDemo
         ImGui.text("Main")
         ImGui.slider_float2("WindowPadding", pointerof(style.window_padding), 0.0f32, 20.0f32, "%.0f")
         ImGui.slider_float2("FramePadding", pointerof(style.frame_padding), 0.0f32, 20.0f32, "%.0f")
+        ImGui.slider_float2("CellPadding", pointerof(style.cell_padding), 0.0f32, 20.0f32, "%.0f")
         ImGui.slider_float2("ItemSpacing", pointerof(style.item_spacing), 0.0f32, 20.0f32, "%.0f")
         ImGui.slider_float2("ItemInnerSpacing", pointerof(style.item_inner_spacing), 0.0f32, 20.0f32, "%.0f")
         ImGui.slider_float2("TouchExtraPadding", pointerof(style.touch_extra_padding), 0.0f32, 10.0f32, "%.0f")
@@ -3730,7 +5446,7 @@ module ImGuiDemo
         ImGui.same_line
         help_marker(
           "In the color list:\n" +
-          "Left-click on colored square to open color picker,\n" +
+          "Left-click on color square to open color picker,\n" +
           "Right-click to open edit options menu.")
 
         ImGui.begin_child("##colors", ImVec2.new(0, 0), true, ImGuiWindowFlags::AlwaysVerticalScrollbar | ImGuiWindowFlags::AlwaysHorizontalScrollbar | ImGuiWindowFlags::NavFlattened)
@@ -3805,7 +5521,7 @@ module ImGuiDemo
 
         ImGui.checkbox("Anti-aliased lines use texture", pointerof(style.anti_aliased_lines_use_tex))
         ImGui.same_line
-        help_marker("Faster lines using texture data. Require back-end to render with bilinear filtering (not point/nearest filtering).")
+        help_marker("Faster lines using texture data. Require backend to render with bilinear filtering (not point/nearest filtering).")
 
         ImGui.checkbox("Anti-aliased fill", pointerof(style.anti_aliased_fill))
         ImGui.push_item_width(100)
@@ -4357,12 +6073,13 @@ module ImGuiDemo
   def self.show_placeholder_object(prefix, uid)
     ImGui.push_id(uid)
 
+    ImGui.table_next_row
+    ImGui.table_set_column_index(0)
     ImGui.align_text_to_frame_padding
     node_open = ImGui.tree_node("Object", "%s_%u", prefix, uid)
-    ImGui.next_column
-    ImGui.align_text_to_frame_padding
+    ImGui.table_set_column_index(1)
     ImGui.text("my sailor is rich")
-    ImGui.next_column
+
     if node_open
       static placeholder_members = [0.0f32, 0.0f32, 1.0f32, 3.1416f32, 100.0f32, 999.0f32, 0.0f32, 0.0f32]
       8.times do |i|
@@ -4370,11 +6087,14 @@ module ImGuiDemo
         if i < 2
           show_placeholder_object("Child", 424242)
         else
+          ImGui.table_next_row
+          ImGui.table_set_column_index(0)
           ImGui.align_text_to_frame_padding
           flags = ImGuiTreeNodeFlags::Leaf | ImGuiTreeNodeFlags::NoTreePushOnOpen | ImGuiTreeNodeFlags::Bullet
           ImGui.tree_node_ex("Field", flags, "Field_%d", i)
-          ImGui.next_column
-          ImGui.set_next_item_width(-1)
+
+          ImGui.table_set_column_index(1)
+          ImGui.set_next_item_width(-Float32::MIN_POSITIVE)
           if i >= 5
             ImGui.input_float("##value", pointerof(placeholder_members.val[i]), 1.0f32)
           else
@@ -4403,15 +6123,12 @@ module ImGuiDemo
       "your cursor horizontally instead of using the Columns() API.")
 
     ImGui.push_style_var(ImGuiStyleVar::FramePadding, ImVec2.new(2, 2))
-    ImGui.columns(2)
-    ImGui.separator
-
-    3.times do |obj_i|
-      show_placeholder_object("Object", obj_i)
+    if ImGui.begin_table("split", 2, ImGuiTableFlags::BordersOuter | ImGuiTableFlags::Resizable)
+      4.times do |obj_i|
+        show_placeholder_object("Object", obj_i)
+      end
+      ImGui.end_table
     end
-
-    ImGui.columns(1)
-    ImGui.separator
     ImGui.pop_style_var
     ImGui.end
   end
@@ -4629,7 +6346,7 @@ module ImGuiDemo
 
     if ImGui.begin_tab_bar("##TabBar")
       if ImGui.begin_tab_item("Primitives")
-        ImGui.push_item_width(-ImGui.get_font_size * 10)
+        ImGui.push_item_width(-ImGui.get_font_size * 15)
         draw_list = ImGui.get_window_draw_list
 
         ImGui.text("Gradients")
@@ -4657,16 +6374,19 @@ module ImGuiDemo
         static ngon_sides = 6
         static circle_segments_override = false
         static circle_segments_override_v = 12
+        static curve_segments_override = false
+        static curve_segments_override_v = 8
         static colf = ImVec4.new(1.0f32, 1.0f32, 0.4f32, 1.0f32)
         ImGui.drag_float("Size", pointerof(sz.val), 0.2f32, 2.0f32, 72.0f32, "%.0f")
         ImGui.drag_float("Thickness", pointerof(thickness.val), 0.05f32, 1.0f32, 8.0f32, "%.02f")
         ImGui.slider_int("N-gon sides", pointerof(ngon_sides.val), 3, 12)
         ImGui.checkbox("##circlesegmentoverride", pointerof(circle_segments_override.val))
         ImGui.same_line(0.0f32, ImGui.get_style.item_inner_spacing.x)
-        if ImGui.slider_int("Circle segments", pointerof(circle_segments_override_v.val), 3, 40)
-          circle_segments_override.val = true
-        end
-        ImGui.color_edit4("Color", pointerof(colf.val))
+        circle_segments_override.val |= ImGui.slider_int("Circle segments override", pointerof(circle_segments_override_v.val), 3, 40)
+        ImGui.checkbox("##curvessegmentoverride", pointerof(curve_segments_override.val))
+        ImGui.same_line(0.0f32, ImGui.get_style.item_inner_spacing.x)
+        curve_segments_override.val |= ImGui.slider_int("Curves segments override", pointerof(curve_segments_override_v.val), 3, 40)
+        ImGui.color_edit4("Color", pointerof(colf.val.x))
 
         p = ImGui.get_cursor_screen_pos
         col = ImGui.color_convert_float4_to_u32(colf.val)
@@ -4675,6 +6395,7 @@ module ImGuiDemo
         corners_all = ImDrawCornerFlags::All
         corners_tl_br = ImDrawCornerFlags::TopLeft | ImDrawCornerFlags::BotRight
         circle_segments = circle_segments_override.val ? circle_segments_override_v.val : 0
+        curve_segments = curve_segments_override.val ? curve_segments_override_v.val : 0
         x = p.x + 4.0f32
         y = p.y + 4.0f32
         2.times do |n|
@@ -4698,7 +6419,14 @@ module ImGuiDemo
           x += spacing
           draw_list.add_line(ImVec2.new(x, y), ImVec2.new(x + sz.val, y + sz.val), col, th)
           x += sz.val + spacing
-          draw_list.add_bezier_curve(ImVec2.new(x, y), ImVec2.new(x + sz.val * 1.3f32, y + sz.val * 0.3f32), ImVec2.new(x + sz.val - sz.val * 1.3f32, y + sz.val - sz.val * 0.3f32), ImVec2.new(x + sz.val, y + sz.val), col, th)
+
+          cp3 = [ImVec2.new(x, y + sz.val * 0.6f32), ImVec2.new(x + sz.val * 0.5f32, y - sz.val * 0.4f32), ImVec2.new(x + sz.val, y + sz.val)]
+          draw_list.add_bezier_quadratic(cp3[0], cp3[1], cp3[2], col, th, curve_segments)
+          x += sz.val + spacing
+
+          cp4 = [ImVec2.new(x, y), ImVec2.new(x + sz.val * 1.3f32, y + sz.val * 0.3f32), ImVec2.new(x + sz.val - sz.val * 1.3f32, y + sz.val - sz.val * 0.3f32), ImVec2.new(x + sz.val, y + sz.val)]
+          draw_list.add_bezier_cubic(cp4[0], cp4[1], cp4[2], cp4[3], col, th, curve_segments)
+
           x = p.x + 4
           y += sz.val + spacing
         end
@@ -4723,7 +6451,7 @@ module ImGuiDemo
         x += sz.val
         draw_list.add_rect_filled_multi_color(ImVec2.new(x, y), ImVec2.new(x + sz.val, y + sz.val), ImGui.col32(0, 0, 0, 255), ImGui.col32(255, 0, 0, 255), ImGui.col32(255, 255, 0, 255), ImGui.col32(0, 255, 0, 255))
 
-        ImGui.dummy(ImVec2.new((sz.val + spacing) * 8.8f32, (sz.val + spacing) * 3.0f32))
+        ImGui.dummy(ImVec2.new((sz.val + spacing) * 10.2f32, (sz.val + spacing) * 3.0f32))
         ImGui.pop_item_width
         ImGui.end_tab_item
       end
