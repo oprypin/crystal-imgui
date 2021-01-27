@@ -420,6 +420,9 @@ class COverload
           args[-1] = "#{prev_arg.name} : Indexable(#{typ})"
           call_args << "#{prev_arg.name}.size"
           next
+        elsif arg.name == "current_item" && typ == "Int32*"
+          typ += " | Pointer"
+          callarg = "(typeof(#{callarg}.value.to_i32); #{callarg}.as(Int32*))"
         elsif arg_i == as_datatype
           call_args << "ImGuiDataType::{{k.id}}"
           next

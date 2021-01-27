@@ -991,18 +991,18 @@ module ImGui
   end
 
   # [ImGui::Combo()](https://github.com/ocornut/imgui/blob/v1.79/imgui.h#L458)
-  pointer_wrapper def self.combo(label : String, current_item : Int32*, items : Indexable(LibC::Char*), popup_max_height_in_items : Int32 = -1) : Bool
-    LibImGui.igComboStr_arr(label, current_item, items, items.size, popup_max_height_in_items)
+  pointer_wrapper def self.combo(label : String, current_item : Int32* | Pointer, items : Indexable(LibC::Char*), popup_max_height_in_items : Int32 = -1) : Bool
+    LibImGui.igComboStr_arr(label, (typeof(current_item.value.to_i32); current_item.as(Int32*)), items, items.size, popup_max_height_in_items)
   end
   # Separate items with \0 within a string, end item-list with \0\0. e.g. "One\0Two\0Three\0"
   #
   # [ImGui::Combo()](https://github.com/ocornut/imgui/blob/v1.79/imgui.h#L459)
-  pointer_wrapper def self.combo(label : String, current_item : Int32*, items_separated_by_zeros : String, popup_max_height_in_items : Int32 = -1) : Bool
-    LibImGui.igComboStr(label, current_item, items_separated_by_zeros, popup_max_height_in_items)
+  pointer_wrapper def self.combo(label : String, current_item : Int32* | Pointer, items_separated_by_zeros : String, popup_max_height_in_items : Int32 = -1) : Bool
+    LibImGui.igComboStr(label, (typeof(current_item.value.to_i32); current_item.as(Int32*)), items_separated_by_zeros, popup_max_height_in_items)
   end
   # [ImGui::Combo()](https://github.com/ocornut/imgui/blob/v1.79/imgui.h#L460)
-  pointer_wrapper def self.combo(label : String, current_item : Int32*, items_getter : (Void*, Int32, LibC::Char**) -> Bool, data : Void*, items_count : Int32, popup_max_height_in_items : Int32 = -1) : Bool
-    LibImGui.igComboFnBoolPtr(label, current_item, items_getter, data, items_count, popup_max_height_in_items)
+  pointer_wrapper def self.combo(label : String, current_item : Int32* | Pointer, items_getter : (Void*, Int32, LibC::Char**) -> Bool, data : Void*, items_count : Int32, popup_max_height_in_items : Int32 = -1) : Bool
+    LibImGui.igComboFnBoolPtr(label, (typeof(current_item.value.to_i32); current_item.as(Int32*)), items_getter, data, items_count, popup_max_height_in_items)
   end
   # If v_min >= v_max we have no bound
   #
@@ -1358,12 +1358,12 @@ module ImGui
     LibImGui.igSelectableBoolPtr(label, p_selected, flags, size)
   end
   # [ImGui::ListBox()](https://github.com/ocornut/imgui/blob/v1.79/imgui.h#L563)
-  pointer_wrapper def self.list_box(label : String, current_item : Int32*, items : Indexable(LibC::Char*), height_in_items : Int32 = -1) : Bool
-    LibImGui.igListBoxStr_arr(label, current_item, items, items.size, height_in_items)
+  pointer_wrapper def self.list_box(label : String, current_item : Int32* | Pointer, items : Indexable(LibC::Char*), height_in_items : Int32 = -1) : Bool
+    LibImGui.igListBoxStr_arr(label, (typeof(current_item.value.to_i32); current_item.as(Int32*)), items, items.size, height_in_items)
   end
   # [ImGui::ListBox()](https://github.com/ocornut/imgui/blob/v1.79/imgui.h#L564)
-  pointer_wrapper def self.list_box(label : String, current_item : Int32*, items_getter : (Void*, Int32, LibC::Char**) -> Bool, data : Void*, items_count : Int32, height_in_items : Int32 = -1) : Bool
-    LibImGui.igListBoxFnBoolPtr(label, current_item, items_getter, data, items_count, height_in_items)
+  pointer_wrapper def self.list_box(label : String, current_item : Int32* | Pointer, items_getter : (Void*, Int32, LibC::Char**) -> Bool, data : Void*, items_count : Int32, height_in_items : Int32 = -1) : Bool
+    LibImGui.igListBoxFnBoolPtr(label, (typeof(current_item.value.to_i32); current_item.as(Int32*)), items_getter, data, items_count, height_in_items)
   end
 
   # use if you want to reimplement ListBox() will custom data or interactions. if the function return true, you can output elements then call ListBoxFooter() afterwards.

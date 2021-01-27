@@ -251,8 +251,14 @@ module ImGui
 
   make_input_text(:input_text_with_hint, label : String, hint : String, buf : TextBuffer, flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0))
 
-  pointer_wrapper def self.checkbox_flags(label : String, flags : Pointer, flags_value : Enum) : Bool
-    LibImGui.igCheckboxFlags(label, flags.as(UInt32*), flags_value.as(Enum).to_u32!)
+  pointer_wrapper def self.checkbox_flags(label : String, flags : T*, flags_value : T) : Bool forall T
+    typeof(flags_value.to_i32)
+    LibImGui.igCheckboxFlags(label, flags.as(UInt32*), flags_value.to_u32!)
+  end
+
+  pointer_wrapper def self.radio_button(label : String, v : T*, v_button : T) : Bool forall T
+    typeof(v.value.to_i32)
+    LibImGui.igRadioButtonIntPtr(label, v.as(Int32*), v_button.to_i32!)
   end
 
   private macro make_plot(name, *args)
@@ -279,6 +285,8 @@ module ImGui
 
   private macro make_list_box(name, *args)
     pointer_wrapper def self.{{name.id}}({{*args}}, &block : Int32 -> (Slice(UInt8) | String)?) : Bool
+      typeof(current_item.value.to_i32)
+      current_item = current_item.as(Int32*)
       LibImGui.ig{{name.id.camelcase}}FnBoolPtr(
         {% for arg, i in args %}
           {% if i == 2 %}
@@ -298,15 +306,15 @@ module ImGui
     end
   end
 
-  make_list_box(:combo, label : String, current_item : Int32*, items_count : Int32, popup_max_height_in_items : Int32 = -1)
+  make_list_box(:combo, label : String, current_item : Int32* | Pointer, items_count : Int32, popup_max_height_in_items : Int32 = -1)
 
-  pointer_wrapper def self.combo(label : String, current_item : Int32*, items : Indexable(String), popup_max_height_in_items : Int32 = -1)
+  pointer_wrapper def self.combo(label : String, current_item : Int32* | Pointer, items : Indexable(String), popup_max_height_in_items : Int32 = -1)
     self.combo(label, current_item, items.size, popup_max_height_in_items) { |i| items[i] }
   end
 
-  make_list_box(:list_box, label : String, current_item : Int32*, items_count : Int32, height_in_items : Int32 = -1)
+  make_list_box(:list_box, label : String, current_item : Int32* | Pointer, items_count : Int32, height_in_items : Int32 = -1)
 
-  pointer_wrapper def self.list_box(label : String, current_item : Int32*, items : Indexable(String), height_in_items : Int32 = -1)
+  pointer_wrapper def self.list_box(label : String, current_item : Int32* | Pointer, items : Indexable(String), height_in_items : Int32 = -1)
     self.list_box(label, current_item, items.size, height_in_items) { |i| items[i] }
   end
 
