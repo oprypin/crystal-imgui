@@ -483,7 +483,7 @@ def convert_returns!(outp : Array(String), rets : Array(CType), member = false) 
     elsif (t = ret.base_type.struct?) || ret.name(Context::Obj) == "String"
       if t && t.class? && !t.internal?
         outp[i] = %(#{ret.name(Context::Obj)}.new(#{o}))
-        if ret.const?
+        if ret.const? || ret.name.in? %w[ImGuiTableSortSpecs*]
           outp[i] = %(#{o} ? #{outp[i]} : nil)
           rets[i] += "?"
         end

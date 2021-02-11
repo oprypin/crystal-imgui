@@ -1643,9 +1643,9 @@ module ImGui
   # get latest sort specs for the table (NULL if not sorting).
   #
   # [ImGui::TableGetSortSpecs()](https://github.com/ocornut/imgui/blob/v1.80/imgui.h#L706)
-  def self.table_get_sort_specs : ImGuiTableSortSpecs
+  def self.table_get_sort_specs : ImGuiTableSortSpecs?
     result = LibImGui.igTableGetSortSpecs
-    ImGuiTableSortSpecs.new(result)
+    result ? ImGuiTableSortSpecs.new(result) : nil
   end
 
   # return number of columns (value passed to BeginTable)
@@ -3918,9 +3918,9 @@ module ImGui
     end
 
     # [ImGuiTableSortSpecs::ImGuiTableSortSpecs()](https://github.com/ocornut/imgui/blob/v1.80/imgui.h#L1950)
-    def self.new : ImGuiTableSortSpecs
+    def self.new : ImGuiTableSortSpecs?
       result = LibImGui.ImGuiTableSortSpecs_ImGuiTableSortSpecs
-      ImGuiTableSortSpecs.new(result)
+      result ? ImGuiTableSortSpecs.new(result) : nil
     end
   end
 
