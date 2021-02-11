@@ -1,4 +1,4 @@
-# Based on https://github.com/ocornut/imgui/blob/v1.80/imgui_demo.cpp
+# Based on https://github.com/ocornut/imgui/blob/v1.81/imgui_demo.cpp
 
 require "./imgui"
 require "./util"
@@ -53,6 +53,7 @@ module ImGuiDemo
 
     static show_app_main_menu_bar = false
     static show_app_documents = false
+
     static show_app_console = false
     static show_app_log = false
     static show_app_layout = false
@@ -61,6 +62,7 @@ module ImGuiDemo
     static show_app_auto_resize = false
     static show_app_constrained_resize = false
     static show_app_simple_overlay = false
+    static show_app_fullscreen = false
     static show_app_window_titles = false
     static show_app_custom_rendering = false
 
@@ -94,6 +96,9 @@ module ImGuiDemo
     end
     if show_app_simple_overlay.val
       show_example_app_simple_overlay(pointerof(show_app_simple_overlay.val))
+    end
+    if show_app_fullscreen.val
+      show_example_app_fullscreen(pointerof(show_app_fullscreen.val))
     end
     if show_app_window_titles.val
       show_example_app_window_titles(pointerof(show_app_window_titles.val))
@@ -161,7 +166,8 @@ module ImGuiDemo
       p_open = Pointer(Bool).null
     end
 
-    ImGui.set_next_window_pos(ImVec2.new(20, 20), ImGuiCond::FirstUseEver)
+    main_viewport = ImGui.get_main_viewport
+    ImGui.set_next_window_pos(ImVec2.new(main_viewport.work_pos.x + 20, main_viewport.work_pos.y + 20), ImGuiCond::FirstUseEver)
     ImGui.set_next_window_size(ImVec2.new(550, 680), ImGuiCond::FirstUseEver)
 
     if !ImGui.begin("crystal-imgui Demo", p_open, window_flags)
@@ -186,6 +192,7 @@ module ImGuiDemo
         ImGui.menu_item("Auto-resizing window", "", pointerof(show_app_auto_resize.val))
         ImGui.menu_item("Constrained-resizing window", "", pointerof(show_app_constrained_resize.val))
         ImGui.menu_item("Simple overlay", "", pointerof(show_app_simple_overlay.val))
+        ImGui.menu_item("Fullscreen window", "", pointerof(show_app_fullscreen.val))
         ImGui.menu_item("Manipulating window titles", "", pointerof(show_app_window_titles.val))
         ImGui.menu_item("Custom rendering", "", pointerof(show_app_custom_rendering.val))
         ImGui.menu_item("Documents", "", pointerof(show_app_documents.val))
@@ -435,8 +442,7 @@ module ImGuiDemo
         ImGui.combo("combo", pointerof(item_current.val), items)
         ImGui.same_line
         help_marker(
-          "Refer to the \"Combo\" section below for an explanation of the full BeginCombo/EndCombo API, " +
-          "and demonstration of various flags.\n")
+          "Using the simplified one-liner Combo API here.\nRefer to the \"Combo\" section below for an explanation of how to use the more flexible and general BeginCombo/EndCombo API.")
       end
 
       begin
@@ -539,7 +545,10 @@ module ImGuiDemo
       begin
         items = ["Apple", "Banana", "Cherry", "Kiwi", "Mango", "Orange", "Pineapple", "Strawberry", "Watermelon"]
         static item_current = 1
-        ImGui.list_box("listbox\n(single select)", pointerof(item_current.val), items, 4)
+        ImGui.list_box("listbox", pointerof(item_current.val), items, 4)
+        ImGui.same_line
+        help_marker(
+          "Using the simplified one-liner ListBox API here.\nRefer to the \"List boxes\" section below for an explanation of how to use the more flexible and general BeginListBox/EndListBox API.")
       end
 
       ImGui.tree_pop
@@ -821,6 +830,41 @@ module ImGuiDemo
       static item_current_4 = 0
       ImGui.combo("combo 4 (function)", pointerof(item_current_4.val), items.size) do |idx|
         items[idx]
+      end
+
+      ImGui.tree_pop
+    end
+
+    if ImGui.tree_node("List boxes")
+      items = ["AAAA", "BBBB", "CCCC", "DDDD", "EEEE", "FFFF", "GGGG", "HHHH", "IIII", "JJJJ", "KKKK", "LLLLLLL", "MMMM", "OOOOOOO"]
+      static item_current_idx = 0
+      if ImGui.begin_list_box("listbox 1")
+        items.size.times do |n|
+          is_selected = (item_current_idx.val == n)
+          if ImGui.selectable(items[n], is_selected)
+            item_current_idx.val = n
+          end
+
+          if is_selected
+            ImGui.set_item_default_focus
+          end
+        end
+        ImGui.end_list_box
+      end
+
+      ImGui.text("Full-width:")
+      if ImGui.begin_list_box("##listbox 2", ImVec2.new(-Float32::MIN_POSITIVE, 5 * ImGui.get_text_line_height_with_spacing))
+        items.size.times do |n|
+          is_selected = (item_current_idx.val == n)
+          if ImGui.selectable(items[n], is_selected)
+            item_current_idx.val = n
+          end
+
+          if is_selected
+            ImGui.set_item_default_focus
+          end
+        end
+        ImGui.end_list_box
       end
 
       ImGui.tree_pop
@@ -2308,10 +2352,10 @@ module ImGuiDemo
       ImGui.button("LEVERAGE\nBUZZWORD", size)
       ImGui.same_line
 
-      if ImGui.list_box_header("List", size)
+      if ImGui.begin_list_box("List", size)
         ImGui.selectable("Selected", true)
         ImGui.selectable("Not Selected", false)
-        ImGui.list_box_footer
+        ImGui.end_list_box
       end
 
       ImGui.tree_pop
@@ -2856,7 +2900,7 @@ module ImGuiDemo
         if ImGui.selectable("Set to PI")
           value.val = 3.1415f32
         end
-        ImGui.set_next_item_width(-1)
+        ImGui.set_next_item_width(-Float32::MIN_POSITIVE)
         ImGui.drag_float("##Value", pointerof(value.val), 0.1f32, 0.0f32, 0.0f32)
         ImGui.end_popup
       end
@@ -2888,7 +2932,7 @@ module ImGuiDemo
         ImGui.open_popup("Delete?")
       end
 
-      center = ImVec2.new(ImGui.get_io.display_size.x * 0.5f32, ImGui.get_io.display_size.y * 0.5f32)
+      center = ImGui.get_main_viewport.get_center
       ImGui.set_next_window_pos(center, ImGuiCond::Appearing, ImVec2.new(0.5f32, 0.5f32))
 
       if ImGui.begin_popup_modal("Delete?", flags: ImGuiWindowFlags::AlwaysAutoResize)
@@ -3888,7 +3932,7 @@ module ImGuiDemo
         ImGui.table_headers_row
 
         ImGui.table_next_column
-        ImGui.text("A0 Cell 0")
+        ImGui.text("A0 Row 0")
         begin
           rows_height = text_base_height * 2
           if ImGui.begin_table("table_nested2", 2, ImGuiTableFlags::Borders | ImGuiTableFlags::Resizable | ImGuiTableFlags::Reorderable | ImGuiTableFlags::Hideable)
@@ -3898,24 +3942,24 @@ module ImGuiDemo
 
             ImGui.table_next_row(ImGuiTableRowFlags::None, rows_height)
             ImGui.table_next_column
-            ImGui.text("B0 Cell 0")
+            ImGui.text("B0 Row 0")
             ImGui.table_next_column
-            ImGui.text("B0 Cell 1")
+            ImGui.text("B1 Row 0")
             ImGui.table_next_row(ImGuiTableRowFlags::None, rows_height)
             ImGui.table_next_column
-            ImGui.text("B1 Cell 0")
+            ImGui.text("B0 Row 1")
             ImGui.table_next_column
-            ImGui.text("B1 Cell 1")
+            ImGui.text("B1 Row 1")
 
             ImGui.end_table
           end
         end
         ImGui.table_next_column
-        ImGui.text("A0 Cell 1")
+        ImGui.text("A1 Row 0")
         ImGui.table_next_column
-        ImGui.text("A1 Cell 0")
+        ImGui.text("A0 Row 1")
         ImGui.table_next_column
-        ImGui.text("A1 Cell 1")
+        ImGui.text("A1 Row 1")
         ImGui.end_table
       end
       ImGui.tree_pop
@@ -6274,15 +6318,22 @@ module ImGuiDemo
   end
 
   ImGui.pointer_wrapper def self.show_example_app_simple_overlay(p_open = Pointer(Bool).null)
-    distance = 10.0f32
+    pad = 10.0f32
     static corner = 0
     io = ImGui.get_io
     window_flags = ImGuiWindowFlags::NoDecoration | ImGuiWindowFlags::AlwaysAutoResize | ImGuiWindowFlags::NoSavedSettings | ImGuiWindowFlags::NoFocusOnAppearing | ImGuiWindowFlags::NoNav
     if corner.val != -1
-      window_flags |= ImGuiWindowFlags::NoMove
-      window_pos = ImVec2.new((corner.val & 1) != 0 ? io.display_size.x - distance : distance, (corner.val & 2) != 0 ? io.display_size.y - distance : distance)
-      window_pos_pivot = ImVec2.new((corner.val & 1) != 0 ? 1.0f32 : 0.0f32, (corner.val & 2) != 0 ? 1.0f32 : 0.0f32)
+      viewport = ImGui.get_main_viewport
+      work_pos = viewport.work_pos
+      work_size = viewport.work_size
+      window_pos = ImVec2.new
+      window_pos_pivot = ImVec2.new
+      window_pos.x = (corner.val & 1) != 0 ? (work_pos.x + work_size.x - pad) : (work_pos.x + pad)
+      window_pos.y = (corner.val & 2) != 0 ? (work_pos.y + work_size.y - pad) : (work_pos.y + pad)
+      window_pos_pivot.x = (corner.val & 1) != 0 ? 1.0f32 : 0.0f32
+      window_pos_pivot.y = (corner.val & 2) != 0 ? 1.0f32 : 0.0f32
       ImGui.set_next_window_pos(window_pos, ImGuiCond::Always, window_pos_pivot)
+      window_flags |= ImGuiWindowFlags::NoMove
     end
     ImGui.set_next_window_bg_alpha(0.35f32)
     if ImGui.begin("Example: Simple overlay", p_open, window_flags)
@@ -6311,7 +6362,7 @@ module ImGuiDemo
         if ImGui.menu_item("Bottom-right", nil, corner.val == 3)
           corner.val = 3
         end
-        if p_open.value && ImGui.menu_item("Close")
+        if p_open && ImGui.menu_item("Close")
           p_open.value = false
         end
         ImGui.end_popup
@@ -6320,19 +6371,50 @@ module ImGuiDemo
     ImGui.end
   end
 
+  ImGui.pointer_wrapper def self.show_example_app_fullscreen(p_open = Pointer(Bool).null)
+    static use_work_area = true
+    static flags = ImGuiWindowFlags::NoDecoration | ImGuiWindowFlags::NoMove | ImGuiWindowFlags::NoResize | ImGuiWindowFlags::NoSavedSettings
+
+    viewport = ImGui.get_main_viewport
+    ImGui.set_next_window_pos(use_work_area.val ? viewport.work_pos : viewport.pos)
+    ImGui.set_next_window_size(use_work_area.val ? viewport.work_size : viewport.size)
+
+    if ImGui.begin("Example: Fullscreen window", p_open, flags.val)
+      ImGui.checkbox("Use work area instead of main area", pointerof(use_work_area.val))
+      ImGui.same_line
+      help_marker("Main Area = entire viewport,\nWork Area = entire viewport minus sections used by the main menu bars, task bars etc.\n\nEnable the main-menu bar in Examples menu to see the difference.")
+
+      ImGui.checkbox_flags("ImGuiWindowFlags_NoBackground", pointerof(flags.val), ImGuiWindowFlags::NoBackground)
+      ImGui.checkbox_flags("ImGuiWindowFlags_NoDecoration", pointerof(flags.val), ImGuiWindowFlags::NoDecoration)
+      ImGui.indent
+      ImGui.checkbox_flags("ImGuiWindowFlags_NoTitleBar", pointerof(flags.val), ImGuiWindowFlags::NoTitleBar)
+      ImGui.checkbox_flags("ImGuiWindowFlags_NoCollapse", pointerof(flags.val), ImGuiWindowFlags::NoCollapse)
+      ImGui.checkbox_flags("ImGuiWindowFlags_NoScrollbar", pointerof(flags.val), ImGuiWindowFlags::NoScrollbar)
+      ImGui.unindent
+
+      if p_open && ImGui.button("Close this window")
+        p_open.value = false
+      end
+    end
+    ImGui.end
+  end
+
   ImGui.pointer_wrapper def self.show_example_app_window_titles(p_open = Pointer(Bool).null)
-    ImGui.set_next_window_pos(ImVec2.new(100, 100), ImGuiCond::FirstUseEver)
+    viewport = ImGui.get_main_viewport
+    base_pos = viewport.pos
+
+    ImGui.set_next_window_pos(ImVec2.new(base_pos.x + 100, base_pos.y + 100), ImGuiCond::FirstUseEver)
     ImGui.begin("Same title as another window##1")
     ImGui.text("This is window 1.\nMy title is the same as window 2, but my identifier is unique.")
     ImGui.end
 
-    ImGui.set_next_window_pos(ImVec2.new(100, 200), ImGuiCond::FirstUseEver)
+    ImGui.set_next_window_pos(ImVec2.new(base_pos.x + 100, base_pos.y + 200), ImGuiCond::FirstUseEver)
     ImGui.begin("Same title as another window##2")
     ImGui.text("This is window 2.\nMy title is the same as window 1, but my identifier is unique.")
     ImGui.end
 
     buf = sprintf("Animated title %c %d###AnimatedTitle", "|/-\\"[(ImGui.get_time / 0.25f32).to_i & 3], ImGui.get_frame_count)
-    ImGui.set_next_window_pos(ImVec2.new(100, 300), ImGuiCond::FirstUseEver)
+    ImGui.set_next_window_pos(ImVec2.new(base_pos.x + 100, base_pos.y + 300), ImGuiCond::FirstUseEver)
     ImGui.begin(buf)
     ImGui.text("This window has a changing title.")
     ImGui.end
@@ -6377,7 +6459,7 @@ module ImGuiDemo
         static curve_segments_override = false
         static curve_segments_override_v = 8
         static colf = ImVec4.new(1.0f32, 1.0f32, 0.4f32, 1.0f32)
-        ImGui.drag_float("Size", pointerof(sz.val), 0.2f32, 2.0f32, 72.0f32, "%.0f")
+        ImGui.drag_float("Size", pointerof(sz.val), 0.2f32, 2.0f32, 100.0f32, "%.0f")
         ImGui.drag_float("Thickness", pointerof(thickness.val), 0.05f32, 1.0f32, 8.0f32, "%.02f")
         ImGui.slider_int("N-gon sides", pointerof(ngon_sides.val), 3, 12)
         ImGui.checkbox("##circlesegmentoverride", pointerof(circle_segments_override.val))
@@ -6394,6 +6476,7 @@ module ImGuiDemo
         corners_none = ImDrawCornerFlags::None
         corners_all = ImDrawCornerFlags::All
         corners_tl_br = ImDrawCornerFlags::TopLeft | ImDrawCornerFlags::BotRight
+        rounding = sz.val / 5.0f32
         circle_segments = circle_segments_override.val ? circle_segments_override_v.val : 0
         curve_segments = curve_segments_override.val ? curve_segments_override_v.val : 0
         x = p.x + 4.0f32
@@ -6406,9 +6489,9 @@ module ImGuiDemo
           x += sz.val + spacing
           draw_list.add_rect(ImVec2.new(x, y), ImVec2.new(x + sz.val, y + sz.val), col, 0.0f32, corners_none, th)
           x += sz.val + spacing
-          draw_list.add_rect(ImVec2.new(x, y), ImVec2.new(x + sz.val, y + sz.val), col, 10.0f32, corners_all, th)
+          draw_list.add_rect(ImVec2.new(x, y), ImVec2.new(x + sz.val, y + sz.val), col, rounding, corners_all, th)
           x += sz.val + spacing
-          draw_list.add_rect(ImVec2.new(x, y), ImVec2.new(x + sz.val, y + sz.val), col, 10.0f32, corners_tl_br, th)
+          draw_list.add_rect(ImVec2.new(x, y), ImVec2.new(x + sz.val, y + sz.val), col, rounding, corners_tl_br, th)
           x += sz.val + spacing
           draw_list.add_triangle(ImVec2.new(x + sz.val * 0.5f32, y), ImVec2.new(x + sz.val, y + sz.val - 0.5f32), ImVec2.new(x, y + sz.val - 0.5f32), col, th)
           x += sz.val + spacing
@@ -6778,19 +6861,20 @@ module ImGuiDemo
         if !ImGui.is_popup_open("Save?")
           ImGui.open_popup("Save?")
         end
-        if ImGui.begin_popup_modal("Save?")
+        if ImGui.begin_popup_modal("Save?", flags: ImGuiWindowFlags::AlwaysAutoResize)
           ImGui.text("Save change to the following items?")
-          ImGui.set_next_item_width(-1.0f32)
-          if ImGui.list_box_header("##", close_queue_unsaved_documents, 6)
+          item_height = ImGui.get_text_line_height_with_spacing
+          if ImGui.begin_child_frame(ImGui.get_id("frame"), ImVec2.new(-Float32::MIN_POSITIVE, 6.25f32 * item_height))
             close_queue.val.size.times do |n|
               if close_queue.val[n].dirty?
                 ImGui.text("%s", close_queue.val[n].name)
               end
             end
-            ImGui.list_box_footer
+            ImGui.end_child_frame
           end
 
-          if ImGui.button("Yes", ImVec2.new(80, 0))
+          button_size = ImVec2.new(ImGui.get_font_size * 7.0f32, 0.0f32)
+          if ImGui.button("Yes", button_size)
             close_queue.val.size.times do |n|
               if close_queue.val[n].dirty?
                 close_queue.val[n].do_save
@@ -6801,7 +6885,7 @@ module ImGuiDemo
             ImGui.close_current_popup
           end
           ImGui.same_line
-          if ImGui.button("No", ImVec2.new(80, 0))
+          if ImGui.button("No", button_size)
             close_queue.val.size.times do |n|
               close_queue.val[n].do_force_close
             end
@@ -6809,7 +6893,7 @@ module ImGuiDemo
             ImGui.close_current_popup
           end
           ImGui.same_line
-          if ImGui.button("Cancel", ImVec2.new(80, 0))
+          if ImGui.button("Cancel", button_size)
             close_queue.val.clear
             ImGui.close_current_popup
           end
