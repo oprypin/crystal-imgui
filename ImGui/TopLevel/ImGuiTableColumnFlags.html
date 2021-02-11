@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="generator" content="Crystal Docs 0.36.1">
+<meta name="crystal_docs.project_version" content="">
+<meta name="crystal_docs.project_name" content="crystal-imgui">
+
+
+
+<link href="../../css/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="../../js/doc.js"></script>
+
+  <meta name="repository-name" content="crystal-imgui">
+  <title>ImGui::TopLevel::ImGuiTableColumnFlags - crystal-imgui </title>
+  <script type="text/javascript">
+    CrystalDocs.base_path = "../../";
+  </script>
+</head>
+<body>
+
+<svg class="hidden">
+  <symbol id="octicon-link" viewBox="0 0 16 16">
+    <path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path>
+  </symbol>
+</svg>
+<div class="sidebar">
+  <div class="sidebar-header">
+    <div class="search-box">
+      <input type="search" class="search-input" placeholder="Search..." spellcheck="false" aria-label="Search">
+    </div>
+
+    <div class="project-summary">
+      <h1 class="project-name">
+        <a href="https://github.com/oprypin/crystal-imgui#readme">
+          crystal-imgui
+        </a>
+      </h1>
+
+      <span class="project-version">
+        
+      </span>
+    </div>
+  </div>
+
+  <div class="search-results hidden">
+    <ul class="search-list"></ul>
+  </div>
+
+  <div class="types-list">
+    <ul>
+  
+  <li class="parent open current" data-id="crystal-imgui/ImGui" data-name="imgui">
+      <a href="../../ImGui.html">ImGui</a>
+      
+        <ul>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImColor" data-name="imgui::imcolor">
+      <a href="../../ImGui/ImColor.html">ImColor</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImDrawCallback" data-name="imgui::imdrawcallback">
+      <a href="../../ImGui/ImDrawCallback.html">ImDrawCallback</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImDrawChannel" data-name="imgui::imdrawchannel">
+      <a href="../../ImGui/ImDrawChannel.html">ImDrawChannel</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImDrawCmd" data-name="imgui::imdrawcmd">
+      <a href="../../ImGui/ImDrawCmd.html">ImDrawCmd</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImDrawCmdHeader" data-name="imgui::imdrawcmdheader">
+      <a href="../../ImGui/ImDrawCmdHeader.html">ImDrawCmdHeader</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImDrawCornerFlags" data-name="imgui::imdrawcornerflags">
+      <a href="../../ImGui/ImDrawCornerFlags.html">ImDrawCornerFlags</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImDrawData" data-name="imgui::imdrawdata">
+      <a href="../../ImGui/ImDrawData.html">ImDrawData</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImDrawIdx" data-name="imgui::imdrawidx">
+      <a href="../../ImGui/ImDrawIdx.html">ImDrawIdx</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImDrawList" data-name="imgui::imdrawlist">
+      <a href="../../ImGui/ImDrawList.html">ImDrawList</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImDrawListFlags" data-name="imgui::imdrawlistflags">
+      <a href="../../ImGui/ImDrawListFlags.html">ImDrawListFlags</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImDrawListSplitter" data-name="imgui::imdrawlistsplitter">
+      <a href="../../ImGui/ImDrawListSplitter.html">ImDrawListSplitter</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImDrawVert" data-name="imgui::imdrawvert">
+      <a href="../../ImGui/ImDrawVert.html">ImDrawVert</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImFileHandle" data-name="imgui::imfilehandle">
+      <a href="../../ImGui/ImFileHandle.html">ImFileHandle</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImFont" data-name="imgui::imfont">
+      <a href="../../ImGui/ImFont.html">ImFont</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImFontAtlas" data-name="imgui::imfontatlas">
+      <a href="../../ImGui/ImFontAtlas.html">ImFontAtlas</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImFontAtlasCustomRect" data-name="imgui::imfontatlascustomrect">
+      <a href="../../ImGui/ImFontAtlasCustomRect.html">ImFontAtlasCustomRect</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImFontAtlasFlags" data-name="imgui::imfontatlasflags">
+      <a href="../../ImGui/ImFontAtlasFlags.html">ImFontAtlasFlags</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImFontConfig" data-name="imgui::imfontconfig">
+      <a href="../../ImGui/ImFontConfig.html">ImFontConfig</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImFontGlyph" data-name="imgui::imfontglyph">
+      <a href="../../ImGui/ImFontGlyph.html">ImFontGlyph</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImFontGlyphRangesBuilder" data-name="imgui::imfontglyphrangesbuilder">
+      <a href="../../ImGui/ImFontGlyphRangesBuilder.html">ImFontGlyphRangesBuilder</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImGuiBackendFlags" data-name="imgui::imguibackendflags">
+      <a href="../../ImGui/ImGuiBackendFlags.html">ImGuiBackendFlags</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImGuiButtonFlags" data-name="imgui::imguibuttonflags">
+      <a href="../../ImGui/ImGuiButtonFlags.html">ImGuiButtonFlags</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImGuiCol" data-name="imgui::imguicol">
+      <a href="../../ImGui/ImGuiCol.html">ImGuiCol</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImGuiColorEditFlags" data-name="imgui::imguicoloreditflags">
+      <a href="../../ImGui/ImGuiColorEditFlags.html">ImGuiColorEditFlags</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImGuiComboFlags" data-name="imgui::imguicomboflags">
+      <a href="../../ImGui/ImGuiComboFlags.html">ImGuiComboFlags</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImGuiCond" data-name="imgui::imguicond">
+      <a href="../../ImGui/ImGuiCond.html">ImGuiCond</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImGuiConfigFlags" data-name="imgui::imguiconfigflags">
+      <a href="../../ImGui/ImGuiConfigFlags.html">ImGuiConfigFlags</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImGuiContext" data-name="imgui::imguicontext">
+      <a href="../../ImGui/ImGuiContext.html">ImGuiContext</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImGuiContextHookCallback" data-name="imgui::imguicontexthookcallback">
+      <a href="../../ImGui/ImGuiContextHookCallback.html">ImGuiContextHookCallback</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImGuiDataType" data-name="imgui::imguidatatype">
+      <a href="../../ImGui/ImGuiDataType.html">ImGuiDataType</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImGuiDir" data-name="imgui::imguidir">
+      <a href="../../ImGui/ImGuiDir.html">ImGuiDir</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImGuiDragDropFlags" data-name="imgui::imguidragdropflags">
+      <a href="../../ImGui/ImGuiDragDropFlags.html">ImGuiDragDropFlags</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImGuiErrorLogCallback" data-name="imgui::imguierrorlogcallback">
+      <a href="../../ImGui/ImGuiErrorLogCallback.html">ImGuiErrorLogCallback</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImGuiFocusedFlags" data-name="imgui::imguifocusedflags">
+      <a href="../../ImGui/ImGuiFocusedFlags.html">ImGuiFocusedFlags</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImGuiHoveredFlags" data-name="imgui::imguihoveredflags">
+      <a href="../../ImGui/ImGuiHoveredFlags.html">ImGuiHoveredFlags</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImGuiID" data-name="imgui::imguiid">
+      <a href="../../ImGui/ImGuiID.html">ImGuiID</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImGuiInputTextCallback" data-name="imgui::imguiinputtextcallback">
+      <a href="../../ImGui/ImGuiInputTextCallback.html">ImGuiInputTextCallback</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImGuiInputTextCallbackData" data-name="imgui::imguiinputtextcallbackdata">
+      <a href="../../ImGui/ImGuiInputTextCallbackData.html">ImGuiInputTextCallbackData</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImGuiInputTextFlags" data-name="imgui::imguiinputtextflags">
+      <a href="../../ImGui/ImGuiInputTextFlags.html">ImGuiInputTextFlags</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImGuiIO" data-name="imgui::imguiio">
+      <a href="../../ImGui/ImGuiIO.html">ImGuiIO</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImGuiKey" data-name="imgui::imguikey">
+      <a href="../../ImGui/ImGuiKey.html">ImGuiKey</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImGuiKeyModFlags" data-name="imgui::imguikeymodflags">
+      <a href="../../ImGui/ImGuiKeyModFlags.html">ImGuiKeyModFlags</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImGuiListClipper" data-name="imgui::imguilistclipper">
+      <a href="../../ImGui/ImGuiListClipper.html">ImGuiListClipper</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImGuiMouseButton" data-name="imgui::imguimousebutton">
+      <a href="../../ImGui/ImGuiMouseButton.html">ImGuiMouseButton</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImGuiMouseCursor" data-name="imgui::imguimousecursor">
+      <a href="../../ImGui/ImGuiMouseCursor.html">ImGuiMouseCursor</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImGuiNavInput" data-name="imgui::imguinavinput">
+      <a href="../../ImGui/ImGuiNavInput.html">ImGuiNavInput</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImGuiOnceUponAFrame" data-name="imgui::imguionceuponaframe">
+      <a href="../../ImGui/ImGuiOnceUponAFrame.html">ImGuiOnceUponAFrame</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImGuiPayload" data-name="imgui::imguipayload">
+      <a href="../../ImGui/ImGuiPayload.html">ImGuiPayload</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImGuiPopupFlags" data-name="imgui::imguipopupflags">
+      <a href="../../ImGui/ImGuiPopupFlags.html">ImGuiPopupFlags</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImGuiSelectableFlags" data-name="imgui::imguiselectableflags">
+      <a href="../../ImGui/ImGuiSelectableFlags.html">ImGuiSelectableFlags</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImGuiSizeCallback" data-name="imgui::imguisizecallback">
+      <a href="../../ImGui/ImGuiSizeCallback.html">ImGuiSizeCallback</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImGuiSizeCallbackData" data-name="imgui::imguisizecallbackdata">
+      <a href="../../ImGui/ImGuiSizeCallbackData.html">ImGuiSizeCallbackData</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImGuiSliderFlags" data-name="imgui::imguisliderflags">
+      <a href="../../ImGui/ImGuiSliderFlags.html">ImGuiSliderFlags</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImGuiSortDirection" data-name="imgui::imguisortdirection">
+      <a href="../../ImGui/ImGuiSortDirection.html">ImGuiSortDirection</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImGuiStorage" data-name="imgui::imguistorage">
+      <a href="../../ImGui/ImGuiStorage.html">ImGuiStorage</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImGuiStyle" data-name="imgui::imguistyle">
+      <a href="../../ImGui/ImGuiStyle.html">ImGuiStyle</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImGuiStyleVar" data-name="imgui::imguistylevar">
+      <a href="../../ImGui/ImGuiStyleVar.html">ImGuiStyleVar</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImGuiTabBarFlags" data-name="imgui::imguitabbarflags">
+      <a href="../../ImGui/ImGuiTabBarFlags.html">ImGuiTabBarFlags</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImGuiTabItemFlags" data-name="imgui::imguitabitemflags">
+      <a href="../../ImGui/ImGuiTabItemFlags.html">ImGuiTabItemFlags</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImGuiTableBgTarget" data-name="imgui::imguitablebgtarget">
+      <a href="../../ImGui/ImGuiTableBgTarget.html">ImGuiTableBgTarget</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImGuiTableColumnFlags" data-name="imgui::imguitablecolumnflags">
+      <a href="../../ImGui/ImGuiTableColumnFlags.html">ImGuiTableColumnFlags</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImGuiTableColumnIdx" data-name="imgui::imguitablecolumnidx">
+      <a href="../../ImGui/ImGuiTableColumnIdx.html">ImGuiTableColumnIdx</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImGuiTableColumnSortSpecs" data-name="imgui::imguitablecolumnsortspecs">
+      <a href="../../ImGui/ImGuiTableColumnSortSpecs.html">ImGuiTableColumnSortSpecs</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImGuiTableDrawChannelIdx" data-name="imgui::imguitabledrawchannelidx">
+      <a href="../../ImGui/ImGuiTableDrawChannelIdx.html">ImGuiTableDrawChannelIdx</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImGuiTableFlags" data-name="imgui::imguitableflags">
+      <a href="../../ImGui/ImGuiTableFlags.html">ImGuiTableFlags</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImGuiTableRowFlags" data-name="imgui::imguitablerowflags">
+      <a href="../../ImGui/ImGuiTableRowFlags.html">ImGuiTableRowFlags</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImGuiTableSortSpecs" data-name="imgui::imguitablesortspecs">
+      <a href="../../ImGui/ImGuiTableSortSpecs.html">ImGuiTableSortSpecs</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImGuiTextFilter" data-name="imgui::imguitextfilter">
+      <a href="../../ImGui/ImGuiTextFilter.html">ImGuiTextFilter</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImGuiTreeNodeFlags" data-name="imgui::imguitreenodeflags">
+      <a href="../../ImGui/ImGuiTreeNodeFlags.html">ImGuiTreeNodeFlags</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImGuiWindowFlags" data-name="imgui::imguiwindowflags">
+      <a href="../../ImGui/ImGuiWindowFlags.html">ImGuiWindowFlags</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImPoolIdx" data-name="imgui::impoolidx">
+      <a href="../../ImGui/ImPoolIdx.html">ImPoolIdx</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImTextureID" data-name="imgui::imtextureid">
+      <a href="../../ImGui/ImTextureID.html">ImTextureID</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImVec2" data-name="imgui::imvec2">
+      <a href="../../ImGui/ImVec2.html">ImVec2</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImVec4" data-name="imgui::imvec4">
+      <a href="../../ImGui/ImVec4.html">ImVec4</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImVector" data-name="imgui::imvector(t)">
+      <a href="../../ImGui/ImVector.html">ImVector</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImWchar" data-name="imgui::imwchar">
+      <a href="../../ImGui/ImWchar.html">ImWchar</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImWchar16" data-name="imgui::imwchar16">
+      <a href="../../ImGui/ImWchar16.html">ImWchar16</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImWchar32" data-name="imgui::imwchar32">
+      <a href="../../ImGui/ImWchar32.html">ImWchar32</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/TextBuffer" data-name="imgui::textbuffer">
+      <a href="../../ImGui/TextBuffer.html">TextBuffer</a>
+      
+    </li>
+  
+  <li class="parent open current" data-id="crystal-imgui/ImGui/TopLevel" data-name="imgui::toplevel">
+      <a href="../../ImGui/TopLevel.html">TopLevel</a>
+      
+        <ul>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/TopLevel/ImColor" data-name="imgui::toplevel::imcolor">
+      <a href="../../ImGui/TopLevel/ImColor.html">ImColor</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/TopLevel/ImDrawChannel" data-name="imgui::toplevel::imdrawchannel">
+      <a href="../../ImGui/TopLevel/ImDrawChannel.html">ImDrawChannel</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/TopLevel/ImDrawCmd" data-name="imgui::toplevel::imdrawcmd">
+      <a href="../../ImGui/TopLevel/ImDrawCmd.html">ImDrawCmd</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/TopLevel/ImDrawCmdHeader" data-name="imgui::toplevel::imdrawcmdheader">
+      <a href="../../ImGui/TopLevel/ImDrawCmdHeader.html">ImDrawCmdHeader</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/TopLevel/ImDrawCornerFlags" data-name="imgui::toplevel::imdrawcornerflags">
+      <a href="../../ImGui/TopLevel/ImDrawCornerFlags.html">ImDrawCornerFlags</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/TopLevel/ImDrawData" data-name="imgui::toplevel::imdrawdata">
+      <a href="../../ImGui/TopLevel/ImDrawData.html">ImDrawData</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/TopLevel/ImDrawList" data-name="imgui::toplevel::imdrawlist">
+      <a href="../../ImGui/TopLevel/ImDrawList.html">ImDrawList</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/TopLevel/ImDrawListFlags" data-name="imgui::toplevel::imdrawlistflags">
+      <a href="../../ImGui/TopLevel/ImDrawListFlags.html">ImDrawListFlags</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/TopLevel/ImDrawListSplitter" data-name="imgui::toplevel::imdrawlistsplitter">
+      <a href="../../ImGui/TopLevel/ImDrawListSplitter.html">ImDrawListSplitter</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/TopLevel/ImDrawVert" data-name="imgui::toplevel::imdrawvert">
+      <a href="../../ImGui/TopLevel/ImDrawVert.html">ImDrawVert</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/TopLevel/ImFont" data-name="imgui::toplevel::imfont">
+      <a href="../../ImGui/TopLevel/ImFont.html">ImFont</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/TopLevel/ImFontAtlas" data-name="imgui::toplevel::imfontatlas">
+      <a href="../../ImGui/TopLevel/ImFontAtlas.html">ImFontAtlas</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/TopLevel/ImFontAtlasCustomRect" data-name="imgui::toplevel::imfontatlascustomrect">
+      <a href="../../ImGui/TopLevel/ImFontAtlasCustomRect.html">ImFontAtlasCustomRect</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/TopLevel/ImFontAtlasFlags" data-name="imgui::toplevel::imfontatlasflags">
+      <a href="../../ImGui/TopLevel/ImFontAtlasFlags.html">ImFontAtlasFlags</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/TopLevel/ImFontConfig" data-name="imgui::toplevel::imfontconfig">
+      <a href="../../ImGui/TopLevel/ImFontConfig.html">ImFontConfig</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/TopLevel/ImFontGlyph" data-name="imgui::toplevel::imfontglyph">
+      <a href="../../ImGui/TopLevel/ImFontGlyph.html">ImFontGlyph</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/TopLevel/ImFontGlyphRangesBuilder" data-name="imgui::toplevel::imfontglyphrangesbuilder">
+      <a href="../../ImGui/TopLevel/ImFontGlyphRangesBuilder.html">ImFontGlyphRangesBuilder</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/TopLevel/ImGuiBackendFlags" data-name="imgui::toplevel::imguibackendflags">
+      <a href="../../ImGui/TopLevel/ImGuiBackendFlags.html">ImGuiBackendFlags</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/TopLevel/ImGuiButtonFlags" data-name="imgui::toplevel::imguibuttonflags">
+      <a href="../../ImGui/TopLevel/ImGuiButtonFlags.html">ImGuiButtonFlags</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/TopLevel/ImGuiCol" data-name="imgui::toplevel::imguicol">
+      <a href="../../ImGui/TopLevel/ImGuiCol.html">ImGuiCol</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/TopLevel/ImGuiColorEditFlags" data-name="imgui::toplevel::imguicoloreditflags">
+      <a href="../../ImGui/TopLevel/ImGuiColorEditFlags.html">ImGuiColorEditFlags</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/TopLevel/ImGuiComboFlags" data-name="imgui::toplevel::imguicomboflags">
+      <a href="../../ImGui/TopLevel/ImGuiComboFlags.html">ImGuiComboFlags</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/TopLevel/ImGuiCond" data-name="imgui::toplevel::imguicond">
+      <a href="../../ImGui/TopLevel/ImGuiCond.html">ImGuiCond</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/TopLevel/ImGuiConfigFlags" data-name="imgui::toplevel::imguiconfigflags">
+      <a href="../../ImGui/TopLevel/ImGuiConfigFlags.html">ImGuiConfigFlags</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/TopLevel/ImGuiDataType" data-name="imgui::toplevel::imguidatatype">
+      <a href="../../ImGui/TopLevel/ImGuiDataType.html">ImGuiDataType</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/TopLevel/ImGuiDir" data-name="imgui::toplevel::imguidir">
+      <a href="../../ImGui/TopLevel/ImGuiDir.html">ImGuiDir</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/TopLevel/ImGuiDragDropFlags" data-name="imgui::toplevel::imguidragdropflags">
+      <a href="../../ImGui/TopLevel/ImGuiDragDropFlags.html">ImGuiDragDropFlags</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/TopLevel/ImGuiFocusedFlags" data-name="imgui::toplevel::imguifocusedflags">
+      <a href="../../ImGui/TopLevel/ImGuiFocusedFlags.html">ImGuiFocusedFlags</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/TopLevel/ImGuiHoveredFlags" data-name="imgui::toplevel::imguihoveredflags">
+      <a href="../../ImGui/TopLevel/ImGuiHoveredFlags.html">ImGuiHoveredFlags</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/TopLevel/ImGuiInputTextCallbackData" data-name="imgui::toplevel::imguiinputtextcallbackdata">
+      <a href="../../ImGui/TopLevel/ImGuiInputTextCallbackData.html">ImGuiInputTextCallbackData</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/TopLevel/ImGuiInputTextFlags" data-name="imgui::toplevel::imguiinputtextflags">
+      <a href="../../ImGui/TopLevel/ImGuiInputTextFlags.html">ImGuiInputTextFlags</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/TopLevel/ImGuiIO" data-name="imgui::toplevel::imguiio">
+      <a href="../../ImGui/TopLevel/ImGuiIO.html">ImGuiIO</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/TopLevel/ImGuiKey" data-name="imgui::toplevel::imguikey">
+      <a href="../../ImGui/TopLevel/ImGuiKey.html">ImGuiKey</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/TopLevel/ImGuiKeyModFlags" data-name="imgui::toplevel::imguikeymodflags">
+      <a href="../../ImGui/TopLevel/ImGuiKeyModFlags.html">ImGuiKeyModFlags</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/TopLevel/ImGuiListClipper" data-name="imgui::toplevel::imguilistclipper">
+      <a href="../../ImGui/TopLevel/ImGuiListClipper.html">ImGuiListClipper</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/TopLevel/ImGuiMouseButton" data-name="imgui::toplevel::imguimousebutton">
+      <a href="../../ImGui/TopLevel/ImGuiMouseButton.html">ImGuiMouseButton</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/TopLevel/ImGuiMouseCursor" data-name="imgui::toplevel::imguimousecursor">
+      <a href="../../ImGui/TopLevel/ImGuiMouseCursor.html">ImGuiMouseCursor</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/TopLevel/ImGuiNavInput" data-name="imgui::toplevel::imguinavinput">
+      <a href="../../ImGui/TopLevel/ImGuiNavInput.html">ImGuiNavInput</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/TopLevel/ImGuiOnceUponAFrame" data-name="imgui::toplevel::imguionceuponaframe">
+      <a href="../../ImGui/TopLevel/ImGuiOnceUponAFrame.html">ImGuiOnceUponAFrame</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/TopLevel/ImGuiPayload" data-name="imgui::toplevel::imguipayload">
+      <a href="../../ImGui/TopLevel/ImGuiPayload.html">ImGuiPayload</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/TopLevel/ImGuiPopupFlags" data-name="imgui::toplevel::imguipopupflags">
+      <a href="../../ImGui/TopLevel/ImGuiPopupFlags.html">ImGuiPopupFlags</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/TopLevel/ImGuiSelectableFlags" data-name="imgui::toplevel::imguiselectableflags">
+      <a href="../../ImGui/TopLevel/ImGuiSelectableFlags.html">ImGuiSelectableFlags</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/TopLevel/ImGuiSizeCallbackData" data-name="imgui::toplevel::imguisizecallbackdata">
+      <a href="../../ImGui/TopLevel/ImGuiSizeCallbackData.html">ImGuiSizeCallbackData</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/TopLevel/ImGuiSliderFlags" data-name="imgui::toplevel::imguisliderflags">
+      <a href="../../ImGui/TopLevel/ImGuiSliderFlags.html">ImGuiSliderFlags</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/TopLevel/ImGuiSortDirection" data-name="imgui::toplevel::imguisortdirection">
+      <a href="../../ImGui/TopLevel/ImGuiSortDirection.html">ImGuiSortDirection</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/TopLevel/ImGuiStorage" data-name="imgui::toplevel::imguistorage">
+      <a href="../../ImGui/TopLevel/ImGuiStorage.html">ImGuiStorage</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/TopLevel/ImGuiStyle" data-name="imgui::toplevel::imguistyle">
+      <a href="../../ImGui/TopLevel/ImGuiStyle.html">ImGuiStyle</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/TopLevel/ImGuiStyleVar" data-name="imgui::toplevel::imguistylevar">
+      <a href="../../ImGui/TopLevel/ImGuiStyleVar.html">ImGuiStyleVar</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/TopLevel/ImGuiTabBarFlags" data-name="imgui::toplevel::imguitabbarflags">
+      <a href="../../ImGui/TopLevel/ImGuiTabBarFlags.html">ImGuiTabBarFlags</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/TopLevel/ImGuiTabItemFlags" data-name="imgui::toplevel::imguitabitemflags">
+      <a href="../../ImGui/TopLevel/ImGuiTabItemFlags.html">ImGuiTabItemFlags</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/TopLevel/ImGuiTableBgTarget" data-name="imgui::toplevel::imguitablebgtarget">
+      <a href="../../ImGui/TopLevel/ImGuiTableBgTarget.html">ImGuiTableBgTarget</a>
+      
+    </li>
+  
+  <li class=" current" data-id="crystal-imgui/ImGui/TopLevel/ImGuiTableColumnFlags" data-name="imgui::toplevel::imguitablecolumnflags">
+      <a href="../../ImGui/TopLevel/ImGuiTableColumnFlags.html">ImGuiTableColumnFlags</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/TopLevel/ImGuiTableColumnSortSpecs" data-name="imgui::toplevel::imguitablecolumnsortspecs">
+      <a href="../../ImGui/TopLevel/ImGuiTableColumnSortSpecs.html">ImGuiTableColumnSortSpecs</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/TopLevel/ImGuiTableFlags" data-name="imgui::toplevel::imguitableflags">
+      <a href="../../ImGui/TopLevel/ImGuiTableFlags.html">ImGuiTableFlags</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/TopLevel/ImGuiTableRowFlags" data-name="imgui::toplevel::imguitablerowflags">
+      <a href="../../ImGui/TopLevel/ImGuiTableRowFlags.html">ImGuiTableRowFlags</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/TopLevel/ImGuiTableSortSpecs" data-name="imgui::toplevel::imguitablesortspecs">
+      <a href="../../ImGui/TopLevel/ImGuiTableSortSpecs.html">ImGuiTableSortSpecs</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/TopLevel/ImGuiTextFilter" data-name="imgui::toplevel::imguitextfilter">
+      <a href="../../ImGui/TopLevel/ImGuiTextFilter.html">ImGuiTextFilter</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/TopLevel/ImGuiTreeNodeFlags" data-name="imgui::toplevel::imguitreenodeflags">
+      <a href="../../ImGui/TopLevel/ImGuiTreeNodeFlags.html">ImGuiTreeNodeFlags</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/TopLevel/ImGuiWindowFlags" data-name="imgui::toplevel::imguiwindowflags">
+      <a href="../../ImGui/TopLevel/ImGuiWindowFlags.html">ImGuiWindowFlags</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/TopLevel/ImVec2" data-name="imgui::toplevel::imvec2">
+      <a href="../../ImGui/TopLevel/ImVec2.html">ImVec2</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/TopLevel/ImVec4" data-name="imgui::toplevel::imvec4">
+      <a href="../../ImGui/TopLevel/ImVec4.html">ImVec4</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/TopLevel/ImVector" data-name="imgui::toplevel::imvector">
+      <a href="../../ImGui/TopLevel/ImVector.html">ImVector</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="crystal-imgui/ImGuiDemo" data-name="imguidemo">
+      <a href="../../ImGuiDemo.html">ImGuiDemo</a>
+      
+        <ul>
+  
+  <li class=" " data-id="crystal-imgui/ImGuiDemo/Element" data-name="imguidemo::element">
+      <a href="../../ImGuiDemo/Element.html">Element</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGuiDemo/ExampleAppConsole" data-name="imguidemo::exampleappconsole">
+      <a href="../../ImGuiDemo/ExampleAppConsole.html">ExampleAppConsole</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGuiDemo/ExampleAppDocuments" data-name="imguidemo::exampleappdocuments">
+      <a href="../../ImGuiDemo/ExampleAppDocuments.html">ExampleAppDocuments</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGuiDemo/ExampleAppLog" data-name="imguidemo::exampleapplog">
+      <a href="../../ImGuiDemo/ExampleAppLog.html">ExampleAppLog</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGuiDemo/Mode" data-name="imguidemo::mode">
+      <a href="../../ImGuiDemo/Mode.html">Mode</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGuiDemo/MyDocument" data-name="imguidemo::mydocument">
+      <a href="../../ImGuiDemo/MyDocument.html">MyDocument</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGuiDemo/StaticValue" data-name="imguidemo::staticvalue(t)">
+      <a href="../../ImGuiDemo/StaticValue.html">StaticValue</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+</ul>
+
+  </div>
+</div>
+
+
+<div class="main-content">
+<h1 class="type-name">
+
+  <span class="kind">alias</span> ImGui::TopLevel::ImGuiTableColumnFlags
+
+</h1>
+
+
+
+
+
+
+
+  <h2>
+    <a id="alias-definition" class="anchor" href="#alias-definition">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Alias Definition
+  </h2>
+  <code><a href="../../ImGui/ImGuiTableColumnFlags.html">ImGui::ImGuiTableColumnFlags</a></code>
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2>
+    <a id="defined-in" class="anchor" href="#defined-in">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Defined in:
+  </h2>
+  
+    
+      <a href="https://github.com/oprypin/crystal-imgui/blob/master/src/types.cr#L428" target="_blank">
+        types.cr
+      </a>
+    
+    <br/>
+  
+
+
+
+  
+    <h2>
+      <a id="constant-summary" class="anchor" href="#constant-summary">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+      Constant Summary
+    </h2>
+  
+  <dl>
+    
+      <dt class="entry-const" id="DefaultHide">
+        <strong>DefaultHide</strong> = <code><span class="n">1</span></code>
+      </dt>
+      
+      <dd class="entry-const-doc">
+        <p>Default as a hidden/disabled column.</p>
+      </dd>
+      
+    
+      <dt class="entry-const" id="DefaultSort">
+        <strong>DefaultSort</strong> = <code><span class="n">2</span></code>
+      </dt>
+      
+      <dd class="entry-const-doc">
+        <p>Default as a sorting column.</p>
+      </dd>
+      
+    
+      <dt class="entry-const" id="IndentDisable">
+        <strong>IndentDisable</strong> = <code><span class="n">32768</span></code>
+      </dt>
+      
+      <dd class="entry-const-doc">
+        <p>Ignore current Indent value when entering cell (default for columns > 0). Indentation changes <em>within</em> the cell will still be honored.</p>
+      </dd>
+      
+    
+      <dt class="entry-const" id="IndentEnable">
+        <strong>IndentEnable</strong> = <code><span class="n">16384</span></code>
+      </dt>
+      
+      <dd class="entry-const-doc">
+        <p>Use current Indent value when entering cell (default for column 0).</p>
+      </dd>
+      
+    
+      <dt class="entry-const" id="IndentMask_">
+        <strong>IndentMask_</strong> = <code><span class="n">49152</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="IsEnabled">
+        <strong>IsEnabled</strong> = <code><span class="n">1048576</span></code>
+      </dt>
+      
+      <dd class="entry-const-doc">
+        <p>Status: is enabled == not hidden by user/api (referred to as "Hide" in _DefaultHide and _NoHide) flags.</p>
+      </dd>
+      
+    
+      <dt class="entry-const" id="IsHovered">
+        <strong>IsHovered</strong> = <code><span class="n">8388608</span></code>
+      </dt>
+      
+      <dd class="entry-const-doc">
+        <p>Status: is hovered by mouse</p>
+      </dd>
+      
+    
+      <dt class="entry-const" id="IsSorted">
+        <strong>IsSorted</strong> = <code><span class="n">4194304</span></code>
+      </dt>
+      
+      <dd class="entry-const-doc">
+        <p>Status: is currently part of the sort specs</p>
+      </dd>
+      
+    
+      <dt class="entry-const" id="IsVisible">
+        <strong>IsVisible</strong> = <code><span class="n">2097152</span></code>
+      </dt>
+      
+      <dd class="entry-const-doc">
+        <p>Status: is visible == is enabled AND not clipped by scrolling.</p>
+      </dd>
+      
+    
+      <dt class="entry-const" id="NoClip">
+        <strong>NoClip</strong> = <code><span class="n">128</span></code>
+      </dt>
+      
+      <dd class="entry-const-doc">
+        <p>Disable clipping for this column (all NoClip columns will render in a same draw command).</p>
+      </dd>
+      
+    
+      <dt class="entry-const" id="NoDirectResize_">
+        <strong>NoDirectResize_</strong> = <code><span class="n">1073741824</span></code>
+      </dt>
+      
+      <dd class="entry-const-doc">
+        <p>[Internal] Disable user resizing this column directly (it may however we resized indirectly from its left edge)</p>
+      </dd>
+      
+    
+      <dt class="entry-const" id="NoHeaderWidth">
+        <strong>NoHeaderWidth</strong> = <code><span class="n">2048</span></code>
+      </dt>
+      
+      <dd class="entry-const-doc">
+        <p>Disable header text width contribution to automatic column width.</p>
+      </dd>
+      
+    
+      <dt class="entry-const" id="NoHide">
+        <strong>NoHide</strong> = <code><span class="n">64</span></code>
+      </dt>
+      
+      <dd class="entry-const-doc">
+        <p>Disable ability to hide/disable this column.</p>
+      </dd>
+      
+    
+      <dt class="entry-const" id="None">
+        <strong>None</strong> = <code><span class="n">0</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="NoReorder">
+        <strong>NoReorder</strong> = <code><span class="n">32</span></code>
+      </dt>
+      
+      <dd class="entry-const-doc">
+        <p>Disable manual reordering this column, this will also prevent other columns from crossing over this column.</p>
+      </dd>
+      
+    
+      <dt class="entry-const" id="NoResize">
+        <strong>NoResize</strong> = <code><span class="n">16</span></code>
+      </dt>
+      
+      <dd class="entry-const-doc">
+        <p>Disable manual resizing.</p>
+      </dd>
+      
+    
+      <dt class="entry-const" id="NoSort">
+        <strong>NoSort</strong> = <code><span class="n">256</span></code>
+      </dt>
+      
+      <dd class="entry-const-doc">
+        <p>Disable ability to sort on this field (even if ImGuiTableFlags_Sortable is set on the table).</p>
+      </dd>
+      
+    
+      <dt class="entry-const" id="NoSortAscending">
+        <strong>NoSortAscending</strong> = <code><span class="n">512</span></code>
+      </dt>
+      
+      <dd class="entry-const-doc">
+        <p>Disable ability to sort in the ascending direction.</p>
+      </dd>
+      
+    
+      <dt class="entry-const" id="NoSortDescending">
+        <strong>NoSortDescending</strong> = <code><span class="n">1024</span></code>
+      </dt>
+      
+      <dd class="entry-const-doc">
+        <p>Disable ability to sort in the descending direction.</p>
+      </dd>
+      
+    
+      <dt class="entry-const" id="PreferSortAscending">
+        <strong>PreferSortAscending</strong> = <code><span class="n">4096</span></code>
+      </dt>
+      
+      <dd class="entry-const-doc">
+        <p>Make the initial sort direction Ascending when first sorting on this column (default).</p>
+      </dd>
+      
+    
+      <dt class="entry-const" id="PreferSortDescending">
+        <strong>PreferSortDescending</strong> = <code><span class="n">8192</span></code>
+      </dt>
+      
+      <dd class="entry-const-doc">
+        <p>Make the initial sort direction Descending when first sorting on this column.</p>
+      </dd>
+      
+    
+      <dt class="entry-const" id="StatusMask_">
+        <strong>StatusMask_</strong> = <code><span class="n">15728640</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="WidthFixed">
+        <strong>WidthFixed</strong> = <code><span class="n">8</span></code>
+      </dt>
+      
+      <dd class="entry-const-doc">
+        <p>Column will not stretch. Preferable with horizontal scrolling enabled (default if table sizing policy is _SizingFixedFit and table is resizable).</p>
+      </dd>
+      
+    
+      <dt class="entry-const" id="WidthMask_">
+        <strong>WidthMask_</strong> = <code><span class="n">12</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="WidthStretch">
+        <strong>WidthStretch</strong> = <code><span class="n">4</span></code>
+      </dt>
+      
+      <dd class="entry-const-doc">
+        <p>Column will stretch. Preferable with horizontal scrolling disabled (default if table sizing policy is _SizingStretchSame or _SizingStretchProp).</p>
+      </dd>
+      
+    
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+<div class="methods-inherited">
+  
+</div>
+
+
+
+
+
+
+
+
+
+</div>
+
+</body>
+</html>
