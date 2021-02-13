@@ -401,6 +401,16 @@
       
     </li>
   
+  <li class=" " data-id="crystal-imgui/ImGui/ImGuiViewport" data-name="imgui::imguiviewport">
+      <a href="../ImGui/ImGuiViewport.html">ImGuiViewport</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImGuiViewportFlags" data-name="imgui::imguiviewportflags">
+      <a href="../ImGui/ImGuiViewportFlags.html">ImGuiViewportFlags</a>
+      
+    </li>
+  
   <li class=" " data-id="crystal-imgui/ImGui/ImGuiWindowFlags" data-name="imgui::imguiwindowflags">
       <a href="../ImGui/ImGuiWindowFlags.html">ImGuiWindowFlags</a>
       
@@ -746,6 +756,16 @@
       
     </li>
   
+  <li class=" " data-id="crystal-imgui/ImGui/TopLevel/ImGuiViewport" data-name="imgui::toplevel::imguiviewport">
+      <a href="../ImGui/TopLevel/ImGuiViewport.html">ImGuiViewport</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/TopLevel/ImGuiViewportFlags" data-name="imgui::toplevel::imguiviewportflags">
+      <a href="../ImGui/TopLevel/ImGuiViewportFlags.html">ImGuiViewportFlags</a>
+      
+    </li>
+  
   <li class=" " data-id="crystal-imgui/ImGui/TopLevel/ImGuiWindowFlags" data-name="imgui::toplevel::imguiwindowflags">
       <a href="../ImGui/TopLevel/ImGuiWindowFlags.html">ImGuiWindowFlags</a>
       
@@ -849,7 +869,7 @@
     Overview
   </h2>
 
-  <p><a href="https://github.com/ocornut/imgui/blob/v1.80/imgui.h#L2452">struct ImDrawData</a></p>
+  <p><a href="https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L2471">struct ImDrawData</a></p>
 
 
 
@@ -888,7 +908,7 @@
   </h2>
   
     
-      <a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L4686" target="_blank">
+      <a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L4688" target="_blank">
         obj.cr
       </a>
     
@@ -912,7 +932,7 @@
       <li class="entry-summary">
         <a href="#new:ImDrawData-class-method" class="signature"><strong>.new</strong> : ImDrawData</a>
         
-          <div class="summary"><p><a href="https://github.com/ocornut/imgui/blob/v1.80/imgui.h#L2464">ImDrawData::ImDrawData()</a></p></div>
+          <div class="summary"><p><a href="https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L2483">ImDrawData::ImDrawData()</a></p></div>
         
       </li>
     
@@ -973,7 +993,7 @@
       <li class="entry-summary">
         <a href="#display_pos:ImVec2-instance-method" class="signature"><strong>#display_pos</strong> : ImVec2</a>
         
-          <div class="summary"><p>Upper-left position of the viewport to render (== upper-left of the orthogonal projection matrix to use)</p></div>
+          <div class="summary"><p>Top-left position of the viewport to render (== top-left of the orthogonal projection matrix to use) (== GetMainViewport()->Pos for the main viewport, == (0.0) in most single-viewport applications)</p></div>
         
       </li>
     
@@ -985,7 +1005,7 @@
       <li class="entry-summary">
         <a href="#display_size:ImVec2-instance-method" class="signature"><strong>#display_size</strong> : ImVec2</a>
         
-          <div class="summary"><p>Size of the viewport to render (== io.DisplaySize for the main viewport) (DisplayPos + DisplaySize == lower-right of the orthogonal projection matrix to use)</p></div>
+          <div class="summary"><p>Size of the viewport to render (== GetMainViewport()->Size for the main viewport, == io.DisplaySize in most single-viewport applications)</p></div>
         
       </li>
     
@@ -1124,13 +1144,13 @@
       
         <div class="doc">
           
-          <p><a href="https://github.com/ocornut/imgui/blob/v1.80/imgui.h#L2464">ImDrawData::ImDrawData()</a></p>
+          <p><a href="https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L2483">ImDrawData::ImDrawData()</a></p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L4762" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L4764" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1161,13 +1181,13 @@
           
           <p>The ImDrawList are owned by ImGuiContext!</p>
 
-<p><a href="https://github.com/ocornut/imgui/blob/v1.80/imgui.h#L2466">ImDrawData::Clear()</a></p>
+<p><a href="https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L2484">ImDrawData::Clear()</a></p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L4770" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L4772" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1188,7 +1208,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L4699" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L4728" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1204,7 +1224,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L4703" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L4732" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1225,7 +1245,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L4708" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L4701" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1241,7 +1261,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L4712" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L4705" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1258,13 +1278,13 @@
           
           <p>Helper to convert all buffers from indexed to non-indexed, in case you cannot render indexed. Note: this is slow and most likely a waste of resources. Always prefer indexed rendering!</p>
 
-<p><a href="https://github.com/ocornut/imgui/blob/v1.80/imgui.h#L2467">ImDrawData::DeIndexAllBuffers()</a></p>
+<p><a href="https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L2485">ImDrawData::DeIndexAllBuffers()</a></p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L4777" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L4779" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1279,13 +1299,13 @@
       
         <div class="doc">
           
-          <p>Upper-left position of the viewport to render (== upper-left of the orthogonal projection matrix to use)</p>
+          <p>Top-left position of the viewport to render (== top-left of the orthogonal projection matrix to use) (== GetMainViewport()->Pos for the main viewport, == (0.0) in most single-viewport applications)</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L4735" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L4737" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1301,7 +1321,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L4739" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L4741" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1316,13 +1336,13 @@
       
         <div class="doc">
           
-          <p>Size of the viewport to render (== io.DisplaySize for the main viewport) (DisplayPos + DisplaySize == lower-right of the orthogonal projection matrix to use)</p>
+          <p>Size of the viewport to render (== GetMainViewport()->Size for the main viewport, == io.DisplaySize in most single-viewport applications)</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L4744" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L4746" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1338,7 +1358,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L4748" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L4750" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1359,7 +1379,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L4753" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L4755" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1375,7 +1395,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L4757" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L4759" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1392,13 +1412,13 @@
           
           <p>Helper to scale the ClipRect field of each ImDrawCmd. Use if your final output buffer is at a different scale than Dear ImGui expects, or if there is a difference between your window resolution and framebuffer resolution.</p>
 
-<p><a href="https://github.com/ocornut/imgui/blob/v1.80/imgui.h#L2468">ImDrawData::ScaleClipRects()</a></p>
+<p><a href="https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L2486">ImDrawData::ScaleClipRects()</a></p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L4784" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L4786" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1414,7 +1434,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L4687" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L4689" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1435,7 +1455,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L4717" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L4710" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1451,7 +1471,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L4721" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L4714" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1472,7 +1492,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L4726" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L4719" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1488,7 +1508,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L4730" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L4723" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1509,7 +1529,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L4690" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L4692" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1525,7 +1545,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L4694" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L4696" target="_blank">View source</a>]
         
       </div>
     </div>

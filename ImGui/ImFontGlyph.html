@@ -401,6 +401,16 @@
       
     </li>
   
+  <li class=" " data-id="crystal-imgui/ImGui/ImGuiViewport" data-name="imgui::imguiviewport">
+      <a href="../ImGui/ImGuiViewport.html">ImGuiViewport</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImGuiViewportFlags" data-name="imgui::imguiviewportflags">
+      <a href="../ImGui/ImGuiViewportFlags.html">ImGuiViewportFlags</a>
+      
+    </li>
+  
   <li class=" " data-id="crystal-imgui/ImGui/ImGuiWindowFlags" data-name="imgui::imguiwindowflags">
       <a href="../ImGui/ImGuiWindowFlags.html">ImGuiWindowFlags</a>
       
@@ -746,6 +756,16 @@
       
     </li>
   
+  <li class=" " data-id="crystal-imgui/ImGui/TopLevel/ImGuiViewport" data-name="imgui::toplevel::imguiviewport">
+      <a href="../ImGui/TopLevel/ImGuiViewport.html">ImGuiViewport</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/TopLevel/ImGuiViewportFlags" data-name="imgui::toplevel::imguiviewportflags">
+      <a href="../ImGui/TopLevel/ImGuiViewportFlags.html">ImGuiViewportFlags</a>
+      
+    </li>
+  
   <li class=" " data-id="crystal-imgui/ImGui/TopLevel/ImGuiWindowFlags" data-name="imgui::toplevel::imguiwindowflags">
       <a href="../ImGui/TopLevel/ImGuiWindowFlags.html">ImGuiWindowFlags</a>
       
@@ -849,7 +869,7 @@
     Overview
   </h2>
 
-  <p><a href="https://github.com/ocornut/imgui/blob/v1.80/imgui.h#L2504">struct ImFontGlyph</a></p>
+  <p><a href="https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L2522">struct ImFontGlyph</a></p>
 
 
 
@@ -888,7 +908,7 @@
   </h2>
   
     
-      <a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L4989" target="_blank">
+      <a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L4991" target="_blank">
         obj.cr
       </a>
     
@@ -917,7 +937,7 @@
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#new(codepoint:UInt32,visible:UInt32,advance_x:Float32,x0:Float32,y0:Float32,x1:Float32,y1:Float32,u0:Float32,v0:Float32,u1:Float32,v1:Float32)-class-method" class="signature"><strong>.new</strong>(codepoint : UInt32, visible : UInt32, advance_x : Float32, x0 : Float32, y0 : Float32, x1 : Float32, y1 : Float32, u0 : Float32, v0 : Float32, u1 : Float32, v1 : Float32)</a>
+        <a href="#new(colored:UInt32,visible:UInt32,codepoint:UInt32,advance_x:Float32,x0:Float32,y0:Float32,x1:Float32,y1:Float32,u0:Float32,v0:Float32,u1:Float32,v1:Float32)-class-method" class="signature"><strong>.new</strong>(colored : UInt32, visible : UInt32, codepoint : UInt32, advance_x : Float32, x0 : Float32, y0 : Float32, x1 : Float32, y1 : Float32, u0 : Float32, v0 : Float32, u1 : Float32, v1 : Float32)</a>
         
       </li>
     
@@ -954,6 +974,16 @@
     
       <li class="entry-summary">
         <a href="#codepoint=(codepoint:UInt32)-instance-method" class="signature"><strong>#codepoint=</strong>(codepoint : UInt32)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#colored:UInt32-instance-method" class="signature"><strong>#colored</strong> : UInt32</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#colored=(colored:UInt32)-instance-method" class="signature"><strong>#colored=</strong>(colored : UInt32)</a>
         
       </li>
     
@@ -1116,18 +1146,18 @@
     Constructor Detail
   </h2>
   
-    <div class="entry-detail" id="new(codepoint:UInt32,visible:UInt32,advance_x:Float32,x0:Float32,y0:Float32,x1:Float32,y1:Float32,u0:Float32,v0:Float32,u1:Float32,v1:Float32)-class-method">
+    <div class="entry-detail" id="new(colored:UInt32,visible:UInt32,codepoint:UInt32,advance_x:Float32,x0:Float32,y0:Float32,x1:Float32,y1:Float32,u0:Float32,v0:Float32,u1:Float32,v1:Float32)-class-method">
       <div class="signature">
         
-        def self.<strong>new</strong>(codepoint : UInt32, visible : UInt32, advance_x : Float32, x0 : Float32, y0 : Float32, x1 : Float32, y1 : Float32, u0 : Float32, v0 : Float32, u1 : Float32, v1 : Float32)
+        def self.<strong>new</strong>(colored : UInt32, visible : UInt32, codepoint : UInt32, advance_x : Float32, x0 : Float32, y0 : Float32, x1 : Float32, y1 : Float32, u0 : Float32, v0 : Float32, u1 : Float32, v1 : Float32)
 
-        <a class="method-permalink" href="#new(codepoint:UInt32,visible:UInt32,advance_x:Float32,x0:Float32,y0:Float32,x1:Float32,y1:Float32,u0:Float32,v0:Float32,u1:Float32,v1:Float32)-class-method">#</a>
+        <a class="method-permalink" href="#new(colored:UInt32,visible:UInt32,codepoint:UInt32,advance_x:Float32,x0:Float32,y0:Float32,x1:Float32,y1:Float32,u0:Float32,v0:Float32,u1:Float32,v1:Float32)-class-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/types.cr#L1094" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/types.cr#L1095" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1157,7 +1187,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/types.cr#L1084" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/types.cr#L1085" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1173,7 +1203,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/types.cr#L1084" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/types.cr#L1085" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1189,7 +1219,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/types.cr#L1082" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/types.cr#L1084" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1200,6 +1230,38 @@
         def <strong>codepoint=</strong>(codepoint : UInt32)
 
         <a class="method-permalink" href="#codepoint=(codepoint:UInt32)-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/types.cr#L1084" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="colored:UInt32-instance-method">
+      <div class="signature">
+        
+        def <strong>colored</strong> : UInt32
+
+        <a class="method-permalink" href="#colored:UInt32-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/types.cr#L1082" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="colored=(colored:UInt32)-instance-method">
+      <div class="signature">
+        
+        def <strong>colored=</strong>(colored : UInt32)
+
+        <a class="method-permalink" href="#colored=(colored:UInt32)-instance-method">#</a>
       </div>
       
       <br/>
@@ -1221,7 +1283,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/types.cr#L1089" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/types.cr#L1090" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1237,7 +1299,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/types.cr#L1089" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/types.cr#L1090" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1253,7 +1315,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/types.cr#L1091" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/types.cr#L1092" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1269,7 +1331,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/types.cr#L1091" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/types.cr#L1092" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1285,7 +1347,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/types.cr#L1090" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/types.cr#L1091" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1301,7 +1363,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/types.cr#L1090" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/types.cr#L1091" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1317,7 +1379,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/types.cr#L1092" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/types.cr#L1093" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1333,7 +1395,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/types.cr#L1092" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/types.cr#L1093" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1381,7 +1443,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/types.cr#L1085" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/types.cr#L1086" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1397,7 +1459,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/types.cr#L1085" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/types.cr#L1086" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1413,7 +1475,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/types.cr#L1087" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/types.cr#L1088" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1429,7 +1491,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/types.cr#L1087" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/types.cr#L1088" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1445,7 +1507,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/types.cr#L1086" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/types.cr#L1087" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1461,7 +1523,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/types.cr#L1086" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/types.cr#L1087" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1477,7 +1539,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/types.cr#L1088" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/types.cr#L1089" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1493,7 +1555,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/types.cr#L1088" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/types.cr#L1089" target="_blank">View source</a>]
         
       </div>
     </div>

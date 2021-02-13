@@ -13,7 +13,7 @@
 <script type="text/javascript" src="../js/doc.js"></script>
 
   <meta name="repository-name" content="crystal-imgui">
-  <title>ImGui::ImFontGlyphRangesBuilder - crystal-imgui </title>
+  <title>ImGui::ImGuiViewportFlags - crystal-imgui </title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../";
   </script>
@@ -151,7 +151,7 @@
       
     </li>
   
-  <li class=" current" data-id="crystal-imgui/ImGui/ImFontGlyphRangesBuilder" data-name="imgui::imfontglyphrangesbuilder">
+  <li class=" " data-id="crystal-imgui/ImGui/ImFontGlyphRangesBuilder" data-name="imgui::imfontglyphrangesbuilder">
       <a href="../ImGui/ImFontGlyphRangesBuilder.html">ImFontGlyphRangesBuilder</a>
       
     </li>
@@ -406,7 +406,7 @@
       
     </li>
   
-  <li class=" " data-id="crystal-imgui/ImGui/ImGuiViewportFlags" data-name="imgui::imguiviewportflags">
+  <li class=" current" data-id="crystal-imgui/ImGui/ImGuiViewportFlags" data-name="imgui::imguiviewportflags">
       <a href="../ImGui/ImGuiViewportFlags.html">ImGuiViewportFlags</a>
       
     </li>
@@ -850,12 +850,10 @@
 <div class="main-content">
 <h1 class="type-name">
 
-  <span class="kind">struct</span> ImGui::ImFontGlyphRangesBuilder
+  <span class="kind">enum</span> ImGui::ImGuiViewportFlags
 
 </h1>
 
-
-  <ul class="superclass-hierarchy"><li class="superclass"><a href="../ImGui/ImFontGlyphRangesBuilder.html">ImGui::ImFontGlyphRangesBuilder</a></li><li class="superclass">Struct</li><li class="superclass">Value</li><li class="superclass">Object</li></ul>
 
 
 
@@ -869,25 +867,11 @@
     Overview
   </h2>
 
-  <p><a href="https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L2534">struct ImFontGlyphRangesBuilder</a></p>
+  <p><a href="https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L2742">enum ImGuiViewportFlags_</a></p>
 
 
 
 
-
-  <h2>
-    <a id="included-modules" class="anchor" href="#included-modules">
-  <svg class="octicon-link" aria-hidden="true">
-    <use href="#octicon-link"/>
-  </svg>
-</a>
-    Included Modules
-  </h2>
-  <ul class="other-types-list">
-    
-      <li class="other-type">ImGui::StructType</li>
-    
-  </ul>
 
 
 
@@ -908,14 +892,7 @@
   </h2>
   
     
-      <a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L4996" target="_blank">
-        obj.cr
-      </a>
-    
-    <br/>
-  
-    
-      <a href="https://github.com/oprypin/crystal-imgui/blob/master/src/types.cr#L1102" target="_blank">
+      <a href="https://github.com/oprypin/crystal-imgui/blob/master/src/types.cr#L1126" target="_blank">
         types.cr
       </a>
     
@@ -924,31 +901,53 @@
 
 
 
-
-
-  <h2>
-    <a id="constructors" class="anchor" href="#constructors">
+  
+    <h2>
+      <a id="enum-members" class="anchor" href="#enum-members">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
   </svg>
 </a>
-    Constructors
-  </h2>
-  <ul class="list-summary">
+      Enum Members
+    </h2>
+  
+  <dl>
     
-      <li class="entry-summary">
-        <a href="#new(used_chars:LibImGui::ImVectorInternal)-class-method" class="signature"><strong>.new</strong>(used_chars : LibImGui::ImVectorInternal)</a>
-        
-      </li>
+      <dt class="entry-const" id="None">
+        <strong>None</strong> = <code><span class="n">0</span></code>
+      </dt>
+      
     
-      <li class="entry-summary">
-        <a href="#new:ImFontGlyphRangesBuilder-class-method" class="signature"><strong>.new</strong> : ImFontGlyphRangesBuilder</a>
-        
-          <div class="summary"><p><a href="https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L2538">ImFontGlyphRangesBuilder::ImFontGlyphRangesBuilder()</a></p></div>
-        
-      </li>
+      <dt class="entry-const" id="IsPlatformWindow">
+        <strong>IsPlatformWindow</strong> = <code><span class="n">1</span></code>
+      </dt>
+      
+      <dd class="entry-const-doc">
+        <p>Represent a Platform Window</p>
+      </dd>
+      
     
-  </ul>
+      <dt class="entry-const" id="IsPlatformMonitor">
+        <strong>IsPlatformMonitor</strong> = <code><span class="n">2</span></code>
+      </dt>
+      
+      <dd class="entry-const-doc">
+        <p>Represent a Platform Monitor (unused yet)</p>
+      </dd>
+      
+    
+      <dt class="entry-const" id="OwnedByApp">
+        <strong>OwnedByApp</strong> = <code><span class="n">4</span></code>
+      </dt>
+      
+      <dd class="entry-const-doc">
+        <p>Platform Window: is created/managed by the application (rather than a dear imgui backend)</p>
+      </dd>
+      
+    
+  </dl>
+
+
 
 
 
@@ -965,68 +964,22 @@
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#add_char(c:ImWchar):Void-instance-method" class="signature"><strong>#add_char</strong>(c : ImWchar) : Void</a>
-        
-          <div class="summary"><p>Add character</p></div>
+        <a href="#is_platform_monitor?-instance-method" class="signature"><strong>#is_platform_monitor?</strong></a>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#add_ranges(ranges:Pointer(ImWchar)):Void-instance-method" class="signature"><strong>#add_ranges</strong>(ranges : Pointer(ImWchar)) : Void</a>
-        
-          <div class="summary"><p>Add ranges, e.g.</p></div>
+        <a href="#is_platform_window?-instance-method" class="signature"><strong>#is_platform_window?</strong></a>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#add_text(text:Bytes%7CString):Void-instance-method" class="signature"><strong>#add_text</strong>(text : Bytes | String) : Void</a>
-        
-          <div class="summary"><p>Add string (each character of the UTF-8 string are added)</p></div>
+        <a href="#none?-instance-method" class="signature"><strong>#none?</strong></a>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#build_ranges:ImVector-instance-method" class="signature"><strong>#build_ranges</strong> : ImVector</a>
-        
-          <div class="summary"><p>Output new ranges</p></div>
-        
-      </li>
-    
-      <li class="entry-summary">
-        <a href="#clear:Void-instance-method" class="signature"><strong>#clear</strong> : Void</a>
-        
-          <div class="summary"><p><a href="https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L2539">ImFontGlyphRangesBuilder::Clear()</a></p></div>
-        
-      </li>
-    
-      <li class="entry-summary">
-        <a href="#get_bit(n:LibC::SizeT):Bool-instance-method" class="signature"><strong>#get_bit</strong>(n : LibC::SizeT) : Bool</a>
-        
-          <div class="summary"><p>Get bit n in the array</p></div>
-        
-      </li>
-    
-      <li class="entry-summary">
-        <a href="#set_bit(n:LibC::SizeT):Void-instance-method" class="signature"><strong>#set_bit</strong>(n : LibC::SizeT) : Void</a>
-        
-          <div class="summary"><p>Set bit n in the array</p></div>
-        
-      </li>
-    
-      <li class="entry-summary">
-        <a href="#used_chars:ImVector(UInt32)-instance-method" class="signature"><strong>#used_chars</strong> : ImVector(UInt32)</a>
-        
-          <div class="summary"><p>Store 1-bit per Unicode code point (0=unused, 1=used)</p></div>
-        
-      </li>
-    
-      <li class="entry-summary">
-        <a href="#used_chars=(used_chars:LibImGui::ImVectorInternal)-instance-method" class="signature"><strong>#used_chars=</strong>(used_chars : LibImGui::ImVectorInternal)</a>
-        
-      </li>
-    
-      <li class="entry-summary">
-        <a href="#used_chars=(used_chars:ImVector(UInt32))-instance-method" class="signature"><strong>#used_chars=</strong>(used_chars : ImVector(UInt32))</a>
+        <a href="#owned_by_app?-instance-method" class="signature"><strong>#owned_by_app?</strong></a>
         
       </li>
     
@@ -1039,15 +992,6 @@
 <div class="methods-inherited">
   
     
-
-  <h3>Instance methods inherited from module <code>ImGui::StructType</code></h3>
-  
-  
-    <a href="../ImGui/StructType.html#to_unsafe-instance-method" class="tooltip">
-      <span>to_unsafe</span>
-    to_unsafe</a>
-    
-  
 
 
     
@@ -1090,53 +1034,6 @@
 </div>
 
 
-  <h2>
-    <a id="constructor-detail" class="anchor" href="#constructor-detail">
-  <svg class="octicon-link" aria-hidden="true">
-    <use href="#octicon-link"/>
-  </svg>
-</a>
-    Constructor Detail
-  </h2>
-  
-    <div class="entry-detail" id="new(used_chars:LibImGui::ImVectorInternal)-class-method">
-      <div class="signature">
-        
-        def self.<strong>new</strong>(used_chars : LibImGui::ImVectorInternal)
-
-        <a class="method-permalink" href="#new(used_chars:LibImGui::ImVectorInternal)-class-method">#</a>
-      </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/types.cr#L1105" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-    <div class="entry-detail" id="new:ImFontGlyphRangesBuilder-class-method">
-      <div class="signature">
-        
-        def self.<strong>new</strong> : <a href="../ImGui/ImFontGlyphRangesBuilder.html">ImFontGlyphRangesBuilder</a>
-
-        <a class="method-permalink" href="#new:ImFontGlyphRangesBuilder-class-method">#</a>
-      </div>
-      
-        <div class="doc">
-          
-          <p><a href="https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L2538">ImFontGlyphRangesBuilder::ImFontGlyphRangesBuilder()</a></p>
-        </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L5010" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-
 
 
 
@@ -1150,214 +1047,66 @@
     Instance Method Detail
   </h2>
   
-    <div class="entry-detail" id="add_char(c:ImWchar):Void-instance-method">
+    <div class="entry-detail" id="is_platform_monitor?-instance-method">
       <div class="signature">
         
-        def <strong>add_char</strong>(c : <a href="../ImGui/ImWchar.html">ImWchar</a>) : Void
+        def <strong>is_platform_monitor?</strong>
 
-        <a class="method-permalink" href="#add_char(c:ImWchar):Void-instance-method">#</a>
+        <a class="method-permalink" href="#is_platform_monitor?-instance-method">#</a>
       </div>
-      
-        <div class="doc">
-          
-          <p>Add character</p>
-
-<p><a href="https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L2542">ImFontGlyphRangesBuilder::AddChar()</a></p>
-        </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L5037" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/types.cr#L1131" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="add_ranges(ranges:Pointer(ImWchar)):Void-instance-method">
+    <div class="entry-detail" id="is_platform_window?-instance-method">
       <div class="signature">
         
-        def <strong>add_ranges</strong>(ranges : Pointer(<a href="../ImGui/ImWchar.html">ImWchar</a>)) : Void
+        def <strong>is_platform_window?</strong>
 
-        <a class="method-permalink" href="#add_ranges(ranges:Pointer(ImWchar)):Void-instance-method">#</a>
+        <a class="method-permalink" href="#is_platform_window?-instance-method">#</a>
       </div>
-      
-        <div class="doc">
-          
-          <p>Add ranges, e.g. builder.AddRanges(ImFontAtlas::GetGlyphRangesDefault()) to force add all of ASCII/Latin+Ext</p>
-
-<p><a href="https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L2544">ImFontGlyphRangesBuilder::AddRanges()</a></p>
-        </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L5051" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/types.cr#L1129" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="add_text(text:Bytes|String):Void-instance-method">
+    <div class="entry-detail" id="none?-instance-method">
       <div class="signature">
         
-        def <strong>add_text</strong>(text : Bytes | String) : Void
+        def <strong>none?</strong>
 
-        <a class="method-permalink" href="#add_text(text:Bytes%7CString):Void-instance-method">#</a>
+        <a class="method-permalink" href="#none?-instance-method">#</a>
       </div>
-      
-        <div class="doc">
-          
-          <p>Add string (each character of the UTF-8 string are added)</p>
-
-<p><a href="https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L2543">ImFontGlyphRangesBuilder::AddText()</a></p>
-        </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L5044" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/types.cr#L1127" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="build_ranges:ImVector-instance-method">
+    <div class="entry-detail" id="owned_by_app?-instance-method">
       <div class="signature">
         
-        def <strong>build_ranges</strong> : <a href="../ImGui/ImVector.html">ImVector</a>
+        def <strong>owned_by_app?</strong>
 
-        <a class="method-permalink" href="#build_ranges:ImVector-instance-method">#</a>
-      </div>
-      
-        <div class="doc">
-          
-          <p>Output new ranges</p>
-
-<p><a href="https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L2545">ImFontGlyphRangesBuilder::BuildRanges()</a></p>
-        </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L5058" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-    <div class="entry-detail" id="clear:Void-instance-method">
-      <div class="signature">
-        
-        def <strong>clear</strong> : Void
-
-        <a class="method-permalink" href="#clear:Void-instance-method">#</a>
-      </div>
-      
-        <div class="doc">
-          
-          <p><a href="https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L2539">ImFontGlyphRangesBuilder::Clear()</a></p>
-        </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L5016" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-    <div class="entry-detail" id="get_bit(n:LibC::SizeT):Bool-instance-method">
-      <div class="signature">
-        
-        def <strong>get_bit</strong>(n : LibC::SizeT) : Bool
-
-        <a class="method-permalink" href="#get_bit(n:LibC::SizeT):Bool-instance-method">#</a>
-      </div>
-      
-        <div class="doc">
-          
-          <p>Get bit n in the array</p>
-
-<p><a href="https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L2540">ImFontGlyphRangesBuilder::GetBit()</a></p>
-        </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L5023" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-    <div class="entry-detail" id="set_bit(n:LibC::SizeT):Void-instance-method">
-      <div class="signature">
-        
-        def <strong>set_bit</strong>(n : LibC::SizeT) : Void
-
-        <a class="method-permalink" href="#set_bit(n:LibC::SizeT):Void-instance-method">#</a>
-      </div>
-      
-        <div class="doc">
-          
-          <p>Set bit n in the array</p>
-
-<p><a href="https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L2541">ImFontGlyphRangesBuilder::SetBit()</a></p>
-        </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L5030" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-    <div class="entry-detail" id="used_chars:ImVector(UInt32)-instance-method">
-      <div class="signature">
-        
-        def <strong>used_chars</strong> : <a href="../ImGui/ImVector.html">ImVector</a>(UInt32)
-
-        <a class="method-permalink" href="#used_chars:ImVector(UInt32)-instance-method">#</a>
-      </div>
-      
-        <div class="doc">
-          
-          <p>Store 1-bit per Unicode code point (0=unused, 1=used)</p>
-        </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L5000" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-    <div class="entry-detail" id="used_chars=(used_chars:LibImGui::ImVectorInternal)-instance-method">
-      <div class="signature">
-        
-        def <strong>used_chars=</strong>(used_chars : LibImGui::ImVectorInternal)
-
-        <a class="method-permalink" href="#used_chars=(used_chars:LibImGui::ImVectorInternal)-instance-method">#</a>
+        <a class="method-permalink" href="#owned_by_app?-instance-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/types.cr#L1103" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-    <div class="entry-detail" id="used_chars=(used_chars:ImVector(UInt32))-instance-method">
-      <div class="signature">
-        
-        def <strong>used_chars=</strong>(used_chars : <a href="../ImGui/ImVector.html">ImVector</a>(UInt32))
-
-        <a class="method-permalink" href="#used_chars=(used_chars:ImVector(UInt32))-instance-method">#</a>
-      </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L5005" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/types.cr#L1133" target="_blank">View source</a>]
         
       </div>
     </div>

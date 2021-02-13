@@ -401,6 +401,16 @@
       
     </li>
   
+  <li class=" " data-id="crystal-imgui/ImGui/ImGuiViewport" data-name="imgui::imguiviewport">
+      <a href="../ImGui/ImGuiViewport.html">ImGuiViewport</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/ImGuiViewportFlags" data-name="imgui::imguiviewportflags">
+      <a href="../ImGui/ImGuiViewportFlags.html">ImGuiViewportFlags</a>
+      
+    </li>
+  
   <li class=" " data-id="crystal-imgui/ImGui/ImGuiWindowFlags" data-name="imgui::imguiwindowflags">
       <a href="../ImGui/ImGuiWindowFlags.html">ImGuiWindowFlags</a>
       
@@ -746,6 +756,16 @@
       
     </li>
   
+  <li class=" " data-id="crystal-imgui/ImGui/TopLevel/ImGuiViewport" data-name="imgui::toplevel::imguiviewport">
+      <a href="../ImGui/TopLevel/ImGuiViewport.html">ImGuiViewport</a>
+      
+    </li>
+  
+  <li class=" " data-id="crystal-imgui/ImGui/TopLevel/ImGuiViewportFlags" data-name="imgui::toplevel::imguiviewportflags">
+      <a href="../ImGui/TopLevel/ImGuiViewportFlags.html">ImGuiViewportFlags</a>
+      
+    </li>
+  
   <li class=" " data-id="crystal-imgui/ImGui/TopLevel/ImGuiWindowFlags" data-name="imgui::toplevel::imguiwindowflags">
       <a href="../ImGui/TopLevel/ImGuiWindowFlags.html">ImGuiWindowFlags</a>
       
@@ -849,7 +869,7 @@
     Overview
   </h2>
 
-  <p><a href="https://github.com/ocornut/imgui/blob/v1.80/imgui.h#L1726">struct ImGuiIO</a></p>
+  <p><a href="https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L1740">struct ImGuiIO</a></p>
 
 
 
@@ -888,7 +908,7 @@
   </h2>
   
     
-      <a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2744" target="_blank">
+      <a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2746" target="_blank">
         obj.cr
       </a>
     
@@ -912,7 +932,7 @@
       <li class="entry-summary">
         <a href="#new:ImGuiIO-class-method" class="signature"><strong>.new</strong> : ImGuiIO</a>
         
-          <div class="summary"><p><a href="https://github.com/ocornut/imgui/blob/v1.80/imgui.h#L1852">ImGuiIO::ImGuiIO()</a></p></div>
+          <div class="summary"><p><a href="https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L1866">ImGuiIO::ImGuiIO()</a></p></div>
         
       </li>
     
@@ -1153,7 +1173,7 @@
       <li class="entry-summary">
         <a href="#display_size:ImVec2-instance-method" class="signature"><strong>#display_size</strong> : ImVec2</a>
         
-          <div class="summary"><p>&lt;unset> Main display size, in pixels.</p></div>
+          <div class="summary"><p>&lt;unset> Main display size, in pixels (generally == GetMainViewport()->Size)</p></div>
         
       </li>
     
@@ -1983,13 +2003,13 @@
       
         <div class="doc">
           
-          <p><a href="https://github.com/ocornut/imgui/blob/v1.80/imgui.h#L1852">ImGuiIO::ImGuiIO()</a></p>
+          <p><a href="https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L1866">ImGuiIO::ImGuiIO()</a></p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3520" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3522" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2020,13 +2040,13 @@
           
           <p>Queue new character input</p>
 
-<p><a href="https://github.com/ocornut/imgui/blob/v1.80/imgui.h#L1801">ImGuiIO::AddInputCharacter()</a></p>
+<p><a href="https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L1815">ImGuiIO::AddInputCharacter()</a></p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3494" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3496" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2043,13 +2063,13 @@
           
           <p>Queue new character input from an UTF-16 character, it can be a surrogate</p>
 
-<p><a href="https://github.com/ocornut/imgui/blob/v1.80/imgui.h#L1802">ImGuiIO::AddInputCharacterUTF16()</a></p>
+<p><a href="https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L1816">ImGuiIO::AddInputCharacterUTF16()</a></p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3501" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3503" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2066,13 +2086,13 @@
           
           <p>Queue new characters input from an UTF-8 string</p>
 
-<p><a href="https://github.com/ocornut/imgui/blob/v1.80/imgui.h#L1803">ImGuiIO::AddInputCharactersUTF8()</a></p>
+<p><a href="https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L1817">ImGuiIO::AddInputCharactersUTF8()</a></p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3508" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3510" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2094,7 +2114,7 @@ See ImGuiBackendFlags_ enum. Set by backend (imgui_impl_xxx files or custom back
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2759" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2761" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2110,7 +2130,7 @@ See ImGuiBackendFlags_ enum. Set by backend (imgui_impl_xxx files or custom back
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2763" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2765" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2132,7 +2152,7 @@ User data for non C++ programming language backend</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3046" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3048" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2148,7 +2168,7 @@ User data for non C++ programming language backend</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3050" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3052" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2169,7 +2189,7 @@ User data for non C++ programming language backend</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3007" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3009" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2185,7 +2205,7 @@ User data for non C++ programming language backend</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3011" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3013" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2207,7 +2227,7 @@ User data for platform backend</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3026" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3028" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2223,7 +2243,7 @@ User data for platform backend</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3030" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3032" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2244,7 +2264,7 @@ User data for platform backend</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3016" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3018" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2260,7 +2280,7 @@ User data for platform backend</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3020" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3022" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2282,7 +2302,7 @@ User data for renderer backend</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3036" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3038" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2298,7 +2318,7 @@ User data for renderer backend</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3040" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3042" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2315,13 +2335,13 @@ User data for renderer backend</p>
           
           <p>Clear the text input buffer manually</p>
 
-<p><a href="https://github.com/ocornut/imgui/blob/v1.80/imgui.h#L1804">ImGuiIO::ClearInputCharacters()</a></p>
+<p><a href="https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L1818">ImGuiIO::ClearInputCharacters()</a></p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3515" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3517" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2337,7 +2357,7 @@ User data for renderer backend</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3070" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3072" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2353,7 +2373,7 @@ User data for renderer backend</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3074" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3076" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2375,7 +2395,7 @@ User data for renderer backend</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2968" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2970" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2391,7 +2411,7 @@ User data for renderer backend</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2972" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2974" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2413,7 +2433,7 @@ See ImGuiConfigFlags_ enum. Set by user/application. Gamepad/keyboard navigation
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2749" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2751" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2429,7 +2449,7 @@ See ImGuiConfigFlags_ enum. Set by user/application. Gamepad/keyboard navigation
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2753" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2755" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2451,7 +2471,7 @@ Enable blinking cursor (optional as some users consider it to be distracting).</
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2958" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2960" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2467,7 +2487,7 @@ Enable blinking cursor (optional as some users consider it to be distracting).</
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2962" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2964" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2489,7 +2509,7 @@ OS X style: Text editing cursor movement using Alt instead of Ctrl, Shortcuts us
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2948" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2950" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2505,7 +2525,7 @@ OS X style: Text editing cursor movement using Alt instead of Ctrl, Shortcuts us
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2952" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2954" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2527,7 +2547,7 @@ Timer (in seconds) to free transient windows/tables memory buffers when unused. 
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2998" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3000" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2543,7 +2563,7 @@ Timer (in seconds) to free transient windows/tables memory buffers when unused. 
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3002" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3004" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2565,7 +2585,7 @@ Enable allowing to move windows only when clicking on their title bar. Does not 
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2988" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2990" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2581,7 +2601,7 @@ Enable allowing to move windows only when clicking on their title bar. Does not 
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2992" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2994" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2603,7 +2623,7 @@ Enable resizing of windows from their edges and from the lower-left corner. This
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2978" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2980" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2619,7 +2639,7 @@ Enable resizing of windows from their edges and from the lower-left corner. This
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2982" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2984" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2641,7 +2661,7 @@ Time elapsed since last frame, in seconds.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2779" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2781" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2657,7 +2677,7 @@ Time elapsed since last frame, in seconds.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2783" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2785" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2679,7 +2699,7 @@ For retina display or other situations where window coordinates are different fr
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2928" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2930" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2695,7 +2715,7 @@ For retina display or other situations where window coordinates are different fr
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2932" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2934" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2711,13 +2731,13 @@ For retina display or other situations where window coordinates are different fr
         <div class="doc">
           
           <p>&lt;unset>
-Main display size, in pixels.</p>
+Main display size, in pixels (generally == GetMainViewport()->Size)</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2769" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2771" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2733,7 +2753,7 @@ Main display size, in pixels.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2773" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2775" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2755,7 +2775,7 @@ Allow user scaling text of individual window with CTRL+Wheel.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2908" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2910" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2771,7 +2791,7 @@ Allow user scaling text of individual window with CTRL+Wheel.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2912" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2914" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2793,7 +2813,7 @@ Font to use on NewFrame(). Use NULL to uses Fonts->Fonts[0].</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2918" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2920" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2809,7 +2829,7 @@ Font to use on NewFrame(). Use NULL to uses Fonts->Fonts[0].</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2922" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2924" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2831,7 +2851,7 @@ Global scale all fonts</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2898" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2900" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2847,7 +2867,7 @@ Global scale all fonts</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2902" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2904" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2869,7 +2889,7 @@ Font atlas: load, rasterize and pack one or more fonts into a single texture.</p
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2888" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2890" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2885,7 +2905,7 @@ Font atlas: load, rasterize and pack one or more fonts into a single texture.</p
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2892" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2894" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2906,7 +2926,7 @@ Font atlas: load, rasterize and pack one or more fonts into a single texture.</p
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3250" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3252" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2922,7 +2942,7 @@ Font atlas: load, rasterize and pack one or more fonts into a single texture.</p
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3254" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3256" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2938,7 +2958,7 @@ Font atlas: load, rasterize and pack one or more fonts into a single texture.</p
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3054" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3056" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2954,7 +2974,7 @@ Font atlas: load, rasterize and pack one or more fonts into a single texture.</p
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3058" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3060" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2970,7 +2990,7 @@ Font atlas: load, rasterize and pack one or more fonts into a single texture.</p
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3078" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3080" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -2986,7 +3006,7 @@ Font atlas: load, rasterize and pack one or more fonts into a single texture.</p
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3082" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3084" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -3008,7 +3028,7 @@ Font atlas: load, rasterize and pack one or more fonts into a single texture.</p
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3088" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3090" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -3024,7 +3044,7 @@ Font atlas: load, rasterize and pack one or more fonts into a single texture.</p
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3092" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3094" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -3046,7 +3066,7 @@ Path to .ini file. Set NULL to disable automatic .ini loading/saving, if e.g. yo
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2799" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2801" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -3062,7 +3082,7 @@ Path to .ini file. Set NULL to disable automatic .ini loading/saving, if e.g. yo
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2803" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2805" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -3084,7 +3104,7 @@ Minimum time between saving positions/sizes to .ini file, in seconds.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2789" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2791" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -3100,7 +3120,7 @@ Minimum time between saving positions/sizes to .ini file, in seconds.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2793" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2795" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -3121,7 +3141,7 @@ Minimum time between saving positions/sizes to .ini file, in seconds.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3482" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3484" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -3137,7 +3157,7 @@ Minimum time between saving positions/sizes to .ini file, in seconds.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3487" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3489" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -3158,7 +3178,7 @@ Minimum time between saving positions/sizes to .ini file, in seconds.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3473" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3475" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -3174,7 +3194,7 @@ Minimum time between saving positions/sizes to .ini file, in seconds.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3477" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3479" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -3195,7 +3215,7 @@ Minimum time between saving positions/sizes to .ini file, in seconds.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3151" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3153" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -3211,7 +3231,7 @@ Minimum time between saving positions/sizes to .ini file, in seconds.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3155" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3157" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -3232,7 +3252,7 @@ Minimum time between saving positions/sizes to .ini file, in seconds.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3133" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3135" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -3248,7 +3268,7 @@ Minimum time between saving positions/sizes to .ini file, in seconds.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3137" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3139" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -3270,7 +3290,7 @@ Map of indices into the KeysDown[512] entries array which represent your "native
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2848" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2850" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -3286,7 +3306,7 @@ Map of indices into the KeysDown[512] entries array which represent your "native
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2852" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2854" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -3307,7 +3327,7 @@ Map of indices into the KeysDown[512] entries array which represent your "native
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3313" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3315" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -3323,7 +3343,7 @@ Map of indices into the KeysDown[512] entries array which represent your "native
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3317" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3319" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -3345,7 +3365,7 @@ When holding a key/button, time before it starts repeating, in seconds (for butt
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2858" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2860" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -3361,7 +3381,7 @@ When holding a key/button, time before it starts repeating, in seconds (for butt
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2862" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2864" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -3383,7 +3403,7 @@ When holding a key/button, rate at which it repeats, in seconds.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2868" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2870" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -3399,7 +3419,7 @@ When holding a key/button, rate at which it repeats, in seconds.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2872" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2874" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -3420,7 +3440,7 @@ When holding a key/button, rate at which it repeats, in seconds.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3142" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3144" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -3436,7 +3456,7 @@ When holding a key/button, rate at which it repeats, in seconds.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3146" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3148" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -3457,7 +3477,7 @@ When holding a key/button, rate at which it repeats, in seconds.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3160" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3162" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -3473,7 +3493,7 @@ When holding a key/button, rate at which it repeats, in seconds.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3164" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3166" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -3494,7 +3514,7 @@ When holding a key/button, rate at which it repeats, in seconds.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3169" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3171" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -3510,7 +3530,7 @@ When holding a key/button, rate at which it repeats, in seconds.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3173" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3175" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -3531,7 +3551,7 @@ When holding a key/button, rate at which it repeats, in seconds.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3430" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3432" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -3547,7 +3567,7 @@ When holding a key/button, rate at which it repeats, in seconds.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3434" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3436" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -3568,7 +3588,7 @@ When holding a key/button, rate at which it repeats, in seconds.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3439" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3441" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -3584,7 +3604,7 @@ When holding a key/button, rate at which it repeats, in seconds.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3443" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3445" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -3605,7 +3625,7 @@ When holding a key/button, rate at which it repeats, in seconds.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2808" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2810" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -3621,7 +3641,7 @@ When holding a key/button, rate at which it repeats, in seconds.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2812" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2814" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -3642,7 +3662,7 @@ When holding a key/button, rate at which it repeats, in seconds.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3295" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3297" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -3658,7 +3678,7 @@ When holding a key/button, rate at which it repeats, in seconds.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3299" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3301" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -3679,7 +3699,7 @@ When holding a key/button, rate at which it repeats, in seconds.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3286" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3288" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -3695,7 +3715,7 @@ When holding a key/button, rate at which it repeats, in seconds.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3290" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3292" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -3716,7 +3736,7 @@ When holding a key/button, rate at which it repeats, in seconds.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3268" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3270" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -3732,7 +3752,7 @@ When holding a key/button, rate at which it repeats, in seconds.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3272" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3274" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -3753,7 +3773,7 @@ When holding a key/button, rate at which it repeats, in seconds.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3259" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3261" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -3769,7 +3789,7 @@ When holding a key/button, rate at which it repeats, in seconds.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3263" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3265" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -3790,7 +3810,7 @@ When holding a key/button, rate at which it repeats, in seconds.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3277" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3279" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -3806,7 +3826,7 @@ When holding a key/button, rate at which it repeats, in seconds.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3281" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3283" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -3827,7 +3847,7 @@ When holding a key/button, rate at which it repeats, in seconds.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3349" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3351" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -3843,7 +3863,7 @@ When holding a key/button, rate at which it repeats, in seconds.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3353" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3355" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -3864,7 +3884,7 @@ When holding a key/button, rate at which it repeats, in seconds.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3331" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3333" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -3880,7 +3900,7 @@ When holding a key/button, rate at which it repeats, in seconds.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3335" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3337" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -3901,7 +3921,7 @@ When holding a key/button, rate at which it repeats, in seconds.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3340" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3342" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -3917,7 +3937,7 @@ When holding a key/button, rate at which it repeats, in seconds.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3344" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3346" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -3938,7 +3958,7 @@ When holding a key/button, rate at which it repeats, in seconds.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3304" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3306" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -3954,7 +3974,7 @@ When holding a key/button, rate at which it repeats, in seconds.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3308" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3310" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -3976,7 +3996,7 @@ Distance threshold to stay in to validate a double-click, in pixels.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2828" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2830" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -3992,7 +4012,7 @@ Distance threshold to stay in to validate a double-click, in pixels.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2832" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2834" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -4014,7 +4034,7 @@ Time for a double-click, in seconds.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2818" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2820" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -4030,7 +4050,7 @@ Time for a double-click, in seconds.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2822" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2824" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -4051,7 +4071,7 @@ Time for a double-click, in seconds.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3358" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3360" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -4067,7 +4087,7 @@ Time for a double-click, in seconds.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3362" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3364" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -4088,7 +4108,7 @@ Time for a double-click, in seconds.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3106" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3108" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -4104,7 +4124,7 @@ Time for a double-click, in seconds.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3110" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3112" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -4125,7 +4145,7 @@ Time for a double-click, in seconds.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3394" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3396" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -4141,7 +4161,7 @@ Time for a double-click, in seconds.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3398" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3400" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -4162,7 +4182,7 @@ Time for a double-click, in seconds.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3403" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3405" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -4178,7 +4198,7 @@ Time for a double-click, in seconds.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3407" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3409" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -4199,7 +4219,7 @@ Time for a double-click, in seconds.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3376" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3378" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -4215,7 +4235,7 @@ Time for a double-click, in seconds.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3380" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3382" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -4236,7 +4256,7 @@ Time for a double-click, in seconds.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3385" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3387" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -4252,7 +4272,7 @@ Time for a double-click, in seconds.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3389" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3391" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -4273,7 +4293,7 @@ Time for a double-click, in seconds.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3412" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3414" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -4289,7 +4309,7 @@ Time for a double-click, in seconds.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3416" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3418" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -4310,7 +4330,7 @@ Time for a double-click, in seconds.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3421" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3423" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -4326,7 +4346,7 @@ Time for a double-click, in seconds.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3425" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3427" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -4348,7 +4368,7 @@ Distance threshold before considering we are dragging.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2838" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2840" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -4364,7 +4384,7 @@ Distance threshold before considering we are dragging.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2842" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2844" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -4386,7 +4406,7 @@ Request ImGui to draw a mouse cursor for you (if you are on a platform without a
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2938" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2940" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -4402,7 +4422,7 @@ Request ImGui to draw a mouse cursor for you (if you are on a platform without a
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2942" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2944" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -4423,7 +4443,7 @@ Request ImGui to draw a mouse cursor for you (if you are on a platform without a
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3097" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3099" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -4439,7 +4459,7 @@ Request ImGui to draw a mouse cursor for you (if you are on a platform without a
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3101" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3103" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -4460,7 +4480,7 @@ Request ImGui to draw a mouse cursor for you (if you are on a platform without a
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3322" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3324" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -4476,7 +4496,7 @@ Request ImGui to draw a mouse cursor for you (if you are on a platform without a
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3326" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3328" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -4497,7 +4517,7 @@ Request ImGui to draw a mouse cursor for you (if you are on a platform without a
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3367" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3369" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -4513,7 +4533,7 @@ Request ImGui to draw a mouse cursor for you (if you are on a platform without a
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3371" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3373" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -4534,7 +4554,7 @@ Request ImGui to draw a mouse cursor for you (if you are on a platform without a
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3115" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3117" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -4550,7 +4570,7 @@ Request ImGui to draw a mouse cursor for you (if you are on a platform without a
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3119" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3121" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -4571,7 +4591,7 @@ Request ImGui to draw a mouse cursor for you (if you are on a platform without a
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3124" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3126" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -4587,7 +4607,7 @@ Request ImGui to draw a mouse cursor for you (if you are on a platform without a
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3128" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3130" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -4608,7 +4628,7 @@ Request ImGui to draw a mouse cursor for you (if you are on a platform without a
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3232" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3234" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -4624,7 +4644,7 @@ Request ImGui to draw a mouse cursor for you (if you are on a platform without a
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3236" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3238" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -4645,7 +4665,7 @@ Request ImGui to draw a mouse cursor for you (if you are on a platform without a
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3178" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3180" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -4661,7 +4681,7 @@ Request ImGui to draw a mouse cursor for you (if you are on a platform without a
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3182" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3184" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -4677,7 +4697,7 @@ Request ImGui to draw a mouse cursor for you (if you are on a platform without a
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3447" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3449" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -4693,7 +4713,7 @@ Request ImGui to draw a mouse cursor for you (if you are on a platform without a
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3451" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3453" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -4709,7 +4729,7 @@ Request ImGui to draw a mouse cursor for you (if you are on a platform without a
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3455" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3457" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -4725,7 +4745,7 @@ Request ImGui to draw a mouse cursor for you (if you are on a platform without a
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3459" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3461" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -4746,7 +4766,7 @@ Request ImGui to draw a mouse cursor for you (if you are on a platform without a
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3241" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3243" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -4762,7 +4782,7 @@ Request ImGui to draw a mouse cursor for you (if you are on a platform without a
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3245" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3247" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -4783,7 +4803,7 @@ Request ImGui to draw a mouse cursor for you (if you are on a platform without a
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3464" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3466" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -4799,7 +4819,7 @@ Request ImGui to draw a mouse cursor for you (if you are on a platform without a
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3468" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3470" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -4815,7 +4835,7 @@ Request ImGui to draw a mouse cursor for you (if you are on a platform without a
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3062" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3064" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -4831,7 +4851,7 @@ Request ImGui to draw a mouse cursor for you (if you are on a platform without a
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3066" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3068" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -4847,7 +4867,7 @@ Request ImGui to draw a mouse cursor for you (if you are on a platform without a
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2745" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2747" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -4869,7 +4889,7 @@ Store your own data for retrieval by callbacks.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2878" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2880" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -4885,7 +4905,7 @@ Store your own data for retrieval by callbacks.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2882" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L2884" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -4906,7 +4926,7 @@ Store your own data for retrieval by callbacks.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3196" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3198" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -4922,7 +4942,7 @@ Store your own data for retrieval by callbacks.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3200" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3202" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -4943,7 +4963,7 @@ Store your own data for retrieval by callbacks.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3187" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3189" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -4959,7 +4979,7 @@ Store your own data for retrieval by callbacks.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3191" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3193" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -4980,7 +5000,7 @@ Store your own data for retrieval by callbacks.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3223" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3225" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -4996,7 +5016,7 @@ Store your own data for retrieval by callbacks.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3227" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3229" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -5017,7 +5037,7 @@ Store your own data for retrieval by callbacks.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3214" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3216" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -5033,7 +5053,7 @@ Store your own data for retrieval by callbacks.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3218" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3220" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -5054,7 +5074,7 @@ Store your own data for retrieval by callbacks.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3205" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3207" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -5070,7 +5090,7 @@ Store your own data for retrieval by callbacks.</p>
       <br/>
       <div>
         
-          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3209" target="_blank">View source</a>]
+          [<a href="https://github.com/oprypin/crystal-imgui/blob/master/src/obj.cr#L3211" target="_blank">View source</a>]
         
       </div>
     </div>
