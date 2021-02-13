@@ -230,11 +230,10 @@ lib LibImGui
   fun igSetNextItemOpen(is_open : Bool, cond : ImGui::ImGuiCond)
   fun igSelectableBool(label : LibC::Char*, selected : Bool, flags : ImGui::ImGuiSelectableFlags, size : ImGui::ImVec2) : Bool
   fun igSelectableBoolPtr(label : LibC::Char*, p_selected : Bool*, flags : ImGui::ImGuiSelectableFlags, size : ImGui::ImVec2) : Bool
+  fun igBeginListBox(label : LibC::Char*, size : ImGui::ImVec2) : Bool
+  fun igEndListBox
   fun igListBoxStr_arr(label : LibC::Char*, current_item : LibC::Int*, items : LibC::Char**, items_count : LibC::Int, height_in_items : LibC::Int) : Bool
   fun igListBoxFnBoolPtr(label : LibC::Char*, current_item : LibC::Int*, items_getter : (Void*, LibC::Int, LibC::Char**) -> Bool, data : Void*, items_count : LibC::Int, height_in_items : LibC::Int) : Bool
-  fun igListBoxHeaderVec2(label : LibC::Char*, size : ImGui::ImVec2) : Bool
-  fun igListBoxHeaderInt(label : LibC::Char*, items_count : LibC::Int, height_in_items : LibC::Int) : Bool
-  fun igListBoxFooter
   fun igPlotLinesFloatPtr(label : LibC::Char*, values : LibC::Float*, values_count : LibC::Int, values_offset : LibC::Int, overlay_text : LibC::Char*, scale_min : LibC::Float, scale_max : LibC::Float, graph_size : ImGui::ImVec2, stride : LibC::Int)
   fun igPlotLinesFnFloatPtr(label : LibC::Char*, values_getter : (Void*, LibC::Int) -> LibC::Float, data : Void*, values_count : LibC::Int, values_offset : LibC::Int, overlay_text : LibC::Char*, scale_min : LibC::Float, scale_max : LibC::Float, graph_size : ImGui::ImVec2)
   fun igPlotHistogramFloatPtr(label : LibC::Char*, values : LibC::Float*, values_count : LibC::Int, values_offset : LibC::Int, overlay_text : LibC::Char*, scale_min : LibC::Float, scale_max : LibC::Float, graph_size : ImGui::ImVec2, stride : LibC::Int)
@@ -328,11 +327,12 @@ lib LibImGui
   fun igGetItemRectMax(pOut : ImGui::ImVec2*)
   fun igGetItemRectSize(pOut : ImGui::ImVec2*)
   fun igSetItemAllowOverlap
+  fun igGetMainViewport : ImGuiViewport*
   fun igIsRectVisibleNil(size : ImGui::ImVec2) : Bool
   fun igIsRectVisibleVec2(rect_min : ImGui::ImVec2, rect_max : ImGui::ImVec2) : Bool
   fun igGetTime : LibC::Double
   fun igGetFrameCount : LibC::Int
-  fun igGetBackgroundDrawList : ImDrawList*
+  fun igGetBackgroundDrawListNil : ImDrawList*
   fun igGetForegroundDrawListNil : ImDrawList*
   fun igGetDrawListSharedData : ImDrawListSharedData*
   fun igGetStyleColorName(idx : ImGui::ImGuiCol) : LibC::Char*
@@ -741,10 +741,10 @@ lib LibImGui
 
   struct ImDrawData
     valid : Bool
-    cmd_lists : ImDrawList**
     cmd_lists_count : LibC::Int
     total_idx_count : LibC::Int
     total_vtx_count : LibC::Int
+    cmd_lists : ImDrawList**
     display_pos : ImGui::ImVec2
     display_size : ImGui::ImVec2
     framebuffer_scale : ImGui::ImVec2
@@ -770,7 +770,7 @@ lib LibImGui
     glyph_min_advance_x : LibC::Float
     glyph_max_advance_x : LibC::Float
     merge_mode : Bool
-    rasterizer_flags : LibC::UInt
+    font_builder_flags : LibC::UInt
     rasterizer_multiply : LibC::Float
     ellipsis_char : ImWchar
     name : LibC::Char[40]
@@ -817,6 +817,8 @@ lib LibImGui
     custom_rects : ImVectorInternal
     config_data : ImVectorInternal
     tex_uv_lines : ImGui::ImVec4[64]
+    font_builder_io : ImFontBuilderIO*
+    font_builder_flags : LibC::UInt
     pack_id_mouse_cursors : LibC::Int
     pack_id_lines : LibC::Int
   end
@@ -889,6 +891,18 @@ lib LibImGui
   fun ImFont_SetGlyphVisible(self : ImFont*, c : ImWchar, visible : Bool)
   fun ImFont_SetFallbackChar(self : ImFont*, c : ImWchar)
   fun ImFont_IsGlyphRangeUnused(self : ImFont*, c_begin : LibC::UInt, c_last : LibC::UInt) : Bool
+
+  struct ImGuiViewport
+    flags : ImGui::ImGuiViewportFlags
+    pos : ImGui::ImVec2
+    size : ImGui::ImVec2
+    work_pos : ImGui::ImVec2
+    work_size : ImGui::ImVec2
+  end
+
+  fun ImGuiViewport_ImGuiViewport : ImGuiViewport*
+  fun ImGuiViewport_GetCenter(pOut : ImGui::ImVec2*, self : ImGuiViewport*)
+  fun ImGuiViewport_GetWorkCenter(pOut : ImGui::ImVec2*, self : ImGuiViewport*)
   type ImVec1 = Void*
   type ImVec2ih = Void*
   type ImRect = Void*
@@ -910,6 +924,7 @@ lib LibImGui
   type ImGuiPtrOrIndex = Void*
   type ImGuiOldColumnData = Void*
   type ImGuiOldColumns = Void*
+  type ImGuiViewportP = Void*
   type ImGuiWindowSettings = Void*
   type ImGuiSettingsHandler = Void*
   type ImGuiMetricsConfig = Void*
@@ -926,6 +941,7 @@ lib LibImGui
   type ImGuiTable = Void*
   type ImGuiTableColumnSettings = Void*
   type ImGuiTableSettings = Void*
+  type ImFontBuilderIO = Void*
   type StbUndoRecord = Void*
   type StbUndoState = Void*
   type STB_TexteditState = Void*
