@@ -24,6 +24,7 @@ jobs:
         uses: oprypin/install-crystal@v1
         with:
           crystal: ${{matrix.crystal}}
+          shards: latest
       - name: Download source
         uses: actions/checkout@v2
         with:
@@ -38,16 +39,9 @@ jobs:
         if: matrix.crystal == 'latest'
         run: |
           git diff --exit-code
-      - name: Download crsfml
-        uses: actions/checkout@v2
-        with:
-          repository: oprypin/crsfml
-          path: lib/crsfml
-      - name: Download crystal-imgui-sfml
-        uses: actions/checkout@v2
-        with:
-          repository: oprypin/crystal-imgui-sfml
-          path: lib/imgui-sfml
+      - name: Install shards
+        run: |
+          shards install --skip-postinstall
       - name: Build cimgui
         working-directory: ./cimgui
         run: |
