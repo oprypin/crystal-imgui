@@ -1133,4 +1133,199 @@ module ImGui
     OwnedByApp = 1 << 2
   end
   alias TopLevel::ImGuiViewportFlags = ImGui::ImGuiViewportFlags
+
+  # :nodoc:
+  @[Flags]
+  enum ImGuiItemFlags
+    None                     = 0
+    NoTabStop                = 1 << 0
+    ButtonRepeat             = 1 << 1
+    Disabled                 = 1 << 2
+    NoNav                    = 1 << 3
+    NoNavDefaultFocus        = 1 << 4
+    SelectableDontClosePopup = 1 << 5
+    MixedValue               = 1 << 6
+    ReadOnly                 = 1 << 7
+    Default_                 = 0
+  end
+
+  # :nodoc:
+  @[Flags]
+  enum ImGuiItemStatusFlags
+    None             = 0
+    HoveredRect      = 1 << 0
+    HasDisplayRect   = 1 << 1
+    Edited           = 1 << 2
+    ToggledSelection = 1 << 3
+    ToggledOpen      = 1 << 4
+    HasDeactivated   = 1 << 5
+    Deactivated      = 1 << 6
+  end
+
+  # :nodoc:
+  @[Flags]
+  enum ImGuiSeparatorFlags
+    None           = 0
+    Horizontal     = 1 << 0
+    Vertical       = 1 << 1
+    SpanAllColumns = 1 << 2
+  end
+
+  # :nodoc:
+  @[Flags]
+  enum ImGuiTextFlags
+    None                       = 0
+    NoWidthForLargeClippedText = 1 << 0
+  end
+
+  # :nodoc:
+  @[Flags]
+  enum ImGuiTooltipFlags
+    None                    = 0
+    OverridePreviousTooltip = 1 << 0
+  end
+
+  # :nodoc:
+  enum ImGuiLayoutType
+    Horizontal = 0
+    Vertical   = 1
+  end
+
+  # :nodoc:
+  enum ImGuiLogType
+    None      = 0
+    TTY       = 1
+    File      = 2
+    Buffer    = 3
+    Clipboard = 4
+  end
+
+  # :nodoc:
+  enum ImGuiAxis
+    None = -1
+    X    =  0
+    Y    =  1
+  end
+
+  # :nodoc:
+  enum ImGuiPlotType
+    Lines     = 0
+    Histogram = 1
+  end
+
+  # :nodoc:
+  enum ImGuiInputSource
+    None        = 0
+    Mouse       = 1
+    Nav         = 2
+    NavKeyboard = 3
+    NavGamepad  = 4
+  end
+
+  # :nodoc:
+  enum ImGuiInputReadMode
+    Down       = 0
+    Pressed    = 1
+    Released   = 2
+    Repeat     = 3
+    RepeatSlow = 4
+    RepeatFast = 5
+  end
+
+  # :nodoc:
+  @[Flags]
+  enum ImGuiNavHighlightFlags
+    None        = 0
+    TypeDefault = 1 << 0
+    TypeThin    = 1 << 1
+    AlwaysDraw  = 1 << 2
+    NoRounding  = 1 << 3
+  end
+
+  # :nodoc:
+  @[Flags]
+  enum ImGuiNavDirSourceFlags
+    None      = 0
+    Keyboard  = 1 << 0
+    PadDPad   = 1 << 1
+    PadLStick = 1 << 2
+  end
+
+  # :nodoc:
+  @[Flags]
+  enum ImGuiNavMoveFlags
+    None                = 0
+    LoopX               = 1 << 0
+    LoopY               = 1 << 1
+    WrapX               = 1 << 2
+    WrapY               = 1 << 3
+    AllowCurrentNavId   = 1 << 4
+    AlsoScoreVisibleSet = 1 << 5
+    ScrollToEdge        = 1 << 6
+  end
+
+  # :nodoc:
+  enum ImGuiNavForward
+    None          = 0
+    ForwardQueued = 1
+    ForwardActive = 2
+  end
+
+  # :nodoc:
+  enum ImGuiNavLayer
+    Main = 0
+    Menu = 1
+  end
+
+  # :nodoc:
+  enum ImGuiPopupPositionPolicy
+    Default  = 0
+    ComboBox = 1
+    Tooltip  = 2
+  end
+
+  # :nodoc:
+  @[Flags]
+  enum ImGuiNextWindowDataFlags
+    None              = 0
+    HasPos            = 1 << 0
+    HasSize           = 1 << 1
+    HasContentSize    = 1 << 2
+    HasCollapsed      = 1 << 3
+    HasSizeConstraint = 1 << 4
+    HasFocus          = 1 << 5
+    HasBgAlpha        = 1 << 6
+    HasScroll         = 1 << 7
+  end
+
+  # :nodoc:
+  @[Flags]
+  enum ImGuiNextItemDataFlags
+    None     = 0
+    HasWidth = 1 << 0
+    HasOpen  = 1 << 1
+  end
+
+  # :nodoc:
+  @[Flags]
+  enum ImGuiOldColumnFlags
+    None                   = 0
+    NoBorder               = 1 << 0
+    NoResize               = 1 << 1
+    NoPreserveWidths       = 1 << 2
+    NoForceWithinWindow    = 1 << 3
+    GrowParentContentsSize = 1 << 4
+  end
+
+  # :nodoc:
+  enum ImGuiContextHookType
+    NewFramePre     = 0
+    NewFramePost    = 1
+    EndFramePre     = 2
+    EndFramePost    = 3
+    RenderPre       = 4
+    RenderPost      = 5
+    Shutdown        = 6
+    PendingRemoval_ = 7
+  end
 end

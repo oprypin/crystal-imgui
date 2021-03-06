@@ -133,7 +133,7 @@ class CType
       return t
     end
     if (t = base_type.struct? || base_type.enum?)
-      in_lib = (base_type.class? || t.internal? || name.starts_with?("ImVector") && !ctx.obj?)
+      in_lib = (base_type.class? || (t.internal? && base_type.struct?) || name.starts_with?("ImVector") && !ctx.obj?)
       if ctx.lib?
         name = "ImGui::#{name}" if !in_lib
       else
@@ -351,7 +351,7 @@ class COverload
   end
 
   def render(ctx, inside_class = false, &block : String ->)
-    return if self.templated? || self.internal?
+    return if self.templated?
     return if self.destructor?
     return if self.args.any? { |arg| arg.type.c_name == "va_list" }
 
@@ -362,7 +362,9 @@ class COverload
       end
       ret = self.ret.try &.name(ctx)
       yield %(fun #{self.c_name} = #{@c_name}(#{args.join(", ")})#{" : #{ret}" if ret})
-    elsif ctx.obj?
+    end
+    return if self.internal?
+    if ctx.obj?
       return if self.struct? && !inside_class
       args = [] of String
       call_args = [] of String
@@ -774,12 +776,12 @@ class CEnum
   end
 
   def render(ctx : Context, &block : String ->)
-    return if self.internal?
     return unless ctx.ext?
 
     return if self.name.ends_with?("Private")
 
     yield %()
+    yield "# :nodoc:" if self.internal?
     self.comment(&block)
     yield %(@[Flags]) if self.name.ends_with?("Flags")
 
@@ -790,7 +792,7 @@ class CEnum
       yield %(#{member.name} = #{member.value})
     end
     yield %(end)
-    yield %(alias TopLevel::#{name} = ImGui::#{name})
+    yield %(alias TopLevel::#{name} = ImGui::#{name}) unless self.internal?
   end
 
   with_location
