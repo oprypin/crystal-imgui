@@ -262,6 +262,14 @@ class COverload
   @[JSON::Field(key: "ov_cimguiname")]
   getter c_name : String
 
+  def c_name : String
+    if @c_name =~ /^ig[A-Z]/
+      @c_name.lchop("ig")
+    else
+      @c_name
+    end
+  end
+
   def name(ctx : Context) : String
     if ctx.obj?
       if self.destructor?
@@ -353,7 +361,7 @@ class COverload
         "#{arg.name} : #{arg.type.name(ctx).gsub(/\[\d+\]/, "*")}"
       end
       ret = self.ret.try &.name(ctx)
-      yield %(fun #{self.c_name}(#{args.join(", ")})#{" : #{ret}" if ret})
+      yield %(fun #{self.c_name} = #{@c_name}(#{args.join(", ")})#{" : #{ret}" if ret})
     elsif ctx.obj?
       return if self.struct? && !inside_class
       args = [] of String

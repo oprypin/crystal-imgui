@@ -37,7 +37,7 @@ module ImGui
 
   # [ImGui::CreateContext()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L260)
   def self.create_context(shared_font_atlas : ImFontAtlas? = nil) : ImGuiContext
-    result = LibImGui.igCreateContext(shared_font_atlas)
+    result = LibImGui.CreateContext(shared_font_atlas)
     result.value
   end
 
@@ -45,25 +45,25 @@ module ImGui
   #
   # [ImGui::DestroyContext()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L261)
   def self.destroy_context(ctx : ImGuiContext? = nil) : Void
-    LibImGui.igDestroyContext(ctx)
+    LibImGui.DestroyContext(ctx)
   end
 
   # [ImGui::GetCurrentContext()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L262)
   def self.get_current_context : ImGuiContext
-    result = LibImGui.igGetCurrentContext
+    result = LibImGui.GetCurrentContext
     result.value
   end
 
   # [ImGui::SetCurrentContext()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L263)
   def self.set_current_context(ctx : ImGuiContext) : Void
-    LibImGui.igSetCurrentContext(ctx)
+    LibImGui.SetCurrentContext(ctx)
   end
 
   # access the IO structure (mouse/keyboard/gamepad inputs, time, various configuration options/flags)
   #
   # [ImGui::GetIO()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L266)
   def self.get_io : ImGuiIO
-    result = LibImGui.igGetIO
+    result = LibImGui.GetIO
     ImGuiIO.new(result)
   end
 
@@ -71,7 +71,7 @@ module ImGui
   #
   # [ImGui::GetStyle()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L267)
   def self.get_style : ImGuiStyle
-    result = LibImGui.igGetStyle
+    result = LibImGui.GetStyle
     ImGuiStyle.new(result)
   end
 
@@ -79,28 +79,28 @@ module ImGui
   #
   # [ImGui::NewFrame()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L268)
   def self.new_frame : Void
-    LibImGui.igNewFrame
+    LibImGui.NewFrame
   end
 
   # ends the Dear ImGui frame. automatically called by Render(). If you don't need to render data (skipping rendering) you may call EndFrame() without Render()... but you'll have wasted CPU already! If you don't need to render, better to not create any windows and not call NewFrame() at all!
   #
   # [ImGui::EndFrame()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L269)
   def self.end_frame : Void
-    LibImGui.igEndFrame
+    LibImGui.EndFrame
   end
 
   # ends the Dear ImGui frame, finalize the draw data. You can then get call GetDrawData().
   #
   # [ImGui::Render()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L270)
   def self.render : Void
-    LibImGui.igRender
+    LibImGui.Render
   end
 
   # valid after Render() and until the next call to NewFrame(). this is what you have to render.
   #
   # [ImGui::GetDrawData()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L271)
   def self.get_draw_data : ImDrawData
-    result = LibImGui.igGetDrawData
+    result = LibImGui.GetDrawData
     ImDrawData.new(result)
   end
 
@@ -108,54 +108,54 @@ module ImGui
   #
   # [ImGui::ShowDemoWindow()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L274)
   pointer_wrapper def self.show_demo_window(p_open : Bool* = Pointer(Bool).null) : Void
-    LibImGui.igShowDemoWindow(p_open)
+    LibImGui.ShowDemoWindow(p_open)
   end
   # create Metrics/Debugger window. display Dear ImGui internals: windows, draw commands, various internal state, etc.
   #
   # [ImGui::ShowMetricsWindow()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L275)
   pointer_wrapper def self.show_metrics_window(p_open : Bool* = Pointer(Bool).null) : Void
-    LibImGui.igShowMetricsWindow(p_open)
+    LibImGui.ShowMetricsWindow(p_open)
   end
   # create About window. display Dear ImGui version, credits and build/system information.
   #
   # [ImGui::ShowAboutWindow()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L276)
   pointer_wrapper def self.show_about_window(p_open : Bool* = Pointer(Bool).null) : Void
-    LibImGui.igShowAboutWindow(p_open)
+    LibImGui.ShowAboutWindow(p_open)
   end
 
   # add style editor block (not a window). you can pass in a reference ImGuiStyle structure to compare to, revert to and save to (else it uses the default style)
   #
   # [ImGui::ShowStyleEditor()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L277)
   def self.show_style_editor(ref : ImGuiStyle? = nil) : Void
-    LibImGui.igShowStyleEditor(ref)
+    LibImGui.ShowStyleEditor(ref)
   end
 
   # add style selector block (not a window), essentially a combo listing the default styles.
   #
   # [ImGui::ShowStyleSelector()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L278)
   def self.show_style_selector(label : String) : Bool
-    LibImGui.igShowStyleSelector(label)
+    LibImGui.ShowStyleSelector(label)
   end
 
   # add font selector block (not a window), essentially a combo listing the loaded fonts.
   #
   # [ImGui::ShowFontSelector()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L279)
   def self.show_font_selector(label : String) : Void
-    LibImGui.igShowFontSelector(label)
+    LibImGui.ShowFontSelector(label)
   end
 
   # add basic help/info block (not a window): how to manipulate ImGui as a end-user (mouse/keyboard controls).
   #
   # [ImGui::ShowUserGuide()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L280)
   def self.show_user_guide : Void
-    LibImGui.igShowUserGuide
+    LibImGui.ShowUserGuide
   end
 
   # get the compiled version string e.g. "1.80 WIP" (essentially the value for IMGUI_VERSION from the compiled version of imgui.cpp)
   #
   # [ImGui::GetVersion()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L281)
   def self.get_version : String
-    result = LibImGui.igGetVersion
+    result = LibImGui.GetVersion
     String.new(result)
   end
 
@@ -163,77 +163,77 @@ module ImGui
   #
   # [ImGui::StyleColorsDark()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L284)
   def self.style_colors_dark(dst : ImGuiStyle? = nil) : Void
-    LibImGui.igStyleColorsDark(dst)
+    LibImGui.StyleColorsDark(dst)
   end
 
   # best used with borders and a custom, thicker font
   #
   # [ImGui::StyleColorsLight()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L285)
   def self.style_colors_light(dst : ImGuiStyle? = nil) : Void
-    LibImGui.igStyleColorsLight(dst)
+    LibImGui.StyleColorsLight(dst)
   end
 
   # classic imgui style
   #
   # [ImGui::StyleColorsClassic()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L286)
   def self.style_colors_classic(dst : ImGuiStyle? = nil) : Void
-    LibImGui.igStyleColorsClassic(dst)
+    LibImGui.StyleColorsClassic(dst)
   end
 
   # [ImGui::Begin()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L300)
   pointer_wrapper def self.begin(name : String, p_open : Bool* = Pointer(Bool).null, flags : ImGuiWindowFlags = ImGuiWindowFlags.new(0)) : Bool
-    LibImGui.igBegin(name, p_open, flags)
+    LibImGui.Begin(name, p_open, flags)
   end
 
   # [ImGui::End()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L301)
   def self.end : Void
-    LibImGui.igEnd
+    LibImGui.End
   end
 
   # [ImGui::BeginChild()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L311)
   def self.begin_child(str_id : String, size : ImVec2 = ImVec2.new(0, 0), border : Bool = false, flags : ImGuiWindowFlags = ImGuiWindowFlags.new(0)) : Bool
-    LibImGui.igBeginChildStr(str_id, size, border, flags)
+    LibImGui.BeginChildStr(str_id, size, border, flags)
   end
 
   # [ImGui::BeginChild()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L312)
   def self.begin_child(id : ImGuiID, size : ImVec2 = ImVec2.new(0, 0), border : Bool = false, flags : ImGuiWindowFlags = ImGuiWindowFlags.new(0)) : Bool
-    LibImGui.igBeginChildID(id, size, border, flags)
+    LibImGui.BeginChildID(id, size, border, flags)
   end
 
   # [ImGui::EndChild()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L313)
   def self.end_child : Void
-    LibImGui.igEndChild
+    LibImGui.EndChild
   end
 
   # [ImGui::IsWindowAppearing()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L317)
   def self.is_window_appearing : Bool
-    LibImGui.igIsWindowAppearing
+    LibImGui.IsWindowAppearing
   end
 
   # [ImGui::IsWindowCollapsed()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L318)
   def self.is_window_collapsed : Bool
-    LibImGui.igIsWindowCollapsed
+    LibImGui.IsWindowCollapsed
   end
 
   # is current window focused? or its root/child, depending on flags. see flags for options.
   #
   # [ImGui::IsWindowFocused()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L319)
   def self.is_window_focused(flags : ImGuiFocusedFlags = ImGuiFocusedFlags.new(0)) : Bool
-    LibImGui.igIsWindowFocused(flags)
+    LibImGui.IsWindowFocused(flags)
   end
 
   # is current window hovered (and typically: not blocked by a popup/modal)? see flags for options. NB: If you are trying to check whether your mouse should be dispatched to imgui or to your app, you should use the 'io.WantCaptureMouse' boolean for that! Please read the FAQ!
   #
   # [ImGui::IsWindowHovered()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L320)
   def self.is_window_hovered(flags : ImGuiHoveredFlags = ImGuiHoveredFlags.new(0)) : Bool
-    LibImGui.igIsWindowHovered(flags)
+    LibImGui.IsWindowHovered(flags)
   end
 
   # get draw list associated to the current window, to append your own drawing primitives
   #
   # [ImGui::GetWindowDrawList()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L321)
   def self.get_window_draw_list : ImDrawList
-    result = LibImGui.igGetWindowDrawList
+    result = LibImGui.GetWindowDrawList
     ImDrawList.new(result)
   end
 
@@ -241,7 +241,7 @@ module ImGui
   #
   # [ImGui::GetWindowPos()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L322)
   def self.get_window_pos : ImGui::ImVec2
-    LibImGui.igGetWindowPos(out p_out)
+    LibImGui.GetWindowPos(out p_out)
     p_out
   end
 
@@ -249,7 +249,7 @@ module ImGui
   #
   # [ImGui::GetWindowSize()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L323)
   def self.get_window_size : ImGui::ImVec2
-    LibImGui.igGetWindowSize(out p_out)
+    LibImGui.GetWindowSize(out p_out)
     p_out
   end
 
@@ -257,133 +257,133 @@ module ImGui
   #
   # [ImGui::GetWindowWidth()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L324)
   def self.get_window_width : Float32
-    LibImGui.igGetWindowWidth
+    LibImGui.GetWindowWidth
   end
 
   # get current window height (shortcut for GetWindowSize().y)
   #
   # [ImGui::GetWindowHeight()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L325)
   def self.get_window_height : Float32
-    LibImGui.igGetWindowHeight
+    LibImGui.GetWindowHeight
   end
 
   # set next window position. call before Begin(). use pivot=(0.5f,0.5f) to center on given point, etc.
   #
   # [ImGui::SetNextWindowPos()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L328)
   def self.set_next_window_pos(pos : ImVec2, cond : ImGuiCond = ImGuiCond.new(0), pivot : ImVec2 = ImVec2.new(0, 0)) : Void
-    LibImGui.igSetNextWindowPos(pos, cond, pivot)
+    LibImGui.SetNextWindowPos(pos, cond, pivot)
   end
 
   # set next window size. set axis to 0.0f to force an auto-fit on this axis. call before Begin()
   #
   # [ImGui::SetNextWindowSize()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L329)
   def self.set_next_window_size(size : ImVec2, cond : ImGuiCond = ImGuiCond.new(0)) : Void
-    LibImGui.igSetNextWindowSize(size, cond)
+    LibImGui.SetNextWindowSize(size, cond)
   end
 
   # set next window size limits. use -1,-1 on either X/Y axis to preserve the current size. Sizes will be rounded down. Use callback to apply non-trivial programmatic constraints.
   #
   # [ImGui::SetNextWindowSizeConstraints()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L330)
   def self.set_next_window_size_constraints(size_min : ImVec2, size_max : ImVec2, custom_callback : ImGuiSizeCallback? = nil, custom_callback_data : Void* = Pointer(Void).null) : Void
-    LibImGui.igSetNextWindowSizeConstraints(size_min, size_max, custom_callback, custom_callback_data)
+    LibImGui.SetNextWindowSizeConstraints(size_min, size_max, custom_callback, custom_callback_data)
   end
 
   # set next window content size (~ scrollable client area, which enforce the range of scrollbars). Not including window decorations (title bar, menu bar, etc.) nor WindowPadding. set an axis to 0.0f to leave it automatic. call before Begin()
   #
   # [ImGui::SetNextWindowContentSize()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L331)
   def self.set_next_window_content_size(size : ImVec2) : Void
-    LibImGui.igSetNextWindowContentSize(size)
+    LibImGui.SetNextWindowContentSize(size)
   end
 
   # set next window collapsed state. call before Begin()
   #
   # [ImGui::SetNextWindowCollapsed()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L332)
   def self.set_next_window_collapsed(collapsed : Bool, cond : ImGuiCond = ImGuiCond.new(0)) : Void
-    LibImGui.igSetNextWindowCollapsed(collapsed, cond)
+    LibImGui.SetNextWindowCollapsed(collapsed, cond)
   end
 
   # set next window to be focused / top-most. call before Begin()
   #
   # [ImGui::SetNextWindowFocus()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L333)
   def self.set_next_window_focus : Void
-    LibImGui.igSetNextWindowFocus
+    LibImGui.SetNextWindowFocus
   end
 
   # set next window background color alpha. helper to easily override the Alpha component of ImGuiCol_WindowBg/ChildBg/PopupBg. you may also use ImGuiWindowFlags_NoBackground.
   #
   # [ImGui::SetNextWindowBgAlpha()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L334)
   def self.set_next_window_bg_alpha(alpha : Float32) : Void
-    LibImGui.igSetNextWindowBgAlpha(alpha)
+    LibImGui.SetNextWindowBgAlpha(alpha)
   end
 
   # (not recommended) set current window position - call within Begin()/End(). prefer using SetNextWindowPos(), as this may incur tearing and side-effects.
   #
   # [ImGui::SetWindowPos()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L335)
   def self.set_window_pos(pos : ImVec2, cond : ImGuiCond = ImGuiCond.new(0)) : Void
-    LibImGui.igSetWindowPosVec2(pos, cond)
+    LibImGui.SetWindowPosVec2(pos, cond)
   end
 
   # set named window position.
   #
   # [ImGui::SetWindowPos()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L340)
   def self.set_window_pos(name : String, pos : ImVec2, cond : ImGuiCond = ImGuiCond.new(0)) : Void
-    LibImGui.igSetWindowPosStr(name, pos, cond)
+    LibImGui.SetWindowPosStr(name, pos, cond)
   end
 
   # (not recommended) set current window size - call within Begin()/End(). set to ImVec2(0, 0) to force an auto-fit. prefer using SetNextWindowSize(), as this may incur tearing and minor side-effects.
   #
   # [ImGui::SetWindowSize()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L336)
   def self.set_window_size(size : ImVec2, cond : ImGuiCond = ImGuiCond.new(0)) : Void
-    LibImGui.igSetWindowSizeVec2(size, cond)
+    LibImGui.SetWindowSizeVec2(size, cond)
   end
 
   # set named window size. set axis to 0.0f to force an auto-fit on this axis.
   #
   # [ImGui::SetWindowSize()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L341)
   def self.set_window_size(name : String, size : ImVec2, cond : ImGuiCond = ImGuiCond.new(0)) : Void
-    LibImGui.igSetWindowSizeStr(name, size, cond)
+    LibImGui.SetWindowSizeStr(name, size, cond)
   end
 
   # (not recommended) set current window collapsed state. prefer using SetNextWindowCollapsed().
   #
   # [ImGui::SetWindowCollapsed()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L337)
   def self.set_window_collapsed(collapsed : Bool, cond : ImGuiCond = ImGuiCond.new(0)) : Void
-    LibImGui.igSetWindowCollapsedBool(collapsed, cond)
+    LibImGui.SetWindowCollapsedBool(collapsed, cond)
   end
 
   # set named window collapsed state
   #
   # [ImGui::SetWindowCollapsed()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L342)
   def self.set_window_collapsed(name : String, collapsed : Bool, cond : ImGuiCond = ImGuiCond.new(0)) : Void
-    LibImGui.igSetWindowCollapsedStr(name, collapsed, cond)
+    LibImGui.SetWindowCollapsedStr(name, collapsed, cond)
   end
 
   # (not recommended) set current window to be focused / top-most. prefer using SetNextWindowFocus().
   #
   # [ImGui::SetWindowFocus()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L338)
   def self.set_window_focus : Void
-    LibImGui.igSetWindowFocusNil
+    LibImGui.SetWindowFocusNil
   end
 
   # set named window to be focused / top-most. use NULL to remove focus.
   #
   # [ImGui::SetWindowFocus()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L343)
   def self.set_window_focus(name : String) : Void
-    LibImGui.igSetWindowFocusStr(name)
+    LibImGui.SetWindowFocusStr(name)
   end
 
   # set font scale. Adjust IO.FontGlobalScale if you want to scale all windows. This is an old API! For correct scaling, prefer to reload font + rebuild ImFontAtlas + call style.ScaleAllSizes().
   #
   # [ImGui::SetWindowFontScale()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L339)
   def self.set_window_font_scale(scale : Float32) : Void
-    LibImGui.igSetWindowFontScale(scale)
+    LibImGui.SetWindowFontScale(scale)
   end
 
   # == GetContentRegionMax() - GetCursorPos()
   #
   # [ImGui::GetContentRegionAvail()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L348)
   def self.get_content_region_avail : ImGui::ImVec2
-    LibImGui.igGetContentRegionAvail(out p_out)
+    LibImGui.GetContentRegionAvail(out p_out)
     p_out
   end
 
@@ -391,7 +391,7 @@ module ImGui
   #
   # [ImGui::GetContentRegionMax()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L349)
   def self.get_content_region_max : ImGui::ImVec2
-    LibImGui.igGetContentRegionMax(out p_out)
+    LibImGui.GetContentRegionMax(out p_out)
     p_out
   end
 
@@ -399,7 +399,7 @@ module ImGui
   #
   # [ImGui::GetWindowContentRegionMin()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L350)
   def self.get_window_content_region_min : ImGui::ImVec2
-    LibImGui.igGetWindowContentRegionMin(out p_out)
+    LibImGui.GetWindowContentRegionMin(out p_out)
     p_out
   end
 
@@ -407,200 +407,200 @@ module ImGui
   #
   # [ImGui::GetWindowContentRegionMax()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L351)
   def self.get_window_content_region_max : ImGui::ImVec2
-    LibImGui.igGetWindowContentRegionMax(out p_out)
+    LibImGui.GetWindowContentRegionMax(out p_out)
     p_out
   end
 
   # [ImGui::GetWindowContentRegionWidth()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L352)
   def self.get_window_content_region_width : Float32
-    LibImGui.igGetWindowContentRegionWidth
+    LibImGui.GetWindowContentRegionWidth
   end
 
   # get scrolling amount [0 .. GetScrollMaxX()]
   #
   # [ImGui::GetScrollX()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L355)
   def self.get_scroll_x : Float32
-    LibImGui.igGetScrollX
+    LibImGui.GetScrollX
   end
 
   # get scrolling amount [0 .. GetScrollMaxY()]
   #
   # [ImGui::GetScrollY()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L356)
   def self.get_scroll_y : Float32
-    LibImGui.igGetScrollY
+    LibImGui.GetScrollY
   end
 
   # set scrolling amount [0 .. GetScrollMaxX()]
   #
   # [ImGui::SetScrollX()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L357)
   def self.set_scroll_x(scroll_x : Float32) : Void
-    LibImGui.igSetScrollXFloat(scroll_x)
+    LibImGui.SetScrollXFloat(scroll_x)
   end
 
   # set scrolling amount [0 .. GetScrollMaxY()]
   #
   # [ImGui::SetScrollY()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L358)
   def self.set_scroll_y(scroll_y : Float32) : Void
-    LibImGui.igSetScrollYFloat(scroll_y)
+    LibImGui.SetScrollYFloat(scroll_y)
   end
 
   # get maximum scrolling amount ~~ ContentSize.x - WindowSize.x - DecorationsSize.x
   #
   # [ImGui::GetScrollMaxX()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L359)
   def self.get_scroll_max_x : Float32
-    LibImGui.igGetScrollMaxX
+    LibImGui.GetScrollMaxX
   end
 
   # get maximum scrolling amount ~~ ContentSize.y - WindowSize.y - DecorationsSize.y
   #
   # [ImGui::GetScrollMaxY()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L360)
   def self.get_scroll_max_y : Float32
-    LibImGui.igGetScrollMaxY
+    LibImGui.GetScrollMaxY
   end
 
   # adjust scrolling amount to make current cursor position visible. center_x_ratio=0.0: left, 0.5: center, 1.0: right. When using to make a "default/current item" visible, consider using SetItemDefaultFocus() instead.
   #
   # [ImGui::SetScrollHereX()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L361)
   def self.set_scroll_here_x(center_x_ratio : Float32 = 0.5) : Void
-    LibImGui.igSetScrollHereX(center_x_ratio)
+    LibImGui.SetScrollHereX(center_x_ratio)
   end
 
   # adjust scrolling amount to make current cursor position visible. center_y_ratio=0.0: top, 0.5: center, 1.0: bottom. When using to make a "default/current item" visible, consider using SetItemDefaultFocus() instead.
   #
   # [ImGui::SetScrollHereY()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L362)
   def self.set_scroll_here_y(center_y_ratio : Float32 = 0.5) : Void
-    LibImGui.igSetScrollHereY(center_y_ratio)
+    LibImGui.SetScrollHereY(center_y_ratio)
   end
 
   # adjust scrolling amount to make given position visible. Generally GetCursorStartPos() + offset to compute a valid position.
   #
   # [ImGui::SetScrollFromPosX()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L363)
   def self.set_scroll_from_pos_x(local_x : Float32, center_x_ratio : Float32 = 0.5) : Void
-    LibImGui.igSetScrollFromPosXFloat(local_x, center_x_ratio)
+    LibImGui.SetScrollFromPosXFloat(local_x, center_x_ratio)
   end
 
   # adjust scrolling amount to make given position visible. Generally GetCursorStartPos() + offset to compute a valid position.
   #
   # [ImGui::SetScrollFromPosY()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L364)
   def self.set_scroll_from_pos_y(local_y : Float32, center_y_ratio : Float32 = 0.5) : Void
-    LibImGui.igSetScrollFromPosYFloat(local_y, center_y_ratio)
+    LibImGui.SetScrollFromPosYFloat(local_y, center_y_ratio)
   end
 
   # use NULL as a shortcut to push default font
   #
   # [ImGui::PushFont()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L367)
   def self.push_font(font : ImFont) : Void
-    LibImGui.igPushFont(font)
+    LibImGui.PushFont(font)
   end
 
   # [ImGui::PopFont()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L368)
   def self.pop_font : Void
-    LibImGui.igPopFont
+    LibImGui.PopFont
   end
 
   # modify a style color. always use this if you modify the style after NewFrame().
   #
   # [ImGui::PushStyleColor()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L369)
   def self.push_style_color(idx : ImGuiCol, col : UInt32) : Void
-    LibImGui.igPushStyleColorU32(idx, col)
+    LibImGui.PushStyleColorU32(idx, col)
   end
 
   # [ImGui::PushStyleColor()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L370)
   def self.push_style_color(idx : ImGuiCol, col : ImVec4) : Void
-    LibImGui.igPushStyleColorVec4(idx, col)
+    LibImGui.PushStyleColorVec4(idx, col)
   end
 
   # [ImGui::PopStyleColor()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L371)
   def self.pop_style_color(count : Int32 = 1) : Void
-    LibImGui.igPopStyleColor(count)
+    LibImGui.PopStyleColor(count)
   end
 
   # modify a style float variable. always use this if you modify the style after NewFrame().
   #
   # [ImGui::PushStyleVar()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L372)
   def self.push_style_var(idx : ImGuiStyleVar, val : Float32) : Void
-    LibImGui.igPushStyleVarFloat(idx, val)
+    LibImGui.PushStyleVarFloat(idx, val)
   end
 
   # modify a style ImVec2 variable. always use this if you modify the style after NewFrame().
   #
   # [ImGui::PushStyleVar()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L373)
   def self.push_style_var(idx : ImGuiStyleVar, val : ImVec2) : Void
-    LibImGui.igPushStyleVarVec2(idx, val)
+    LibImGui.PushStyleVarVec2(idx, val)
   end
 
   # [ImGui::PopStyleVar()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L374)
   def self.pop_style_var(count : Int32 = 1) : Void
-    LibImGui.igPopStyleVar(count)
+    LibImGui.PopStyleVar(count)
   end
 
   # allow focusing using TAB/Shift-TAB, enabled by default but you can disable it for certain widgets
   #
   # [ImGui::PushAllowKeyboardFocus()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L375)
   def self.push_allow_keyboard_focus(allow_keyboard_focus : Bool) : Void
-    LibImGui.igPushAllowKeyboardFocus(allow_keyboard_focus)
+    LibImGui.PushAllowKeyboardFocus(allow_keyboard_focus)
   end
 
   # [ImGui::PopAllowKeyboardFocus()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L376)
   def self.pop_allow_keyboard_focus : Void
-    LibImGui.igPopAllowKeyboardFocus
+    LibImGui.PopAllowKeyboardFocus
   end
 
   # in 'repeat' mode, Button*() functions return repeated true in a typematic manner (using io.KeyRepeatDelay/io.KeyRepeatRate setting). Note that you can call IsItemActive() after any Button() to tell if the button is held in the current frame.
   #
   # [ImGui::PushButtonRepeat()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L377)
   def self.push_button_repeat(repeat : Bool) : Void
-    LibImGui.igPushButtonRepeat(repeat)
+    LibImGui.PushButtonRepeat(repeat)
   end
 
   # [ImGui::PopButtonRepeat()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L378)
   def self.pop_button_repeat : Void
-    LibImGui.igPopButtonRepeat
+    LibImGui.PopButtonRepeat
   end
 
   # push width of items for common large "item+label" widgets. >0.0f: width in pixels, <0.0f align xx pixels to the right of window (so -FLT_MIN always align width to the right side).
   #
   # [ImGui::PushItemWidth()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L381)
   def self.push_item_width(item_width : Float32) : Void
-    LibImGui.igPushItemWidth(item_width)
+    LibImGui.PushItemWidth(item_width)
   end
 
   # [ImGui::PopItemWidth()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L382)
   def self.pop_item_width : Void
-    LibImGui.igPopItemWidth
+    LibImGui.PopItemWidth
   end
 
   # set width of the _next_ common large "item+label" widget. >0.0f: width in pixels, <0.0f align xx pixels to the right of window (so -FLT_MIN always align width to the right side)
   #
   # [ImGui::SetNextItemWidth()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L383)
   def self.set_next_item_width(item_width : Float32) : Void
-    LibImGui.igSetNextItemWidth(item_width)
+    LibImGui.SetNextItemWidth(item_width)
   end
 
   # width of item given pushed settings and current cursor position. NOT necessarily the width of last item unlike most 'Item' functions.
   #
   # [ImGui::CalcItemWidth()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L384)
   def self.calc_item_width : Float32
-    LibImGui.igCalcItemWidth
+    LibImGui.CalcItemWidth
   end
 
   # push word-wrapping position for Text*() commands. < 0.0f: no wrapping; 0.0f: wrap to end of window (or column); > 0.0f: wrap at 'wrap_pos_x' position in window local space
   #
   # [ImGui::PushTextWrapPos()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L385)
   def self.push_text_wrap_pos(wrap_local_pos_x : Float32 = 0.0) : Void
-    LibImGui.igPushTextWrapPos(wrap_local_pos_x)
+    LibImGui.PushTextWrapPos(wrap_local_pos_x)
   end
 
   # [ImGui::PopTextWrapPos()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L386)
   def self.pop_text_wrap_pos : Void
-    LibImGui.igPopTextWrapPos
+    LibImGui.PopTextWrapPos
   end
 
   # get current font
   #
   # [ImGui::GetFont()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L389)
   def self.get_font : ImFont
-    result = LibImGui.igGetFont
+    result = LibImGui.GetFont
     ImFont.new(result)
   end
 
@@ -608,14 +608,14 @@ module ImGui
   #
   # [ImGui::GetFontSize()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L390)
   def self.get_font_size : Float32
-    LibImGui.igGetFontSize
+    LibImGui.GetFontSize
   end
 
   # get UV coordinate for a while pixel, useful to draw custom shapes via the ImDrawList API
   #
   # [ImGui::GetFontTexUvWhitePixel()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L391)
   def self.get_font_tex_uv_white_pixel : ImGui::ImVec2
-    LibImGui.igGetFontTexUvWhitePixel(out p_out)
+    LibImGui.GetFontTexUvWhitePixel(out p_out)
     p_out
   end
 
@@ -623,28 +623,28 @@ module ImGui
   #
   # [ImGui::GetColorU32()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L392)
   def self.get_color_u32(idx : ImGuiCol, alpha_mul : Float32 = 1.0) : UInt32
-    LibImGui.igGetColorU32Col(idx, alpha_mul)
+    LibImGui.GetColorU32Col(idx, alpha_mul)
   end
 
   # retrieve given color with style alpha applied, packed as a 32-bit value suitable for ImDrawList
   #
   # [ImGui::GetColorU32()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L393)
   def self.get_color_u32(col : ImVec4) : UInt32
-    LibImGui.igGetColorU32Vec4(col)
+    LibImGui.GetColorU32Vec4(col)
   end
 
   # retrieve given color with style alpha applied, packed as a 32-bit value suitable for ImDrawList
   #
   # [ImGui::GetColorU32()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L394)
   def self.get_color_u32(col : UInt32) : UInt32
-    LibImGui.igGetColorU32U32(col)
+    LibImGui.GetColorU32U32(col)
   end
 
   # retrieve style color as stored in ImGuiStyle structure. use to feed back into PushStyleColor(), otherwise use GetColorU32() to get style color with style alpha baked in.
   #
   # [ImGui::GetStyleColorVec4()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L395)
   def self.get_style_color_vec4(idx : ImGuiCol) : ImVec4
-    result = LibImGui.igGetStyleColorVec4(idx)
+    result = LibImGui.GetStyleColorVec4(idx)
     result.value
   end
 
@@ -652,70 +652,70 @@ module ImGui
   #
   # [ImGui::Separator()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L404)
   def self.separator : Void
-    LibImGui.igSeparator
+    LibImGui.Separator
   end
 
   # call between widgets or groups to layout them horizontally. X position given in window coordinates.
   #
   # [ImGui::SameLine()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L405)
   def self.same_line(offset_from_start_x : Float32 = 0.0, spacing : Float32 = -1.0) : Void
-    LibImGui.igSameLine(offset_from_start_x, spacing)
+    LibImGui.SameLine(offset_from_start_x, spacing)
   end
 
   # undo a SameLine() or force a new line when in an horizontal-layout context.
   #
   # [ImGui::NewLine()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L406)
   def self.new_line : Void
-    LibImGui.igNewLine
+    LibImGui.NewLine
   end
 
   # add vertical spacing.
   #
   # [ImGui::Spacing()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L407)
   def self.spacing : Void
-    LibImGui.igSpacing
+    LibImGui.Spacing
   end
 
   # add a dummy item of given size. unlike InvisibleButton(), Dummy() won't take the mouse click or be navigable into.
   #
   # [ImGui::Dummy()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L408)
   def self.dummy(size : ImVec2) : Void
-    LibImGui.igDummy(size)
+    LibImGui.Dummy(size)
   end
 
   # move content position toward the right, by indent_w, or style.IndentSpacing if indent_w <= 0
   #
   # [ImGui::Indent()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L409)
   def self.indent(indent_w : Float32 = 0.0) : Void
-    LibImGui.igIndent(indent_w)
+    LibImGui.Indent(indent_w)
   end
 
   # move content position back to the left, by indent_w, or style.IndentSpacing if indent_w <= 0
   #
   # [ImGui::Unindent()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L410)
   def self.unindent(indent_w : Float32 = 0.0) : Void
-    LibImGui.igUnindent(indent_w)
+    LibImGui.Unindent(indent_w)
   end
 
   # lock horizontal starting position
   #
   # [ImGui::BeginGroup()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L411)
   def self.begin_group : Void
-    LibImGui.igBeginGroup
+    LibImGui.BeginGroup
   end
 
   # unlock horizontal starting position + capture the whole group bounding box into one "item" (so you can use IsItemHovered() or layout primitives such as SameLine() on whole group, etc.)
   #
   # [ImGui::EndGroup()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L412)
   def self.end_group : Void
-    LibImGui.igEndGroup
+    LibImGui.EndGroup
   end
 
   # cursor position in window coordinates (relative to window position)
   #
   # [ImGui::GetCursorPos()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L413)
   def self.get_cursor_pos : ImGui::ImVec2
-    LibImGui.igGetCursorPos(out p_out)
+    LibImGui.GetCursorPos(out p_out)
     p_out
   end
 
@@ -723,40 +723,40 @@ module ImGui
   #
   # [ImGui::GetCursorPosX()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L414)
   def self.get_cursor_pos_x : Float32
-    LibImGui.igGetCursorPosX
+    LibImGui.GetCursorPosX
   end
 
   # other functions such as GetCursorScreenPos or everything in ImDrawList::
   #
   # [ImGui::GetCursorPosY()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L415)
   def self.get_cursor_pos_y : Float32
-    LibImGui.igGetCursorPosY
+    LibImGui.GetCursorPosY
   end
 
   # are using the main, absolute coordinate system.
   #
   # [ImGui::SetCursorPos()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L416)
   def self.set_cursor_pos(local_pos : ImVec2) : Void
-    LibImGui.igSetCursorPos(local_pos)
+    LibImGui.SetCursorPos(local_pos)
   end
 
   # GetWindowPos() + GetCursorPos() == GetCursorScreenPos() etc.)
   #
   # [ImGui::SetCursorPosX()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L417)
   def self.set_cursor_pos_x(local_x : Float32) : Void
-    LibImGui.igSetCursorPosX(local_x)
+    LibImGui.SetCursorPosX(local_x)
   end
 
   # [ImGui::SetCursorPosY()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L418)
   def self.set_cursor_pos_y(local_y : Float32) : Void
-    LibImGui.igSetCursorPosY(local_y)
+    LibImGui.SetCursorPosY(local_y)
   end
 
   # initial cursor position in window coordinates
   #
   # [ImGui::GetCursorStartPos()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L419)
   def self.get_cursor_start_pos : ImGui::ImVec2
-    LibImGui.igGetCursorStartPos(out p_out)
+    LibImGui.GetCursorStartPos(out p_out)
     p_out
   end
 
@@ -764,7 +764,7 @@ module ImGui
   #
   # [ImGui::GetCursorScreenPos()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L420)
   def self.get_cursor_screen_pos : ImGui::ImVec2
-    LibImGui.igGetCursorScreenPos(out p_out)
+    LibImGui.GetCursorScreenPos(out p_out)
     p_out
   end
 
@@ -772,489 +772,489 @@ module ImGui
   #
   # [ImGui::SetCursorScreenPos()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L421)
   def self.set_cursor_screen_pos(pos : ImVec2) : Void
-    LibImGui.igSetCursorScreenPos(pos)
+    LibImGui.SetCursorScreenPos(pos)
   end
 
   # vertically align upcoming text baseline to FramePadding.y so that it will align properly to regularly framed items (call if you have text on a line before a framed item)
   #
   # [ImGui::AlignTextToFramePadding()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L422)
   def self.align_text_to_frame_padding : Void
-    LibImGui.igAlignTextToFramePadding
+    LibImGui.AlignTextToFramePadding
   end
 
   # ~ FontSize
   #
   # [ImGui::GetTextLineHeight()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L423)
   def self.get_text_line_height : Float32
-    LibImGui.igGetTextLineHeight
+    LibImGui.GetTextLineHeight
   end
 
   # ~ FontSize + style.ItemSpacing.y (distance in pixels between 2 consecutive lines of text)
   #
   # [ImGui::GetTextLineHeightWithSpacing()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L424)
   def self.get_text_line_height_with_spacing : Float32
-    LibImGui.igGetTextLineHeightWithSpacing
+    LibImGui.GetTextLineHeightWithSpacing
   end
 
   # ~ FontSize + style.FramePadding.y * 2
   #
   # [ImGui::GetFrameHeight()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L425)
   def self.get_frame_height : Float32
-    LibImGui.igGetFrameHeight
+    LibImGui.GetFrameHeight
   end
 
   # ~ FontSize + style.FramePadding.y * 2 + style.ItemSpacing.y (distance in pixels between 2 consecutive lines of framed widgets)
   #
   # [ImGui::GetFrameHeightWithSpacing()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L426)
   def self.get_frame_height_with_spacing : Float32
-    LibImGui.igGetFrameHeightWithSpacing
+    LibImGui.GetFrameHeightWithSpacing
   end
 
   # push string into the ID stack (will hash string).
   #
   # [ImGui::PushID()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L435)
   def self.push_id(str_id : String) : Void
-    LibImGui.igPushIDStr(str_id)
+    LibImGui.PushIDStr(str_id)
   end
 
   # push string into the ID stack (will hash string).
   #
   # [ImGui::PushID()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L436)
   def self.push_id(str_id : Bytes | String) : Void
-    LibImGui.igPushIDStrStr(str_id, (str_id.to_unsafe + str_id.bytesize))
+    LibImGui.PushIDStrStr(str_id, (str_id.to_unsafe + str_id.bytesize))
   end
 
   # push pointer into the ID stack (will hash pointer).
   #
   # [ImGui::PushID()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L437)
   def self.push_id(ptr_id : Reference | ClassType | Int | Void*) : Void
-    LibImGui.igPushIDPtr(to_void_id(ptr_id))
+    LibImGui.PushIDPtr(to_void_id(ptr_id))
   end
 
   # push integer into the ID stack (will hash integer).
   #
   # [ImGui::PushID()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L438)
   def self.push_id(int_id : Int32) : Void
-    LibImGui.igPushIDInt(int_id)
+    LibImGui.PushIDInt(int_id)
   end
 
   # pop from the ID stack.
   #
   # [ImGui::PopID()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L439)
   def self.pop_id : Void
-    LibImGui.igPopID
+    LibImGui.PopID
   end
 
   # calculate unique ID (hash of whole ID stack + given parameter). e.g. if you want to query into ImGuiStorage yourself
   #
   # [ImGui::GetID()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L440)
   def self.get_id(str_id : String) : ImGuiID
-    LibImGui.igGetIDStr(str_id)
+    LibImGui.GetIDStr(str_id)
   end
 
   # [ImGui::GetID()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L441)
   def self.get_id(str_id : Bytes | String) : ImGuiID
-    LibImGui.igGetIDStrStr(str_id, (str_id.to_unsafe + str_id.bytesize))
+    LibImGui.GetIDStrStr(str_id, (str_id.to_unsafe + str_id.bytesize))
   end
 
   # [ImGui::GetID()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L442)
   def self.get_id(ptr_id : Reference | ClassType | Int | Void*) : ImGuiID
-    LibImGui.igGetIDPtr(to_void_id(ptr_id))
+    LibImGui.GetIDPtr(to_void_id(ptr_id))
   end
 
   # raw text without formatting. Roughly equivalent to Text("%s", text) but: A) doesn't require null terminated string if 'text_end' is specified, B) it's faster, no memory copy is done, no buffer size limits, recommended for long chunks of text.
   #
   # [ImGui::TextUnformatted()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L445)
   def self.text_unformatted(text : Bytes | String) : Void
-    LibImGui.igTextUnformatted(text, (text.to_unsafe + text.bytesize))
+    LibImGui.TextUnformatted(text, (text.to_unsafe + text.bytesize))
   end
 
   # formatted text
   #
   # [ImGui::Text()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L446)
   def self.text(fmt : String, *args) : Void
-    LibImGui.igText(fmt, *args._promote_va_args)
+    LibImGui.Text(fmt, *args._promote_va_args)
   end
 
   # shortcut for PushStyleColor(ImGuiCol_Text, col); Text(fmt, ...); PopStyleColor();
   #
   # [ImGui::TextColored()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L448)
   def self.text_colored(col : ImVec4, fmt : String, *args) : Void
-    LibImGui.igTextColored(col, fmt, *args._promote_va_args)
+    LibImGui.TextColored(col, fmt, *args._promote_va_args)
   end
 
   # shortcut for PushStyleColor(ImGuiCol_Text, style.Colors[ImGuiCol_TextDisabled]); Text(fmt, ...); PopStyleColor();
   #
   # [ImGui::TextDisabled()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L450)
   def self.text_disabled(fmt : String, *args) : Void
-    LibImGui.igTextDisabled(fmt, *args._promote_va_args)
+    LibImGui.TextDisabled(fmt, *args._promote_va_args)
   end
 
   # shortcut for PushTextWrapPos(0.0f); Text(fmt, ...); PopTextWrapPos();. Note that this won't work on an auto-resizing window if there's no other widgets to extend the window width, yoy may need to set a size using SetNextWindowSize().
   #
   # [ImGui::TextWrapped()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L452)
   def self.text_wrapped(fmt : String, *args) : Void
-    LibImGui.igTextWrapped(fmt, *args._promote_va_args)
+    LibImGui.TextWrapped(fmt, *args._promote_va_args)
   end
 
   # display text+label aligned the same way as value+label widgets
   #
   # [ImGui::LabelText()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L454)
   def self.label_text(label : String, fmt : String, *args) : Void
-    LibImGui.igLabelText(label, fmt, *args._promote_va_args)
+    LibImGui.LabelText(label, fmt, *args._promote_va_args)
   end
 
   # shortcut for Bullet()+Text()
   #
   # [ImGui::BulletText()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L456)
   def self.bullet_text(fmt : String, *args) : Void
-    LibImGui.igBulletText(fmt, *args._promote_va_args)
+    LibImGui.BulletText(fmt, *args._promote_va_args)
   end
 
   # button
   #
   # [ImGui::Button()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L462)
   def self.button(label : String, size : ImVec2 = ImVec2.new(0, 0)) : Bool
-    LibImGui.igButton(label, size)
+    LibImGui.Button(label, size)
   end
 
   # button with FramePadding=(0,0) to easily embed within text
   #
   # [ImGui::SmallButton()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L463)
   def self.small_button(label : String) : Bool
-    LibImGui.igSmallButton(label)
+    LibImGui.SmallButton(label)
   end
 
   # flexible button behavior without the visuals, frequently useful to build custom behaviors using the public api (along with IsItemActive, IsItemHovered, etc.)
   #
   # [ImGui::InvisibleButton()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L464)
   def self.invisible_button(str_id : String, size : ImVec2, flags : ImGuiButtonFlags = ImGuiButtonFlags.new(0)) : Bool
-    LibImGui.igInvisibleButton(str_id, size, flags)
+    LibImGui.InvisibleButton(str_id, size, flags)
   end
 
   # square button with an arrow shape
   #
   # [ImGui::ArrowButton()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L465)
   def self.arrow_button(str_id : String, dir : ImGuiDir) : Bool
-    LibImGui.igArrowButton(str_id, dir)
+    LibImGui.ArrowButton(str_id, dir)
   end
 
   # [ImGui::Image()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L466)
   def self.image(user_texture_id : ImTextureID, size : ImVec2, uv0 : ImVec2 = ImVec2.new(0, 0), uv1 : ImVec2 = ImVec2.new(1, 1), tint_col : ImVec4 = ImVec4(1, 1, 1, 1), border_col : ImVec4 = ImVec4(0, 0, 0, 0)) : Void
-    LibImGui.igImage(user_texture_id, size, uv0, uv1, tint_col, border_col)
+    LibImGui.Image(user_texture_id, size, uv0, uv1, tint_col, border_col)
   end
 
   # <0 frame_padding uses default frame padding settings. 0 for no padding
   #
   # [ImGui::ImageButton()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L467)
   def self.image_button(user_texture_id : ImTextureID, size : ImVec2, uv0 : ImVec2 = ImVec2.new(0, 0), uv1 : ImVec2 = ImVec2.new(1, 1), frame_padding : Int32 = -1, bg_col : ImVec4 = ImVec4(0, 0, 0, 0), tint_col : ImVec4 = ImVec4(1, 1, 1, 1)) : Bool
-    LibImGui.igImageButton(user_texture_id, size, uv0, uv1, frame_padding, bg_col, tint_col)
+    LibImGui.ImageButton(user_texture_id, size, uv0, uv1, frame_padding, bg_col, tint_col)
   end
 
   # [ImGui::Checkbox()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L468)
   pointer_wrapper def self.checkbox(label : String, v : Bool*) : Bool
-    LibImGui.igCheckbox(label, v)
+    LibImGui.Checkbox(label, v)
   end
   # [ImGui::CheckboxFlags()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L469)
   pointer_wrapper def self.checkbox_flags(label : String, flags : Int32*, flags_value : Int32) : Bool
-    LibImGui.igCheckboxFlagsIntPtr(label, flags, flags_value)
+    LibImGui.CheckboxFlagsIntPtr(label, flags, flags_value)
   end
   # [ImGui::CheckboxFlags()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L470)
   pointer_wrapper def self.checkbox_flags(label : String, flags : UInt32*, flags_value : UInt32) : Bool
-    LibImGui.igCheckboxFlagsUintPtr(label, flags, flags_value)
+    LibImGui.CheckboxFlagsUintPtr(label, flags, flags_value)
   end
   # use with e.g. if (RadioButton("one", my_value==1)) { my_value = 1; }
   #
   # [ImGui::RadioButton()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L471)
   pointer_wrapper def self.radio_button(label : String, active : Bool) : Bool
-    LibImGui.igRadioButtonBool(label, active)
+    LibImGui.RadioButtonBool(label, active)
   end
   # shortcut to handle the above pattern when value is an integer
   #
   # [ImGui::RadioButton()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L472)
   pointer_wrapper def self.radio_button(label : String, v : Int32*, v_button : Int32) : Bool
-    LibImGui.igRadioButtonIntPtr(label, v, v_button)
+    LibImGui.RadioButtonIntPtr(label, v, v_button)
   end
 
   # [ImGui::ProgressBar()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L473)
   def self.progress_bar(fraction : Float32, size_arg : ImVec2 = ImVec2.new(-Float32::MIN_POSITIVE, 0), overlay : String? = nil) : Void
-    LibImGui.igProgressBar(fraction, size_arg, overlay)
+    LibImGui.ProgressBar(fraction, size_arg, overlay)
   end
 
   # draw a small circle + keep the cursor on the same line. advance cursor x position by GetTreeNodeToLabelSpacing(), same distance that TreeNode() uses
   #
   # [ImGui::Bullet()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L474)
   def self.bullet : Void
-    LibImGui.igBullet
+    LibImGui.Bullet
   end
 
   # [ImGui::BeginCombo()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L479)
   def self.begin_combo(label : String, preview_value : String, flags : ImGuiComboFlags = ImGuiComboFlags.new(0)) : Bool
-    LibImGui.igBeginCombo(label, preview_value, flags)
+    LibImGui.BeginCombo(label, preview_value, flags)
   end
 
   # only call EndCombo() if BeginCombo() returns true!
   #
   # [ImGui::EndCombo()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L480)
   def self.end_combo : Void
-    LibImGui.igEndCombo
+    LibImGui.EndCombo
   end
 
   # [ImGui::Combo()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L481)
   pointer_wrapper def self.combo(label : String, current_item : Int32* | Pointer, items : Indexable(LibC::Char*), popup_max_height_in_items : Int32 = -1) : Bool
-    LibImGui.igComboStr_arr(label, (typeof(current_item.value.to_i32); current_item.as(Int32*)), items, items.size, popup_max_height_in_items)
+    LibImGui.ComboStr_arr(label, (typeof(current_item.value.to_i32); current_item.as(Int32*)), items, items.size, popup_max_height_in_items)
   end
   # Separate items with \0 within a string, end item-list with \0\0. e.g. "One\0Two\0Three\0"
   #
   # [ImGui::Combo()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L482)
   pointer_wrapper def self.combo(label : String, current_item : Int32* | Pointer, items_separated_by_zeros : String, popup_max_height_in_items : Int32 = -1) : Bool
-    LibImGui.igComboStr(label, (typeof(current_item.value.to_i32); current_item.as(Int32*)), items_separated_by_zeros, popup_max_height_in_items)
+    LibImGui.ComboStr(label, (typeof(current_item.value.to_i32); current_item.as(Int32*)), items_separated_by_zeros, popup_max_height_in_items)
   end
   # [ImGui::Combo()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L483)
   pointer_wrapper def self.combo(label : String, current_item : Int32* | Pointer, items_getter : (Void*, Int32, LibC::Char**) -> Bool, data : Void*, items_count : Int32, popup_max_height_in_items : Int32 = -1) : Bool
-    LibImGui.igComboFnBoolPtr(label, (typeof(current_item.value.to_i32); current_item.as(Int32*)), items_getter, data, items_count, popup_max_height_in_items)
+    LibImGui.ComboFnBoolPtr(label, (typeof(current_item.value.to_i32); current_item.as(Int32*)), items_getter, data, items_count, popup_max_height_in_items)
   end
   # If v_min >= v_max we have no bound
   #
   # [ImGui::DragFloat()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L496)
   pointer_wrapper def self.drag_float(label : String, v : Float32*, v_speed : Float32 = 1.0, v_min : Float32 = 0.0, v_max : Float32 = 0.0, format : String = "%.3f", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
-    LibImGui.igDragFloat(label, v, v_speed, v_min, v_max, format, flags)
+    LibImGui.DragFloat(label, v, v_speed, v_min, v_max, format, flags)
   end
   # [ImGui::DragFloat2()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L497)
   pointer_wrapper def self.drag_float2(label : String, v : ImVec2* | Indexable(Float32) | Float32*, v_speed : Float32 = 1.0, v_min : Float32 = 0.0, v_max : Float32 = 0.0, format : String = "%.3f", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
-    LibImGui.igDragFloat2(label, v.is_a?(Indexable) ? (
+    LibImGui.DragFloat2(label, v.is_a?(Indexable) ? (
       v.size == 2 ? v.to_unsafe : raise ArgumentError.new("Slice has wrong size #{v.size} (want 2)")
     ) : v.as(Float32*), v_speed, v_min, v_max, format, flags)
   end
   # [ImGui::DragFloat3()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L498)
   pointer_wrapper def self.drag_float3(label : String, v : Indexable(Float32) | Float32*, v_speed : Float32 = 1.0, v_min : Float32 = 0.0, v_max : Float32 = 0.0, format : String = "%.3f", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
-    LibImGui.igDragFloat3(label, v.is_a?(Indexable) ? (
+    LibImGui.DragFloat3(label, v.is_a?(Indexable) ? (
       v.size == 3 ? v.to_unsafe : raise ArgumentError.new("Slice has wrong size #{v.size} (want 3)")
     ) : v.as(Float32*), v_speed, v_min, v_max, format, flags)
   end
   # [ImGui::DragFloat4()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L499)
   pointer_wrapper def self.drag_float4(label : String, v : ImVec4* | Indexable(Float32) | Float32*, v_speed : Float32 = 1.0, v_min : Float32 = 0.0, v_max : Float32 = 0.0, format : String = "%.3f", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
-    LibImGui.igDragFloat4(label, v.is_a?(Indexable) ? (
+    LibImGui.DragFloat4(label, v.is_a?(Indexable) ? (
       v.size == 4 ? v.to_unsafe : raise ArgumentError.new("Slice has wrong size #{v.size} (want 4)")
     ) : v.as(Float32*), v_speed, v_min, v_max, format, flags)
   end
   # [ImGui::DragFloatRange2()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L500)
   pointer_wrapper def self.drag_float_range2(label : String, v_current_min : Float32*, v_current_max : Float32*, v_speed : Float32 = 1.0, v_min : Float32 = 0.0, v_max : Float32 = 0.0, format : String = "%.3f", format_max : String? = nil, flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
-    LibImGui.igDragFloatRange2(label, v_current_min, v_current_max, v_speed, v_min, v_max, format, format_max, flags)
+    LibImGui.DragFloatRange2(label, v_current_min, v_current_max, v_speed, v_min, v_max, format, format_max, flags)
   end
   # If v_min >= v_max we have no bound
   #
   # [ImGui::DragInt()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L501)
   pointer_wrapper def self.drag_int(label : String, v : Int32*, v_speed : Float32 = 1.0, v_min : Int32 = 0, v_max : Int32 = 0, format : String = "%d", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
-    LibImGui.igDragInt(label, v, v_speed, v_min, v_max, format, flags)
+    LibImGui.DragInt(label, v, v_speed, v_min, v_max, format, flags)
   end
   # [ImGui::DragInt2()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L502)
   pointer_wrapper def self.drag_int2(label : String, v : Indexable(Int32) | Int32*, v_speed : Float32 = 1.0, v_min : Int32 = 0, v_max : Int32 = 0, format : String = "%d", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
-    LibImGui.igDragInt2(label, v.is_a?(Indexable) ? (
+    LibImGui.DragInt2(label, v.is_a?(Indexable) ? (
       v.size == 2 ? v.to_unsafe : raise ArgumentError.new("Slice has wrong size #{v.size} (want 2)")
     ) : v.as(Int32*), v_speed, v_min, v_max, format, flags)
   end
   # [ImGui::DragInt3()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L503)
   pointer_wrapper def self.drag_int3(label : String, v : Indexable(Int32) | Int32*, v_speed : Float32 = 1.0, v_min : Int32 = 0, v_max : Int32 = 0, format : String = "%d", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
-    LibImGui.igDragInt3(label, v.is_a?(Indexable) ? (
+    LibImGui.DragInt3(label, v.is_a?(Indexable) ? (
       v.size == 3 ? v.to_unsafe : raise ArgumentError.new("Slice has wrong size #{v.size} (want 3)")
     ) : v.as(Int32*), v_speed, v_min, v_max, format, flags)
   end
   # [ImGui::DragInt4()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L504)
   pointer_wrapper def self.drag_int4(label : String, v : Indexable(Int32) | Int32*, v_speed : Float32 = 1.0, v_min : Int32 = 0, v_max : Int32 = 0, format : String = "%d", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
-    LibImGui.igDragInt4(label, v.is_a?(Indexable) ? (
+    LibImGui.DragInt4(label, v.is_a?(Indexable) ? (
       v.size == 4 ? v.to_unsafe : raise ArgumentError.new("Slice has wrong size #{v.size} (want 4)")
     ) : v.as(Int32*), v_speed, v_min, v_max, format, flags)
   end
   # [ImGui::DragIntRange2()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L505)
   pointer_wrapper def self.drag_int_range2(label : String, v_current_min : Int32*, v_current_max : Int32*, v_speed : Float32 = 1.0, v_min : Int32 = 0, v_max : Int32 = 0, format : String = "%d", format_max : String? = nil, flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
-    LibImGui.igDragIntRange2(label, v_current_min, v_current_max, v_speed, v_min, v_max, format, format_max, flags)
+    LibImGui.DragIntRange2(label, v_current_min, v_current_max, v_speed, v_min, v_max, format, format_max, flags)
   end
   {% for k, t in {S8: Int8, U8: UInt8, S16: Int16, U16: UInt16, S32: Int32, U32: UInt32, S64: Int64, U64: UInt64, Float: Float32, Double: Float64} %}
   # [ImGui::DragScalar()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L506)
   pointer_wrapper def self.drag_scalar(label : String, p_data : {{t}}*, v_speed : Float32, p_min : {{t}}? = nil, p_max : {{t}}? = nil, format : String? = nil, flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
-    LibImGui.igDragScalar(label, ImGuiDataType::{{k.id}}, p_data, v_speed, p_min ? (p_min_ = p_min; pointerof(p_min_)) : Pointer({{t}}).null, p_max ? (p_max_ = p_max; pointerof(p_max_)) : Pointer({{t}}).null, format, flags)
+    LibImGui.DragScalar(label, ImGuiDataType::{{k.id}}, p_data, v_speed, p_min ? (p_min_ = p_min; pointerof(p_min_)) : Pointer({{t}}).null, p_max ? (p_max_ = p_max; pointerof(p_max_)) : Pointer({{t}}).null, format, flags)
   end
   {% end %}
   {% for k, t in {S8: Int8, U8: UInt8, S16: Int16, U16: UInt16, S32: Int32, U32: UInt32, S64: Int64, U64: UInt64, Float: Float32, Double: Float64} %}
   # [ImGui::DragScalarN()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L507)
   pointer_wrapper def self.drag_scalar_n(label : String, p_data : {{t}}*, components : Int32, v_speed : Float32, p_min : {{t}}* = Pointer({{t}}).null, p_max : {{t}}* = Pointer({{t}}).null, format : String? = nil, flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
-    LibImGui.igDragScalarN(label, ImGuiDataType::{{k.id}}, p_data, components, v_speed, p_min, p_max, format, flags)
+    LibImGui.DragScalarN(label, ImGuiDataType::{{k.id}}, p_data, components, v_speed, p_min, p_max, format, flags)
   end
   {% end %}
   # adjust format to decorate the value with a prefix or a suffix for in-slider labels or unit display.
   #
   # [ImGui::SliderFloat()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L515)
   pointer_wrapper def self.slider_float(label : String, v : Float32*, v_min : Float32, v_max : Float32, format : String = "%.3f", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
-    LibImGui.igSliderFloat(label, v, v_min, v_max, format, flags)
+    LibImGui.SliderFloat(label, v, v_min, v_max, format, flags)
   end
   # [ImGui::SliderFloat2()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L516)
   pointer_wrapper def self.slider_float2(label : String, v : ImVec2* | Indexable(Float32) | Float32*, v_min : Float32, v_max : Float32, format : String = "%.3f", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
-    LibImGui.igSliderFloat2(label, v.is_a?(Indexable) ? (
+    LibImGui.SliderFloat2(label, v.is_a?(Indexable) ? (
       v.size == 2 ? v.to_unsafe : raise ArgumentError.new("Slice has wrong size #{v.size} (want 2)")
     ) : v.as(Float32*), v_min, v_max, format, flags)
   end
   # [ImGui::SliderFloat3()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L517)
   pointer_wrapper def self.slider_float3(label : String, v : Indexable(Float32) | Float32*, v_min : Float32, v_max : Float32, format : String = "%.3f", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
-    LibImGui.igSliderFloat3(label, v.is_a?(Indexable) ? (
+    LibImGui.SliderFloat3(label, v.is_a?(Indexable) ? (
       v.size == 3 ? v.to_unsafe : raise ArgumentError.new("Slice has wrong size #{v.size} (want 3)")
     ) : v.as(Float32*), v_min, v_max, format, flags)
   end
   # [ImGui::SliderFloat4()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L518)
   pointer_wrapper def self.slider_float4(label : String, v : ImVec4* | Indexable(Float32) | Float32*, v_min : Float32, v_max : Float32, format : String = "%.3f", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
-    LibImGui.igSliderFloat4(label, v.is_a?(Indexable) ? (
+    LibImGui.SliderFloat4(label, v.is_a?(Indexable) ? (
       v.size == 4 ? v.to_unsafe : raise ArgumentError.new("Slice has wrong size #{v.size} (want 4)")
     ) : v.as(Float32*), v_min, v_max, format, flags)
   end
   # [ImGui::SliderAngle()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L519)
   pointer_wrapper def self.slider_angle(label : String, v_rad : Float32*, v_degrees_min : Float32 = -360.0, v_degrees_max : Float32 = +360.0, format : String = "%.0 deg", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
-    LibImGui.igSliderAngle(label, v_rad, v_degrees_min, v_degrees_max, format, flags)
+    LibImGui.SliderAngle(label, v_rad, v_degrees_min, v_degrees_max, format, flags)
   end
   # [ImGui::SliderInt()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L520)
   pointer_wrapper def self.slider_int(label : String, v : Int32*, v_min : Int32, v_max : Int32, format : String = "%d", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
-    LibImGui.igSliderInt(label, v, v_min, v_max, format, flags)
+    LibImGui.SliderInt(label, v, v_min, v_max, format, flags)
   end
   # [ImGui::SliderInt2()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L521)
   pointer_wrapper def self.slider_int2(label : String, v : Indexable(Int32) | Int32*, v_min : Int32, v_max : Int32, format : String = "%d", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
-    LibImGui.igSliderInt2(label, v.is_a?(Indexable) ? (
+    LibImGui.SliderInt2(label, v.is_a?(Indexable) ? (
       v.size == 2 ? v.to_unsafe : raise ArgumentError.new("Slice has wrong size #{v.size} (want 2)")
     ) : v.as(Int32*), v_min, v_max, format, flags)
   end
   # [ImGui::SliderInt3()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L522)
   pointer_wrapper def self.slider_int3(label : String, v : Indexable(Int32) | Int32*, v_min : Int32, v_max : Int32, format : String = "%d", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
-    LibImGui.igSliderInt3(label, v.is_a?(Indexable) ? (
+    LibImGui.SliderInt3(label, v.is_a?(Indexable) ? (
       v.size == 3 ? v.to_unsafe : raise ArgumentError.new("Slice has wrong size #{v.size} (want 3)")
     ) : v.as(Int32*), v_min, v_max, format, flags)
   end
   # [ImGui::SliderInt4()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L523)
   pointer_wrapper def self.slider_int4(label : String, v : Indexable(Int32) | Int32*, v_min : Int32, v_max : Int32, format : String = "%d", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
-    LibImGui.igSliderInt4(label, v.is_a?(Indexable) ? (
+    LibImGui.SliderInt4(label, v.is_a?(Indexable) ? (
       v.size == 4 ? v.to_unsafe : raise ArgumentError.new("Slice has wrong size #{v.size} (want 4)")
     ) : v.as(Int32*), v_min, v_max, format, flags)
   end
   {% for k, t in {S8: Int8, U8: UInt8, S16: Int16, U16: UInt16, S32: Int32, U32: UInt32, S64: Int64, U64: UInt64, Float: Float32, Double: Float64} %}
   # [ImGui::SliderScalar()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L524)
   pointer_wrapper def self.slider_scalar(label : String, p_data : {{t}}*, p_min : {{t}}, p_max : {{t}}, format : String? = nil, flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
-    LibImGui.igSliderScalar(label, ImGuiDataType::{{k.id}}, p_data, p_min ? (p_min_ = p_min; pointerof(p_min_)) : Pointer({{t}}).null, p_max ? (p_max_ = p_max; pointerof(p_max_)) : Pointer({{t}}).null, format, flags)
+    LibImGui.SliderScalar(label, ImGuiDataType::{{k.id}}, p_data, p_min ? (p_min_ = p_min; pointerof(p_min_)) : Pointer({{t}}).null, p_max ? (p_max_ = p_max; pointerof(p_max_)) : Pointer({{t}}).null, format, flags)
   end
   {% end %}
   {% for k, t in {S8: Int8, U8: UInt8, S16: Int16, U16: UInt16, S32: Int32, U32: UInt32, S64: Int64, U64: UInt64, Float: Float32, Double: Float64} %}
   # [ImGui::SliderScalarN()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L525)
   pointer_wrapper def self.slider_scalar_n(label : String, p_data : {{t}}*, components : Int32, p_min : {{t}}*, p_max : {{t}}*, format : String? = nil, flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
-    LibImGui.igSliderScalarN(label, ImGuiDataType::{{k.id}}, p_data, components, p_min, p_max, format, flags)
+    LibImGui.SliderScalarN(label, ImGuiDataType::{{k.id}}, p_data, components, p_min, p_max, format, flags)
   end
   {% end %}
   # [ImGui::VSliderFloat()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L526)
   pointer_wrapper def self.v_slider_float(label : String, size : ImVec2, v : Float32*, v_min : Float32, v_max : Float32, format : String = "%.3f", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
-    LibImGui.igVSliderFloat(label, size, v, v_min, v_max, format, flags)
+    LibImGui.VSliderFloat(label, size, v, v_min, v_max, format, flags)
   end
   # [ImGui::VSliderInt()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L527)
   pointer_wrapper def self.v_slider_int(label : String, size : ImVec2, v : Int32*, v_min : Int32, v_max : Int32, format : String = "%d", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
-    LibImGui.igVSliderInt(label, size, v, v_min, v_max, format, flags)
+    LibImGui.VSliderInt(label, size, v, v_min, v_max, format, flags)
   end
   {% for k, t in {S8: Int8, U8: UInt8, S16: Int16, U16: UInt16, S32: Int32, U32: UInt32, S64: Int64, U64: UInt64, Float: Float32, Double: Float64} %}
   # [ImGui::VSliderScalar()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L528)
   pointer_wrapper def self.v_slider_scalar(label : String, size : ImVec2, p_data : {{t}}*, p_min : {{t}}, p_max : {{t}}, format : String? = nil, flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
-    LibImGui.igVSliderScalar(label, size, ImGuiDataType::{{k.id}}, p_data, p_min ? (p_min_ = p_min; pointerof(p_min_)) : Pointer({{t}}).null, p_max ? (p_max_ = p_max; pointerof(p_max_)) : Pointer({{t}}).null, format, flags)
+    LibImGui.VSliderScalar(label, size, ImGuiDataType::{{k.id}}, p_data, p_min ? (p_min_ = p_min; pointerof(p_min_)) : Pointer({{t}}).null, p_max ? (p_max_ = p_max; pointerof(p_max_)) : Pointer({{t}}).null, format, flags)
   end
   {% end %}
 
   # [ImGui::InputText()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L533)
   def self.input_text(label : String, buf : Bytes, flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0), callback : ImGuiInputTextCallback? = nil, user_data : Void* = Pointer(Void).null) : Bool
-    LibImGui.igInputText(label, buf, buf.size, flags, callback, user_data)
+    LibImGui.InputText(label, buf, buf.size, flags, callback, user_data)
   end
 
   # [ImGui::InputTextMultiline()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L534)
   def self.input_text_multiline(label : String, buf : Bytes, size : ImVec2 = ImVec2.new(0, 0), flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0), callback : ImGuiInputTextCallback? = nil, user_data : Void* = Pointer(Void).null) : Bool
-    LibImGui.igInputTextMultiline(label, buf, buf.size, size, flags, callback, user_data)
+    LibImGui.InputTextMultiline(label, buf, buf.size, size, flags, callback, user_data)
   end
 
   # [ImGui::InputTextWithHint()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L535)
   def self.input_text_with_hint(label : String, hint : String, buf : Bytes, flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0), callback : ImGuiInputTextCallback? = nil, user_data : Void* = Pointer(Void).null) : Bool
-    LibImGui.igInputTextWithHint(label, hint, buf, buf.size, flags, callback, user_data)
+    LibImGui.InputTextWithHint(label, hint, buf, buf.size, flags, callback, user_data)
   end
 
   # [ImGui::InputFloat()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L536)
   pointer_wrapper def self.input_float(label : String, v : Float32*, step : Float32 = 0.0, step_fast : Float32 = 0.0, format : String = "%.3f", flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0)) : Bool
-    LibImGui.igInputFloat(label, v, step, step_fast, format, flags)
+    LibImGui.InputFloat(label, v, step, step_fast, format, flags)
   end
   # [ImGui::InputFloat2()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L537)
   pointer_wrapper def self.input_float2(label : String, v : ImVec2* | Indexable(Float32) | Float32*, format : String = "%.3f", flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0)) : Bool
-    LibImGui.igInputFloat2(label, v.is_a?(Indexable) ? (
+    LibImGui.InputFloat2(label, v.is_a?(Indexable) ? (
       v.size == 2 ? v.to_unsafe : raise ArgumentError.new("Slice has wrong size #{v.size} (want 2)")
     ) : v.as(Float32*), format, flags)
   end
   # [ImGui::InputFloat3()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L538)
   pointer_wrapper def self.input_float3(label : String, v : Indexable(Float32) | Float32*, format : String = "%.3f", flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0)) : Bool
-    LibImGui.igInputFloat3(label, v.is_a?(Indexable) ? (
+    LibImGui.InputFloat3(label, v.is_a?(Indexable) ? (
       v.size == 3 ? v.to_unsafe : raise ArgumentError.new("Slice has wrong size #{v.size} (want 3)")
     ) : v.as(Float32*), format, flags)
   end
   # [ImGui::InputFloat4()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L539)
   pointer_wrapper def self.input_float4(label : String, v : ImVec4* | Indexable(Float32) | Float32*, format : String = "%.3f", flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0)) : Bool
-    LibImGui.igInputFloat4(label, v.is_a?(Indexable) ? (
+    LibImGui.InputFloat4(label, v.is_a?(Indexable) ? (
       v.size == 4 ? v.to_unsafe : raise ArgumentError.new("Slice has wrong size #{v.size} (want 4)")
     ) : v.as(Float32*), format, flags)
   end
   # [ImGui::InputInt()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L540)
   pointer_wrapper def self.input_int(label : String, v : Int32*, step : Int32 = 1, step_fast : Int32 = 100, flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0)) : Bool
-    LibImGui.igInputInt(label, v, step, step_fast, flags)
+    LibImGui.InputInt(label, v, step, step_fast, flags)
   end
   # [ImGui::InputInt2()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L541)
   pointer_wrapper def self.input_int2(label : String, v : Indexable(Int32) | Int32*, flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0)) : Bool
-    LibImGui.igInputInt2(label, v.is_a?(Indexable) ? (
+    LibImGui.InputInt2(label, v.is_a?(Indexable) ? (
       v.size == 2 ? v.to_unsafe : raise ArgumentError.new("Slice has wrong size #{v.size} (want 2)")
     ) : v.as(Int32*), flags)
   end
   # [ImGui::InputInt3()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L542)
   pointer_wrapper def self.input_int3(label : String, v : Indexable(Int32) | Int32*, flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0)) : Bool
-    LibImGui.igInputInt3(label, v.is_a?(Indexable) ? (
+    LibImGui.InputInt3(label, v.is_a?(Indexable) ? (
       v.size == 3 ? v.to_unsafe : raise ArgumentError.new("Slice has wrong size #{v.size} (want 3)")
     ) : v.as(Int32*), flags)
   end
   # [ImGui::InputInt4()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L543)
   pointer_wrapper def self.input_int4(label : String, v : Indexable(Int32) | Int32*, flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0)) : Bool
-    LibImGui.igInputInt4(label, v.is_a?(Indexable) ? (
+    LibImGui.InputInt4(label, v.is_a?(Indexable) ? (
       v.size == 4 ? v.to_unsafe : raise ArgumentError.new("Slice has wrong size #{v.size} (want 4)")
     ) : v.as(Int32*), flags)
   end
   # [ImGui::InputDouble()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L544)
   pointer_wrapper def self.input_double(label : String, v : Float64*, step : Float64 = 0.0, step_fast : Float64 = 0.0, format : String = "%.6f", flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0)) : Bool
-    LibImGui.igInputDouble(label, v, step, step_fast, format, flags)
+    LibImGui.InputDouble(label, v, step, step_fast, format, flags)
   end
   {% for k, t in {S8: Int8, U8: UInt8, S16: Int16, U16: UInt16, S32: Int32, U32: UInt32, S64: Int64, U64: UInt64, Float: Float32, Double: Float64} %}
   # [ImGui::InputScalar()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L545)
   pointer_wrapper def self.input_scalar(label : String, p_data : {{t}}*, p_step : {{t}}? = nil, p_step_fast : {{t}}? = nil, format : String? = nil, flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0)) : Bool
-    LibImGui.igInputScalar(label, ImGuiDataType::{{k.id}}, p_data, p_step ? (p_step_ = p_step; pointerof(p_step_)) : Pointer({{t}}).null, p_step_fast ? (p_step_fast_ = p_step_fast; pointerof(p_step_fast_)) : Pointer({{t}}).null, format, flags)
+    LibImGui.InputScalar(label, ImGuiDataType::{{k.id}}, p_data, p_step ? (p_step_ = p_step; pointerof(p_step_)) : Pointer({{t}}).null, p_step_fast ? (p_step_fast_ = p_step_fast; pointerof(p_step_fast_)) : Pointer({{t}}).null, format, flags)
   end
   {% end %}
   {% for k, t in {S8: Int8, U8: UInt8, S16: Int16, U16: UInt16, S32: Int32, U32: UInt32, S64: Int64, U64: UInt64, Float: Float32, Double: Float64} %}
   # [ImGui::InputScalarN()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L546)
   pointer_wrapper def self.input_scalar_n(label : String, p_data : {{t}}*, components : Int32, p_step : {{t}}* = Pointer({{t}}).null, p_step_fast : {{t}}* = Pointer({{t}}).null, format : String? = nil, flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0)) : Bool
-    LibImGui.igInputScalarN(label, ImGuiDataType::{{k.id}}, p_data, components, p_step, p_step_fast, format, flags)
+    LibImGui.InputScalarN(label, ImGuiDataType::{{k.id}}, p_data, components, p_step, p_step_fast, format, flags)
   end
   {% end %}
   # [ImGui::ColorEdit3()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L551)
   pointer_wrapper def self.color_edit3(label : String, col : ImVec4* | Indexable(Float32) | Float32*, flags : ImGuiColorEditFlags = ImGuiColorEditFlags.new(0)) : Bool
-    LibImGui.igColorEdit3(label, col.is_a?(Indexable) ? (
+    LibImGui.ColorEdit3(label, col.is_a?(Indexable) ? (
       col.size == 3 ? col.to_unsafe : raise ArgumentError.new("Slice has wrong size #{col.size} (want 3)")
     ) : col.as(Float32*), flags)
   end
   # [ImGui::ColorEdit4()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L552)
   pointer_wrapper def self.color_edit4(label : String, col : ImVec4* | Indexable(Float32) | Float32*, flags : ImGuiColorEditFlags = ImGuiColorEditFlags.new(0)) : Bool
-    LibImGui.igColorEdit4(label, col.is_a?(Indexable) ? (
+    LibImGui.ColorEdit4(label, col.is_a?(Indexable) ? (
       col.size == 4 ? col.to_unsafe : raise ArgumentError.new("Slice has wrong size #{col.size} (want 4)")
     ) : col.as(Float32*), flags)
   end
   # [ImGui::ColorPicker3()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L553)
   pointer_wrapper def self.color_picker3(label : String, col : ImVec4* | Indexable(Float32) | Float32*, flags : ImGuiColorEditFlags = ImGuiColorEditFlags.new(0)) : Bool
-    LibImGui.igColorPicker3(label, col.is_a?(Indexable) ? (
+    LibImGui.ColorPicker3(label, col.is_a?(Indexable) ? (
       col.size == 3 ? col.to_unsafe : raise ArgumentError.new("Slice has wrong size #{col.size} (want 3)")
     ) : col.as(Float32*), flags)
   end
   # [ImGui::ColorPicker4()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L554)
   pointer_wrapper def self.color_picker4(label : String, col : ImVec4* | Indexable(Float32) | Float32*, flags : ImGuiColorEditFlags = ImGuiColorEditFlags.new(0), ref_col : Float32* = Pointer(Float32).null) : Bool
-    LibImGui.igColorPicker4(label, col.is_a?(Indexable) ? (
+    LibImGui.ColorPicker4(label, col.is_a?(Indexable) ? (
       col.size == 4 ? col.to_unsafe : raise ArgumentError.new("Slice has wrong size #{col.size} (want 4)")
     ) : col.as(Float32*), flags, ref_col)
   end
@@ -1263,382 +1263,382 @@ module ImGui
   #
   # [ImGui::ColorButton()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L555)
   def self.color_button(desc_id : String, col : ImVec4, flags : ImGuiColorEditFlags = ImGuiColorEditFlags.new(0), size : ImVec2 = ImVec2.new(0, 0)) : Bool
-    LibImGui.igColorButton(desc_id, col, flags, size)
+    LibImGui.ColorButton(desc_id, col, flags, size)
   end
 
   # initialize current options (generally on application startup) if you want to select a default format, picker type, etc. User will be able to change many settings, unless you pass the _NoOptions flag to your calls.
   #
   # [ImGui::SetColorEditOptions()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L556)
   def self.set_color_edit_options(flags : ImGuiColorEditFlags) : Void
-    LibImGui.igSetColorEditOptions(flags)
+    LibImGui.SetColorEditOptions(flags)
   end
 
   # [ImGui::TreeNode()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L560)
   def self.tree_node(label : String) : Bool
-    LibImGui.igTreeNodeStr(label)
+    LibImGui.TreeNodeStr(label)
   end
 
   # helper variation to easily decorelate the id from the displayed string. Read the FAQ about why and how to use ID. to align arbitrary text at the same level as a TreeNode() you can use Bullet().
   #
   # [ImGui::TreeNode()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L561)
   def self.tree_node(str_id : String, fmt : String, *args) : Bool
-    LibImGui.igTreeNodeStrStr(str_id, fmt, *args._promote_va_args)
+    LibImGui.TreeNodeStrStr(str_id, fmt, *args._promote_va_args)
   end
 
   # "
   #
   # [ImGui::TreeNode()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L562)
   def self.tree_node(ptr_id : Reference | ClassType | Int | Void*, fmt : String, *args) : Bool
-    LibImGui.igTreeNodePtr(to_void_id(ptr_id), fmt, *args._promote_va_args)
+    LibImGui.TreeNodePtr(to_void_id(ptr_id), fmt, *args._promote_va_args)
   end
 
   # [ImGui::TreeNodeEx()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L565)
   def self.tree_node_ex(label : String, flags : ImGuiTreeNodeFlags = ImGuiTreeNodeFlags.new(0)) : Bool
-    LibImGui.igTreeNodeExStr(label, flags)
+    LibImGui.TreeNodeExStr(label, flags)
   end
 
   # [ImGui::TreeNodeEx()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L566)
   def self.tree_node_ex(str_id : String, flags : ImGuiTreeNodeFlags, fmt : String, *args) : Bool
-    LibImGui.igTreeNodeExStrStr(str_id, flags, fmt, *args._promote_va_args)
+    LibImGui.TreeNodeExStrStr(str_id, flags, fmt, *args._promote_va_args)
   end
 
   # [ImGui::TreeNodeEx()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L567)
   def self.tree_node_ex(ptr_id : Reference | ClassType | Int | Void*, flags : ImGuiTreeNodeFlags, fmt : String, *args) : Bool
-    LibImGui.igTreeNodeExPtr(to_void_id(ptr_id), flags, fmt, *args._promote_va_args)
+    LibImGui.TreeNodeExPtr(to_void_id(ptr_id), flags, fmt, *args._promote_va_args)
   end
 
   # ~ Indent()+PushId(). Already called by TreeNode() when returning true, but you can call TreePush/TreePop yourself if desired.
   #
   # [ImGui::TreePush()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L570)
   def self.tree_push(str_id : String) : Void
-    LibImGui.igTreePushStr(str_id)
+    LibImGui.TreePushStr(str_id)
   end
 
   # "
   #
   # [ImGui::TreePush()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L571)
   def self.tree_push(ptr_id : Reference | ClassType | Int | Void* = Pointer(Reference | ClassType | Int | Void).null) : Void
-    LibImGui.igTreePushPtr(to_void_id(ptr_id))
+    LibImGui.TreePushPtr(to_void_id(ptr_id))
   end
 
   # ~ Unindent()+PopId()
   #
   # [ImGui::TreePop()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L572)
   def self.tree_pop : Void
-    LibImGui.igTreePop
+    LibImGui.TreePop
   end
 
   # horizontal distance preceding label when using TreeNode*() or Bullet() == (g.FontSize + style.FramePadding.x*2) for a regular unframed TreeNode
   #
   # [ImGui::GetTreeNodeToLabelSpacing()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L573)
   def self.get_tree_node_to_label_spacing : Float32
-    LibImGui.igGetTreeNodeToLabelSpacing
+    LibImGui.GetTreeNodeToLabelSpacing
   end
 
   # if returning 'true' the header is open. doesn't indent nor push on ID stack. user doesn't have to call TreePop().
   #
   # [ImGui::CollapsingHeader()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L574)
   pointer_wrapper def self.collapsing_header(label : String, flags : ImGuiTreeNodeFlags = ImGuiTreeNodeFlags.new(0)) : Bool
-    LibImGui.igCollapsingHeaderTreeNodeFlags(label, flags)
+    LibImGui.CollapsingHeaderTreeNodeFlags(label, flags)
   end
   # when 'p_visible != NULL': if '*p_visible==true' display an additional small close button on upper right of the header which will set the bool to false when clicked, if '*p_visible==false' don't display the header.
   #
   # [ImGui::CollapsingHeader()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L575)
   pointer_wrapper def self.collapsing_header(label : String, p_visible : Bool*, flags : ImGuiTreeNodeFlags = ImGuiTreeNodeFlags.new(0)) : Bool
-    LibImGui.igCollapsingHeaderBoolPtr(label, p_visible, flags)
+    LibImGui.CollapsingHeaderBoolPtr(label, p_visible, flags)
   end
 
   # set next TreeNode/CollapsingHeader open state.
   #
   # [ImGui::SetNextItemOpen()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L576)
   def self.set_next_item_open(is_open : Bool, cond : ImGuiCond = ImGuiCond.new(0)) : Void
-    LibImGui.igSetNextItemOpen(is_open, cond)
+    LibImGui.SetNextItemOpen(is_open, cond)
   end
 
   # "bool selected" carry the selection state (read-only). Selectable() is clicked is returns true so you can modify your selection state. size.x==0.0: use remaining width, size.x>0.0: specify width. size.y==0.0: use label height, size.y>0.0: specify height
   #
   # [ImGui::Selectable()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L581)
   pointer_wrapper def self.selectable(label : String, selected : Bool = false, flags : ImGuiSelectableFlags = ImGuiSelectableFlags.new(0), size : ImVec2 = ImVec2.new(0, 0)) : Bool
-    LibImGui.igSelectableBool(label, selected, flags, size)
+    LibImGui.SelectableBool(label, selected, flags, size)
   end
   # "bool* p_selected" point to the selection state (read-write), as a convenient helper.
   #
   # [ImGui::Selectable()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L582)
   pointer_wrapper def self.selectable(label : String, p_selected : Bool*, flags : ImGuiSelectableFlags = ImGuiSelectableFlags.new(0), size : ImVec2 = ImVec2.new(0, 0)) : Bool
-    LibImGui.igSelectableBoolPtr(label, p_selected, flags, size)
+    LibImGui.SelectableBoolPtr(label, p_selected, flags, size)
   end
 
   # open a framed scrolling region
   #
   # [ImGui::BeginListBox()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L590)
   def self.begin_list_box(label : String, size : ImVec2 = ImVec2.new(0, 0)) : Bool
-    LibImGui.igBeginListBox(label, size)
+    LibImGui.BeginListBox(label, size)
   end
 
   # only call EndListBox() if BeginListBox() returned true!
   #
   # [ImGui::EndListBox()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L591)
   def self.end_list_box : Void
-    LibImGui.igEndListBox
+    LibImGui.EndListBox
   end
 
   # [ImGui::ListBox()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L592)
   pointer_wrapper def self.list_box(label : String, current_item : Int32* | Pointer, items : Indexable(LibC::Char*), height_in_items : Int32 = -1) : Bool
-    LibImGui.igListBoxStr_arr(label, (typeof(current_item.value.to_i32); current_item.as(Int32*)), items, items.size, height_in_items)
+    LibImGui.ListBoxStr_arr(label, (typeof(current_item.value.to_i32); current_item.as(Int32*)), items, items.size, height_in_items)
   end
   # [ImGui::ListBox()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L593)
   pointer_wrapper def self.list_box(label : String, current_item : Int32* | Pointer, items_getter : (Void*, Int32, LibC::Char**) -> Bool, data : Void*, items_count : Int32, height_in_items : Int32 = -1) : Bool
-    LibImGui.igListBoxFnBoolPtr(label, (typeof(current_item.value.to_i32); current_item.as(Int32*)), items_getter, data, items_count, height_in_items)
+    LibImGui.ListBoxFnBoolPtr(label, (typeof(current_item.value.to_i32); current_item.as(Int32*)), items_getter, data, items_count, height_in_items)
   end
 
   # [ImGui::PlotLines()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L597)
   def self.plot_lines(label : String, values : Indexable(Float32), values_offset : Int32 = 0, overlay_text : String? = nil, scale_min : Float32 = Float32::MAX, scale_max : Float32 = Float32::MAX, graph_size : ImVec2 = ImVec2.new(0, 0), stride : Int32 = sizeof(Float32)) : Void
-    LibImGui.igPlotLinesFloatPtr(label, values, values.size, values_offset, overlay_text, scale_min, scale_max, graph_size, stride)
+    LibImGui.PlotLinesFloatPtr(label, values, values.size, values_offset, overlay_text, scale_min, scale_max, graph_size, stride)
   end
 
   # [ImGui::PlotLines()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L598)
   def self.plot_lines(label : String, values_getter : (Void*, Int32) -> Float32, data : Void*, values_count : Int32, values_offset : Int32 = 0, overlay_text : String? = nil, scale_min : Float32 = Float32::MAX, scale_max : Float32 = Float32::MAX, graph_size : ImVec2 = ImVec2.new(0, 0)) : Void
-    LibImGui.igPlotLinesFnFloatPtr(label, values_getter, data, values_count, values_offset, overlay_text, scale_min, scale_max, graph_size)
+    LibImGui.PlotLinesFnFloatPtr(label, values_getter, data, values_count, values_offset, overlay_text, scale_min, scale_max, graph_size)
   end
 
   # [ImGui::PlotHistogram()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L599)
   def self.plot_histogram(label : String, values : Indexable(Float32), values_offset : Int32 = 0, overlay_text : String? = nil, scale_min : Float32 = Float32::MAX, scale_max : Float32 = Float32::MAX, graph_size : ImVec2 = ImVec2.new(0, 0), stride : Int32 = sizeof(Float32)) : Void
-    LibImGui.igPlotHistogramFloatPtr(label, values, values.size, values_offset, overlay_text, scale_min, scale_max, graph_size, stride)
+    LibImGui.PlotHistogramFloatPtr(label, values, values.size, values_offset, overlay_text, scale_min, scale_max, graph_size, stride)
   end
 
   # [ImGui::PlotHistogram()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L600)
   def self.plot_histogram(label : String, values_getter : (Void*, Int32) -> Float32, data : Void*, values_count : Int32, values_offset : Int32 = 0, overlay_text : String? = nil, scale_min : Float32 = Float32::MAX, scale_max : Float32 = Float32::MAX, graph_size : ImVec2 = ImVec2.new(0, 0)) : Void
-    LibImGui.igPlotHistogramFnFloatPtr(label, values_getter, data, values_count, values_offset, overlay_text, scale_min, scale_max, graph_size)
+    LibImGui.PlotHistogramFnFloatPtr(label, values_getter, data, values_count, values_offset, overlay_text, scale_min, scale_max, graph_size)
   end
 
   # [ImGui::Value()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L604)
   def self.value(prefix : String, b : Bool) : Void
-    LibImGui.igValueBool(prefix, b)
+    LibImGui.ValueBool(prefix, b)
   end
 
   # [ImGui::Value()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L605)
   def self.value(prefix : String, v : Int32) : Void
-    LibImGui.igValueInt(prefix, v)
+    LibImGui.ValueInt(prefix, v)
   end
 
   # [ImGui::Value()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L606)
   def self.value(prefix : String, v : UInt32) : Void
-    LibImGui.igValueUint(prefix, v)
+    LibImGui.ValueUint(prefix, v)
   end
 
   # [ImGui::Value()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L607)
   def self.value(prefix : String, v : Float32, float_format : String? = nil) : Void
-    LibImGui.igValueFloat(prefix, v, float_format)
+    LibImGui.ValueFloat(prefix, v, float_format)
   end
 
   # append to menu-bar of current window (requires ImGuiWindowFlags_MenuBar flag set on parent window).
   #
   # [ImGui::BeginMenuBar()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L613)
   def self.begin_menu_bar : Bool
-    LibImGui.igBeginMenuBar
+    LibImGui.BeginMenuBar
   end
 
   # only call EndMenuBar() if BeginMenuBar() returns true!
   #
   # [ImGui::EndMenuBar()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L614)
   def self.end_menu_bar : Void
-    LibImGui.igEndMenuBar
+    LibImGui.EndMenuBar
   end
 
   # create and append to a full screen menu-bar.
   #
   # [ImGui::BeginMainMenuBar()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L615)
   def self.begin_main_menu_bar : Bool
-    LibImGui.igBeginMainMenuBar
+    LibImGui.BeginMainMenuBar
   end
 
   # only call EndMainMenuBar() if BeginMainMenuBar() returns true!
   #
   # [ImGui::EndMainMenuBar()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L616)
   def self.end_main_menu_bar : Void
-    LibImGui.igEndMainMenuBar
+    LibImGui.EndMainMenuBar
   end
 
   # create a sub-menu entry. only call EndMenu() if this returns true!
   #
   # [ImGui::BeginMenu()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L617)
   def self.begin_menu(label : String, enabled : Bool = true) : Bool
-    LibImGui.igBeginMenu(label, enabled)
+    LibImGui.BeginMenu(label, enabled)
   end
 
   # only call EndMenu() if BeginMenu() returns true!
   #
   # [ImGui::EndMenu()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L618)
   def self.end_menu : Void
-    LibImGui.igEndMenu
+    LibImGui.EndMenu
   end
 
   # return true when activated. shortcuts are displayed for convenience but not processed by ImGui at the moment
   #
   # [ImGui::MenuItem()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L619)
   pointer_wrapper def self.menu_item(label : String, shortcut : String? = nil, selected : Bool = false, enabled : Bool = true) : Bool
-    LibImGui.igMenuItemBool(label, shortcut, selected, enabled)
+    LibImGui.MenuItemBool(label, shortcut, selected, enabled)
   end
   # return true when activated + toggle (*p_selected) if p_selected != NULL
   #
   # [ImGui::MenuItem()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L620)
   pointer_wrapper def self.menu_item(label : String, shortcut : String, p_selected : Bool*, enabled : Bool = true) : Bool
-    LibImGui.igMenuItemBoolPtr(label, shortcut, p_selected, enabled)
+    LibImGui.MenuItemBoolPtr(label, shortcut, p_selected, enabled)
   end
 
   # begin/append a tooltip window. to create full-featured tooltip (with any kind of items).
   #
   # [ImGui::BeginTooltip()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L624)
   def self.begin_tooltip : Void
-    LibImGui.igBeginTooltip
+    LibImGui.BeginTooltip
   end
 
   # [ImGui::EndTooltip()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L625)
   def self.end_tooltip : Void
-    LibImGui.igEndTooltip
+    LibImGui.EndTooltip
   end
 
   # set a text-only tooltip, typically use with ImGui::IsItemHovered(). override any previous call to SetTooltip().
   #
   # [ImGui::SetTooltip()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L626)
   def self.set_tooltip(fmt : String, *args) : Void
-    LibImGui.igSetTooltip(fmt, *args._promote_va_args)
+    LibImGui.SetTooltip(fmt, *args._promote_va_args)
   end
 
   # return true if the popup is open, and you can start outputting to it.
   #
   # [ImGui::BeginPopup()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L640)
   def self.begin_popup(str_id : String, flags : ImGuiWindowFlags = ImGuiWindowFlags.new(0)) : Bool
-    LibImGui.igBeginPopup(str_id, flags)
+    LibImGui.BeginPopup(str_id, flags)
   end
 
   # return true if the modal is open, and you can start outputting to it.
   #
   # [ImGui::BeginPopupModal()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L641)
   pointer_wrapper def self.begin_popup_modal(name : String, p_open : Bool* = Pointer(Bool).null, flags : ImGuiWindowFlags = ImGuiWindowFlags.new(0)) : Bool
-    LibImGui.igBeginPopupModal(name, p_open, flags)
+    LibImGui.BeginPopupModal(name, p_open, flags)
   end
 
   # only call EndPopup() if BeginPopupXXX() returns true!
   #
   # [ImGui::EndPopup()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L642)
   def self.end_popup : Void
-    LibImGui.igEndPopup
+    LibImGui.EndPopup
   end
 
   # call to mark popup as open (don't call every frame!).
   #
   # [ImGui::OpenPopup()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L649)
   def self.open_popup(str_id : String, popup_flags : ImGuiPopupFlags = ImGuiPopupFlags.new(0)) : Void
-    LibImGui.igOpenPopup(str_id, popup_flags)
+    LibImGui.OpenPopup(str_id, popup_flags)
   end
 
   # helper to open popup when clicked on last item. return true when just opened. (note: actually triggers on the mouse _released_ event to be consistent with popup behaviors)
   #
   # [ImGui::OpenPopupOnItemClick()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L650)
   def self.open_popup_on_item_click(str_id : String? = nil, popup_flags : ImGuiPopupFlags = ImGuiPopupFlags.new(1)) : Void
-    LibImGui.igOpenPopupOnItemClick(str_id, popup_flags)
+    LibImGui.OpenPopupOnItemClick(str_id, popup_flags)
   end
 
   # manually close the popup we have begin-ed into.
   #
   # [ImGui::CloseCurrentPopup()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L651)
   def self.close_current_popup : Void
-    LibImGui.igCloseCurrentPopup
+    LibImGui.CloseCurrentPopup
   end
 
   # open+begin popup when clicked on last item. if you can pass a NULL str_id only if the previous item had an id. If you want to use that on a non-interactive item such as Text() you need to pass in an explicit ID here. read comments in .cpp!
   #
   # [ImGui::BeginPopupContextItem()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L657)
   def self.begin_popup_context_item(str_id : String? = nil, popup_flags : ImGuiPopupFlags = ImGuiPopupFlags.new(1)) : Bool
-    LibImGui.igBeginPopupContextItem(str_id, popup_flags)
+    LibImGui.BeginPopupContextItem(str_id, popup_flags)
   end
 
   # open+begin popup when clicked on current window.
   #
   # [ImGui::BeginPopupContextWindow()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L658)
   def self.begin_popup_context_window(str_id : String? = nil, popup_flags : ImGuiPopupFlags = ImGuiPopupFlags.new(1)) : Bool
-    LibImGui.igBeginPopupContextWindow(str_id, popup_flags)
+    LibImGui.BeginPopupContextWindow(str_id, popup_flags)
   end
 
   # open+begin popup when clicked in void (where there are no windows).
   #
   # [ImGui::BeginPopupContextVoid()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L659)
   def self.begin_popup_context_void(str_id : String? = nil, popup_flags : ImGuiPopupFlags = ImGuiPopupFlags.new(1)) : Bool
-    LibImGui.igBeginPopupContextVoid(str_id, popup_flags)
+    LibImGui.BeginPopupContextVoid(str_id, popup_flags)
   end
 
   # return true if the popup is open.
   #
   # [ImGui::IsPopupOpen()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L664)
   def self.is_popup_open(str_id : String, flags : ImGuiPopupFlags = ImGuiPopupFlags.new(0)) : Bool
-    LibImGui.igIsPopupOpenStr(str_id, flags)
+    LibImGui.IsPopupOpenStr(str_id, flags)
   end
 
   # [ImGui::BeginTable()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L691)
   def self.begin_table(str_id : String, column : Int32, flags : ImGuiTableFlags = ImGuiTableFlags.new(0), outer_size : ImVec2 = ImVec2.new(0.0, 0.0), inner_width : Float32 = 0.0) : Bool
-    LibImGui.igBeginTable(str_id, column, flags, outer_size, inner_width)
+    LibImGui.BeginTable(str_id, column, flags, outer_size, inner_width)
   end
 
   # only call EndTable() if BeginTable() returns true!
   #
   # [ImGui::EndTable()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L692)
   def self.end_table : Void
-    LibImGui.igEndTable
+    LibImGui.EndTable
   end
 
   # append into the first cell of a new row.
   #
   # [ImGui::TableNextRow()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L693)
   def self.table_next_row(row_flags : ImGuiTableRowFlags = ImGuiTableRowFlags.new(0), min_row_height : Float32 = 0.0) : Void
-    LibImGui.igTableNextRow(row_flags, min_row_height)
+    LibImGui.TableNextRow(row_flags, min_row_height)
   end
 
   # append into the next column (or first column of next row if currently in last column). Return true when column is visible.
   #
   # [ImGui::TableNextColumn()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L694)
   def self.table_next_column : Bool
-    LibImGui.igTableNextColumn
+    LibImGui.TableNextColumn
   end
 
   # append into the specified column. Return true when column is visible.
   #
   # [ImGui::TableSetColumnIndex()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L695)
   def self.table_set_column_index(column_n : Int32) : Bool
-    LibImGui.igTableSetColumnIndex(column_n)
+    LibImGui.TableSetColumnIndex(column_n)
   end
 
   # [ImGui::TableSetupColumn()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L704)
   def self.table_setup_column(label : String, flags : ImGuiTableColumnFlags = ImGuiTableColumnFlags.new(0), init_width_or_weight : Float32 = 0.0, user_id : UInt32 = 0) : Void
-    LibImGui.igTableSetupColumn(label, flags, init_width_or_weight, user_id)
+    LibImGui.TableSetupColumn(label, flags, init_width_or_weight, user_id)
   end
 
   # lock columns/rows so they stay visible when scrolled.
   #
   # [ImGui::TableSetupScrollFreeze()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L705)
   def self.table_setup_scroll_freeze(cols : Int32, rows : Int32) : Void
-    LibImGui.igTableSetupScrollFreeze(cols, rows)
+    LibImGui.TableSetupScrollFreeze(cols, rows)
   end
 
   # submit all headers cells based on data provided to TableSetupColumn() + submit context menu
   #
   # [ImGui::TableHeadersRow()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L706)
   def self.table_headers_row : Void
-    LibImGui.igTableHeadersRow
+    LibImGui.TableHeadersRow
   end
 
   # submit one header cell manually (rarely used)
   #
   # [ImGui::TableHeader()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L707)
   def self.table_header(label : String) : Void
-    LibImGui.igTableHeader(label)
+    LibImGui.TableHeader(label)
   end
 
   # get latest sort specs for the table (NULL if not sorting).
   #
   # [ImGui::TableGetSortSpecs()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L714)
   def self.table_get_sort_specs : ImGuiTableSortSpecs?
-    result = LibImGui.igTableGetSortSpecs
+    result = LibImGui.TableGetSortSpecs
     result ? ImGuiTableSortSpecs.new(result) : nil
   end
 
@@ -1646,28 +1646,28 @@ module ImGui
   #
   # [ImGui::TableGetColumnCount()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L717)
   def self.table_get_column_count : Int32
-    LibImGui.igTableGetColumnCount
+    LibImGui.TableGetColumnCount
   end
 
   # return current column index.
   #
   # [ImGui::TableGetColumnIndex()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L718)
   def self.table_get_column_index : Int32
-    LibImGui.igTableGetColumnIndex
+    LibImGui.TableGetColumnIndex
   end
 
   # return current row index.
   #
   # [ImGui::TableGetRowIndex()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L719)
   def self.table_get_row_index : Int32
-    LibImGui.igTableGetRowIndex
+    LibImGui.TableGetRowIndex
   end
 
   # return "" if column didn't have a name declared by TableSetupColumn(). Pass -1 to use current column.
   #
   # [ImGui::TableGetColumnName()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L720)
   def self.table_get_column_name(column_n : Int32 = -1) : String
-    result = LibImGui.igTableGetColumnNameInt(column_n)
+    result = LibImGui.TableGetColumnNameInt(column_n)
     String.new(result)
   end
 
@@ -1675,185 +1675,185 @@ module ImGui
   #
   # [ImGui::TableGetColumnFlags()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L721)
   def self.table_get_column_flags(column_n : Int32 = -1) : ImGuiTableColumnFlags
-    LibImGui.igTableGetColumnFlags(column_n)
+    LibImGui.TableGetColumnFlags(column_n)
   end
 
   # change the color of a cell, row, or column. See ImGuiTableBgTarget_ flags for details.
   #
   # [ImGui::TableSetBgColor()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L722)
   def self.table_set_bg_color(target : ImGuiTableBgTarget, color : UInt32, column_n : Int32 = -1) : Void
-    LibImGui.igTableSetBgColor(target, color, column_n)
+    LibImGui.TableSetBgColor(target, color, column_n)
   end
 
   # [ImGui::Columns()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L726)
   def self.columns(count : Int32 = 1, id : String? = nil, border : Bool = true) : Void
-    LibImGui.igColumns(count, id, border)
+    LibImGui.Columns(count, id, border)
   end
 
   # next column, defaults to current row or next row if the current row is finished
   #
   # [ImGui::NextColumn()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L727)
   def self.next_column : Void
-    LibImGui.igNextColumn
+    LibImGui.NextColumn
   end
 
   # get current column index
   #
   # [ImGui::GetColumnIndex()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L728)
   def self.get_column_index : Int32
-    LibImGui.igGetColumnIndex
+    LibImGui.GetColumnIndex
   end
 
   # get column width (in pixels). pass -1 to use current column
   #
   # [ImGui::GetColumnWidth()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L729)
   def self.get_column_width(column_index : Int32 = -1) : Float32
-    LibImGui.igGetColumnWidth(column_index)
+    LibImGui.GetColumnWidth(column_index)
   end
 
   # set column width (in pixels). pass -1 to use current column
   #
   # [ImGui::SetColumnWidth()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L730)
   def self.set_column_width(column_index : Int32, width : Float32) : Void
-    LibImGui.igSetColumnWidth(column_index, width)
+    LibImGui.SetColumnWidth(column_index, width)
   end
 
   # get position of column line (in pixels, from the left side of the contents region). pass -1 to use current column, otherwise 0..GetColumnsCount() inclusive. column 0 is typically 0.0f
   #
   # [ImGui::GetColumnOffset()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L731)
   def self.get_column_offset(column_index : Int32 = -1) : Float32
-    LibImGui.igGetColumnOffset(column_index)
+    LibImGui.GetColumnOffset(column_index)
   end
 
   # set position of column line (in pixels, from the left side of the contents region). pass -1 to use current column
   #
   # [ImGui::SetColumnOffset()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L732)
   def self.set_column_offset(column_index : Int32, offset_x : Float32) : Void
-    LibImGui.igSetColumnOffset(column_index, offset_x)
+    LibImGui.SetColumnOffset(column_index, offset_x)
   end
 
   # [ImGui::GetColumnsCount()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L733)
   def self.get_columns_count : Int32
-    LibImGui.igGetColumnsCount
+    LibImGui.GetColumnsCount
   end
 
   # create and append into a TabBar
   #
   # [ImGui::BeginTabBar()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L736)
   def self.begin_tab_bar(str_id : String, flags : ImGuiTabBarFlags = ImGuiTabBarFlags.new(0)) : Bool
-    LibImGui.igBeginTabBar(str_id, flags)
+    LibImGui.BeginTabBar(str_id, flags)
   end
 
   # only call EndTabBar() if BeginTabBar() returns true!
   #
   # [ImGui::EndTabBar()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L737)
   def self.end_tab_bar : Void
-    LibImGui.igEndTabBar
+    LibImGui.EndTabBar
   end
 
   # create a Tab. Returns true if the Tab is selected.
   #
   # [ImGui::BeginTabItem()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L738)
   pointer_wrapper def self.begin_tab_item(label : String, p_open : Bool* = Pointer(Bool).null, flags : ImGuiTabItemFlags = ImGuiTabItemFlags.new(0)) : Bool
-    LibImGui.igBeginTabItem(label, p_open, flags)
+    LibImGui.BeginTabItem(label, p_open, flags)
   end
 
   # only call EndTabItem() if BeginTabItem() returns true!
   #
   # [ImGui::EndTabItem()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L739)
   def self.end_tab_item : Void
-    LibImGui.igEndTabItem
+    LibImGui.EndTabItem
   end
 
   # create a Tab behaving like a button. return true when clicked. cannot be selected in the tab bar.
   #
   # [ImGui::TabItemButton()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L740)
   def self.tab_item_button(label : String, flags : ImGuiTabItemFlags = ImGuiTabItemFlags.new(0)) : Bool
-    LibImGui.igTabItemButton(label, flags)
+    LibImGui.TabItemButton(label, flags)
   end
 
   # notify TabBar or Docking system of a closed tab/window ahead (useful to reduce visual flicker on reorderable tab bars). For tab-bar: call after BeginTabBar() and before Tab submissions. Otherwise call with a window name.
   #
   # [ImGui::SetTabItemClosed()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L741)
   def self.set_tab_item_closed(tab_or_docked_window_label : String) : Void
-    LibImGui.igSetTabItemClosed(tab_or_docked_window_label)
+    LibImGui.SetTabItemClosed(tab_or_docked_window_label)
   end
 
   # start logging to tty (stdout)
   #
   # [ImGui::LogToTTY()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L745)
   def self.log_to_tty(auto_open_depth : Int32 = -1) : Void
-    LibImGui.igLogToTTY(auto_open_depth)
+    LibImGui.LogToTTY(auto_open_depth)
   end
 
   # start logging to file
   #
   # [ImGui::LogToFile()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L746)
   def self.log_to_file(auto_open_depth : Int32 = -1, filename : String? = nil) : Void
-    LibImGui.igLogToFile(auto_open_depth, filename)
+    LibImGui.LogToFile(auto_open_depth, filename)
   end
 
   # start logging to OS clipboard
   #
   # [ImGui::LogToClipboard()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L747)
   def self.log_to_clipboard(auto_open_depth : Int32 = -1) : Void
-    LibImGui.igLogToClipboard(auto_open_depth)
+    LibImGui.LogToClipboard(auto_open_depth)
   end
 
   # stop logging (close file, etc.)
   #
   # [ImGui::LogFinish()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L748)
   def self.log_finish : Void
-    LibImGui.igLogFinish
+    LibImGui.LogFinish
   end
 
   # helper to display buttons for logging to tty/file/clipboard
   #
   # [ImGui::LogButtons()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L749)
   def self.log_buttons : Void
-    LibImGui.igLogButtons
+    LibImGui.LogButtons
   end
 
   # pass text data straight to log (without being displayed)
   #
   # [ImGui::LogText()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L750)
   def self.log_text(fmt : String, *args) : Void
-    LibImGui.igLogText(fmt, *args._promote_va_args)
+    LibImGui.LogText(fmt, *args._promote_va_args)
   end
 
   # call when the current item is active. If this return true, you can call SetDragDropPayload() + EndDragDropSource()
   #
   # [ImGui::BeginDragDropSource()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L754)
   def self.begin_drag_drop_source(flags : ImGuiDragDropFlags = ImGuiDragDropFlags.new(0)) : Bool
-    LibImGui.igBeginDragDropSource(flags)
+    LibImGui.BeginDragDropSource(flags)
   end
 
   # type is a user defined string of maximum 32 characters. Strings starting with '_' are reserved for dear imgui internal types. Data is copied and held by imgui.
   #
   # [ImGui::SetDragDropPayload()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L755)
   def self.set_drag_drop_payload(type : String, data : Void*, sz : LibC::SizeT, cond : ImGuiCond = ImGuiCond.new(0)) : Bool
-    LibImGui.igSetDragDropPayload(type, data, sz, cond)
+    LibImGui.SetDragDropPayload(type, data, sz, cond)
   end
 
   # only call EndDragDropSource() if BeginDragDropSource() returns true!
   #
   # [ImGui::EndDragDropSource()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L756)
   def self.end_drag_drop_source : Void
-    LibImGui.igEndDragDropSource
+    LibImGui.EndDragDropSource
   end
 
   # call after submitting an item that may receive a payload. If this returns true, you can call AcceptDragDropPayload() + EndDragDropTarget()
   #
   # [ImGui::BeginDragDropTarget()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L757)
   def self.begin_drag_drop_target : Bool
-    LibImGui.igBeginDragDropTarget
+    LibImGui.BeginDragDropTarget
   end
 
   # accept contents of a given type. If ImGuiDragDropFlags_AcceptBeforeDelivery is set you can peek into the payload before the mouse button is released.
   #
   # [ImGui::AcceptDragDropPayload()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L758)
   def self.accept_drag_drop_payload(type : String, flags : ImGuiDragDropFlags = ImGuiDragDropFlags.new(0)) : ImGuiPayload?
-    result = LibImGui.igAcceptDragDropPayload(type, flags)
+    result = LibImGui.AcceptDragDropPayload(type, flags)
     result ? ImGuiPayload.new(result) : nil
   end
 
@@ -1861,137 +1861,137 @@ module ImGui
   #
   # [ImGui::EndDragDropTarget()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L759)
   def self.end_drag_drop_target : Void
-    LibImGui.igEndDragDropTarget
+    LibImGui.EndDragDropTarget
   end
 
   # peek directly into the current payload from anywhere. may return NULL. use ImGuiPayload::IsDataType() to test for the payload type.
   #
   # [ImGui::GetDragDropPayload()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L760)
   def self.get_drag_drop_payload : ImGuiPayload?
-    result = LibImGui.igGetDragDropPayload
+    result = LibImGui.GetDragDropPayload
     result ? ImGuiPayload.new(result) : nil
   end
 
   # [ImGui::PushClipRect()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L764)
   def self.push_clip_rect(clip_rect_min : ImVec2, clip_rect_max : ImVec2, intersect_with_current_clip_rect : Bool) : Void
-    LibImGui.igPushClipRect(clip_rect_min, clip_rect_max, intersect_with_current_clip_rect)
+    LibImGui.PushClipRect(clip_rect_min, clip_rect_max, intersect_with_current_clip_rect)
   end
 
   # [ImGui::PopClipRect()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L765)
   def self.pop_clip_rect : Void
-    LibImGui.igPopClipRect
+    LibImGui.PopClipRect
   end
 
   # make last item the default focused item of a window.
   #
   # [ImGui::SetItemDefaultFocus()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L769)
   def self.set_item_default_focus : Void
-    LibImGui.igSetItemDefaultFocus
+    LibImGui.SetItemDefaultFocus
   end
 
   # focus keyboard on the next widget. Use positive 'offset' to access sub components of a multiple component widget. Use -1 to access previous widget.
   #
   # [ImGui::SetKeyboardFocusHere()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L770)
   def self.set_keyboard_focus_here(offset : Int32 = 0) : Void
-    LibImGui.igSetKeyboardFocusHere(offset)
+    LibImGui.SetKeyboardFocusHere(offset)
   end
 
   # is the last item hovered? (and usable, aka not blocked by a popup, etc.). See ImGuiHoveredFlags for more options.
   #
   # [ImGui::IsItemHovered()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L775)
   def self.is_item_hovered(flags : ImGuiHoveredFlags = ImGuiHoveredFlags.new(0)) : Bool
-    LibImGui.igIsItemHovered(flags)
+    LibImGui.IsItemHovered(flags)
   end
 
   # is the last item active? (e.g. button being held, text field being edited. This will continuously return true while holding mouse button on an item. Items that don't interact will always return false)
   #
   # [ImGui::IsItemActive()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L776)
   def self.is_item_active : Bool
-    LibImGui.igIsItemActive
+    LibImGui.IsItemActive
   end
 
   # is the last item focused for keyboard/gamepad navigation?
   #
   # [ImGui::IsItemFocused()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L777)
   def self.is_item_focused : Bool
-    LibImGui.igIsItemFocused
+    LibImGui.IsItemFocused
   end
 
   # is the last item clicked? (e.g. button/node just clicked on) == IsMouseClicked(mouse_button) && IsItemHovered()
   #
   # [ImGui::IsItemClicked()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L778)
   def self.is_item_clicked(mouse_button : ImGuiMouseButton = ImGuiMouseButton.new(0)) : Bool
-    LibImGui.igIsItemClicked(mouse_button)
+    LibImGui.IsItemClicked(mouse_button)
   end
 
   # is the last item visible? (items may be out of sight because of clipping/scrolling)
   #
   # [ImGui::IsItemVisible()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L779)
   def self.is_item_visible : Bool
-    LibImGui.igIsItemVisible
+    LibImGui.IsItemVisible
   end
 
   # did the last item modify its underlying value this frame? or was pressed? This is generally the same as the "bool" return value of many widgets.
   #
   # [ImGui::IsItemEdited()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L780)
   def self.is_item_edited : Bool
-    LibImGui.igIsItemEdited
+    LibImGui.IsItemEdited
   end
 
   # was the last item just made active (item was previously inactive).
   #
   # [ImGui::IsItemActivated()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L781)
   def self.is_item_activated : Bool
-    LibImGui.igIsItemActivated
+    LibImGui.IsItemActivated
   end
 
   # was the last item just made inactive (item was previously active). Useful for Undo/Redo patterns with widgets that requires continuous editing.
   #
   # [ImGui::IsItemDeactivated()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L782)
   def self.is_item_deactivated : Bool
-    LibImGui.igIsItemDeactivated
+    LibImGui.IsItemDeactivated
   end
 
   # was the last item just made inactive and made a value change when it was active? (e.g. Slider/Drag moved). Useful for Undo/Redo patterns with widgets that requires continuous editing. Note that you may get false positives (some widgets such as Combo()/ListBox()/Selectable() will return true even when clicking an already selected item).
   #
   # [ImGui::IsItemDeactivatedAfterEdit()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L783)
   def self.is_item_deactivated_after_edit : Bool
-    LibImGui.igIsItemDeactivatedAfterEdit
+    LibImGui.IsItemDeactivatedAfterEdit
   end
 
   # was the last item open state toggled? set by TreeNode().
   #
   # [ImGui::IsItemToggledOpen()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L784)
   def self.is_item_toggled_open : Bool
-    LibImGui.igIsItemToggledOpen
+    LibImGui.IsItemToggledOpen
   end
 
   # is any item hovered?
   #
   # [ImGui::IsAnyItemHovered()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L785)
   def self.is_any_item_hovered : Bool
-    LibImGui.igIsAnyItemHovered
+    LibImGui.IsAnyItemHovered
   end
 
   # is any item active?
   #
   # [ImGui::IsAnyItemActive()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L786)
   def self.is_any_item_active : Bool
-    LibImGui.igIsAnyItemActive
+    LibImGui.IsAnyItemActive
   end
 
   # is any item focused?
   #
   # [ImGui::IsAnyItemFocused()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L787)
   def self.is_any_item_focused : Bool
-    LibImGui.igIsAnyItemFocused
+    LibImGui.IsAnyItemFocused
   end
 
   # get upper-left bounding rectangle of the last item (screen space)
   #
   # [ImGui::GetItemRectMin()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L788)
   def self.get_item_rect_min : ImGui::ImVec2
-    LibImGui.igGetItemRectMin(out p_out)
+    LibImGui.GetItemRectMin(out p_out)
     p_out
   end
 
@@ -1999,7 +1999,7 @@ module ImGui
   #
   # [ImGui::GetItemRectMax()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L789)
   def self.get_item_rect_max : ImGui::ImVec2
-    LibImGui.igGetItemRectMax(out p_out)
+    LibImGui.GetItemRectMax(out p_out)
     p_out
   end
 
@@ -2007,7 +2007,7 @@ module ImGui
   #
   # [ImGui::GetItemRectSize()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L790)
   def self.get_item_rect_size : ImGui::ImVec2
-    LibImGui.igGetItemRectSize(out p_out)
+    LibImGui.GetItemRectSize(out p_out)
     p_out
   end
 
@@ -2015,14 +2015,14 @@ module ImGui
   #
   # [ImGui::SetItemAllowOverlap()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L791)
   def self.set_item_allow_overlap : Void
-    LibImGui.igSetItemAllowOverlap
+    LibImGui.SetItemAllowOverlap
   end
 
   # return primary/default viewport.
   #
   # [ImGui::GetMainViewport()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L797)
   def self.get_main_viewport : ImGuiViewport
-    result = LibImGui.igGetMainViewport
+    result = LibImGui.GetMainViewport
     ImGuiViewport.new(result)
   end
 
@@ -2030,35 +2030,35 @@ module ImGui
   #
   # [ImGui::IsRectVisible()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L800)
   def self.is_rect_visible(size : ImVec2) : Bool
-    LibImGui.igIsRectVisibleNil(size)
+    LibImGui.IsRectVisibleNil(size)
   end
 
   # test if rectangle (in screen space) is visible / not clipped. to perform coarse clipping on user's side.
   #
   # [ImGui::IsRectVisible()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L801)
   def self.is_rect_visible(rect_min : ImVec2, rect_max : ImVec2) : Bool
-    LibImGui.igIsRectVisibleVec2(rect_min, rect_max)
+    LibImGui.IsRectVisibleVec2(rect_min, rect_max)
   end
 
   # get global imgui time. incremented by io.DeltaTime every frame.
   #
   # [ImGui::GetTime()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L802)
   def self.get_time : Float64
-    LibImGui.igGetTime
+    LibImGui.GetTime
   end
 
   # get global imgui frame count. incremented by 1 every frame.
   #
   # [ImGui::GetFrameCount()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L803)
   def self.get_frame_count : Int32
-    LibImGui.igGetFrameCount
+    LibImGui.GetFrameCount
   end
 
   # this draw list will be the first rendering one. Useful to quickly draw shapes/text behind dear imgui contents.
   #
   # [ImGui::GetBackgroundDrawList()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L804)
   def self.get_background_draw_list : ImDrawList
-    result = LibImGui.igGetBackgroundDrawListNil
+    result = LibImGui.GetBackgroundDrawListNil
     ImDrawList.new(result)
   end
 
@@ -2066,7 +2066,7 @@ module ImGui
   #
   # [ImGui::GetForegroundDrawList()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L805)
   def self.get_foreground_draw_list : ImDrawList
-    result = LibImGui.igGetForegroundDrawListNil
+    result = LibImGui.GetForegroundDrawListNil
     ImDrawList.new(result)
   end
 
@@ -2074,7 +2074,7 @@ module ImGui
   #
   # [ImGui::GetDrawListSharedData()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L806)
   def self.get_draw_list_shared_data : ImDrawListSharedData
-    result = LibImGui.igGetDrawListSharedData
+    result = LibImGui.GetDrawListSharedData
     result.value
   end
 
@@ -2082,7 +2082,7 @@ module ImGui
   #
   # [ImGui::GetStyleColorName()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L807)
   def self.get_style_color_name(idx : ImGuiCol) : String
-    result = LibImGui.igGetStyleColorName(idx)
+    result = LibImGui.GetStyleColorName(idx)
     String.new(result)
   end
 
@@ -2090,12 +2090,12 @@ module ImGui
   #
   # [ImGui::SetStateStorage()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L808)
   def self.set_state_storage(storage : ImGuiStorage*) : Void
-    LibImGui.igSetStateStorage(storage)
+    LibImGui.SetStateStorage(storage)
   end
 
   # [ImGui::GetStateStorage()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L809)
   def self.get_state_storage : ImGuiStorage
-    result = LibImGui.igGetStateStorage
+    result = LibImGui.GetStateStorage
     result.value
   end
 
@@ -2103,7 +2103,7 @@ module ImGui
   #
   # [ImGui::CalcListClipping()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L810)
   def self.calc_list_clipping(items_count : Int32, items_height : Float32) : {LibC::Int, LibC::Int}
-    LibImGui.igCalcListClipping(items_count, items_height, out out_items_display_start, out out_items_display_end)
+    LibImGui.CalcListClipping(items_count, items_height, out out_items_display_start, out out_items_display_end)
     {out_items_display_start, out_items_display_end}
   end
 
@@ -2111,42 +2111,42 @@ module ImGui
   #
   # [ImGui::BeginChildFrame()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L811)
   def self.begin_child_frame(id : ImGuiID, size : ImVec2, flags : ImGuiWindowFlags = ImGuiWindowFlags.new(0)) : Bool
-    LibImGui.igBeginChildFrame(id, size, flags)
+    LibImGui.BeginChildFrame(id, size, flags)
   end
 
   # always call EndChildFrame() regardless of BeginChildFrame() return values (which indicates a collapsed/clipped window)
   #
   # [ImGui::EndChildFrame()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L812)
   def self.end_child_frame : Void
-    LibImGui.igEndChildFrame
+    LibImGui.EndChildFrame
   end
 
   # [ImGui::CalcTextSize()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L815)
   def self.calc_text_size(text : Bytes | String, hide_text_after_double_hash : Bool = false, wrap_width : Float32 = -1.0) : ImGui::ImVec2
-    LibImGui.igCalcTextSize(out p_out, text, (text.to_unsafe + text.bytesize), hide_text_after_double_hash, wrap_width)
+    LibImGui.CalcTextSize(out p_out, text, (text.to_unsafe + text.bytesize), hide_text_after_double_hash, wrap_width)
     p_out
   end
 
   # [ImGui::ColorConvertU32ToFloat4()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L818)
   def self.color_convert_u32_to_float4(in_ : UInt32) : ImGui::ImVec4
-    LibImGui.igColorConvertU32ToFloat4(out p_out, in_)
+    LibImGui.ColorConvertU32ToFloat4(out p_out, in_)
     p_out
   end
 
   # [ImGui::ColorConvertFloat4ToU32()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L819)
   def self.color_convert_float4_to_u32(in_ : ImVec4) : UInt32
-    LibImGui.igColorConvertFloat4ToU32(in_)
+    LibImGui.ColorConvertFloat4ToU32(in_)
   end
 
   # [ImGui::ColorConvertRGBtoHSV()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L820)
   def self.color_convert_rgb_to_hsv(r : Float32, g : Float32, b : Float32) : {LibC::Float, LibC::Float, LibC::Float}
-    LibImGui.igColorConvertRGBtoHSV(r, g, b, out out_h, out out_s, out out_v)
+    LibImGui.ColorConvertRGBtoHSV(r, g, b, out out_h, out out_s, out out_v)
     {out_h, out_s, out_v}
   end
 
   # [ImGui::ColorConvertHSVtoRGB()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L821)
   def self.color_convert_hsv_to_rgb(h : Float32, s : Float32, v : Float32) : {LibC::Float, LibC::Float, LibC::Float}
-    LibImGui.igColorConvertHSVtoRGB(h, s, v, out out_r, out out_g, out out_b)
+    LibImGui.ColorConvertHSVtoRGB(h, s, v, out out_r, out out_g, out out_b)
     {out_r, out_g, out_b}
   end
 
@@ -2154,98 +2154,98 @@ module ImGui
   #
   # [ImGui::GetKeyIndex()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L826)
   def self.get_key_index(imgui_key : ImGuiKey) : Int32
-    LibImGui.igGetKeyIndex(imgui_key)
+    LibImGui.GetKeyIndex(imgui_key)
   end
 
   # is key being held. == io.KeysDown[user_key_index].
   #
   # [ImGui::IsKeyDown()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L827)
   def self.is_key_down(user_key_index : Int32) : Bool
-    LibImGui.igIsKeyDown(user_key_index)
+    LibImGui.IsKeyDown(user_key_index)
   end
 
   # was key pressed (went from !Down to Down)? if repeat=true, uses io.KeyRepeatDelay / KeyRepeatRate
   #
   # [ImGui::IsKeyPressed()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L828)
   def self.is_key_pressed(user_key_index : Int32, repeat : Bool = true) : Bool
-    LibImGui.igIsKeyPressed(user_key_index, repeat)
+    LibImGui.IsKeyPressed(user_key_index, repeat)
   end
 
   # was key released (went from Down to !Down)?
   #
   # [ImGui::IsKeyReleased()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L829)
   def self.is_key_released(user_key_index : Int32) : Bool
-    LibImGui.igIsKeyReleased(user_key_index)
+    LibImGui.IsKeyReleased(user_key_index)
   end
 
   # uses provided repeat rate/delay. return a count, most often 0 or 1 but might be >1 if RepeatRate is small enough that DeltaTime > RepeatRate
   #
   # [ImGui::GetKeyPressedAmount()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L830)
   def self.get_key_pressed_amount(key_index : Int32, repeat_delay : Float32, rate : Float32) : Int32
-    LibImGui.igGetKeyPressedAmount(key_index, repeat_delay, rate)
+    LibImGui.GetKeyPressedAmount(key_index, repeat_delay, rate)
   end
 
   # attention: misleading name! manually override io.WantCaptureKeyboard flag next frame (said flag is entirely left for your application to handle). e.g. force capture keyboard when your widget is being hovered. This is equivalent to setting "io.WantCaptureKeyboard = want_capture_keyboard_value"; after the next NewFrame() call.
   #
   # [ImGui::CaptureKeyboardFromApp()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L831)
   def self.capture_keyboard_from_app(want_capture_keyboard_value : Bool = true) : Void
-    LibImGui.igCaptureKeyboardFromApp(want_capture_keyboard_value)
+    LibImGui.CaptureKeyboardFromApp(want_capture_keyboard_value)
   end
 
   # is mouse button held?
   #
   # [ImGui::IsMouseDown()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L837)
   def self.is_mouse_down(button : ImGuiMouseButton) : Bool
-    LibImGui.igIsMouseDown(button)
+    LibImGui.IsMouseDown(button)
   end
 
   # did mouse button clicked? (went from !Down to Down)
   #
   # [ImGui::IsMouseClicked()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L838)
   def self.is_mouse_clicked(button : ImGuiMouseButton, repeat : Bool = false) : Bool
-    LibImGui.igIsMouseClicked(button, repeat)
+    LibImGui.IsMouseClicked(button, repeat)
   end
 
   # did mouse button released? (went from Down to !Down)
   #
   # [ImGui::IsMouseReleased()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L839)
   def self.is_mouse_released(button : ImGuiMouseButton) : Bool
-    LibImGui.igIsMouseReleased(button)
+    LibImGui.IsMouseReleased(button)
   end
 
   # did mouse button double-clicked? (note that a double-click will also report IsMouseClicked() == true)
   #
   # [ImGui::IsMouseDoubleClicked()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L840)
   def self.is_mouse_double_clicked(button : ImGuiMouseButton) : Bool
-    LibImGui.igIsMouseDoubleClicked(button)
+    LibImGui.IsMouseDoubleClicked(button)
   end
 
   # is mouse hovering given bounding rect (in screen space). clipped by current clipping settings, but disregarding of other consideration of focus/window ordering/popup-block.
   #
   # [ImGui::IsMouseHoveringRect()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L841)
   def self.is_mouse_hovering_rect(r_min : ImVec2, r_max : ImVec2, clip : Bool = true) : Bool
-    LibImGui.igIsMouseHoveringRect(r_min, r_max, clip)
+    LibImGui.IsMouseHoveringRect(r_min, r_max, clip)
   end
 
   # by convention we use (-FLT_MAX,-FLT_MAX) to denote that there is no mouse available
   #
   # [ImGui::IsMousePosValid()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L842)
   def self.is_mouse_pos_valid(mouse_pos : ImVec2* = Pointer(ImVec2).null) : Bool
-    LibImGui.igIsMousePosValid(mouse_pos)
+    LibImGui.IsMousePosValid(mouse_pos)
   end
 
   # is any mouse button held?
   #
   # [ImGui::IsAnyMouseDown()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L843)
   def self.is_any_mouse_down : Bool
-    LibImGui.igIsAnyMouseDown
+    LibImGui.IsAnyMouseDown
   end
 
   # shortcut to ImGui::GetIO().MousePos provided by user, to be consistent with other calls
   #
   # [ImGui::GetMousePos()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L844)
   def self.get_mouse_pos : ImGui::ImVec2
-    LibImGui.igGetMousePos(out p_out)
+    LibImGui.GetMousePos(out p_out)
     p_out
   end
 
@@ -2253,7 +2253,7 @@ module ImGui
   #
   # [ImGui::GetMousePosOnOpeningCurrentPopup()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L845)
   def self.get_mouse_pos_on_opening_current_popup : ImGui::ImVec2
-    LibImGui.igGetMousePosOnOpeningCurrentPopup(out p_out)
+    LibImGui.GetMousePosOnOpeningCurrentPopup(out p_out)
     p_out
   end
 
@@ -2261,80 +2261,80 @@ module ImGui
   #
   # [ImGui::IsMouseDragging()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L846)
   def self.is_mouse_dragging(button : ImGuiMouseButton, lock_threshold : Float32 = -1.0) : Bool
-    LibImGui.igIsMouseDragging(button, lock_threshold)
+    LibImGui.IsMouseDragging(button, lock_threshold)
   end
 
   # return the delta from the initial clicking position while the mouse button is pressed or was just released. This is locked and return 0.0f until the mouse moves past a distance threshold at least once (if lock_threshold < -1.0f, uses io.MouseDraggingThreshold)
   #
   # [ImGui::GetMouseDragDelta()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L847)
   def self.get_mouse_drag_delta(button : ImGuiMouseButton = ImGuiMouseButton.new(0), lock_threshold : Float32 = -1.0) : ImGui::ImVec2
-    LibImGui.igGetMouseDragDelta(out p_out, button, lock_threshold)
+    LibImGui.GetMouseDragDelta(out p_out, button, lock_threshold)
     p_out
   end
 
   # [ImGui::ResetMouseDragDelta()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L848)
   def self.reset_mouse_drag_delta(button : ImGuiMouseButton = ImGuiMouseButton.new(0)) : Void
-    LibImGui.igResetMouseDragDelta(button)
+    LibImGui.ResetMouseDragDelta(button)
   end
 
   # get desired cursor type, reset in ImGui::NewFrame(), this is updated during the frame. valid before Render(). If you use software rendering by setting io.MouseDrawCursor ImGui will render those for you
   #
   # [ImGui::GetMouseCursor()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L849)
   def self.get_mouse_cursor : ImGuiMouseCursor
-    LibImGui.igGetMouseCursor
+    LibImGui.GetMouseCursor
   end
 
   # set desired cursor type
   #
   # [ImGui::SetMouseCursor()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L850)
   def self.set_mouse_cursor(cursor_type : ImGuiMouseCursor) : Void
-    LibImGui.igSetMouseCursor(cursor_type)
+    LibImGui.SetMouseCursor(cursor_type)
   end
 
   # attention: misleading name! manually override io.WantCaptureMouse flag next frame (said flag is entirely left for your application to handle). This is equivalent to setting "io.WantCaptureMouse = want_capture_mouse_value;" after the next NewFrame() call.
   #
   # [ImGui::CaptureMouseFromApp()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L851)
   def self.capture_mouse_from_app(want_capture_mouse_value : Bool = true) : Void
-    LibImGui.igCaptureMouseFromApp(want_capture_mouse_value)
+    LibImGui.CaptureMouseFromApp(want_capture_mouse_value)
   end
 
   # [ImGui::GetClipboardText()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L855)
   def self.get_clipboard_text : String
-    result = LibImGui.igGetClipboardText
+    result = LibImGui.GetClipboardText
     String.new(result)
   end
 
   # [ImGui::SetClipboardText()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L856)
   def self.set_clipboard_text(text : String) : Void
-    LibImGui.igSetClipboardText(text)
+    LibImGui.SetClipboardText(text)
   end
 
   # call after CreateContext() and before the first call to NewFrame(). NewFrame() automatically calls LoadIniSettingsFromDisk(io.IniFilename).
   #
   # [ImGui::LoadIniSettingsFromDisk()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L861)
   def self.load_ini_settings_from_disk(ini_filename : String) : Void
-    LibImGui.igLoadIniSettingsFromDisk(ini_filename)
+    LibImGui.LoadIniSettingsFromDisk(ini_filename)
   end
 
   # call after CreateContext() and before the first call to NewFrame() to provide .ini data from your own data source.
   #
   # [ImGui::LoadIniSettingsFromMemory()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L862)
   def self.load_ini_settings_from_memory(ini_data : String, ini_size : LibC::SizeT = 0) : Void
-    LibImGui.igLoadIniSettingsFromMemory(ini_data, ini_size)
+    LibImGui.LoadIniSettingsFromMemory(ini_data, ini_size)
   end
 
   # this is automatically called (if io.IniFilename is not empty) a few seconds after any modification that should be reflected in the .ini file (and also by DestroyContext).
   #
   # [ImGui::SaveIniSettingsToDisk()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L863)
   def self.save_ini_settings_to_disk(ini_filename : String) : Void
-    LibImGui.igSaveIniSettingsToDisk(ini_filename)
+    LibImGui.SaveIniSettingsToDisk(ini_filename)
   end
 
   # return a zero-terminated string with the .ini data which you can save by your own mean. call when io.WantSaveIniSettings is set, then save data by your own mean and clear io.WantSaveIniSettings.
   #
   # [ImGui::SaveIniSettingsToMemory()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L864)
   def self.save_ini_settings_to_memory : {String, LibC::SizeT}
-    result = LibImGui.igSaveIniSettingsToMemory(out out_ini_size)
+    result = LibImGui.SaveIniSettingsToMemory(out out_ini_size)
     {String.new(result), out_ini_size}
   end
 
@@ -2342,22 +2342,22 @@ module ImGui
   #
   # [ImGui::DebugCheckVersionAndDataLayout()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L867)
   def self.debug_check_version_and_data_layout(version_str : String, sz_io : LibC::SizeT, sz_style : LibC::SizeT, sz_vec2 : LibC::SizeT, sz_vec4 : LibC::SizeT, sz_drawvert : LibC::SizeT, sz_drawidx : LibC::SizeT) : Bool
-    LibImGui.igDebugCheckVersionAndDataLayout(version_str, sz_io, sz_style, sz_vec2, sz_vec4, sz_drawvert, sz_drawidx)
+    LibImGui.DebugCheckVersionAndDataLayout(version_str, sz_io, sz_style, sz_vec2, sz_vec4, sz_drawvert, sz_drawidx)
   end
 
   # [ImGui::SetAllocatorFunctions()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L872)
   def self.set_allocator_functions(alloc_func : (LibC::SizeT, Void*) -> Void*, free_func : (Void*, Void*) -> Void, user_data : Void* = Pointer(Void).null) : Void
-    LibImGui.igSetAllocatorFunctions(alloc_func, free_func, user_data)
+    LibImGui.SetAllocatorFunctions(alloc_func, free_func, user_data)
   end
 
   # [ImGui::MemAlloc()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L873)
   def self.mem_alloc(size : LibC::SizeT) : Void*
-    LibImGui.igMemAlloc(size)
+    LibImGui.MemAlloc(size)
   end
 
   # [ImGui::MemFree()](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L874)
   def self.mem_free(ptr : Void*) : Void
-    LibImGui.igMemFree(ptr)
+    LibImGui.MemFree(ptr)
   end
 
   # [struct ImVector](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L1620)

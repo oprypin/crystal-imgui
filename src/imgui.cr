@@ -1,5 +1,5 @@
 module ImGui
-  LibImGui.igSetAllocatorFunctions(->(size, data) {
+  LibImGui.SetAllocatorFunctions(->(size, data) {
     GC.malloc(size)
   }, ->(ptr, data) {}, nil)
 
@@ -219,7 +219,7 @@ module ImGui
     def self.{{name.id}}({{*args}}, &block : ImGuiInputTextCallbackData -> Int32) : Bool
       block = nil if block == NULL_CALLBACK
       user_data = {buf, block}
-      LibImGui.ig{{name.id.camelcase}}(
+      LibImGui.{{name.id.camelcase}}(
         {% for arg in args %}
           {% if arg.var == "buf" %}
             buf, buf.capacity,
@@ -253,17 +253,17 @@ module ImGui
 
   pointer_wrapper def self.checkbox_flags(label : String, flags : T*, flags_value : T) : Bool forall T
     typeof(flags_value.to_i32)
-    LibImGui.igCheckboxFlagsUintPtr(label, flags.as(UInt32*), flags_value.to_u32!)
+    LibImGui.CheckboxFlagsUintPtr(label, flags.as(UInt32*), flags_value.to_u32!)
   end
 
   pointer_wrapper def self.radio_button(label : String, v : T*, v_button : T) : Bool forall T
     typeof(v.value.to_i32)
-    LibImGui.igRadioButtonIntPtr(label, v.as(Int32*), v_button.to_i32!)
+    LibImGui.RadioButtonIntPtr(label, v.as(Int32*), v_button.to_i32!)
   end
 
   private macro make_plot(name, *args)
     def self.{{name.id}}({{*args}}, &block : Int32 -> Float32) : Void
-      LibImGui.ig{{name.id.camelcase}}FnFloatPtr(
+      LibImGui.{{name.id.camelcase}}FnFloatPtr(
         {% for arg, i in args %}
           {% if i == 1 %}
             ->(data, idx) { data.as(typeof(block)*).value.call(idx) },
@@ -287,7 +287,7 @@ module ImGui
     pointer_wrapper def self.{{name.id}}({{*args}}, &block : Int32 -> (Slice(UInt8) | String)?) : Bool
       typeof(current_item.value.to_i32)
       current_item = current_item.as(Int32*)
-      LibImGui.ig{{name.id.camelcase}}FnBoolPtr(
+      LibImGui.{{name.id.camelcase}}FnBoolPtr(
         {% for arg, i in args %}
           {% if i == 2 %}
             ->(data, idx, out_text) {
@@ -319,7 +319,7 @@ module ImGui
   end
 
   def self.set_next_window_size_constraints(size_min : ImVec2, size_max : ImVec2, &block : ImGuiSizeCallbackData ->) : Void
-    LibImGui.igSetNextWindowSizeConstraints(size_min, size_max, ->(data) {
+    LibImGui.SetNextWindowSizeConstraints(size_min, size_max, ->(data) {
       block2 = Box(typeof(block)).unbox(data.value.user_data)
       block2.call(ImGuiSizeCallbackData.new(data))
     }, Box.box(block))
@@ -335,7 +335,7 @@ module ImGui
   end
 
   def self.push_id(ptr_id : ClassType) : Void
-    LibImGui.igPushIDPtr(ptr_id)
+    LibImGui.PushIDPtr(ptr_id)
   end
 
   def self.col32(r : Int, g : Int, b : Int, a : Int = 255) : UInt32
