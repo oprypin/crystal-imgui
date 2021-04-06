@@ -6,6 +6,8 @@ module ImGui
   alias ImGuiErrorLogCallback = LibImGui::ImGuiErrorLogCallback
   alias ImGuiID = LibImGui::ImGuiID
   alias ImGuiInputTextCallback = LibImGui::ImGuiInputTextCallback
+  alias ImGuiMemAllocFunc = LibImGui::ImGuiMemAllocFunc
+  alias ImGuiMemFreeFunc = LibImGui::ImGuiMemFreeFunc
   alias ImGuiSizeCallback = LibImGui::ImGuiSizeCallback
   alias ImGuiTableColumnIdx = LibImGui::ImGuiTableColumnIdx
   alias ImGuiTableDrawChannelIdx = LibImGui::ImGuiTableDrawChannelIdx
@@ -39,7 +41,7 @@ module ImGui
 
   alias TopLevel::ImVec4 = ImGui::ImVec4
 
-  # [enum ImGuiWindowFlags_](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L883)
+  # [enum ImGuiWindowFlags_](https://github.com/ocornut/imgui/blob/64aab8480a5643cec1880af17931963a90a8f990/imgui.h#L893)
   @[Flags]
   enum ImGuiWindowFlags
     None = 0
@@ -101,7 +103,7 @@ module ImGui
   end
   alias TopLevel::ImGuiWindowFlags = ImGui::ImGuiWindowFlags
 
-  # [enum ImGuiInputTextFlags_](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L923)
+  # [enum ImGuiInputTextFlags_](https://github.com/ocornut/imgui/blob/64aab8480a5643cec1880af17931963a90a8f990/imgui.h#L933)
   @[Flags]
   enum ImGuiInputTextFlags
     None = 0
@@ -131,8 +133,8 @@ module ImGui
     CtrlEnterForNewLine = 1 << 11
     # Disable following the cursor horizontally
     NoHorizontalScroll = 1 << 12
-    # Insert mode
-    AlwaysInsertMode = 1 << 13
+    # Overwrite mode
+    AlwaysOverwrite = 1 << 13
     # Read-only mode
     ReadOnly = 1 << 14
     # Password mode, display all characters as '*'
@@ -152,7 +154,7 @@ module ImGui
   end
   alias TopLevel::ImGuiInputTextFlags = ImGui::ImGuiInputTextFlags
 
-  # [enum ImGuiTreeNodeFlags_](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L952)
+  # [enum ImGuiTreeNodeFlags_](https://github.com/ocornut/imgui/blob/64aab8480a5643cec1880af17931963a90a8f990/imgui.h#L967)
   @[Flags]
   enum ImGuiTreeNodeFlags
     None = 0
@@ -188,7 +190,7 @@ module ImGui
   end
   alias TopLevel::ImGuiTreeNodeFlags = ImGui::ImGuiTreeNodeFlags
 
-  # [enum ImGuiPopupFlags_](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L981)
+  # [enum ImGuiPopupFlags_](https://github.com/ocornut/imgui/blob/64aab8480a5643cec1880af17931963a90a8f990/imgui.h#L996)
   @[Flags]
   enum ImGuiPopupFlags
     None = 0
@@ -212,7 +214,7 @@ module ImGui
   end
   alias TopLevel::ImGuiPopupFlags = ImGui::ImGuiPopupFlags
 
-  # [enum ImGuiSelectableFlags_](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L997)
+  # [enum ImGuiSelectableFlags_](https://github.com/ocornut/imgui/blob/64aab8480a5643cec1880af17931963a90a8f990/imgui.h#L1012)
   @[Flags]
   enum ImGuiSelectableFlags
     None = 0
@@ -229,7 +231,7 @@ module ImGui
   end
   alias TopLevel::ImGuiSelectableFlags = ImGui::ImGuiSelectableFlags
 
-  # [enum ImGuiComboFlags_](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L1008)
+  # [enum ImGuiComboFlags_](https://github.com/ocornut/imgui/blob/64aab8480a5643cec1880af17931963a90a8f990/imgui.h#L1023)
   @[Flags]
   enum ImGuiComboFlags
     None = 0
@@ -251,7 +253,7 @@ module ImGui
   end
   alias TopLevel::ImGuiComboFlags = ImGui::ImGuiComboFlags
 
-  # [enum ImGuiTabBarFlags_](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L1022)
+  # [enum ImGuiTabBarFlags_](https://github.com/ocornut/imgui/blob/64aab8480a5643cec1880af17931963a90a8f990/imgui.h#L1037)
   @[Flags]
   enum ImGuiTabBarFlags
     None = 0
@@ -276,7 +278,7 @@ module ImGui
   end
   alias TopLevel::ImGuiTabBarFlags = ImGui::ImGuiTabBarFlags
 
-  # [enum ImGuiTabItemFlags_](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L1038)
+  # [enum ImGuiTabItemFlags_](https://github.com/ocornut/imgui/blob/64aab8480a5643cec1880af17931963a90a8f990/imgui.h#L1053)
   @[Flags]
   enum ImGuiTabItemFlags
     None = 0
@@ -299,7 +301,7 @@ module ImGui
   end
   alias TopLevel::ImGuiTabItemFlags = ImGui::ImGuiTabItemFlags
 
-  # [enum ImGuiTableFlags_](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L1074)
+  # [enum ImGuiTableFlags_](https://github.com/ocornut/imgui/blob/64aab8480a5643cec1880af17931963a90a8f990/imgui.h#L1089)
   @[Flags]
   enum ImGuiTableFlags
     None = 0
@@ -375,7 +377,7 @@ module ImGui
   end
   alias TopLevel::ImGuiTableFlags = ImGui::ImGuiTableFlags
 
-  # [enum ImGuiTableColumnFlags_](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L1131)
+  # [enum ImGuiTableColumnFlags_](https://github.com/ocornut/imgui/blob/64aab8480a5643cec1880af17931963a90a8f990/imgui.h#L1146)
   @[Flags]
   enum ImGuiTableColumnFlags
     None = 0
@@ -427,7 +429,7 @@ module ImGui
   end
   alias TopLevel::ImGuiTableColumnFlags = ImGui::ImGuiTableColumnFlags
 
-  # [enum ImGuiTableRowFlags_](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L1171)
+  # [enum ImGuiTableRowFlags_](https://github.com/ocornut/imgui/blob/64aab8480a5643cec1880af17931963a90a8f990/imgui.h#L1186)
   @[Flags]
   enum ImGuiTableRowFlags
     None = 0
@@ -436,7 +438,7 @@ module ImGui
   end
   alias TopLevel::ImGuiTableRowFlags = ImGui::ImGuiTableRowFlags
 
-  # [enum ImGuiTableBgTarget_](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L1186)
+  # [enum ImGuiTableBgTarget_](https://github.com/ocornut/imgui/blob/64aab8480a5643cec1880af17931963a90a8f990/imgui.h#L1201)
   enum ImGuiTableBgTarget
     None = 0
     # Set row background color 0 (generally used for background, automatically set when ImGuiTableFlags_RowBg is used)
@@ -448,7 +450,7 @@ module ImGui
   end
   alias TopLevel::ImGuiTableBgTarget = ImGui::ImGuiTableBgTarget
 
-  # [enum ImGuiFocusedFlags_](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L1195)
+  # [enum ImGuiFocusedFlags_](https://github.com/ocornut/imgui/blob/64aab8480a5643cec1880af17931963a90a8f990/imgui.h#L1210)
   @[Flags]
   enum ImGuiFocusedFlags
     None = 0
@@ -462,7 +464,7 @@ module ImGui
   end
   alias TopLevel::ImGuiFocusedFlags = ImGui::ImGuiFocusedFlags
 
-  # [enum ImGuiHoveredFlags_](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L1207)
+  # [enum ImGuiHoveredFlags_](https://github.com/ocornut/imgui/blob/64aab8480a5643cec1880af17931963a90a8f990/imgui.h#L1222)
   @[Flags]
   enum ImGuiHoveredFlags
     # Return true if directly over the item/window, not obstructed by another window, not obstructed by an active popup or modal blocking inputs under them.
@@ -486,7 +488,7 @@ module ImGui
   end
   alias TopLevel::ImGuiHoveredFlags = ImGui::ImGuiHoveredFlags
 
-  # [enum ImGuiDragDropFlags_](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L1223)
+  # [enum ImGuiDragDropFlags_](https://github.com/ocornut/imgui/blob/64aab8480a5643cec1880af17931963a90a8f990/imgui.h#L1238)
   @[Flags]
   enum ImGuiDragDropFlags
     None = 0
@@ -513,7 +515,7 @@ module ImGui
   end
   alias TopLevel::ImGuiDragDropFlags = ImGui::ImGuiDragDropFlags
 
-  # [enum ImGuiDataType_](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L1245)
+  # [enum ImGuiDataType_](https://github.com/ocornut/imgui/blob/64aab8480a5643cec1880af17931963a90a8f990/imgui.h#L1260)
   enum ImGuiDataType
     # signed char / char (with sensible compilers)
     S8 = 0
@@ -538,7 +540,7 @@ module ImGui
   end
   alias TopLevel::ImGuiDataType = ImGui::ImGuiDataType
 
-  # [enum ImGuiDir_](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L1261)
+  # [enum ImGuiDir_](https://github.com/ocornut/imgui/blob/64aab8480a5643cec1880af17931963a90a8f990/imgui.h#L1276)
   enum ImGuiDir
     None  = -1
     Left  =  0
@@ -548,7 +550,7 @@ module ImGui
   end
   alias TopLevel::ImGuiDir = ImGui::ImGuiDir
 
-  # [enum ImGuiSortDirection_](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L1272)
+  # [enum ImGuiSortDirection_](https://github.com/ocornut/imgui/blob/64aab8480a5643cec1880af17931963a90a8f990/imgui.h#L1287)
   enum ImGuiSortDirection
     None = 0
     # Ascending = 0->9, A->Z etc.
@@ -558,7 +560,7 @@ module ImGui
   end
   alias TopLevel::ImGuiSortDirection = ImGui::ImGuiSortDirection
 
-  # [enum ImGuiKey_](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L1280)
+  # [enum ImGuiKey_](https://github.com/ocornut/imgui/blob/64aab8480a5643cec1880af17931963a90a8f990/imgui.h#L1295)
   enum ImGuiKey
     Tab         =  0
     LeftArrow   =  1
@@ -591,7 +593,7 @@ module ImGui
   end
   alias TopLevel::ImGuiKey = ImGui::ImGuiKey
 
-  # [enum ImGuiKeyModFlags_](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L1308)
+  # [enum ImGuiKeyModFlags_](https://github.com/ocornut/imgui/blob/64aab8480a5643cec1880af17931963a90a8f990/imgui.h#L1323)
   @[Flags]
   enum ImGuiKeyModFlags
     None  = 0
@@ -602,7 +604,7 @@ module ImGui
   end
   alias TopLevel::ImGuiKeyModFlags = ImGui::ImGuiKeyModFlags
 
-  # [enum ImGuiNavInput_](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L1321)
+  # [enum ImGuiNavInput_](https://github.com/ocornut/imgui/blob/64aab8480a5643cec1880af17931963a90a8f990/imgui.h#L1336)
   enum ImGuiNavInput
     # activate / open / toggle / tweak value
     # e.g. Cross  (PS4), A (Xbox), A (Switch), Space (Keyboard)
@@ -656,7 +658,7 @@ module ImGui
   end
   alias TopLevel::ImGuiNavInput = ImGui::ImGuiNavInput
 
-  # [enum ImGuiConfigFlags_](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L1353)
+  # [enum ImGuiConfigFlags_](https://github.com/ocornut/imgui/blob/64aab8480a5643cec1880af17931963a90a8f990/imgui.h#L1368)
   @[Flags]
   enum ImGuiConfigFlags
     None = 0
@@ -679,7 +681,7 @@ module ImGui
   end
   alias TopLevel::ImGuiConfigFlags = ImGui::ImGuiConfigFlags
 
-  # [enum ImGuiBackendFlags_](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L1369)
+  # [enum ImGuiBackendFlags_](https://github.com/ocornut/imgui/blob/64aab8480a5643cec1880af17931963a90a8f990/imgui.h#L1384)
   @[Flags]
   enum ImGuiBackendFlags
     None = 0
@@ -694,7 +696,7 @@ module ImGui
   end
   alias TopLevel::ImGuiBackendFlags = ImGui::ImGuiBackendFlags
 
-  # [enum ImGuiCol_](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L1379)
+  # [enum ImGuiCol_](https://github.com/ocornut/imgui/blob/64aab8480a5643cec1880af17931963a90a8f990/imgui.h#L1394)
   enum ImGuiCol
     Text         = 0
     TextDisabled = 1
@@ -766,7 +768,7 @@ module ImGui
   end
   alias TopLevel::ImGuiCol = ImGui::ImGuiCol
 
-  # [enum ImGuiStyleVar_](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L1444)
+  # [enum ImGuiStyleVar_](https://github.com/ocornut/imgui/blob/64aab8480a5643cec1880af17931963a90a8f990/imgui.h#L1459)
   enum ImGuiStyleVar
     # float     Alpha
     Alpha = 0
@@ -819,7 +821,7 @@ module ImGui
   end
   alias TopLevel::ImGuiStyleVar = ImGui::ImGuiStyleVar
 
-  # [enum ImGuiButtonFlags_](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L1475)
+  # [enum ImGuiButtonFlags_](https://github.com/ocornut/imgui/blob/64aab8480a5643cec1880af17931963a90a8f990/imgui.h#L1490)
   @[Flags]
   enum ImGuiButtonFlags
     None = 0
@@ -834,7 +836,7 @@ module ImGui
   end
   alias TopLevel::ImGuiButtonFlags = ImGui::ImGuiButtonFlags
 
-  # [enum ImGuiColorEditFlags_](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L1488)
+  # [enum ImGuiColorEditFlags_](https://github.com/ocornut/imgui/blob/64aab8480a5643cec1880af17931963a90a8f990/imgui.h#L1503)
   @[Flags]
   enum ImGuiColorEditFlags
     None = 0
@@ -901,7 +903,7 @@ module ImGui
   end
   alias TopLevel::ImGuiColorEditFlags = ImGui::ImGuiColorEditFlags
 
-  # [enum ImGuiSliderFlags_](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L1535)
+  # [enum ImGuiSliderFlags_](https://github.com/ocornut/imgui/blob/64aab8480a5643cec1880af17931963a90a8f990/imgui.h#L1550)
   @[Flags]
   enum ImGuiSliderFlags
     None = 0
@@ -918,7 +920,7 @@ module ImGui
   end
   alias TopLevel::ImGuiSliderFlags = ImGui::ImGuiSliderFlags
 
-  # [enum ImGuiMouseButton_](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L1552)
+  # [enum ImGuiMouseButton_](https://github.com/ocornut/imgui/blob/64aab8480a5643cec1880af17931963a90a8f990/imgui.h#L1567)
   enum ImGuiMouseButton
     Left   = 0
     Right  = 1
@@ -926,7 +928,7 @@ module ImGui
   end
   alias TopLevel::ImGuiMouseButton = ImGui::ImGuiMouseButton
 
-  # [enum ImGuiMouseCursor_](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L1562)
+  # [enum ImGuiMouseCursor_](https://github.com/ocornut/imgui/blob/64aab8480a5643cec1880af17931963a90a8f990/imgui.h#L1577)
   enum ImGuiMouseCursor
     None  = -1
     Arrow =  0
@@ -949,7 +951,7 @@ module ImGui
   end
   alias TopLevel::ImGuiMouseCursor = ImGui::ImGuiMouseCursor
 
-  # [enum ImGuiCond_](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L1580)
+  # [enum ImGuiCond_](https://github.com/ocornut/imgui/blob/64aab8480a5643cec1880af17931963a90a8f990/imgui.h#L1595)
   enum ImGuiCond
     # No condition (always set the variable), same as _Always
     None = 0
@@ -1039,30 +1041,34 @@ module ImGui
 
   alias TopLevel::ImDrawChannel = ImGui::ImDrawChannel
 
-  # [enum ImDrawCornerFlags_](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L2315)
+  # [enum ImDrawFlags_](https://github.com/ocornut/imgui/blob/64aab8480a5643cec1880af17931963a90a8f990/imgui.h#L2287)
   @[Flags]
-  enum ImDrawCornerFlags
+  enum ImDrawFlags
     None = 0
-    # 0x1
-    TopLeft = 1 << 0
-    # 0x2
-    TopRight = 1 << 1
-    # 0x4
-    BotLeft = 1 << 2
-    # 0x8
-    BotRight = 1 << 3
-    # 0x3
-    Top = TopLeft | TopRight
-    # 0xC
-    Bot = BotLeft | BotRight
-    # 0x5
-    Left = TopLeft | BotLeft
-    # 0xA
-    Right = TopRight | BotRight
+    # PathStroke(), AddPolyline(): specify that shape should be closed (Important: this is always == 1 for legacy reason)
+    Closed = 1 << 0
+    # AddRect(), AddRectFilled(), PathRect(): enable rounding top-left corner only (when rounding > 0.0f, we default to all corners). Was 0x01.
+    RoundCornersTopLeft = 1 << 4
+    # AddRect(), AddRectFilled(), PathRect(): enable rounding top-right corner only (when rounding > 0.0f, we default to all corners). Was 0x02.
+    RoundCornersTopRight = 1 << 5
+    # AddRect(), AddRectFilled(), PathRect(): enable rounding bottom-left corner only (when rounding > 0.0f, we default to all corners). Was 0x04.
+    RoundCornersBottomLeft = 1 << 6
+    # AddRect(), AddRectFilled(), PathRect(): enable rounding bottom-right corner only (when rounding > 0.0f, we default to all corners). Wax 0x08.
+    RoundCornersBottomRight = 1 << 7
+    # AddRect(), AddRectFilled(), PathRect(): disable rounding on all corners (when rounding > 0.0f). This is NOT zero, NOT an implicit flag!
+    RoundCornersNone   = 1 << 8
+    RoundCornersTop    = RoundCornersTopLeft | RoundCornersTopRight
+    RoundCornersBottom = RoundCornersBottomLeft | RoundCornersBottomRight
+    RoundCornersLeft   = RoundCornersBottomLeft | RoundCornersTopLeft
+    RoundCornersRight  = RoundCornersBottomRight | RoundCornersTopRight
+    RoundCornersAll    = RoundCornersTopLeft | RoundCornersTopRight | RoundCornersBottomLeft | RoundCornersBottomRight
+    # Default to ALL corners if none of the _RoundCornersXX flags are specified.
+    RoundCornersDefault_ = RoundCornersAll
+    RoundCornersMask_    = RoundCornersAll | RoundCornersNone
   end
-  alias TopLevel::ImDrawCornerFlags = ImGui::ImDrawCornerFlags
+  alias TopLevel::ImDrawFlags = ImGui::ImDrawFlags
 
-  # [enum ImDrawListFlags_](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L2331)
+  # [enum ImDrawListFlags_](https://github.com/ocornut/imgui/blob/64aab8480a5643cec1880af17931963a90a8f990/imgui.h#L2307)
   @[Flags]
   enum ImDrawListFlags
     None = 0
@@ -1108,7 +1114,7 @@ module ImGui
 
   alias TopLevel::ImFontGlyphRangesBuilder = ImGui::ImFontGlyphRangesBuilder
 
-  # [enum ImFontAtlasFlags_](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L2562)
+  # [enum ImFontAtlasFlags_](https://github.com/ocornut/imgui/blob/64aab8480a5643cec1880af17931963a90a8f990/imgui.h#L2541)
   @[Flags]
   enum ImFontAtlasFlags
     None = 0
@@ -1121,7 +1127,7 @@ module ImGui
   end
   alias TopLevel::ImFontAtlasFlags = ImGui::ImFontAtlasFlags
 
-  # [enum ImGuiViewportFlags_](https://github.com/ocornut/imgui/blob/v1.81/imgui.h#L2742)
+  # [enum ImGuiViewportFlags_](https://github.com/ocornut/imgui/blob/64aab8480a5643cec1880af17931963a90a8f990/imgui.h#L2723)
   @[Flags]
   enum ImGuiViewportFlags
     None = 0
@@ -1160,6 +1166,7 @@ module ImGui
     ToggledOpen      = 1 << 4
     HasDeactivated   = 1 << 5
     Deactivated      = 1 << 6
+    HoveredWindow    = 1 << 7
   end
 
   # :nodoc:
@@ -1215,11 +1222,11 @@ module ImGui
 
   # :nodoc:
   enum ImGuiInputSource
-    None        = 0
-    Mouse       = 1
-    Nav         = 2
-    NavKeyboard = 3
-    NavGamepad  = 4
+    None     = 0
+    Mouse    = 1
+    Keyboard = 2
+    Gamepad  = 3
+    Nav      = 4
   end
 
   # :nodoc:

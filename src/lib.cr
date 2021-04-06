@@ -10,6 +10,8 @@ lib LibImGui
   alias ImGuiErrorLogCallback = (Void*, LibC::Char*) -> Void
   alias ImGuiID = LibC::UInt
   alias ImGuiInputTextCallback = (ImGuiInputTextCallbackData*) -> LibC::Int
+  alias ImGuiMemAllocFunc = (LibC::SizeT, Void*) -> Void*
+  alias ImGuiMemFreeFunc = (Void*, Void*) -> Void
   alias ImGuiSizeCallback = (ImGuiSizeCallbackData*) -> Void
   alias ImGuiTableColumnIdx = Int8
   alias ImGuiTableColumnsSettings = Void
@@ -278,7 +280,7 @@ lib LibImGui
   fun TableNextRow = igTableNextRow(row_flags : ImGui::ImGuiTableRowFlags, min_row_height : LibC::Float)
   fun TableNextColumn = igTableNextColumn : Bool
   fun TableSetColumnIndex = igTableSetColumnIndex(column_n : LibC::Int) : Bool
-  fun TableSetupColumn = igTableSetupColumn(label : LibC::Char*, flags : ImGui::ImGuiTableColumnFlags, init_width_or_weight : LibC::Float, user_id : UInt32)
+  fun TableSetupColumn = igTableSetupColumn(label : LibC::Char*, flags : ImGui::ImGuiTableColumnFlags, init_width_or_weight : LibC::Float, user_id : ImGuiID)
   fun TableSetupScrollFreeze = igTableSetupScrollFreeze(cols : LibC::Int, rows : LibC::Int)
   fun TableHeadersRow = igTableHeadersRow
   fun TableHeader = igTableHeader(label : LibC::Char*)
@@ -388,7 +390,8 @@ lib LibImGui
   fun SaveIniSettingsToDisk = igSaveIniSettingsToDisk(ini_filename : LibC::Char*)
   fun SaveIniSettingsToMemory = igSaveIniSettingsToMemory(out_ini_size : LibC::SizeT*) : LibC::Char*
   fun DebugCheckVersionAndDataLayout = igDebugCheckVersionAndDataLayout(version_str : LibC::Char*, sz_io : LibC::SizeT, sz_style : LibC::SizeT, sz_vec2 : LibC::SizeT, sz_vec4 : LibC::SizeT, sz_drawvert : LibC::SizeT, sz_drawidx : LibC::SizeT) : Bool
-  fun SetAllocatorFunctions = igSetAllocatorFunctions(alloc_func : (LibC::SizeT, Void*) -> Void*, free_func : (Void*, Void*) -> Void, user_data : Void*)
+  fun SetAllocatorFunctions = igSetAllocatorFunctions(alloc_func : ImGuiMemAllocFunc, free_func : ImGuiMemFreeFunc, user_data : Void*)
+  fun GetAllocatorFunctions = igGetAllocatorFunctions(p_alloc_func : ImGuiMemAllocFunc*, p_free_func : ImGuiMemFreeFunc*, p_user_data : Void**)
   fun MemAlloc = igMemAlloc(size : LibC::SizeT) : Void*
   fun MemFree = igMemFree(ptr : Void*)
 
@@ -431,7 +434,7 @@ lib LibImGui
     anti_aliased_lines_use_tex : Bool
     anti_aliased_fill : Bool
     curve_tessellation_tol : LibC::Float
-    circle_segment_max_error : LibC::Float
+    circle_tessellation_max_error : LibC::Float
     colors : ImGui::ImVec4[53]
   end
 
@@ -708,8 +711,8 @@ lib LibImGui
   fun ImDrawList_GetClipRectMin = ImDrawList_GetClipRectMin(pOut : ImGui::ImVec2*, self : ImDrawList*)
   fun ImDrawList_GetClipRectMax = ImDrawList_GetClipRectMax(pOut : ImGui::ImVec2*, self : ImDrawList*)
   fun ImDrawList_AddLine = ImDrawList_AddLine(self : ImDrawList*, p1 : ImGui::ImVec2, p2 : ImGui::ImVec2, col : UInt32, thickness : LibC::Float)
-  fun ImDrawList_AddRect = ImDrawList_AddRect(self : ImDrawList*, p_min : ImGui::ImVec2, p_max : ImGui::ImVec2, col : UInt32, rounding : LibC::Float, rounding_corners : ImGui::ImDrawCornerFlags, thickness : LibC::Float)
-  fun ImDrawList_AddRectFilled = ImDrawList_AddRectFilled(self : ImDrawList*, p_min : ImGui::ImVec2, p_max : ImGui::ImVec2, col : UInt32, rounding : LibC::Float, rounding_corners : ImGui::ImDrawCornerFlags)
+  fun ImDrawList_AddRect = ImDrawList_AddRect(self : ImDrawList*, p_min : ImGui::ImVec2, p_max : ImGui::ImVec2, col : UInt32, rounding : LibC::Float, flags : ImGui::ImDrawFlags, thickness : LibC::Float)
+  fun ImDrawList_AddRectFilled = ImDrawList_AddRectFilled(self : ImDrawList*, p_min : ImGui::ImVec2, p_max : ImGui::ImVec2, col : UInt32, rounding : LibC::Float, flags : ImGui::ImDrawFlags)
   fun ImDrawList_AddRectFilledMultiColor = ImDrawList_AddRectFilledMultiColor(self : ImDrawList*, p_min : ImGui::ImVec2, p_max : ImGui::ImVec2, col_upr_left : UInt32, col_upr_right : UInt32, col_bot_right : UInt32, col_bot_left : UInt32)
   fun ImDrawList_AddQuad = ImDrawList_AddQuad(self : ImDrawList*, p1 : ImGui::ImVec2, p2 : ImGui::ImVec2, p3 : ImGui::ImVec2, p4 : ImGui::ImVec2, col : UInt32, thickness : LibC::Float)
   fun ImDrawList_AddQuadFilled = ImDrawList_AddQuadFilled(self : ImDrawList*, p1 : ImGui::ImVec2, p2 : ImGui::ImVec2, p3 : ImGui::ImVec2, p4 : ImGui::ImVec2, col : UInt32)
@@ -721,23 +724,23 @@ lib LibImGui
   fun ImDrawList_AddNgonFilled = ImDrawList_AddNgonFilled(self : ImDrawList*, center : ImGui::ImVec2, radius : LibC::Float, col : UInt32, num_segments : LibC::Int)
   fun ImDrawList_AddTextVec2 = ImDrawList_AddTextVec2(self : ImDrawList*, pos : ImGui::ImVec2, col : UInt32, text_begin : LibC::Char*, text_end : LibC::Char*)
   fun ImDrawList_AddTextFontPtr = ImDrawList_AddTextFontPtr(self : ImDrawList*, font : ImFont*, font_size : LibC::Float, pos : ImGui::ImVec2, col : UInt32, text_begin : LibC::Char*, text_end : LibC::Char*, wrap_width : LibC::Float, cpu_fine_clip_rect : ImGui::ImVec4*)
-  fun ImDrawList_AddPolyline = ImDrawList_AddPolyline(self : ImDrawList*, points : ImGui::ImVec2*, num_points : LibC::Int, col : UInt32, closed : Bool, thickness : LibC::Float)
+  fun ImDrawList_AddPolyline = ImDrawList_AddPolyline(self : ImDrawList*, points : ImGui::ImVec2*, num_points : LibC::Int, col : UInt32, flags : ImGui::ImDrawFlags, thickness : LibC::Float)
   fun ImDrawList_AddConvexPolyFilled = ImDrawList_AddConvexPolyFilled(self : ImDrawList*, points : ImGui::ImVec2*, num_points : LibC::Int, col : UInt32)
   fun ImDrawList_AddBezierCubic = ImDrawList_AddBezierCubic(self : ImDrawList*, p1 : ImGui::ImVec2, p2 : ImGui::ImVec2, p3 : ImGui::ImVec2, p4 : ImGui::ImVec2, col : UInt32, thickness : LibC::Float, num_segments : LibC::Int)
   fun ImDrawList_AddBezierQuadratic = ImDrawList_AddBezierQuadratic(self : ImDrawList*, p1 : ImGui::ImVec2, p2 : ImGui::ImVec2, p3 : ImGui::ImVec2, col : UInt32, thickness : LibC::Float, num_segments : LibC::Int)
   fun ImDrawList_AddImage = ImDrawList_AddImage(self : ImDrawList*, user_texture_id : ImTextureID, p_min : ImGui::ImVec2, p_max : ImGui::ImVec2, uv_min : ImGui::ImVec2, uv_max : ImGui::ImVec2, col : UInt32)
   fun ImDrawList_AddImageQuad = ImDrawList_AddImageQuad(self : ImDrawList*, user_texture_id : ImTextureID, p1 : ImGui::ImVec2, p2 : ImGui::ImVec2, p3 : ImGui::ImVec2, p4 : ImGui::ImVec2, uv1 : ImGui::ImVec2, uv2 : ImGui::ImVec2, uv3 : ImGui::ImVec2, uv4 : ImGui::ImVec2, col : UInt32)
-  fun ImDrawList_AddImageRounded = ImDrawList_AddImageRounded(self : ImDrawList*, user_texture_id : ImTextureID, p_min : ImGui::ImVec2, p_max : ImGui::ImVec2, uv_min : ImGui::ImVec2, uv_max : ImGui::ImVec2, col : UInt32, rounding : LibC::Float, rounding_corners : ImGui::ImDrawCornerFlags)
+  fun ImDrawList_AddImageRounded = ImDrawList_AddImageRounded(self : ImDrawList*, user_texture_id : ImTextureID, p_min : ImGui::ImVec2, p_max : ImGui::ImVec2, uv_min : ImGui::ImVec2, uv_max : ImGui::ImVec2, col : UInt32, rounding : LibC::Float, flags : ImGui::ImDrawFlags)
   fun ImDrawList_PathClear = ImDrawList_PathClear(self : ImDrawList*)
   fun ImDrawList_PathLineTo = ImDrawList_PathLineTo(self : ImDrawList*, pos : ImGui::ImVec2)
   fun ImDrawList_PathLineToMergeDuplicate = ImDrawList_PathLineToMergeDuplicate(self : ImDrawList*, pos : ImGui::ImVec2)
   fun ImDrawList_PathFillConvex = ImDrawList_PathFillConvex(self : ImDrawList*, col : UInt32)
-  fun ImDrawList_PathStroke = ImDrawList_PathStroke(self : ImDrawList*, col : UInt32, closed : Bool, thickness : LibC::Float)
+  fun ImDrawList_PathStroke = ImDrawList_PathStroke(self : ImDrawList*, col : UInt32, flags : ImGui::ImDrawFlags, thickness : LibC::Float)
   fun ImDrawList_PathArcTo = ImDrawList_PathArcTo(self : ImDrawList*, center : ImGui::ImVec2, radius : LibC::Float, a_min : LibC::Float, a_max : LibC::Float, num_segments : LibC::Int)
   fun ImDrawList_PathArcToFast = ImDrawList_PathArcToFast(self : ImDrawList*, center : ImGui::ImVec2, radius : LibC::Float, a_min_of_12 : LibC::Int, a_max_of_12 : LibC::Int)
   fun ImDrawList_PathBezierCubicCurveTo = ImDrawList_PathBezierCubicCurveTo(self : ImDrawList*, p2 : ImGui::ImVec2, p3 : ImGui::ImVec2, p4 : ImGui::ImVec2, num_segments : LibC::Int)
   fun ImDrawList_PathBezierQuadraticCurveTo = ImDrawList_PathBezierQuadraticCurveTo(self : ImDrawList*, p2 : ImGui::ImVec2, p3 : ImGui::ImVec2, num_segments : LibC::Int)
-  fun ImDrawList_PathRect = ImDrawList_PathRect(self : ImDrawList*, rect_min : ImGui::ImVec2, rect_max : ImGui::ImVec2, rounding : LibC::Float, rounding_corners : ImGui::ImDrawCornerFlags)
+  fun ImDrawList_PathRect = ImDrawList_PathRect(self : ImDrawList*, rect_min : ImGui::ImVec2, rect_max : ImGui::ImVec2, rounding : LibC::Float, flags : ImGui::ImDrawFlags)
   fun ImDrawList_AddCallback = ImDrawList_AddCallback(self : ImDrawList*, callback : ImDrawCallback, callback_data : Void*)
   fun ImDrawList_AddDrawCmd = ImDrawList_AddDrawCmd(self : ImDrawList*)
   fun ImDrawList_CloneOutput = ImDrawList_CloneOutput(self : ImDrawList*) : ImDrawList*
@@ -758,6 +761,9 @@ lib LibImGui
   fun ImDrawList__OnChangedClipRect = ImDrawList__OnChangedClipRect(self : ImDrawList*)
   fun ImDrawList__OnChangedTextureID = ImDrawList__OnChangedTextureID(self : ImDrawList*)
   fun ImDrawList__OnChangedVtxOffset = ImDrawList__OnChangedVtxOffset(self : ImDrawList*)
+  fun ImDrawList__CalcCircleAutoSegmentCount = ImDrawList__CalcCircleAutoSegmentCount(self : ImDrawList*, radius : LibC::Float) : LibC::Int
+  fun ImDrawList__PathArcToFastEx = ImDrawList__PathArcToFastEx(self : ImDrawList*, center : ImGui::ImVec2, radius : LibC::Float, a_min_sample : LibC::Int, a_max_sample : LibC::Int, a_step : LibC::Int)
+  fun ImDrawList__PathArcToN = ImDrawList__PathArcToN(self : ImDrawList*, center : ImGui::ImVec2, radius : LibC::Float, a_min : LibC::Float, a_max : LibC::Float, num_segments : LibC::Int)
 
   struct ImDrawData
     valid : Bool
@@ -822,11 +828,12 @@ lib LibImGui
   fun ImFontAtlasCustomRect_IsPacked = ImFontAtlasCustomRect_IsPacked(self : ImFontAtlasCustomRect*) : Bool
 
   struct ImFontAtlas
-    locked : Bool
     flags : ImGui::ImFontAtlasFlags
     tex_id : ImTextureID
     tex_desired_width : LibC::Int
     tex_glyph_padding : LibC::Int
+    locked : Bool
+    tex_pixels_use_colors : Bool
     tex_pixels_alpha8 : LibC::UChar*
     tex_pixels_rgba32 : LibC::UInt*
     tex_width : LibC::Int
@@ -1011,6 +1018,7 @@ lib LibImGui
   fun ImRect_GetSize = ImRect_GetSize(pOut : ImGui::ImVec2*, self : ImRect*)
   fun ImRect_GetWidth = ImRect_GetWidth(self : ImRect*) : LibC::Float
   fun ImRect_GetHeight = ImRect_GetHeight(self : ImRect*) : LibC::Float
+  fun ImRect_GetArea = ImRect_GetArea(self : ImRect*) : LibC::Float
   fun ImRect_GetTL = ImRect_GetTL(pOut : ImGui::ImVec2*, self : ImRect*)
   fun ImRect_GetTR = ImRect_GetTR(pOut : ImGui::ImVec2*, self : ImRect*)
   fun ImRect_GetBL = ImRect_GetBL(pOut : ImGui::ImVec2*, self : ImRect*)
@@ -1042,7 +1050,7 @@ lib LibImGui
   fun ImBitVector_ClearBit = ImBitVector_ClearBit(self : ImBitVector*, n : LibC::Int)
   type ImDrawListSharedData = Void*
   fun ImDrawListSharedData_ImDrawListSharedData = ImDrawListSharedData_ImDrawListSharedData : ImDrawListSharedData*
-  fun ImDrawListSharedData_SetCircleSegmentMaxError = ImDrawListSharedData_SetCircleSegmentMaxError(self : ImDrawListSharedData*, max_error : LibC::Float)
+  fun ImDrawListSharedData_SetCircleTessellationMaxError = ImDrawListSharedData_SetCircleTessellationMaxError(self : ImDrawListSharedData*, max_error : LibC::Float)
   type ImDrawDataBuilder = Void*
   fun ImDrawDataBuilder_Clear = ImDrawDataBuilder_Clear(self : ImDrawDataBuilder*)
   fun ImDrawDataBuilder_ClearFreeMemory = ImDrawDataBuilder_ClearFreeMemory(self : ImDrawDataBuilder*)
@@ -1236,8 +1244,7 @@ lib LibImGui
   fun GetNavInputAmount2d = igGetNavInputAmount2d(pOut : ImGui::ImVec2*, dir_sources : ImGui::ImGuiNavDirSourceFlags, mode : ImGui::ImGuiInputReadMode, slow_factor : LibC::Float, fast_factor : LibC::Float)
   fun CalcTypematicRepeatAmount = igCalcTypematicRepeatAmount(t0 : LibC::Float, t1 : LibC::Float, repeat_delay : LibC::Float, repeat_rate : LibC::Float) : LibC::Int
   fun ActivateItem = igActivateItem(id : ImGuiID)
-  fun SetNavID = igSetNavID(id : ImGuiID, nav_layer : LibC::Int, focus_scope_id : ImGuiID)
-  fun SetNavIDWithRectRel = igSetNavIDWithRectRel(id : ImGuiID, nav_layer : LibC::Int, focus_scope_id : ImGuiID, rect_rel : ImRect)
+  fun SetNavID = igSetNavID(id : ImGuiID, nav_layer : LibC::Int, focus_scope_id : ImGuiID, rect_rel : ImRect)
   fun PushFocusScope = igPushFocusScope(id : ImGuiID)
   fun PopFocusScope = igPopFocusScope
   fun GetFocusedFocusScope = igGetFocusedFocusScope : ImGuiID
@@ -1272,6 +1279,7 @@ lib LibImGui
   fun TableGetHeaderRowHeight = igTableGetHeaderRowHeight : LibC::Float
   fun TablePushBackgroundChannel = igTablePushBackgroundChannel
   fun TablePopBackgroundChannel = igTablePopBackgroundChannel
+  fun GetCurrentTable = igGetCurrentTable : ImGuiTable*
   fun TableFindByID = igTableFindByID(id : ImGuiID) : ImGuiTable*
   fun BeginTableEx = igBeginTableEx(name : LibC::Char*, id : ImGuiID, columns_count : LibC::Int, flags : ImGui::ImGuiTableFlags, outer_size : ImGui::ImVec2, inner_width : LibC::Float) : Bool
   fun TableBeginInitMemory = igTableBeginInitMemory(table : ImGuiTable*, columns_count : LibC::Int)
@@ -1324,7 +1332,7 @@ lib LibImGui
   fun RenderTextEllipsis = igRenderTextEllipsis(draw_list : ImDrawList*, pos_min : ImGui::ImVec2, pos_max : ImGui::ImVec2, clip_max_x : LibC::Float, ellipsis_max_x : LibC::Float, text : LibC::Char*, text_end : LibC::Char*, text_size_if_known : ImGui::ImVec2*)
   fun RenderFrame = igRenderFrame(p_min : ImGui::ImVec2, p_max : ImGui::ImVec2, fill_col : UInt32, border : Bool, rounding : LibC::Float)
   fun RenderFrameBorder = igRenderFrameBorder(p_min : ImGui::ImVec2, p_max : ImGui::ImVec2, rounding : LibC::Float)
-  fun RenderColorRectWithAlphaCheckerboard = igRenderColorRectWithAlphaCheckerboard(draw_list : ImDrawList*, p_min : ImGui::ImVec2, p_max : ImGui::ImVec2, fill_col : UInt32, grid_step : LibC::Float, grid_off : ImGui::ImVec2, rounding : LibC::Float, rounding_corners_flags : LibC::Int)
+  fun RenderColorRectWithAlphaCheckerboard = igRenderColorRectWithAlphaCheckerboard(draw_list : ImDrawList*, p_min : ImGui::ImVec2, p_max : ImGui::ImVec2, fill_col : UInt32, grid_step : LibC::Float, grid_off : ImGui::ImVec2, rounding : LibC::Float, flags : ImGui::ImDrawFlags)
   fun RenderNavHighlight = igRenderNavHighlight(bb : ImRect, id : ImGuiID, flags : ImGui::ImGuiNavHighlightFlags)
   fun FindRenderedTextEnd = igFindRenderedTextEnd(text : LibC::Char*, text_end : LibC::Char*) : LibC::Char*
   fun RenderArrow = igRenderArrow(draw_list : ImDrawList*, pos : ImGui::ImVec2, col : UInt32, dir : ImGui::ImGuiDir, scale : LibC::Float)
@@ -1340,7 +1348,7 @@ lib LibImGui
   fun CollapseButton = igCollapseButton(id : ImGuiID, pos : ImGui::ImVec2) : Bool
   fun ArrowButtonEx = igArrowButtonEx(str_id : LibC::Char*, dir : ImGui::ImGuiDir, size_arg : ImGui::ImVec2, flags : ImGui::ImGuiButtonFlags) : Bool
   fun Scrollbar = igScrollbar(axis : ImGui::ImGuiAxis)
-  fun ScrollbarEx = igScrollbarEx(bb : ImRect, id : ImGuiID, axis : ImGui::ImGuiAxis, p_scroll_v : LibC::Float*, avail_v : LibC::Float, contents_v : LibC::Float, rounding_corners : ImGui::ImDrawCornerFlags) : Bool
+  fun ScrollbarEx = igScrollbarEx(bb : ImRect, id : ImGuiID, axis : ImGui::ImGuiAxis, p_scroll_v : LibC::Float*, avail_v : LibC::Float, contents_v : LibC::Float, flags : ImGui::ImDrawFlags) : Bool
   fun ImageButtonEx = igImageButtonEx(id : ImGuiID, texture_id : ImTextureID, size : ImGui::ImVec2, uv0 : ImGui::ImVec2, uv1 : ImGui::ImVec2, padding : ImGui::ImVec2, bg_col : ImGui::ImVec4, tint_col : ImGui::ImVec4) : Bool
   fun GetWindowScrollbarRect = igGetWindowScrollbarRect(pOut : ImRect*, window : ImGuiWindow*, axis : ImGui::ImGuiAxis)
   fun GetWindowScrollbarID = igGetWindowScrollbarID(window : ImGuiWindow*, axis : ImGui::ImGuiAxis) : ImGuiID
