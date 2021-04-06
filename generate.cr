@@ -120,8 +120,12 @@ class CType
   end
 
   def base_name(ctx : Context) : String
-    if ctx.obj? && self.const? && self.c_name == "char*"
-      return "String"
+    if ctx.obj?
+      if self.c_name == "ImStrv"
+        return "Strv"
+      elsif self.const? && self.c_name == "char*"
+        return "String"
+      end
     end
     name = self.c_name.gsub("[]", "*")
     name = name.gsub(/\[\d+\]/, "*") unless ctx.lib?
@@ -337,7 +341,7 @@ class COverload
   end
 
   def internal? : Bool
-    !!self.location?.try(&.internal?) || (self.funcname || "").starts_with?("_")
+    !!self.location?.try(&.internal?) || (self.funcname || "").starts_with?("_") || !!(self.c_name =~ /_Str(?!v)$/)
   end
 
   def input_output_arg? : Int32?
@@ -393,6 +397,7 @@ class COverload
           default
             .gsub(/\b(?<![%.])([0-9.]+)f\b(?!")/, "\\1")
             .gsub(/\b(ImVec\d)\(/, "\\1.new(")
+            .gsub(/\bImStrv\(\)/, "nil")
             .gsub("(ImU32)", "UInt32.new")
             .gsub(/\bNULL\b/, "nil")
             .gsub(/\bfloat\b/, "Float32")
@@ -415,12 +420,8 @@ class COverload
           callarg = %(#{callarg}.is_a?(Indexable) ? (
               #{callarg}.size == #{n} ? #{callarg}.to_unsafe : raise ArgumentError.new("Slice has wrong size \#{#{callarg}.size} (want #{n})")
           ) : #{callarg}.as(#{t}*))
-        elsif arg.name.rpartition("_").last == "end" && typ == "String"
-          assert (p_arg = self.args[arg_i - 1].name.rchop("_begin")) == arg.name.rpartition("_").first
-          args[-1] = "#{p_arg} : Bytes | String"
-          call_args[-1] = p_arg
-          call_args << "(#{p_arg}.to_unsafe + #{p_arg}.bytesize)"
-          next
+        elsif typ == "Strv"
+          callarg = "ImStrv.new(#{arg.name})"
         elsif arg.name.rpartition("_").last == "size" && typ == "LibC::SizeT" && (prev_arg = self.args[arg_i - 1]?) && prev_arg.name == arg.name.rpartition("_").first && args[-1]?.try(&.ends_with?("Char*"))
           typ = CType.new(assert prev_arg.type.name(Context::Ext).rchop?("*")).name(ctx)
           args[-1] = "#{prev_arg.name} : Bytes"
@@ -450,7 +451,7 @@ class COverload
           if (t = typ.rchop?("*"))
             default = "Pointer(#{t}).null"
           else
-            typ += "?" unless typ.ends_with?("?")
+            typ += "?" unless typ.ends_with?("?") || typ == "Strv"
           end
         end
         if arg.type.enum? && default =~ /^\d/
@@ -691,7 +692,7 @@ class CStruct
       elsif ctx.obj? && self.name.in?("ImGuiContext")
         yield %(alias #{self.name} = LibImGui::#{self.name})
       end
-    elsif ctx.obj?
+    elsif ctx.obj? && !self.custom_struct?
       self.comment(&block)
       if self.class?
         yield %(struct #{self.name})
@@ -743,8 +744,12 @@ class CStruct
     AllFunctions.values.select { |d| d.struct?.try(&.name) == self.name }
   end
 
+  def custom_struct? : Bool
+    %w[ImStrv ImVector ImStrv ImVec2 ImVec4 ImColor].includes?(self.name)
+  end
+
   def class? : Bool
-    !%w[ImVector ImVec2 ImVec4 ImColor ImDrawVert ImFontGlyph ImGuiTextRange ImGuiOnceUponAFrame ImGuiStorage ImGuiTextBuffer ImGuiListClipper ImFontGlyphRangesBuilder ImDrawChannel].includes?(self.name)
+    !custom_struct? && !%w[ImDrawVert ImFontGlyph ImGuiTextRange ImGuiOnceUponAFrame ImGuiStorage ImGuiTextBuffer ImGuiListClipper ImFontGlyphRangesBuilder ImDrawChannel].includes?(self.name)
   end
 end
 

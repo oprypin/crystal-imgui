@@ -130,6 +130,19 @@ module ImGui
     end
   end
 
+  alias Strv = String | Bytes | Nil
+
+  # :nodoc:
+  struct ImStrv
+    def self.new(v : Nil) : self
+      new(Pointer(UInt8).null, Pointer(UInt8).null)
+    end
+
+    def self.new(v : Bytes | String) : self
+      new(p = v.to_unsafe, p + v.bytesize)
+    end
+  end
+
   struct ImGuiInputTextCallbackData
     def bytes : Bytes
       self.buf.to_slice(self.buf_text_len)
@@ -219,10 +232,12 @@ module ImGui
     def self.{{name.id}}({{*args}}, &block : ImGuiInputTextCallbackData -> Int32) : Bool
       block = nil if block == NULL_CALLBACK
       user_data = {buf, block}
-      LibImGui.{{name.id.camelcase}}(
+      LibImGui.{{name.id.camelcase}}_Strv(
         {% for arg in args %}
           {% if arg.var == "buf" %}
             buf, buf.capacity,
+          {% elsif arg.type.id == "Strv" %}
+            ImStrv.new({{arg.var}}),
           {% else %}
             {{arg.var}},
           {% end %}
@@ -245,49 +260,49 @@ module ImGui
     end
   end
 
-  make_input_text(:input_text, label : String, buf : TextBuffer, flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0))
+  make_input_text(:input_text, label : Strv, buf : TextBuffer, flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0))
 
-  make_input_text(:input_text_multiline, label : String, buf : TextBuffer, size : ImVec2 = ImVec2.new(0, 0), flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0))
+  make_input_text(:input_text_multiline, label : Strv, buf : TextBuffer, size : ImVec2 = ImVec2.new(0, 0), flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0))
 
-  make_input_text(:input_text_with_hint, label : String, hint : String, buf : TextBuffer, flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0))
+  make_input_text(:input_text_with_hint, label : Strv, hint : Strv, buf : TextBuffer, flags : ImGuiInputTextFlags = ImGuiInputTextFlags.new(0))
 
-  pointer_wrapper def self.checkbox_flags(label : String, flags : T*, flags_value : T) : Bool forall T
+  pointer_wrapper def self.checkbox_flags(label : Strv, flags : T*, flags_value : T) : Bool forall T
     typeof(flags_value.to_i32)
-    LibImGui.CheckboxFlags_UintPtr(label, flags.as(UInt32*), flags_value.to_u32!)
+    LibImGui.CheckboxFlags_StrvUintPtr(ImStrv.new(label), flags.as(UInt32*), flags_value.to_u32!)
   end
 
-  pointer_wrapper def self.radio_button(label : String, v : T*, v_button : T) : Bool forall T
+  pointer_wrapper def self.radio_button(label : Strv, v : T*, v_button : T) : Bool forall T
     typeof(v.value.to_i32)
-    LibImGui.RadioButton_IntPtr(label, v.as(Int32*), v_button.to_i32!)
+    LibImGui.RadioButton_StrvIntPtr(ImStrv.new(label), v.as(Int32*), v_button.to_i32!)
   end
 
   private macro make_plot(name, *args)
     def self.{{name.id}}({{*args}}, &block : Int32 -> Float32) : Void
-      LibImGui.{{name.id.camelcase}}_FnFloatPtr(
+      LibImGui.{{name.id.camelcase}}_FnStrvFloatPtr(
         {% for arg, i in args %}
           {% if i == 1 %}
             ->(data, idx) { data.as(typeof(block)*).value.call(idx) },
             pointerof(block),
           {% end %}
-          {{arg.var}},
+          {% if arg.type.id == "Strv" %}ImStrv.new{% end %}({{arg.var}}),
         {% end %}
       )
     end
   end
 
-  make_plot(:plot_lines, label : String, values_count : Int32, values_offset : Int32 = 0, overlay_text : String? = nil, scale_min : Float32 = Float32::MAX, scale_max : Float32 = Float32::MAX, graph_size : ImVec2 = ImVec2.new(0, 0))
+  make_plot(:plot_lines, label : Strv, values_count : Int32, values_offset : Int32 = 0, overlay_text : Strv = nil, scale_min : Float32 = Float32::MAX, scale_max : Float32 = Float32::MAX, graph_size : ImVec2 = ImVec2.new(0, 0))
 
-  make_plot(:plot_histogram, label : String, values_count : Int32, values_offset : Int32 = 0, overlay_text : String? = nil, scale_min : Float32 = Float32::MAX, scale_max : Float32 = Float32::MAX, graph_size : ImVec2 = ImVec2.new(0, 0))
+  make_plot(:plot_histogram, label : Strv, values_count : Int32, values_offset : Int32 = 0, overlay_text : Strv = nil, scale_min : Float32 = Float32::MAX, scale_max : Float32 = Float32::MAX, graph_size : ImVec2 = ImVec2.new(0, 0))
 
   def self.get_id(int_id : Int) : ImGuiID
     get_id(Pointer(Void).new(int_id))
   end
 
   private macro make_list_box(name, *args)
-    pointer_wrapper def self.{{name.id}}({{*args}}, &block : Int32 -> (Slice(UInt8) | String)?) : Bool
+    pointer_wrapper def self.{{name.id}}({{*args}}, &block : Int32 -> Strv) : Bool
       typeof(current_item.value.to_i32)
       current_item = current_item.as(Int32*)
-      LibImGui.{{name.id.camelcase}}_FnBoolPtr(
+      LibImGui.{{name.id.camelcase}}_FnStrvBoolPtr(
         {% for arg, i in args %}
           {% if i == 2 %}
             ->(data, idx, out_text) {
@@ -300,21 +315,21 @@ module ImGui
               end
             }, pointerof(block),
             {% end %}
-          {{arg.var}},
+          {% if arg.type.id == "Strv" %}ImStrv.new{% end %}({{arg.var}}),
         {% end %}
       )
     end
   end
 
-  make_list_box(:combo, label : String, current_item : Int32* | Pointer, items_count : Int32, popup_max_height_in_items : Int32 = -1)
+  make_list_box(:combo, label : Strv, current_item : Int32* | Pointer, items_count : Int32, popup_max_height_in_items : Int32 = -1)
 
-  pointer_wrapper def self.combo(label : String, current_item : Int32* | Pointer, items : Indexable(String), popup_max_height_in_items : Int32 = -1)
+  pointer_wrapper def self.combo(label : Strv, current_item : Int32* | Pointer, items : Indexable(String), popup_max_height_in_items : Int32 = -1)
     self.combo(label, current_item, items.size, popup_max_height_in_items) { |i| items[i] }
   end
 
-  make_list_box(:list_box, label : String, current_item : Int32* | Pointer, items_count : Int32, height_in_items : Int32 = -1)
+  make_list_box(:list_box, label : Strv, current_item : Int32* | Pointer, items_count : Int32, height_in_items : Int32 = -1)
 
-  pointer_wrapper def self.list_box(label : String, current_item : Int32* | Pointer, items : Indexable(String), height_in_items : Int32 = -1)
+  pointer_wrapper def self.list_box(label : Strv, current_item : Int32* | Pointer, items : Indexable(String), height_in_items : Int32 = -1)
     self.list_box(label, current_item, items.size, height_in_items) { |i| items[i] }
   end
 
