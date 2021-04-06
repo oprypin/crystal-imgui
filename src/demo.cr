@@ -1,4 +1,4 @@
-# Based on https://github.com/ocornut/imgui/blob/v1.81/imgui_demo.cpp
+# Based on https://github.com/ocornut/imgui/blob/64aab8480a5643cec1880af17931963a90a8f990/imgui_demo.cpp
 
 require "./imgui"
 require "./util"
@@ -718,7 +718,7 @@ module ImGuiDemo
       if ImGui.tree_node("UTF-8 Text")
         ImGui.text_wrapped(
           "CJK text will only appears if the font was loaded with the appropriate CJK character ranges. " +
-          "Call io.Font->AddFontFromFileTTF() manually to load extra character ranges. " +
+          "Call io.Fonts->AddFontFromFileTTF() manually to load extra character ranges. " +
           "Read docs/FONTS.md for details.")
         ImGui.text("Hiragana: かきくけこ (kakikukeko)")
         ImGui.text("Kanjis: 日本語 (nihongo)")
@@ -4565,8 +4565,8 @@ module ImGuiDemo
             item_is_selected = selection.val.includes?(item.id)
             ImGui.push_id(item.id)
             ImGui.table_next_row(ImGuiTableRowFlags::None, row_min_height.val)
-            ImGui.table_next_column
 
+            ImGui.table_set_column_index(0)
             label = sprintf("%04d", item.id)
             if contents_type.val == ContentsType3::Text
               ImGui.text_unformatted(label)
@@ -4592,11 +4592,11 @@ module ImGuiDemo
               end
             end
 
-            if ImGui.table_next_column
+            if ImGui.table_set_column_index(1)
               ImGui.text_unformatted(item.name)
             end
 
-            if ImGui.table_next_column
+            if ImGui.table_set_column_index(2)
               if ImGui.small_button("Chop")
                 item.quantity += 1
               end
@@ -4612,18 +4612,18 @@ module ImGuiDemo
               end
             end
 
-            if ImGui.table_next_column
+            if ImGui.table_set_column_index(3)
               ImGui.text("%d", item.quantity)
             end
 
-            ImGui.table_next_column
+            ImGui.table_set_column_index(4)
             if show_wrapped_text.val
               ImGui.text_wrapped("Lorem ipsum dolor sit amet")
             else
               ImGui.text("Lorem ipsum dolor sit amet")
             end
 
-            if ImGui.table_next_column
+            if ImGui.table_set_column_index(5)
               ImGui.text("1234")
             end
 
@@ -4885,7 +4885,7 @@ module ImGuiDemo
       ImGui.text("WantSetMousePos: %d", io.want_set_mouse_pos)
       ImGui.text("NavActive: %d, NavVisible: %d", io.nav_active, io.nav_visible)
 
-      if ImGui.tree_node("Keyboard, Mouse & Navigation State")
+      if ImGui.tree_node("Mouse State")
         if ImGui.is_mouse_pos_valid
           ImGui.text("Mouse pos: (%g, %g)", io.mouse_pos.x, io.mouse_pos.y)
         else
@@ -4894,7 +4894,7 @@ module ImGuiDemo
         ImGui.text("Mouse delta: (%g, %g)", io.mouse_delta.x, io.mouse_delta.y)
         ImGui.text("Mouse down:")
         io.mouse_down.size.times do |i|
-          if io.mouse_down_duration[i] >= 0.0f32
+          if ImGui.is_mouse_down(ImGuiMouseButton::Left)
             ImGui.same_line
             ImGui.text("b%d (%.02f secs)", i, io.mouse_down_duration[i])
           end
@@ -4921,10 +4921,14 @@ module ImGuiDemo
           end
         end
         ImGui.text("Mouse wheel: %.1f", io.mouse_wheel)
+        ImGui.text("Pen Pressure: %.1f", io.pen_pressure)
+        ImGui.tree_pop
+      end
 
+      if ImGui.tree_node("Keyboard & Navigation State")
         ImGui.text("Keys down:")
         io.keys_down.size.times do |i|
-          if io.keys_down_duration[i] >= 0.0f32
+          if ImGui.is_key_down(i)
             ImGui.same_line
             ImGui.text("%d (0x%X) (%.02f secs)", i, i, io.keys_down_duration[i])
           end
@@ -4955,7 +4959,7 @@ module ImGuiDemo
         io.nav_inputs.size.times do |i|
           if io.nav_inputs[i] > 0.0f32
             ImGui.same_line
-            ImGui.text("[%d] %.2f", i, io.nav_inputs[i])
+            ImGui.text("[%d] %.2f (%.02f secs)", i, io.nav_inputs[i], io.nav_inputs_down_duration[i])
           end
         end
         ImGui.text("NavInputs pressed:")
@@ -4963,13 +4967,6 @@ module ImGuiDemo
           if io.nav_inputs_down_duration[i] == 0.0f32
             ImGui.same_line
             ImGui.text("[%d]", i)
-          end
-        end
-        ImGui.text("NavInputs duration:")
-        io.nav_inputs.size.times do |i|
-          if io.nav_inputs_down_duration[i] >= 0.0f32
-            ImGui.same_line
-            ImGui.text("[%d] %.2f", i, io.nav_inputs_down_duration[i])
           end
         end
 
@@ -4982,7 +4979,6 @@ module ImGuiDemo
         if ImGui.is_item_active
           ImGui.capture_keyboard_from_app(false)
         end
-
         ImGui.tree_pop
       end
 
@@ -5574,21 +5570,34 @@ module ImGuiDemo
           style.curve_tessellation_tol = 0.10f32
         end
 
-        ImGui.drag_float("Circle Segment Max Error", pointerof(style.circle_segment_max_error), 0.01f32, 0.10f32, 10.0f32, "%.2f")
+        ImGui.drag_float("Circle Tessellation Max Error", pointerof(style.circle_tessellation_max_error), 0.005f32, 0.10f32, 5.0f32, "%.2f", ImGuiSliderFlags::AlwaysClamp)
         if ImGui.is_item_active
           ImGui.set_next_window_pos(ImGui.get_cursor_screen_pos)
           ImGui.begin_tooltip
-          p = ImGui.get_cursor_screen_pos
+          ImGui.text_unformatted("(R = radius, N = number of segments)")
+          ImGui.spacing
           draw_list = ImGui.get_window_draw_list
-          rad_min = 10.0f32
-          rad_max = 80.0f32
-          off_x = 10.0f32
-          7.times do |n|
-            rad = rad_min + (rad_max - rad_min) * n / (7.0f32 - 1.0f32)
-            draw_list.add_circle(ImVec2.new(p.x + off_x + rad, p.y + rad_max), rad, ImGui.get_color_u32(ImGuiCol::Text), 0)
-            off_x += 10.0f32 + rad * 2.0f32
+          min_widget_width = ImGui.calc_text_size("N: MMM\nR: MMM").x
+          8.times do |n|
+            rad_min = 5.0f32
+            rad_max = 70.0f32
+            rad = rad_min + (rad_max - rad_min) * n / (8.0f32 - 1.0f32)
+
+            ImGui.begin_group
+
+            # ImGui.text("R: %.f\nN: %d", rad, draw_list._calc_circle_auto_segment_count(rad))
+
+            canvas_width = {min_widget_width, rad * 2.0f32}.max
+            offset_x = (canvas_width * 0.5f32).floor
+            offset_y = rad_max.floor
+
+            p1 = ImGui.get_cursor_screen_pos
+            draw_list.add_circle(ImVec2.new(p1.x + offset_x, p1.y + offset_y), rad, ImGui.get_color_u32(ImGuiCol::Text))
+            ImGui.dummy(ImVec2.new(canvas_width, rad_max * 2))
+
+            ImGui.end_group
+            ImGui.same_line
           end
-          ImGui.dummy(ImVec2.new(off_x, rad_max * 2.0f32))
           ImGui.end_tooltip
         end
         ImGui.same_line
@@ -6473,9 +6482,7 @@ module ImGuiDemo
         p = ImGui.get_cursor_screen_pos
         col = ImGui.color_convert_float4_to_u32(colf.val)
         spacing = 10.0f32
-        corners_none = ImDrawCornerFlags::None
-        corners_all = ImDrawCornerFlags::All
-        corners_tl_br = ImDrawCornerFlags::TopLeft | ImDrawCornerFlags::BotRight
+        corners_tl_br = ImDrawFlags::RoundCornersTopLeft | ImDrawFlags::RoundCornersBottomRight
         rounding = sz.val / 5.0f32
         circle_segments = circle_segments_override.val ? circle_segments_override_v.val : 0
         curve_segments = curve_segments_override.val ? curve_segments_override_v.val : 0
@@ -6487,9 +6494,9 @@ module ImGuiDemo
           x += sz.val + spacing
           draw_list.add_circle(ImVec2.new(x + sz.val * 0.5f32, y + sz.val * 0.5f32), sz.val * 0.5f32, col, circle_segments, th)
           x += sz.val + spacing
-          draw_list.add_rect(ImVec2.new(x, y), ImVec2.new(x + sz.val, y + sz.val), col, 0.0f32, corners_none, th)
+          draw_list.add_rect(ImVec2.new(x, y), ImVec2.new(x + sz.val, y + sz.val), col, 0.0f32, ImDrawFlags::None, th)
           x += sz.val + spacing
-          draw_list.add_rect(ImVec2.new(x, y), ImVec2.new(x + sz.val, y + sz.val), col, rounding, corners_all, th)
+          draw_list.add_rect(ImVec2.new(x, y), ImVec2.new(x + sz.val, y + sz.val), col, rounding, ImDrawFlags::None, th)
           x += sz.val + spacing
           draw_list.add_rect(ImVec2.new(x, y), ImVec2.new(x + sz.val, y + sz.val), col, rounding, corners_tl_br, th)
           x += sz.val + spacing
