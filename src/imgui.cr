@@ -253,17 +253,17 @@ module ImGui
 
   pointer_wrapper def self.checkbox_flags(label : String, flags : T*, flags_value : T) : Bool forall T
     typeof(flags_value.to_i32)
-    LibImGui.CheckboxFlagsUintPtr(label, flags.as(UInt32*), flags_value.to_u32!)
+    LibImGui.CheckboxFlags_UintPtr(label, flags.as(UInt32*), flags_value.to_u32!)
   end
 
   pointer_wrapper def self.radio_button(label : String, v : T*, v_button : T) : Bool forall T
     typeof(v.value.to_i32)
-    LibImGui.RadioButtonIntPtr(label, v.as(Int32*), v_button.to_i32!)
+    LibImGui.RadioButton_IntPtr(label, v.as(Int32*), v_button.to_i32!)
   end
 
   private macro make_plot(name, *args)
     def self.{{name.id}}({{*args}}, &block : Int32 -> Float32) : Void
-      LibImGui.{{name.id.camelcase}}FnFloatPtr(
+      LibImGui.{{name.id.camelcase}}_FnFloatPtr(
         {% for arg, i in args %}
           {% if i == 1 %}
             ->(data, idx) { data.as(typeof(block)*).value.call(idx) },
@@ -287,7 +287,7 @@ module ImGui
     pointer_wrapper def self.{{name.id}}({{*args}}, &block : Int32 -> (Slice(UInt8) | String)?) : Bool
       typeof(current_item.value.to_i32)
       current_item = current_item.as(Int32*)
-      LibImGui.{{name.id.camelcase}}FnBoolPtr(
+      LibImGui.{{name.id.camelcase}}_FnBoolPtr(
         {% for arg, i in args %}
           {% if i == 2 %}
             ->(data, idx, out_text) {
@@ -335,7 +335,7 @@ module ImGui
   end
 
   def self.push_id(ptr_id : ClassType) : Void
-    LibImGui.PushIDPtr(ptr_id)
+    LibImGui.PushID_Ptr(ptr_id)
   end
 
   def self.col32(r : Int, g : Int, b : Int, a : Int = 255) : UInt32
