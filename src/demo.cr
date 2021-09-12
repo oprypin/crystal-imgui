@@ -1,4 +1,4 @@
-# Based on https://github.com/ocornut/imgui/blob/64aab8480a5643cec1880af17931963a90a8f990/imgui_demo.cpp
+# Based on https://github.com/ocornut/imgui/blob/32d4f6c5d9088dd1599d342a08f8376c00565900/imgui_demo.cpp
 
 require "./imgui"
 require "./util"
@@ -133,6 +133,7 @@ module ImGuiDemo
     static no_nav = false
     static no_background = false
     static no_bring_to_front = false
+    static unsaved_document = false
 
     window_flags = ImGuiWindowFlags::None
     if no_titlebar.val
@@ -161,6 +162,9 @@ module ImGuiDemo
     end
     if no_bring_to_front.val
       window_flags |= ImGuiWindowFlags::NoBringToFrontOnFocus
+    end
+    if unsaved_document.val
+      window_flags |= ImGuiWindowFlags::UnsavedDocument
     end
     if no_close.val
       p_open = Pointer(Bool).null
@@ -278,7 +282,7 @@ module ImGuiDemo
       if ImGui.tree_node("Backend Flags")
         help_marker(
           "Those flags are set by the backends (imgui_impl_xxx files) to specify their capabilities.\n" +
-          "Here we expose then as read-only fields to avoid breaking interactions with your backend.")
+          "Here we expose them as read-only fields to avoid breaking interactions with your backend.")
 
         ImGui.checkbox_flags("io.BackendFlags: HasGamepad", pointerof(io.backend_flags), ImGuiBackendFlags::HasGamepad)
         ImGui.checkbox_flags("io.BackendFlags: HasMouseCursors", pointerof(io.backend_flags), ImGuiBackendFlags::HasMouseCursors)
@@ -334,6 +338,8 @@ module ImGuiDemo
         ImGui.checkbox("No background", pointerof(no_background.val))
         ImGui.table_next_column
         ImGui.checkbox("No bring to front", pointerof(no_bring_to_front.val))
+        ImGui.table_next_column
+        ImGui.checkbox("Unsaved document", pointerof(unsaved_document.val))
         ImGui.end_table
       end
     end
@@ -364,6 +370,11 @@ module ImGuiDemo
   def self.show_demo_window_widgets
     if !ImGui.collapsing_header("Widgets")
       return
+    end
+
+    static disable_all = false
+    if disable_all.val
+      ImGui.begin_disabled
     end
 
     if ImGui.tree_node("Basic")
@@ -806,8 +817,8 @@ module ImGuiDemo
 
       items = ["AAAA", "BBBB", "CCCC", "DDDD", "EEEE", "FFFF", "GGGG", "HHHH", "IIII", "JJJJ", "KKKK", "LLLLLLL", "MMMM", "OOOOOOO"]
       static item_current_idx = 0
-      combo_label = items[item_current_idx.val]
-      if ImGui.begin_combo("combo 1", combo_label, flags.val)
+      combo_preview_value = items[item_current_idx.val]
+      if ImGui.begin_combo("combo 1", combo_preview_value, flags.val)
         items.size.times do |n|
           is_selected = (item_current_idx.val == n)
           if ImGui.selectable(items[n], is_selected)
@@ -875,7 +886,7 @@ module ImGuiDemo
         static selection = [false, true, false, false, false]
         ImGui.selectable("1. I am selectable", pointerof(selection.val[0]))
         ImGui.selectable("2. I am selectable", pointerof(selection.val[1]))
-        ImGui.text("3. I am not selectable")
+        ImGui.text("(I am not selectable)")
         ImGui.selectable("4. I am selectable", pointerof(selection.val[3]))
         if ImGui.selectable("5. I am double clickable", selection.val[4], ImGuiSelectableFlags::AllowDoubleClick)
           if ImGui.is_mouse_double_clicked(ImGuiMouseButton::Left)
@@ -924,7 +935,7 @@ module ImGuiDemo
       if ImGui.tree_node("In columns")
         static selected = Slice.new(16, false)
 
-        if ImGui.begin_table("split1", 3, ImGuiTableFlags::Resizable | ImGuiTableFlags::NoSavedSettings)
+        if ImGui.begin_table("split1", 3, ImGuiTableFlags::Resizable | ImGuiTableFlags::NoSavedSettings | ImGuiTableFlags::Borders)
           10.times do |i|
             label = sprintf("Item %d", i)
             ImGui.table_next_column
@@ -932,8 +943,8 @@ module ImGuiDemo
           end
           ImGui.end_table
         end
-        ImGui.separator
-        if ImGui.begin_table("split2", 3, ImGuiTableFlags::Resizable | ImGuiTableFlags::NoSavedSettings)
+        ImGui.spacing
+        if ImGui.begin_table("split2", 3, ImGuiTableFlags::Resizable | ImGuiTableFlags::NoSavedSettings | ImGuiTableFlags::Borders)
           10.times do |i|
             label = sprintf("Item %d", i)
             ImGui.table_next_row
@@ -1295,7 +1306,7 @@ module ImGuiDemo
       static func_type = 0
       static display_count = 70
       ImGui.separator
-      ImGui.set_next_item_width(100)
+      ImGui.set_next_item_width(ImGui.get_font_size * 8)
       ImGui.combo("func", pointerof(func_type.val), "Sin\0Saw\0")
       ImGui.same_line
       ImGui.slider_int("Sample count", pointerof(display_count.val), 1, 400)
@@ -1895,20 +1906,25 @@ module ImGuiDemo
       ImGui.tree_pop
     end
 
-    if ImGui.tree_node("Querying Status (Edited/Active/Focused/Hovered etc.)")
+    if ImGui.tree_node("Querying Status (Edited/Active/Hovered etc.)")
       item_names = [
         "Text", "Button", "Button (w/ repeat)", "Checkbox", "SliderFloat", "InputText", "InputFloat",
-        "InputFloat3", "ColorEdit4", "MenuItem", "TreeNode", "TreeNode (w/ double-click)", "Combo", "ListBox",
+        "InputFloat3", "ColorEdit4", "Selectable", "MenuItem", "TreeNode", "TreeNode (w/ double-click)", "Combo", "ListBox",
       ]
-      static item_type = 1
+      static item_type = 4
+      static item_disabled = false
       ImGui.combo("Item Type", pointerof(item_type.val), item_names, item_names.size)
       ImGui.same_line
       help_marker("Testing how various types of items are interacting with the IsItemXXX functions. Note that the bool return value of most ImGui function is generally equivalent to calling ImGui::IsItemHovered().")
+      ImGui.checkbox("Item Disabled", pointerof(item_disabled.val))
 
       ret = false
       static b = false
       static col4f = Slice[1.0f32, 0.5f32, 0.0f32, 1.0f32]
       static str = ImGui::TextBuffer.new(16)
+      if item_disabled.val
+        ImGui.begin_disabled(true)
+      end
       if item_type.val == 0
         ImGui.text("ITEM: Text")
       end
@@ -1939,23 +1955,26 @@ module ImGuiDemo
         ret = ImGui.color_edit4("ITEM: ColorEdit4", col4f.val)
       end
       if item_type.val == 9
-        ret = ImGui.menu_item("ITEM: MenuItem")
+        ret = ImGui.selectable("ITEM: Selectable")
       end
       if item_type.val == 10
+        ret = ImGui.menu_item("ITEM: MenuItem")
+      end
+      if item_type.val == 11
         ret = ImGui.tree_node("ITEM: TreeNode")
         if ret
           ImGui.tree_pop
         end
       end
-      if item_type.val == 11
+      if item_type.val == 12
         ret = ImGui.tree_node_ex("ITEM: TreeNode w/ ImGuiTreeNodeFlags_OpenOnDoubleClick", ImGuiTreeNodeFlags::OpenOnDoubleClick | ImGuiTreeNodeFlags::NoTreePushOnOpen)
       end
-      if item_type.val == 12
+      if item_type.val == 13
         items = ["Apple", "Banana", "Cherry", "Kiwi"]
         static current = 1
         ret = ImGui.combo("ITEM: Combo", pointerof(current.val), items)
       end
-      if item_type.val == 13
+      if item_type.val == 14
         items = ["Apple", "Banana", "Cherry", "Kiwi"]
         static current = 1
         ret = ImGui.list_box("ITEM: ListBox", pointerof(current.val), items, items.size)
@@ -1968,6 +1987,7 @@ module ImGuiDemo
         "IsItemHovered(_AllowWhenBlockedByPopup) = %d\n" +
         "IsItemHovered(_AllowWhenBlockedByActiveItem) = %d\n" +
         "IsItemHovered(_AllowWhenOverlapped) = %d\n" +
+        "IsItemHovered(_AllowWhenDisabled) = %d\n" +
         "IsItemHovered(_RectOnly) = %d\n" +
         "IsItemActive() = %d\n" +
         "IsItemEdited() = %d\n" +
@@ -1986,6 +2006,7 @@ module ImGuiDemo
         ImGui.is_item_hovered(ImGuiHoveredFlags::AllowWhenBlockedByPopup),
         ImGui.is_item_hovered(ImGuiHoveredFlags::AllowWhenBlockedByActiveItem),
         ImGui.is_item_hovered(ImGuiHoveredFlags::AllowWhenOverlapped),
+        ImGui.is_item_hovered(ImGuiHoveredFlags::AllowWhenDisabled),
         ImGui.is_item_hovered(ImGuiHoveredFlags::RectOnly),
         ImGui.is_item_active,
         ImGui.is_item_edited,
@@ -1998,6 +2019,10 @@ module ImGuiDemo
         ImGui.get_item_rect_min.x, ImGui.get_item_rect_min.y,
         ImGui.get_item_rect_max.x, ImGui.get_item_rect_max.y,
         ImGui.get_item_rect_size.x, ImGui.get_item_rect_size.y)
+
+      if item_disabled.val
+        ImGui.end_disabled
+      end
 
       static embed_all_inside_a_child_window = false
       ImGui.checkbox("Embed everything inside a child window (for additional testing)", pointerof(embed_all_inside_a_child_window.val))
@@ -2064,6 +2089,17 @@ module ImGuiDemo
 
       ImGui.tree_pop
     end
+
+    if disable_all.val
+      ImGui.end_disabled
+    end
+
+    if ImGui.tree_node("Disable block")
+      ImGui.checkbox("Disable entire section above", pointerof(disable_all.val))
+      ImGui.same_line
+      help_marker("Demonstrate using BeginDisabled()/EndDisabled() across this section.")
+      ImGui.tree_pop
+    end
   end
 
   def self.show_demo_window_layout
@@ -2124,7 +2160,7 @@ module ImGuiDemo
       ImGui.separator
       begin
         static offset_x = 0
-        ImGui.set_next_item_width(100)
+        ImGui.set_next_item_width(ImGui.get_font_size * 8)
         ImGui.drag_int("Offset X", pointerof(offset_x.val), 1.0f32, -1000, 1000)
 
         ImGui.set_cursor_pos_x(ImGui.get_cursor_pos_x + offset_x.val)
@@ -2580,13 +2616,15 @@ module ImGuiDemo
         end
         if child_is_visible
           100.times do |item|
+            if item > 0
+              ImGui.same_line
+            end
             if enable_track.val && item == track_item.val
               ImGui.text_colored(ImVec4.new(1, 1, 0, 1), "Item %d", item)
               ImGui.set_scroll_here_x(i * 0.25f32)
             else
               ImGui.text("Item %d", item)
             end
-            ImGui.same_line
           end
         end
         scroll_x = ImGui.get_scroll_x
@@ -2891,36 +2929,64 @@ module ImGuiDemo
     end
 
     if ImGui.tree_node("Context menus")
-      static value = 0.5f32
-      ImGui.text("Value = %.3f (<-- right-click here)", value.val)
-      if ImGui.begin_popup_context_item("item context menu")
-        if ImGui.selectable("Set to zero")
-          value.val = 0.0f32
+      help_marker("\"Context\" functions are simple helpers to associate a Popup to a given Item or Window identifier.")
+      begin
+        names = ["Label1", "Label2", "Label3", "Label4", "Label5"]
+        5.times do |n|
+          ImGui.selectable(names[n])
+          if ImGui.begin_popup_context_item
+            ImGui.text("This a popup for \"%s\"!", names[n])
+            if ImGui.button("Close")
+              ImGui.close_current_popup
+            end
+            ImGui.end_popup
+          end
+          if ImGui.is_item_hovered
+            ImGui.set_tooltip("Right-click to open popup")
+          end
         end
-        if ImGui.selectable("Set to PI")
-          value.val = 3.1415f32
-        end
-        ImGui.set_next_item_width(-Float32::MIN_POSITIVE)
-        ImGui.drag_float("##Value", pointerof(value.val), 0.1f32, 0.0f32, 0.0f32)
-        ImGui.end_popup
       end
 
-      ImGui.text("(You can also right-click me to open the same popup as above.)")
-      ImGui.open_popup_on_item_click("item context menu", ImGuiPopupFlags::MouseButtonRight)
-
-      static name = ImGui::TextBuffer.new("Label1", 32)
-      buf = sprintf("Button: %s###Button", name.val.to_s)
-      ImGui.button(buf)
-      if ImGui.begin_popup_context_item
-        ImGui.text("Edit name:")
-        ImGui.input_text("##edit", name.val)
-        if ImGui.button("Close")
-          ImGui.close_current_popup
+      begin
+        help_marker("Text() elements don't have stable identifiers so we need to provide one.")
+        static value = 0.5f32
+        ImGui.text("Value = %.3f <-- (1) right-click this value", value.val)
+        if ImGui.begin_popup_context_item("my popup")
+          if ImGui.selectable("Set to zero")
+            value.val = 0.0f32
+          end
+          if ImGui.selectable("Set to PI")
+            value.val = 3.1415f32
+          end
+          ImGui.set_next_item_width(-Float32::MIN_POSITIVE)
+          ImGui.drag_float("##Value", pointerof(value.val), 0.1f32, 0.0f32, 0.0f32)
+          ImGui.end_popup
         end
-        ImGui.end_popup
+
+        ImGui.text("(2) Or right-click this text")
+        ImGui.open_popup_on_item_click("my popup", ImGuiPopupFlags::MouseButtonRight)
+
+        if ImGui.button("(3) Or click this button")
+          ImGui.open_popup("my popup")
+        end
       end
-      ImGui.same_line
-      ImGui.text("(<-- right-click here)")
+
+      begin
+        help_marker("Showcase using a popup ID linked to item ID, with the item having a changing label + stable ID using the ### operator.")
+        static name = ImGui::TextBuffer.new("Label1", 32)
+        buf = sprintf("Button: %s###Button", name.val)
+        ImGui.button(buf)
+        if ImGui.begin_popup_context_item
+          ImGui.text("Edit name:")
+          ImGui.input_text("##edit", name.val)
+          if ImGui.button("Close")
+            ImGui.close_current_popup
+          end
+          ImGui.end_popup
+        end
+        ImGui.same_line
+        ImGui.text("(<-- right-click here)")
+      end
 
       ImGui.tree_pop
     end
@@ -3114,6 +3180,9 @@ module ImGuiDemo
   end
 
   ImGui.pointer_wrapper def self.edit_table_columns_flags(p_flags)
+    ImGui.checkbox_flags("_Disabled", p_flags, ImGuiTableColumnFlags::Disabled)
+    ImGui.same_line
+    help_marker("Master disable flag (also hide from context menu)")
     ImGui.checkbox_flags("_DefaultHide", p_flags, ImGuiTableColumnFlags::DefaultHide)
     ImGui.checkbox_flags("_DefaultSort", p_flags, ImGuiTableColumnFlags::DefaultSort)
     if ImGui.checkbox_flags("_WidthStretch", p_flags, ImGuiTableColumnFlags::WidthStretch)
@@ -3129,6 +3198,7 @@ module ImGuiDemo
     ImGui.checkbox_flags("_NoSort", p_flags, ImGuiTableColumnFlags::NoSort)
     ImGui.checkbox_flags("_NoSortAscending", p_flags, ImGuiTableColumnFlags::NoSortAscending)
     ImGui.checkbox_flags("_NoSortDescending", p_flags, ImGuiTableColumnFlags::NoSortDescending)
+    ImGui.checkbox_flags("_NoHeaderLabel", p_flags, ImGuiTableColumnFlags::NoHeaderLabel)
     ImGui.checkbox_flags("_NoHeaderWidth", p_flags, ImGuiTableColumnFlags::NoHeaderWidth)
     ImGui.checkbox_flags("_PreferSortAscending", p_flags, ImGuiTableColumnFlags::PreferSortAscending)
     ImGui.checkbox_flags("_PreferSortDescending", p_flags, ImGuiTableColumnFlags::PreferSortDescending)
@@ -4990,7 +5060,8 @@ module ImGuiDemo
         ImGui.input_text("3", buf.val)
         ImGui.push_allow_keyboard_focus(false)
         ImGui.input_text("4 (tab skip)", buf.val)
-
+        ImGui.same_line
+        help_marker("Item won't be cycled through when using TAB or Shift+Tab.")
         ImGui.pop_allow_keyboard_focus
         ImGui.input_text("5", buf.val)
         ImGui.tree_pop
@@ -5029,6 +5100,8 @@ module ImGuiDemo
         if ImGui.is_item_active
           has_focus = 3
         end
+        ImGui.same_line
+        help_marker("Item won't be cycled through when using TAB or Shift+Tab.")
         ImGui.pop_allow_keyboard_focus
 
         if has_focus
@@ -5209,22 +5282,6 @@ module ImGuiDemo
     ImGui.end
   end
 
-  def self.show_style_selector(label)
-    static style_idx = -1
-    if ImGui.combo(label, pointerof(style_idx.val), "Dark\0Light\0Classic\0")
-      case style_idx.val
-      when 0
-        ImGui.style_colors_dark
-      when 1
-        ImGui.style_colors_light
-      when 2
-        ImGui.style_colors_classic
-      end
-      return true
-    end
-    return false
-  end
-
   def self.show_font_selector(label)
     io = ImGui.get_io
     font_current = ImGui.get_font
@@ -5247,92 +5304,20 @@ module ImGuiDemo
       "- If you need to add/remove fonts at runtime (e.g. for DPI change), do it before calling NewFrame().")
   end
 
-  def self.node_font(font)
-    io = ImGui.get_io
-    style = ImGui.get_style
-    font_details_opened = ImGui.tree_node(font, "Font: \"%s\"\n%.2f px, %d glyphs, %d file(s)",
-      font.config_data ? font.config_data[0].name : "", font.font_size, font.glyphs.size, font.config_data_count)
-    ImGui.same_line
-    if ImGui.small_button("Set as default")
-      io.font_default = font
-    end
-    if !font_details_opened
-      return
-    end
-
-    ImGui.push_font(font)
-    ImGui.text("The quick brown fox jumps over the lazy dog")
-    ImGui.pop_font
-    ImGui.drag_float("Font scale", pointerof(font.scale), 0.005f32, 0.3f32, 2.0f32, "%.1f")
-    ImGui.same_line
-    help_marker(
-      "Note than the default embedded font is NOT meant to be scaled.\n\n" +
-      "Font are currently rendered into bitmaps at a given size at the time of building the atlas. " +
-      "You may oversample them to get some flexibility with scaling. " +
-      "You can also render at multiple sizes and select which one to use at runtime.\n\n" +
-      "(Glimmer of hope: the atlas system will be rewritten in the future to make scaling more flexible.)")
-    ImGui.text("Ascent: %f, Descent: %f, Height: %f", font.ascent, font.descent, font.ascent - font.descent)
-    ImGui.text("Fallback character: '%c' (U+%04X)", font.fallback_char, font.fallback_char)
-    ImGui.text("Ellipsis character: '%c' (U+%04X)", font.ellipsis_char, font.ellipsis_char)
-    surface_sqrt = Math.sqrt(font.metrics_total_surface).to_i
-    ImGui.text("Texture Area: about %d px ~%dx%d px", font.metrics_total_surface, surface_sqrt, surface_sqrt)
-    font.config_data_count.times do |config_i|
-      if font.config_data
-        if cfg = font.config_data[config_i]
-          ImGui.bullet_text("Input %d: '%s', Oversample: (%d,%d), PixelSnapH: %d, Offset: (%.1f,%.1f)",
-            config_i, cfg.name, cfg.oversample_h, cfg.oversample_v, cfg.pixel_snap_h, cfg.glyph_offset.x, cfg.glyph_offset.y)
-        end
+  def self.show_style_selector(label)
+    static style_idx = -1
+    if ImGui.combo(label, pointerof(style_idx.val), "Dark\0Light\0Classic\0")
+      case style_idx.val
+      when 0
+        ImGui.style_colors_dark
+      when 1
+        ImGui.style_colors_light
+      when 2
+        ImGui.style_colors_classic
       end
+      return true
     end
-    if ImGui.tree_node("Glyphs", "Glyphs (%d)", font.glyphs.size)
-      glyph_col = ImGui.get_color_u32(ImGuiCol::Text)
-      (0u32..Char::MAX_CODEPOINT).step(256) do |base|
-        if (base & 4095) == 0 && font.is_glyph_range_unused(base, base + 4095)
-          base += 4096 - 256
-          next
-        end
-
-        count = 0
-        256.times do |n|
-          if font.find_glyph_no_fallback((base + n).chr)
-            count += 1
-          end
-        end
-        if count <= 0
-          next
-        end
-        if !ImGui.tree_node(base.to_s, "U+%04X..u+%04X (%d %s)", base, base + 255, count, count > 1 ? "glyphs" : "glyph")
-          next
-        end
-        cell_size = font.font_size * 1
-        cell_spacing = style.item_spacing.y
-        base_pos = ImGui.get_cursor_screen_pos
-        draw_list = ImGui.get_window_draw_list
-        256.times do |n|
-          cell_p1 = ImVec2.new(base_pos.x + (n % 16) * (cell_size + cell_spacing), base_pos.y + (n // 16) * (cell_size + cell_spacing))
-          cell_p2 = ImVec2.new(cell_p1.x + cell_size, cell_p1.y + cell_size)
-          glyph = font.find_glyph_no_fallback((base + n).chr)
-          draw_list.add_rect(cell_p1, cell_p2, glyph ? ImGui.col32(255, 255, 255, 100) : ImGui.col32(255, 255, 255, 50))
-          if glyph
-            font.render_char(draw_list, cell_size, cell_p1, glyph_col, (base + n).chr)
-          end
-          if glyph && ImGui.is_mouse_hovering_rect(cell_p1, cell_p2)
-            ImGui.begin_tooltip
-            ImGui.text("Codepoint: U+%04X", base + n)
-            ImGui.separator
-            ImGui.text("Visible: %d", glyph.visible)
-            ImGui.text("AdvanceX: %.1f", glyph.advance_x)
-            ImGui.text("Pos: (%.2f,%.2f)->(%.2f,%.2f)", glyph.x0, glyph.y0, glyph.x1, glyph.y1)
-            ImGui.text("UV: (%.3f,%.3f)->(%.3f,%.3f)", glyph.u0, glyph.v0, glyph.u1, glyph.v1)
-            ImGui.end_tooltip
-          end
-        end
-        ImGui.dummy(ImVec2.new((cell_size + cell_spacing) * 16, (cell_size + cell_spacing) * 16))
-        ImGui.tree_pop
-      end
-      ImGui.tree_pop
-    end
-    ImGui.tree_pop
+    return false
   end
 
   def self.show_style_editor(ref = nil)
@@ -5521,21 +5506,9 @@ module ImGuiDemo
 
       if ImGui.begin_tab_item("Fonts")
         io = ImGui.get_io
-        atlas = io.fonts
+        # atlas = io.fonts
         help_marker("Read FAQ and docs/FONTS.md for details on font loading.")
-        ImGui.push_item_width(120)
-        atlas.fonts.size.times do |i|
-          font = atlas.fonts[i]
-          ImGui.push_id(font)
-          node_font(font)
-          ImGui.pop_id
-        end
-        if ImGui.tree_node("Atlas texture", "Atlas texture (%dx%d pixels)", atlas.tex_width, atlas.tex_height)
-          tint_col = ImVec4.new(1.0f32, 1.0f32, 1.0f32, 1.0f32)
-          border_col = ImVec4.new(1.0f32, 1.0f32, 1.0f32, 0.5f32)
-          ImGui.image(atlas.tex_id, ImVec2.new(atlas.tex_width, atlas.tex_height), ImVec2.new(0, 0), ImVec2.new(1, 1), tint_col, border_col)
-          ImGui.tree_pop
-        end
+        # ImGui.show_font_atlas(atlas)
 
         min_scale = 0.3f32
         max_scale = 2.0f32
@@ -5545,6 +5518,7 @@ module ImGuiDemo
           "rebuild the font atlas, and call style.ScaleAllSizes() on a reference ImGuiStyle structure.\n" +
           "Using those settings here will give you poor quality results.")
         static window_scale = 1.0f32
+        ImGui.push_item_width(ImGui.get_font_size * 8)
         if ImGui.drag_float("window scale", pointerof(window_scale.val), 0.005f32, min_scale, max_scale, "%.2f", ImGuiSliderFlags::AlwaysClamp)
           ImGui.set_window_font_scale(window_scale.val)
         end
@@ -5564,7 +5538,7 @@ module ImGuiDemo
         help_marker("Faster lines using texture data. Require backend to render with bilinear filtering (not point/nearest filtering).")
 
         ImGui.checkbox("Anti-aliased fill", pointerof(style.anti_aliased_fill))
-        ImGui.push_item_width(100)
+        ImGui.push_item_width(ImGui.get_font_size * 8)
         ImGui.drag_float("Curve Tessellation Tolerance", pointerof(style.curve_tessellation_tol), 0.02f32, 0.10f32, 10.0f32, "%.2f")
         if style.curve_tessellation_tol < 0.10f32
           style.curve_tessellation_tol = 0.10f32
@@ -5604,6 +5578,9 @@ module ImGuiDemo
         help_marker("When drawing circle primitives with \"num_segments == 0\" tesselation will be calculated automatically.")
 
         ImGui.drag_float("Global Alpha", pointerof(style.alpha), 0.005f32, 0.20f32, 1.0f32, "%.2f")
+        ImGui.drag_float("Disabled Alpha", pointerof(style.disabled_alpha), 0.005f32, 0.0f32, 1.0f32, "%.2f")
+        ImGui.same_line
+        help_marker("Additional alpha multiplier for disabled items (multiply over current value of Alpha).")
         ImGui.pop_item_width
 
         ImGui.end_tab_item
@@ -6332,6 +6309,7 @@ module ImGuiDemo
     io = ImGui.get_io
     window_flags = ImGuiWindowFlags::NoDecoration | ImGuiWindowFlags::AlwaysAutoResize | ImGuiWindowFlags::NoSavedSettings | ImGuiWindowFlags::NoFocusOnAppearing | ImGuiWindowFlags::NoNav
     if corner.val != -1
+      pad = 10.0f32
       viewport = ImGui.get_main_viewport
       work_pos = viewport.work_pos
       work_size = viewport.work_size
@@ -6807,7 +6785,6 @@ module ImGuiDemo
     end
 
     ImGui.separator
-
     begin
       tab_bar_flags = (opt_fitting_flags.val) | (opt_reorderable.val ? ImGuiTabBarFlags::Reorderable : ImGuiTabBarFlags::None)
       if ImGui.begin_tab_bar("##tabs", tab_bar_flags)
