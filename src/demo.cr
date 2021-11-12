@@ -1,4 +1,4 @@
-# Based on https://github.com/ocornut/imgui/blob/32d4f6c5d9088dd1599d342a08f8376c00565900/imgui_demo.cpp
+# Based on https://github.com/ocornut/imgui/blob/13cdf2ff0e554d2097841e742a26180440c69173/imgui_demo.cpp
 
 require "./imgui"
 require "./util"
@@ -108,11 +108,15 @@ module ImGuiDemo
     end
 
     static show_app_metrics = false
+    static show_app_stack_tool = false
     static show_app_style_editor = false
     static show_app_about = false
 
     if show_app_metrics.val
       ImGui.show_metrics_window(pointerof(show_app_metrics.val))
+    end
+    if show_app_stack_tool.val
+      ImGui.show_stack_tool_window(pointerof(show_app_stack_tool.val))
     end
     if show_app_about.val
       show_about_window(pointerof(show_app_about.val))
@@ -202,8 +206,10 @@ module ImGuiDemo
         ImGui.menu_item("Documents", "", pointerof(show_app_documents.val))
         ImGui.end_menu
       end
+
       if ImGui.begin_menu("Tools")
         ImGui.menu_item("Metrics/Debugger", "", pointerof(show_app_metrics.val))
+        ImGui.menu_item("Stack Tool", "", pointerof(show_app_stack_tool.val))
         ImGui.menu_item("Style Editor", "", pointerof(show_app_style_editor.val))
         ImGui.menu_item("About Dear ImGui", "", pointerof(show_app_about.val))
         ImGui.end_menu
@@ -1271,6 +1277,7 @@ module ImGuiDemo
 
       static arr = [0.6f32, 0.1f32, 1.0f32, 0.5f32, 0.92f32, 0.1f32, 0.2f32]
       ImGui.plot_lines("Frame Times", arr.val)
+      ImGui.plot_histogram("Histogram", arr.val, 0, nil, 0.0f32, 1.0f32, ImVec2.new(0, 80.0f32))
 
       static values = Slice.new(90, 0.0f32)
       static values_offset = 0
@@ -1295,7 +1302,6 @@ module ImGuiDemo
         overlay = sprintf("avg %f", average)
         ImGui.plot_lines("Lines", values.val, values_offset.val, overlay, -1.0f32, 1.0f32, ImVec2.new(0, 80.0f32))
       end
-      ImGui.plot_histogram("Histogram", arr.val, 0, nil, 0.0f32, 1.0f32, ImVec2.new(0, 80.0f32))
 
       sin = ->(i : Int32) {
         Math.sin(i * 0.1).to_f32
@@ -1906,7 +1912,7 @@ module ImGuiDemo
       ImGui.tree_pop
     end
 
-    if ImGui.tree_node("Querying Status (Edited/Active/Hovered etc.)")
+    if ImGui.tree_node("Querying Item Status (Edited/Active/Hovered etc.)")
       item_names = [
         "Text", "Button", "Button (w/ repeat)", "Checkbox", "SliderFloat", "InputText", "InputFloat",
         "InputFloat3", "ColorEdit4", "Selectable", "MenuItem", "TreeNode", "TreeNode (w/ double-click)", "Combo", "ListBox",
@@ -2024,8 +2030,17 @@ module ImGuiDemo
         ImGui.end_disabled
       end
 
+      buf = ImGui::TextBuffer.new(1)
+      ImGui.input_text("unused", buf, ImGuiInputTextFlags::ReadOnly)
+      ImGui.same_line
+      help_marker("This widget is only here to be able to tab-out of the widgets above and see e.g. Deactivated() status.")
+
+      ImGui.tree_pop
+    end
+
+    if ImGui.tree_node("Querying Window Status (Focused/Hovered etc.)")
       static embed_all_inside_a_child_window = false
-      ImGui.checkbox("Embed everything inside a child window (for additional testing)", pointerof(embed_all_inside_a_child_window.val))
+      ImGui.checkbox("Embed everything inside a child window for testing _RootWindow flag.", pointerof(embed_all_inside_a_child_window.val))
       if embed_all_inside_a_child_window.val
         ImGui.begin_child("outer_child", ImVec2.new(0, ImGui.get_font_size * 20.0f32), true)
       end
@@ -2033,13 +2048,19 @@ module ImGuiDemo
       ImGui.bullet_text(
         "IsWindowFocused() = %d\n" +
         "IsWindowFocused(_ChildWindows) = %d\n" +
+        "IsWindowFocused(_ChildWindows|_NoPopupHierarchy) = %d\n" +
         "IsWindowFocused(_ChildWindows|_RootWindow) = %d\n" +
+        "IsWindowFocused(_ChildWindows|_RootWindow|_NoPopupHierarchy) = %d\n" +
         "IsWindowFocused(_RootWindow) = %d\n" +
+        "IsWindowFocused(_RootWindow|_NoPopupHierarchy) = %d\n" +
         "IsWindowFocused(_AnyWindow) = %d\n",
         ImGui.is_window_focused,
         ImGui.is_window_focused(ImGuiFocusedFlags::ChildWindows),
+        ImGui.is_window_focused(ImGuiFocusedFlags::ChildWindows | ImGuiFocusedFlags::NoPopupHierarchy),
         ImGui.is_window_focused(ImGuiFocusedFlags::ChildWindows | ImGuiFocusedFlags::RootWindow),
+        ImGui.is_window_focused(ImGuiFocusedFlags::ChildWindows | ImGuiFocusedFlags::RootWindow | ImGuiFocusedFlags::NoPopupHierarchy),
         ImGui.is_window_focused(ImGuiFocusedFlags::RootWindow),
+        ImGui.is_window_focused(ImGuiFocusedFlags::RootWindow | ImGuiFocusedFlags::NoPopupHierarchy),
         ImGui.is_window_focused(ImGuiFocusedFlags::AnyWindow))
 
       ImGui.bullet_text(
@@ -2047,17 +2068,23 @@ module ImGuiDemo
         "IsWindowHovered(_AllowWhenBlockedByPopup) = %d\n" +
         "IsWindowHovered(_AllowWhenBlockedByActiveItem) = %d\n" +
         "IsWindowHovered(_ChildWindows) = %d\n" +
+        "IsWindowHovered(_ChildWindows|_NoPopupHierarchy) = %d\n" +
         "IsWindowHovered(_ChildWindows|_RootWindow) = %d\n" +
-        "IsWindowHovered(_ChildWindows|_AllowWhenBlockedByPopup) = %d\n" +
+        "IsWindowHovered(_ChildWindows|_RootWindow|_NoPopupHierarchy) = %d\n" +
         "IsWindowHovered(_RootWindow) = %d\n" +
+        "IsWindowHovered(_RootWindow|_NoPopupHierarchy) = %d\n" +
+        "IsWindowHovered(_ChildWindows|_AllowWhenBlockedByPopup) = %d\n" +
         "IsWindowHovered(_AnyWindow) = %d\n",
         ImGui.is_window_hovered,
         ImGui.is_window_hovered(ImGuiHoveredFlags::AllowWhenBlockedByPopup),
         ImGui.is_window_hovered(ImGuiHoveredFlags::AllowWhenBlockedByActiveItem),
         ImGui.is_window_hovered(ImGuiHoveredFlags::ChildWindows),
+        ImGui.is_window_hovered(ImGuiHoveredFlags::ChildWindows | ImGuiHoveredFlags::NoPopupHierarchy),
         ImGui.is_window_hovered(ImGuiHoveredFlags::ChildWindows | ImGuiHoveredFlags::RootWindow),
-        ImGui.is_window_hovered(ImGuiHoveredFlags::ChildWindows | ImGuiHoveredFlags::AllowWhenBlockedByPopup),
+        ImGui.is_window_hovered(ImGuiHoveredFlags::ChildWindows | ImGuiHoveredFlags::RootWindow | ImGuiHoveredFlags::NoPopupHierarchy),
         ImGui.is_window_hovered(ImGuiHoveredFlags::RootWindow),
+        ImGui.is_window_hovered(ImGuiHoveredFlags::RootWindow | ImGuiHoveredFlags::NoPopupHierarchy),
+        ImGui.is_window_hovered(ImGuiHoveredFlags::ChildWindows | ImGuiHoveredFlags::AllowWhenBlockedByPopup),
         ImGui.is_window_hovered(ImGuiHoveredFlags::AnyWindow))
 
       ImGui.begin_child("child", ImVec2.new(0, 50), true)
@@ -2066,9 +2093,6 @@ module ImGuiDemo
       if embed_all_inside_a_child_window.val
         ImGui.end_child
       end
-
-      static unused_str = ImGui::TextBuffer.new("This widget is only here to be able to tab-out of the widgets above.")
-      ImGui.input_text("unused", unused_str.val, ImGuiInputTextFlags::ReadOnly)
 
       static test_window = false
       ImGui.checkbox("Hovered/Active tests after Begin() for title bar testing", pointerof(test_window.val))
@@ -2119,7 +2143,7 @@ module ImGuiDemo
         if disable_mouse_wheel.val
           window_flags |= ImGuiWindowFlags::NoScrollWithMouse
         end
-        ImGui.begin_child("ChildL", ImVec2.new(ImGui.get_window_content_region_width * 0.5f32, 260), false, window_flags)
+        ImGui.begin_child("ChildL", ImVec2.new(ImGui.get_content_region_avail.x * 0.5f32, 260), false, window_flags)
         100.times do |i|
           ImGui.text("%04d: scrollable region", i)
         end
@@ -4950,6 +4974,7 @@ module ImGuiDemo
       io = ImGui.get_io
 
       ImGui.text("WantCaptureMouse: %d", io.want_capture_mouse)
+      ImGui.text("WantCaptureMouseUnlessPopupClose: %d", io.want_capture_mouse_unless_popup_close)
       ImGui.text("WantCaptureKeyboard: %d", io.want_capture_keyboard)
       ImGui.text("WantTextInput: %d", io.want_text_input)
       ImGui.text("WantSetMousePos: %d", io.want_set_mouse_pos)
