@@ -36,6 +36,7 @@ lib LibImGui
   fun GetDrawData = igGetDrawData : ImDrawData*
   fun ShowDemoWindow = igShowDemoWindow(p_open : Bool*)
   fun ShowMetricsWindow = igShowMetricsWindow(p_open : Bool*)
+  fun ShowStackToolWindow = igShowStackToolWindow(p_open : Bool*)
   fun ShowAboutWindow = igShowAboutWindow(p_open : Bool*)
   fun ShowStyleEditor = igShowStyleEditor(ref : ImGuiStyle*)
   fun ShowStyleSelector = igShowStyleSelector(label : LibC::Char*) : Bool
@@ -82,7 +83,6 @@ lib LibImGui
   fun GetContentRegionMax = igGetContentRegionMax(pOut : ImGui::ImVec2*)
   fun GetWindowContentRegionMin = igGetWindowContentRegionMin(pOut : ImGui::ImVec2*)
   fun GetWindowContentRegionMax = igGetWindowContentRegionMax(pOut : ImGui::ImVec2*)
-  fun GetWindowContentRegionWidth = igGetWindowContentRegionWidth : LibC::Float
   fun GetScrollX = igGetScrollX : LibC::Float
   fun GetScrollY = igGetScrollY : LibC::Float
   fun SetScrollX_Float = igSetScrollX_Float(scroll_x : LibC::Float)
@@ -507,6 +507,7 @@ lib LibImGui
     metrics_active_windows : LibC::Int
     metrics_active_allocations : LibC::Int
     mouse_delta : ImGui::ImVec2
+    want_capture_mouse_unless_popup_close : Bool
     key_mods : ImGui::ImGuiKeyModFlags
     key_mods_prev : ImGui::ImGuiKeyModFlags
     mouse_pos_prev : ImGui::ImVec2
@@ -516,6 +517,7 @@ lib LibImGui
     mouse_double_clicked : Bool[5]
     mouse_released : Bool[5]
     mouse_down_owned : Bool[5]
+    mouse_down_owned_unless_popup_close : Bool[5]
     mouse_down_was_double_click : Bool[5]
     mouse_down_duration : LibC::Float[5]
     mouse_down_duration_prev : LibC::Float[5]
@@ -526,6 +528,7 @@ lib LibImGui
     nav_inputs_down_duration : LibC::Float[20]
     nav_inputs_down_duration_prev : LibC::Float[20]
     pen_pressure : LibC::Float
+    app_focus_lost : Bool
     input_queue_surrogate : ImWchar16
     input_queue_characters : ImVectorInternal
   end
@@ -533,8 +536,9 @@ lib LibImGui
   fun ImGuiIO_AddInputCharacter = ImGuiIO_AddInputCharacter(self : ImGuiIO*, c : LibC::UInt)
   fun ImGuiIO_AddInputCharacterUTF16 = ImGuiIO_AddInputCharacterUTF16(self : ImGuiIO*, c : ImWchar16)
   fun ImGuiIO_AddInputCharactersUTF8 = ImGuiIO_AddInputCharactersUTF8(self : ImGuiIO*, str : LibC::Char*)
-  fun ImGuiIO_ClearInputCharacters = ImGuiIO_ClearInputCharacters(self : ImGuiIO*)
   fun ImGuiIO_AddFocusEvent = ImGuiIO_AddFocusEvent(self : ImGuiIO*, focused : Bool)
+  fun ImGuiIO_ClearInputCharacters = ImGuiIO_ClearInputCharacters(self : ImGuiIO*)
+  fun ImGuiIO_ClearInputKeys = ImGuiIO_ClearInputKeys(self : ImGuiIO*)
   fun ImGuiIO_ImGuiIO = ImGuiIO_ImGuiIO : ImGuiIO*
 
   struct ImGuiInputTextCallbackData
@@ -1103,9 +1107,6 @@ lib LibImGui
   fun ImGuiInputTextState_SelectAll = ImGuiInputTextState_SelectAll(self : ImGuiInputTextState*)
   type ImGuiPopupData = Void*
   fun ImGuiPopupData_ImGuiPopupData = ImGuiPopupData_ImGuiPopupData : ImGuiPopupData*
-  type ImGuiNavItemData = Void*
-  fun ImGuiNavItemData_ImGuiNavItemData = ImGuiNavItemData_ImGuiNavItemData : ImGuiNavItemData*
-  fun ImGuiNavItemData_Clear = ImGuiNavItemData_Clear(self : ImGuiNavItemData*)
   type ImGuiNextWindowData = Void*
   fun ImGuiNextWindowData_ImGuiNextWindowData = ImGuiNextWindowData_ImGuiNextWindowData : ImGuiNextWindowData*
   fun ImGuiNextWindowData_ClearFlags = ImGuiNextWindowData_ClearFlags(self : ImGuiNextWindowData*)
@@ -1114,11 +1115,18 @@ lib LibImGui
   fun ImGuiNextItemData_ClearFlags = ImGuiNextItemData_ClearFlags(self : ImGuiNextItemData*)
   type ImGuiLastItemData = Void*
   fun ImGuiLastItemData_ImGuiLastItemData = ImGuiLastItemData_ImGuiLastItemData : ImGuiLastItemData*
+  type ImGuiStackSizes = Void*
+  fun ImGuiStackSizes_ImGuiStackSizes = ImGuiStackSizes_ImGuiStackSizes : ImGuiStackSizes*
+  fun ImGuiStackSizes_SetToCurrentState = ImGuiStackSizes_SetToCurrentState(self : ImGuiStackSizes*)
+  fun ImGuiStackSizes_CompareWithCurrentState = ImGuiStackSizes_CompareWithCurrentState(self : ImGuiStackSizes*)
   type ImGuiWindowStackData = Void*
   type ImGuiShrinkWidthItem = Void*
   type ImGuiPtrOrIndex = Void*
   fun ImGuiPtrOrIndex_ImGuiPtrOrIndex_Ptr = ImGuiPtrOrIndex_ImGuiPtrOrIndex_Ptr(ptr : Void*) : ImGuiPtrOrIndex*
   fun ImGuiPtrOrIndex_ImGuiPtrOrIndex_Int = ImGuiPtrOrIndex_ImGuiPtrOrIndex_Int(index : LibC::Int) : ImGuiPtrOrIndex*
+  type ImGuiNavItemData = Void*
+  fun ImGuiNavItemData_ImGuiNavItemData = ImGuiNavItemData_ImGuiNavItemData : ImGuiNavItemData*
+  fun ImGuiNavItemData_Clear = ImGuiNavItemData_Clear(self : ImGuiNavItemData*)
   type ImGuiOldColumnData = Void*
   fun ImGuiOldColumnData_ImGuiOldColumnData = ImGuiOldColumnData_ImGuiOldColumnData : ImGuiOldColumnData*
   type ImGuiOldColumns = Void*
@@ -1138,10 +1146,10 @@ lib LibImGui
   fun ImGuiSettingsHandler_ImGuiSettingsHandler = ImGuiSettingsHandler_ImGuiSettingsHandler : ImGuiSettingsHandler*
   type ImGuiMetricsConfig = Void*
   fun ImGuiMetricsConfig_ImGuiMetricsConfig = ImGuiMetricsConfig_ImGuiMetricsConfig : ImGuiMetricsConfig*
-  type ImGuiStackSizes = Void*
-  fun ImGuiStackSizes_ImGuiStackSizes = ImGuiStackSizes_ImGuiStackSizes : ImGuiStackSizes*
-  fun ImGuiStackSizes_SetToCurrentState = ImGuiStackSizes_SetToCurrentState(self : ImGuiStackSizes*)
-  fun ImGuiStackSizes_CompareWithCurrentState = ImGuiStackSizes_CompareWithCurrentState(self : ImGuiStackSizes*)
+  type ImGuiStackLevelInfo = Void*
+  fun ImGuiStackLevelInfo_ImGuiStackLevelInfo = ImGuiStackLevelInfo_ImGuiStackLevelInfo : ImGuiStackLevelInfo*
+  type ImGuiStackTool = Void*
+  fun ImGuiStackTool_ImGuiStackTool = ImGuiStackTool_ImGuiStackTool : ImGuiStackTool*
   type ImGuiContextHook = Void*
   fun ImGuiContextHook_ImGuiContextHook = ImGuiContextHook_ImGuiContextHook : ImGuiContextHook*
   type ImGuiContext = Void*
@@ -1186,7 +1194,7 @@ lib LibImGui
   fun FindWindowByName = igFindWindowByName(name : LibC::Char*) : ImGuiWindow*
   fun UpdateWindowParentAndRootLinks = igUpdateWindowParentAndRootLinks(window : ImGuiWindow*, flags : ImGui::ImGuiWindowFlags, parent_window : ImGuiWindow*)
   fun CalcWindowNextAutoFitSize = igCalcWindowNextAutoFitSize(pOut : ImGui::ImVec2*, window : ImGuiWindow*)
-  fun IsWindowChildOf = igIsWindowChildOf(window : ImGuiWindow*, potential_parent : ImGuiWindow*) : Bool
+  fun IsWindowChildOf = igIsWindowChildOf(window : ImGuiWindow*, potential_parent : ImGuiWindow*, popup_hierarchy : Bool) : Bool
   fun IsWindowAbove = igIsWindowAbove(potential_above : ImGuiWindow*, potential_below : ImGuiWindow*) : Bool
   fun IsWindowNavFocusable = igIsWindowNavFocusable(window : ImGuiWindow*) : Bool
   fun SetWindowHitTestHole = igSetWindowHitTestHole(window : ImGuiWindow*, pos : ImGui::ImVec2, size : ImGui::ImVec2)
@@ -1214,7 +1222,10 @@ lib LibImGui
   fun FindOrCreateWindowSettings = igFindOrCreateWindowSettings(name : LibC::Char*) : ImGuiWindowSettings*
   fun FindSettingsHandler = igFindSettingsHandler(type_name : LibC::Char*) : ImGuiSettingsHandler*
   fun SetNextWindowScroll = igSetNextWindowScroll(scroll : ImGui::ImVec2)
-  fun ScrollToBringRectIntoView = igScrollToBringRectIntoView(pOut : ImGui::ImVec2*, window : ImGuiWindow*, item_rect : ImRect)
+  fun ScrollToItem = igScrollToItem(flags : ImGui::ImGuiScrollFlags)
+  fun ScrollToRect = igScrollToRect(window : ImGuiWindow*, rect : ImRect, flags : ImGui::ImGuiScrollFlags)
+  fun ScrollToRectEx = igScrollToRectEx(pOut : ImGui::ImVec2*, window : ImGuiWindow*, rect : ImRect, flags : ImGui::ImGuiScrollFlags)
+  fun ScrollToBringRectIntoView = igScrollToBringRectIntoView(window : ImGuiWindow*, rect : ImRect)
   fun GetItemID = igGetItemID : ImGuiID
   fun GetItemStatusFlags = igGetItemStatusFlags : ImGui::ImGuiItemStatusFlags
   fun GetItemFlags = igGetItemFlags : ImGui::ImGuiItemFlags
@@ -1231,10 +1242,10 @@ lib LibImGui
   fun GetIDWithSeed = igGetIDWithSeed(str_id_begin : LibC::Char*, str_id_end : LibC::Char*, seed : ImGuiID) : ImGuiID
   fun ItemSize_Vec2 = igItemSize_Vec2(size : ImGui::ImVec2, text_baseline_y : LibC::Float)
   fun ItemSize_Rect = igItemSize_Rect(bb : ImRect, text_baseline_y : LibC::Float)
-  fun ItemAdd = igItemAdd(bb : ImRect, id : ImGuiID, nav_bb : ImRect*, flags : ImGui::ImGuiItemAddFlags) : Bool
+  fun ItemAdd = igItemAdd(bb : ImRect, id : ImGuiID, nav_bb : ImRect*, extra_flags : ImGui::ImGuiItemFlags) : Bool
   fun ItemHoverable = igItemHoverable(bb : ImRect, id : ImGuiID) : Bool
-  fun ItemFocusable = igItemFocusable(window : ImGuiWindow*, id : ImGuiID)
-  fun IsClippedEx = igIsClippedEx(bb : ImRect, id : ImGuiID, clip_even_when_logged : Bool) : Bool
+  fun ItemInputable = igItemInputable(window : ImGuiWindow*, id : ImGuiID)
+  fun IsClippedEx = igIsClippedEx(bb : ImRect, id : ImGuiID) : Bool
   fun CalcItemSize = igCalcItemSize(pOut : ImGui::ImVec2*, size : ImGui::ImVec2, default_w : LibC::Float, default_h : LibC::Float)
   fun CalcWrapWidthForPos = igCalcWrapWidthForPos(pos : ImGui::ImVec2, wrap_pos_x : LibC::Float) : LibC::Float
   fun PushMultiItemsWidths = igPushMultiItemsWidths(components : LibC::Int, width_full : LibC::Float)
@@ -1251,6 +1262,7 @@ lib LibImGui
   fun OpenPopupEx = igOpenPopupEx(id : ImGuiID, popup_flags : ImGui::ImGuiPopupFlags)
   fun ClosePopupToLevel = igClosePopupToLevel(remaining : LibC::Int, restore_focus_to_window_under_popup : Bool)
   fun ClosePopupsOverWindow = igClosePopupsOverWindow(ref_window : ImGuiWindow*, restore_focus_to_window_under_popup : Bool)
+  fun ClosePopupsExceptModals = igClosePopupsExceptModals
   fun BeginPopupEx = igBeginPopupEx(id : ImGuiID, extra_flags : ImGui::ImGuiWindowFlags) : Bool
   fun BeginTooltipEx = igBeginTooltipEx(extra_flags : ImGui::ImGuiWindowFlags, tooltip_flags : ImGui::ImGuiTooltipFlags)
   fun GetPopupAllowedExtentRect = igGetPopupAllowedExtentRect(pOut : ImRect*, window : ImGuiWindow*)
@@ -1258,14 +1270,19 @@ lib LibImGui
   fun FindBestWindowPosForPopup = igFindBestWindowPosForPopup(pOut : ImGui::ImVec2*, window : ImGuiWindow*)
   fun FindBestWindowPosForPopupEx = igFindBestWindowPosForPopupEx(pOut : ImGui::ImVec2*, ref_pos : ImGui::ImVec2, size : ImGui::ImVec2, last_dir : ImGui::ImGuiDir*, r_outer : ImRect, r_avoid : ImRect, policy : ImGui::ImGuiPopupPositionPolicy)
   fun BeginViewportSideBar = igBeginViewportSideBar(name : LibC::Char*, viewport : ImGuiViewport*, dir : ImGui::ImGuiDir, size : LibC::Float, window_flags : ImGui::ImGuiWindowFlags) : Bool
+  fun BeginMenuEx = igBeginMenuEx(label : LibC::Char*, icon : LibC::Char*, enabled : Bool) : Bool
   fun MenuItemEx = igMenuItemEx(label : LibC::Char*, icon : LibC::Char*, shortcut : LibC::Char*, selected : Bool, enabled : Bool) : Bool
   fun BeginComboPopup = igBeginComboPopup(popup_id : ImGuiID, bb : ImRect, flags : ImGui::ImGuiComboFlags) : Bool
   fun BeginComboPreview = igBeginComboPreview : Bool
   fun EndComboPreview = igEndComboPreview
   fun NavInitWindow = igNavInitWindow(window : ImGuiWindow*, force_reinit : Bool)
+  fun NavInitRequestApplyResult = igNavInitRequestApplyResult
   fun NavMoveRequestButNoResultYet = igNavMoveRequestButNoResultYet : Bool
+  fun NavMoveRequestSubmit = igNavMoveRequestSubmit(move_dir : ImGui::ImGuiDir, clip_dir : ImGui::ImGuiDir, move_flags : ImGui::ImGuiNavMoveFlags, scroll_flags : ImGui::ImGuiScrollFlags)
+  fun NavMoveRequestForward = igNavMoveRequestForward(move_dir : ImGui::ImGuiDir, clip_dir : ImGui::ImGuiDir, move_flags : ImGui::ImGuiNavMoveFlags, scroll_flags : ImGui::ImGuiScrollFlags)
+  fun NavMoveRequestResolveWithLastItem = igNavMoveRequestResolveWithLastItem
   fun NavMoveRequestCancel = igNavMoveRequestCancel
-  fun NavMoveRequestForward = igNavMoveRequestForward(move_dir : ImGui::ImGuiDir, clip_dir : ImGui::ImGuiDir, bb_rel : ImRect, move_flags : ImGui::ImGuiNavMoveFlags)
+  fun NavMoveRequestApplyResult = igNavMoveRequestApplyResult
   fun NavMoveRequestTryWrapping = igNavMoveRequestTryWrapping(window : ImGuiWindow*, move_flags : ImGui::ImGuiNavMoveFlags)
   fun GetNavInputAmount = igGetNavInputAmount(n : ImGui::ImGuiNavInput, mode : ImGui::ImGuiInputReadMode) : LibC::Float
   fun GetNavInputAmount2d = igGetNavInputAmount2d(pOut : ImGui::ImVec2*, dir_sources : ImGui::ImGuiNavDirSourceFlags, mode : ImGui::ImGuiInputReadMode, slow_factor : LibC::Float, fast_factor : LibC::Float)
@@ -1412,9 +1429,11 @@ lib LibImGui
   fun GcCompactTransientWindowBuffers = igGcCompactTransientWindowBuffers(window : ImGuiWindow*)
   fun GcAwakeTransientWindowBuffers = igGcAwakeTransientWindowBuffers(window : ImGuiWindow*)
   fun ErrorCheckEndFrameRecover = igErrorCheckEndFrameRecover(log_callback : ImGuiErrorLogCallback, user_data : Void*)
+  fun ErrorCheckEndWindowRecover = igErrorCheckEndWindowRecover(log_callback : ImGuiErrorLogCallback, user_data : Void*)
   fun DebugDrawItemRect = igDebugDrawItemRect(col : UInt32)
   fun DebugStartItemPicker = igDebugStartItemPicker
   fun ShowFontAtlas = igShowFontAtlas(atlas : ImFontAtlas*)
+  fun DebugHookIdInfo = igDebugHookIdInfo(id : ImGuiID, data_type : ImGui::ImGuiDataType, data_id : Void*, data_id_end : Void*)
   fun DebugNodeColumns = igDebugNodeColumns(columns : ImGuiOldColumns*)
   fun DebugNodeDrawList = igDebugNodeDrawList(window : ImGuiWindow*, draw_list : ImDrawList*, label : LibC::Char*)
   fun DebugNodeDrawCmdShowMeshAndBoundingBox = igDebugNodeDrawCmdShowMeshAndBoundingBox(out_draw_list : ImDrawList*, draw_list : ImDrawList*, draw_cmd : ImDrawCmd*, show_mesh : Bool, show_aabb : Bool)
