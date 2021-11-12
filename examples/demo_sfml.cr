@@ -21,7 +21,7 @@ end
 delta_clock = SF::Clock.new
 while window.open?
   while (event = window.poll_event)
-    ImGui::SFML.process_event(event)
+    ImGui::SFML.process_event(window, event)
     window.close if event.is_a? SF::Event::Closed
   end
 
