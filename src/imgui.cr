@@ -208,8 +208,8 @@ module ImGui
       @buf.to_slice(bytesize)
     end
 
-    def to_s : String
-      String.new(@buf)
+    def to_s(io : IO)
+      io.write(to_slice)
     end
   end
 
