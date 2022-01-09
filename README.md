@@ -21,7 +21,7 @@ For guidance specific to Crystal and *crystal-imgui*, see [Usage](#usage).
 
 **Examples** of most possible usages of the library are covered in the extensive [src/demo.cr](src/demo.cr) (entry point [examples/demo_sfml.cr](examples/demo_sfml.cr); note that it requires [crystal-imgui-sfml][]).
 
-There's also [a small self-contained example](https://github.com/oprypin/crystal-imgui-sfml/blob/master/example.cr) from [crystal-imgui-sfml][].
+There's also [a small self-contained example](https://github.com/oprypin/crystal-imgui-sfml/blob/master/examples/simple.cr) from [crystal-imgui-sfml][].
 
 Installation
 ------------
@@ -95,6 +95,18 @@ If you're editing files, make sure they wouldn't be overwritten by `generate.cr`
 crystal generate.cr  # assumes cimgui/ is populated, writes to src/
 crystal tool format src
 ```
+
+The process to update the ImGui demo is fairly manual. First, run the update tool:
+
+```bash
+crystal tools/update.cr
+```
+
+The update tool does two things:
+- Uses `generate_demo.cr` to perform the initial translation from the ImGui demo to Crystal code
+- Merges changes into `src/demo.cr` so that existing work is not lost
+
+Beyond this point, the additional translation must be done manually. As always, please ensure to use the Crystal format tool to format the demo code, otherwise it will fail the build.
 
 Credits
 -------
