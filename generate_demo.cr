@@ -153,6 +153,7 @@ File.each_line(filename) do |fline|
   line = line.gsub(/INT_(MIN|MAX)\b/, "Int32::\\1")
   line = line.gsub(/LLONG_(MIN|MAX)\b/, "Int64::\\1")
   line = line.gsub(/\bIMGUI_VERSION\b/, "ImGui.get_version")
+  line = line.gsub(/\bIMGUI_DEMO_MARKER\b/, "demo_marker")
   line = line.gsub(/\bIM_COL32_WHITE\b/, "ImGui.col32(255, 255, 255)")
   line = line.gsub(/\bIMGUI_PAYLOAD_TYPE_/, "ImGui::PAYLOAD_TYPE_")
   line = line.gsub(/" *IM_NEWLINE\b/, "\\n\"")

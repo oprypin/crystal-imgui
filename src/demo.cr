@@ -1,4 +1,4 @@
-# Based on https://github.com/ocornut/imgui/blob/13cdf2ff0e554d2097841e742a26180440c69173/imgui_demo.cpp
+# Based on https://github.com/ocornut/imgui/blob/v1.86/imgui_demo.cpp
 
 require "./imgui"
 require "./util"
@@ -17,6 +17,9 @@ module ImGuiDemo
     end
   end
 
+  def self.demo_marker(section)
+  end
+
   def self.show_user_guide
     io = ImGui.get_io
     ImGui.bullet_text("Double-click on title bar to collapse window.")
@@ -25,6 +28,7 @@ module ImGuiDemo
       "(double-click to auto fit window to its contents).")
     ImGui.bullet_text("CTRL+Click on a slider or drag box to input value as text.")
     ImGui.bullet_text("TAB/SHIFT+TAB to cycle through keyboard editable fields.")
+    ImGui.bullet_text("CTRL+Tab to select a window.")
     if io.font_allow_user_scaling
       ImGui.bullet_text("CTRL+Mouse Wheel to zoom window contents.")
     end
@@ -44,7 +48,6 @@ module ImGuiDemo
     ImGui.bullet_text("Return to input text into a widget.")
     ImGui.bullet_text("Escape to deactivate a widget, close popup, exit child window.")
     ImGui.bullet_text("Alt to jump to the menu layer of a window.")
-    ImGui.bullet_text("CTRL+Tab to select a window.")
     ImGui.unindent
   end
 
@@ -187,10 +190,12 @@ module ImGuiDemo
 
     if ImGui.begin_menu_bar
       if ImGui.begin_menu("Menu")
+        demo_marker("Menu/File")
         show_example_menu_file
         ImGui.end_menu
       end
       if ImGui.begin_menu("Examples")
+        demo_marker("Menu/Examples")
         ImGui.menu_item("Main menu bar", "", pointerof(show_app_main_menu_bar.val))
         ImGui.menu_item("Console", "", pointerof(show_app_console.val))
         ImGui.menu_item("Log", "", pointerof(show_app_log.val))
@@ -208,6 +213,7 @@ module ImGuiDemo
       end
 
       if ImGui.begin_menu("Tools")
+        demo_marker("Menu/Tools")
         ImGui.menu_item("Metrics/Debugger", "", pointerof(show_app_metrics.val))
         ImGui.menu_item("Stack Tool", "", pointerof(show_app_stack_tool.val))
         ImGui.menu_item("Style Editor", "", pointerof(show_app_style_editor.val))
@@ -220,6 +226,7 @@ module ImGuiDemo
     ImGui.text("dear imgui says hello. (%s)", ImGui.get_version)
     ImGui.spacing
 
+    demo_marker("Help")
     if ImGui.collapsing_header("Help")
       ImGui.text("ABOUT THIS DEMO:")
       ImGui.bullet_text("Sections below are demonstrating many aspects of the library.")
@@ -241,6 +248,7 @@ module ImGuiDemo
       show_user_guide
     end
 
+    demo_marker("Configuration")
     if ImGui.collapsing_header("Configuration")
       io = ImGui.get_io
 
@@ -285,6 +293,7 @@ module ImGuiDemo
         ImGui.separator
       end
 
+      demo_marker("Configuration/Backend Flags")
       if ImGui.tree_node("Backend Flags")
         help_marker(
           "Those flags are set by the backends (imgui_impl_xxx files) to specify their capabilities.\n" +
@@ -298,6 +307,7 @@ module ImGuiDemo
         ImGui.separator
       end
 
+      demo_marker("Configuration/Style")
       if ImGui.tree_node("Style")
         help_marker("The same contents can be accessed in 'Tools->Style Editor' or by calling the ShowStyleEditor() function.")
         ImGui.show_style_editor
@@ -305,6 +315,7 @@ module ImGuiDemo
         ImGui.separator
       end
 
+      demo_marker("Configuration/Capture, Logging")
       if ImGui.tree_node("Capture/Logging")
         help_marker(
           "The logging API redirects all text output so you can easily capture the content of " +
@@ -322,6 +333,7 @@ module ImGuiDemo
       end
     end
 
+    demo_marker("Window options")
     if ImGui.collapsing_header("Window options")
       if ImGui.begin_table("split", 3)
         ImGui.table_next_column
@@ -374,6 +386,7 @@ module ImGuiDemo
   end
 
   def self.show_demo_window_widgets
+    demo_marker("Widgets")
     if !ImGui.collapsing_header("Widgets")
       return
     end
@@ -383,7 +396,9 @@ module ImGuiDemo
       ImGui.begin_disabled
     end
 
+    demo_marker("Widgets/Basic")
     if ImGui.tree_node("Basic")
+      demo_marker("Widgets/Basic/Button")
       static clicked = 0
       if ImGui.button("Button")
         clicked.val += 1
@@ -393,9 +408,11 @@ module ImGuiDemo
         ImGui.text("Thanks for clicking me!")
       end
 
+      demo_marker("Widgets/Basic/Checkbox")
       static check = true
       ImGui.checkbox("checkbox", pointerof(check.val))
 
+      demo_marker("Widgets/Basic/RadioButton")
       static e = 0
       ImGui.radio_button("radio a", pointerof(e.val), 0)
       ImGui.same_line
@@ -403,6 +420,7 @@ module ImGuiDemo
       ImGui.same_line
       ImGui.radio_button("radio c", pointerof(e.val), 2)
 
+      demo_marker("Widgets/Basic/Buttons (Colored)")
       7.times do |i|
         if i > 0
           ImGui.same_line
@@ -420,6 +438,7 @@ module ImGuiDemo
       ImGui.text("Hold to repeat:")
       ImGui.same_line
 
+      demo_marker("Widgets/Basic/Buttons (Repeating)")
       static counter = 0
       spacing = ImGui.get_style.item_inner_spacing.x
       ImGui.push_button_repeat(true)
@@ -434,6 +453,7 @@ module ImGuiDemo
       ImGui.same_line
       ImGui.text("%d", counter.val)
 
+      demo_marker("Widgets/Basic/Tooltips")
       ImGui.text("Hover over me")
       if ImGui.is_item_hovered
         ImGui.set_tooltip("I am a tooltip")
@@ -450,10 +470,10 @@ module ImGuiDemo
       end
 
       ImGui.separator
-
       ImGui.label_text("label", "Value")
 
       begin
+        demo_marker("Widgets/Basic/Combo")
         items = ["AAAA", "BBBB", "CCCC", "DDDD", "EEEE", "FFFF", "GGGG", "HHHH", "IIIIIII", "JJJJ", "KKKKKKK"]
         static item_current = 0
         ImGui.combo("combo", pointerof(item_current.val), items)
@@ -463,6 +483,7 @@ module ImGuiDemo
       end
 
       begin
+        demo_marker("Widgets/Basic/InputText")
         static str0 = ImGui::TextBuffer.new("Hello, world!", 128)
         ImGui.input_text("input text", str0.val)
         ImGui.same_line
@@ -482,6 +503,7 @@ module ImGuiDemo
         static str1 = ImGui::TextBuffer.new(128)
         ImGui.input_text_with_hint("input text (w/ hint)", "enter text here", str1.val)
 
+        demo_marker("Widgets/Basic/InputInt, InputFloat")
         static i0 = 123
         ImGui.input_int("input int", pointerof(i0.val))
         ImGui.same_line
@@ -508,6 +530,7 @@ module ImGuiDemo
       end
 
       begin
+        demo_marker("Widgets/Basic/DragInt, DragFloat")
         static i1 = 50
         static i2 = 42
         ImGui.drag_int("drag int", pointerof(i1.val), 1)
@@ -526,6 +549,7 @@ module ImGuiDemo
       end
 
       begin
+        demo_marker("Widgets/Basic/SliderInt, SliderFloat")
         static i1 = 0
         ImGui.slider_int("slider int", pointerof(i1.val), -1, 3)
         ImGui.same_line
@@ -536,9 +560,11 @@ module ImGuiDemo
         ImGui.slider_float("slider float", pointerof(f1.val), 0.0f32, 1.0f32, "ratio = %.3f")
         ImGui.slider_float("slider float (log)", pointerof(f2.val), -10.0f32, 10.0f32, "%.4f", ImGuiSliderFlags::Logarithmic)
 
+        demo_marker("Widgets/Basic/SliderAngle")
         static angle = 0.0f32
         ImGui.slider_angle("slider angle", pointerof(angle.val))
 
+        demo_marker("Widgets/Basic/Slider (enum)")
         static elem = 0
         ImGui.slider_int("slider enum", pointerof(elem.val), 0, Element.values.size - 1, Element.new(elem.val).to_s)
         ImGui.same_line
@@ -546,6 +572,7 @@ module ImGuiDemo
       end
 
       begin
+        demo_marker("Widgets/Basic/ColorEdit3, ColorEdit4")
         static col1 = Slice[1.0f32, 0.0f32, 0.2f32]
         static col2 = Slice[0.4f32, 0.7f32, 0.0f32, 0.5f32]
         ImGui.color_edit3("color 1", col1.val)
@@ -560,6 +587,7 @@ module ImGuiDemo
       end
 
       begin
+        demo_marker("Widgets/Basic/ListBox")
         items = ["Apple", "Banana", "Cherry", "Kiwi", "Mango", "Orange", "Pineapple", "Strawberry", "Watermelon"]
         static item_current = 1
         ImGui.list_box("listbox", pointerof(item_current.val), items, 4)
@@ -571,7 +599,9 @@ module ImGuiDemo
       ImGui.tree_pop
     end
 
+    demo_marker("Widgets/Trees")
     if ImGui.tree_node("Trees")
+      demo_marker("Widgets/Trees/Basic trees")
       if ImGui.tree_node("Basic trees")
         5.times do |i|
           if i == 0
@@ -589,6 +619,7 @@ module ImGuiDemo
         ImGui.tree_pop
       end
 
+      demo_marker("Widgets/Trees/Advanced, with Selectable nodes")
       if ImGui.tree_node("Advanced, with Selectable nodes")
         help_marker(
           "This is a more typical looking tree with selectable nodes.\n" +
@@ -619,7 +650,7 @@ module ImGuiDemo
           end
           if i < 3
             node_open = ImGui.tree_node_ex(i, node_flags, "Selectable Node %d", i)
-            if ImGui.is_item_clicked
+            if ImGui.is_item_clicked && !ImGui.is_item_toggled_open
               node_clicked = i
             end
             if test_drag_and_drop.val && ImGui.begin_drag_drop_source
@@ -634,7 +665,7 @@ module ImGuiDemo
           else
             node_flags |= ImGuiTreeNodeFlags::Leaf | ImGuiTreeNodeFlags::NoTreePushOnOpen
             ImGui.tree_node_ex(i, node_flags, "Selectable Leaf %d", i)
-            if ImGui.is_item_clicked
+            if ImGui.is_item_clicked && !ImGui.is_item_toggled_open
               node_clicked = i
             end
             if test_drag_and_drop.val && ImGui.begin_drag_drop_source
@@ -659,6 +690,7 @@ module ImGuiDemo
       ImGui.tree_pop
     end
 
+    demo_marker("Widgets/Collapsing Headers")
     if ImGui.tree_node("Collapsing Headers")
       static closable_group = true
       ImGui.checkbox("Show 2nd header", pointerof(closable_group.val))
@@ -678,6 +710,7 @@ module ImGuiDemo
       ImGui.tree_pop
     end
 
+    demo_marker("Widgets/Bullets")
     if ImGui.tree_node("Bullets")
       ImGui.bullet_text("Bullet point 1")
       ImGui.bullet_text("Bullet point 2\nOn multiple lines")
@@ -692,7 +725,9 @@ module ImGuiDemo
       ImGui.tree_pop
     end
 
+    demo_marker("Widgets/Text")
     if ImGui.tree_node("Text")
+      demo_marker("Widgets/Text/Colored Text")
       if ImGui.tree_node("Colorful Text")
         ImGui.text_colored(ImVec4.new(1.0f32, 0.0f32, 1.0f32, 1.0f32), "Pink")
         ImGui.text_colored(ImVec4.new(1.0f32, 1.0f32, 0.0f32, 1.0f32), "Yellow")
@@ -702,6 +737,7 @@ module ImGuiDemo
         ImGui.tree_pop
       end
 
+      demo_marker("Widgets/Text/Word Wrapping")
       if ImGui.tree_node("Word Wrapping")
         ImGui.text_wrapped(
           "This text should automatically wrap on the edge of the window. The current implementation " +
@@ -732,6 +768,7 @@ module ImGuiDemo
         ImGui.tree_pop
       end
 
+      demo_marker("Widgets/Text/UTF-8 Text")
       if ImGui.tree_node("UTF-8 Text")
         ImGui.text_wrapped(
           "CJK text will only appears if the font was loaded with the appropriate CJK character ranges. " +
@@ -747,6 +784,7 @@ module ImGuiDemo
       ImGui.tree_pop
     end
 
+    demo_marker("Widgets/Images")
     if ImGui.tree_node("Images")
       io = ImGui.get_io
       ImGui.text_wrapped(
@@ -788,6 +826,8 @@ module ImGuiDemo
           ImGui.end_tooltip
         end
       end
+
+      demo_marker("Widgets/Images/Textured buttons")
       ImGui.text_wrapped("And now some textured buttons..")
       static pressed_count = 0
       8.times do |i|
@@ -809,6 +849,7 @@ module ImGuiDemo
       ImGui.tree_pop
     end
 
+    demo_marker("Widgets/Combo")
     if ImGui.tree_node("Combo")
       static flags = ImGuiComboFlags::None
       ImGui.checkbox_flags("ImGuiComboFlags_PopupAlignLeft", pointerof(flags.val), ImGuiComboFlags::PopupAlignLeft)
@@ -852,6 +893,7 @@ module ImGuiDemo
       ImGui.tree_pop
     end
 
+    demo_marker("Widgets/List Boxes")
     if ImGui.tree_node("List boxes")
       items = ["AAAA", "BBBB", "CCCC", "DDDD", "EEEE", "FFFF", "GGGG", "HHHH", "IIII", "JJJJ", "KKKK", "LLLLLLL", "MMMM", "OOOOOOO"]
       static item_current_idx = 0
@@ -887,7 +929,9 @@ module ImGuiDemo
       ImGui.tree_pop
     end
 
+    demo_marker("Widgets/Selectables")
     if ImGui.tree_node("Selectables")
+      demo_marker("Widgets/Selectables/Basic")
       if ImGui.tree_node("Basic")
         static selection = [false, true, false, false, false]
         ImGui.selectable("1. I am selectable", pointerof(selection.val[0]))
@@ -901,6 +945,7 @@ module ImGuiDemo
         end
         ImGui.tree_pop
       end
+      demo_marker("Widgets/Selectables/Single Selection")
       if ImGui.tree_node("Selection State: Single Selection")
         static selected = -1
         5.times do |n|
@@ -911,6 +956,7 @@ module ImGuiDemo
         end
         ImGui.tree_pop
       end
+      demo_marker("Widgets/Selectables/Multiple Selection")
       if ImGui.tree_node("Selection State: Multiple Selection")
         help_marker("Hold CTRL and click to select multiple items.")
         static selection = [false, false, false, false, false]
@@ -925,6 +971,7 @@ module ImGuiDemo
         end
         ImGui.tree_pop
       end
+      demo_marker("Widgets/Selectables/Rendering more text into the same line")
       if ImGui.tree_node("Rendering more text into the same line")
         static selected = [false, false, false]
         ImGui.selectable("main.c", pointerof(selected.val[0]))
@@ -938,6 +985,7 @@ module ImGuiDemo
         ImGui.text(" 2,345 bytes")
         ImGui.tree_pop
       end
+      demo_marker("Widgets/Selectables/In columns")
       if ImGui.tree_node("In columns")
         static selected = Slice.new(16, false)
 
@@ -965,6 +1013,7 @@ module ImGuiDemo
         end
         ImGui.tree_pop
       end
+      demo_marker("Widgets/Selectables/Grid")
       if ImGui.tree_node("Grid")
         static selected = [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]]
 
@@ -1004,6 +1053,7 @@ module ImGuiDemo
         end
         ImGui.tree_pop
       end
+      demo_marker("Widgets/Selectables/Alignment")
       if ImGui.tree_node("Alignment")
         help_marker(
           "By default, Selectables uses style.SelectableTextAlign but it can be overridden on a per-item " +
@@ -1027,7 +1077,9 @@ module ImGuiDemo
       ImGui.tree_pop
     end
 
+    demo_marker("Widgets/Text Input")
     if ImGui.tree_node("Text Input")
+      demo_marker("Widgets/Text Input/Multi-line Text Input")
       if ImGui.tree_node("Multi-line Text Input")
         static text = ImGui::TextBuffer.new(1024 * 16) <<
                       "/*\n" <<
@@ -1050,6 +1102,7 @@ module ImGuiDemo
         ImGui.tree_pop
       end
 
+      demo_marker("Widgets/Text Input/Filtered Text Input")
       if ImGui.tree_node("Filtered Text Input")
         static buf1 = ImGui::TextBuffer.new(64)
         ImGui.input_text("default", buf1.val)
@@ -1072,6 +1125,7 @@ module ImGuiDemo
         ImGui.tree_pop
       end
 
+      demo_marker("Widgets/Text Input/Password input")
       if ImGui.tree_node("Password Input")
         static password = ImGui::TextBuffer.new("password123", 64)
         ImGui.input_text("password", password.val, ImGuiInputTextFlags::Password)
@@ -1128,6 +1182,7 @@ module ImGuiDemo
         ImGui.tree_pop
       end
 
+      demo_marker("Widgets/Text Input/Resize Callback")
       if ImGui.tree_node("Resize Callback")
         help_marker(
           "Using ImGuiInputTextFlags_CallbackResize to wire your custom string type to InputText().\n\n" +
@@ -1142,7 +1197,9 @@ module ImGuiDemo
       ImGui.tree_pop
     end
 
+    demo_marker("Widgets/Tabs")
     if ImGui.tree_node("Tabs")
+      demo_marker("Widgets/Tabs/Basic")
       if ImGui.tree_node("Basic")
         tab_bar_flags = ImGuiTabBarFlags::None
         if ImGui.begin_tab_bar("MyTabBar", tab_bar_flags)
@@ -1164,6 +1221,7 @@ module ImGuiDemo
         ImGui.tree_pop
       end
 
+      demo_marker("Widgets/Tabs/Advanced & Close Button")
       if ImGui.tree_node("Advanced & Close Button")
         static tab_bar_flags = ImGuiTabBarFlags::Reorderable
         ImGui.checkbox_flags("ImGuiTabBarFlags_Reorderable", pointerof(tab_bar_flags.val), ImGuiTabBarFlags::Reorderable)
@@ -1205,6 +1263,7 @@ module ImGuiDemo
         ImGui.tree_pop
       end
 
+      demo_marker("Widgets/Tabs/TabItemButton & Leading-Trailing flags")
       if ImGui.tree_node("TabItemButton & Leading/Trailing flags")
         static active_tabs = [] of Int32
         static next_tab_id = 0
@@ -1271,10 +1330,12 @@ module ImGuiDemo
       ImGui.tree_pop
     end
 
-    if ImGui.tree_node("Plots Widgets")
+    demo_marker("Widgets/Plotting")
+    if ImGui.tree_node("Plotting")
       static animate = true
       ImGui.checkbox("Animate", pointerof(animate.val))
 
+      demo_marker("Widgets/Plotting/PlotLines, PlotHistogram")
       static arr = [0.6f32, 0.1f32, 1.0f32, 0.5f32, 0.92f32, 0.1f32, 0.2f32]
       ImGui.plot_lines("Frame Times", arr.val)
       ImGui.plot_histogram("Histogram", arr.val, 0, nil, 0.0f32, 1.0f32, ImVec2.new(0, 80.0f32))
@@ -1321,6 +1382,7 @@ module ImGuiDemo
       ImGui.plot_histogram("Histogram", display_count.val, 0, nil, -1.0f32, 1.0f32, ImVec2.new(0, 80), &func)
       ImGui.separator
 
+      demo_marker("Widgets/Plotting/ProgressBar")
       static progress = 0.0f32
       static progress_dir = 1.0f32
       if animate.val
@@ -1345,6 +1407,7 @@ module ImGuiDemo
       ImGui.tree_pop
     end
 
+    demo_marker("Widgets/Color")
     if ImGui.tree_node("Color/Picker Widgets")
       static color = ImVec4.new(114.0f32 / 255.0f32, 144.0f32 / 255.0f32, 154.0f32 / 255.0f32, 200.0f32 / 255.0f32)
 
@@ -1364,6 +1427,7 @@ module ImGuiDemo
       help_marker("Currently all this does is to lift the 0..1 limits on dragging widgets.")
       misc_flags = (hdr.val ? ImGuiColorEditFlags::HDR : ImGuiColorEditFlags::None) | (drag_and_drop.val ? ImGuiColorEditFlags::None : ImGuiColorEditFlags::NoDragDrop) | (alpha_half_preview.val ? ImGuiColorEditFlags::AlphaPreviewHalf : (alpha_preview.val ? ImGuiColorEditFlags::AlphaPreview : ImGuiColorEditFlags::None)) | (options_menu.val ? ImGuiColorEditFlags::None : ImGuiColorEditFlags::NoOptions)
 
+      demo_marker("Widgets/Color/ColorEdit")
       ImGui.text("Color widget:")
       ImGui.same_line
       help_marker(
@@ -1371,12 +1435,15 @@ module ImGuiDemo
         "CTRL+click on individual component to input value.\n")
       ImGui.color_edit3("MyColor##1", pointerof(color.val), misc_flags)
 
+      demo_marker("Widgets/Color/ColorEdit (HSV, with Alpha)")
       ImGui.text("Color widget HSV with Alpha:")
       ImGui.color_edit4("MyColor##2", pointerof(color.val), ImGuiColorEditFlags::DisplayHSV | misc_flags)
 
+      demo_marker("Widgets/Color/ColorEdit (float display)")
       ImGui.text("Color widget with Float Display:")
       ImGui.color_edit4("MyColor##2f", pointerof(color.val), ImGuiColorEditFlags::Float | misc_flags)
 
+      demo_marker("Widgets/Color/ColorButton (with Picker)")
       ImGui.text("Color button with Picker:")
       ImGui.same_line
       help_marker(
@@ -1385,6 +1452,7 @@ module ImGuiDemo
         "be used for the tooltip and picker popup.")
       ImGui.color_edit4("MyColor##3", pointerof(color.val), ImGuiColorEditFlags::NoInputs | ImGuiColorEditFlags::NoLabel | misc_flags)
 
+      demo_marker("Widgets/Color/ColorButton (with custom Picker popup)")
       ImGui.text("Color button with Custom Picker Popup:")
 
       static saved_palette = Array(ImVec4).new(32) do |n|
@@ -1444,11 +1512,13 @@ module ImGuiDemo
         ImGui.end_popup
       end
 
+      demo_marker("Widgets/Color/ColorButton (simple)")
       ImGui.text("Color button only:")
       static no_border = false
       ImGui.checkbox("ImGuiColorEditFlags_NoBorder", pointerof(no_border.val))
       ImGui.color_button("MyColor##3c", color.val, misc_flags | (no_border.val ? ImGuiColorEditFlags::NoBorder : ImGuiColorEditFlags::None), ImVec2.new(80, 80))
 
+      demo_marker("Widgets/Color/ColorPicker")
       ImGui.text("Color picker:")
       static alpha = true
       static alpha_bar = true
@@ -1537,6 +1607,7 @@ module ImGuiDemo
       ImGui.tree_pop
     end
 
+    demo_marker("Widgets/Drag and Slider Flags")
     if ImGui.tree_node("Drag/Slider Flags")
       static flags = ImGuiSliderFlags::None
       ImGui.checkbox_flags("ImGuiSliderFlags_AlwaysClamp", pointerof(flags.val), ImGuiSliderFlags::AlwaysClamp)
@@ -1570,6 +1641,7 @@ module ImGuiDemo
       ImGui.tree_pop
     end
 
+    demo_marker("Widgets/Range Widgets")
     if ImGui.tree_node("Range Widgets")
       static begin_ = 10f32
       static end_ = 90f32
@@ -1581,6 +1653,7 @@ module ImGuiDemo
       ImGui.tree_pop
     end
 
+    demo_marker("Widgets/Data Types")
     if ImGui.tree_node("Data Types")
       s8_zero = 0i8
       s8_one = 1i8
@@ -1652,6 +1725,7 @@ module ImGuiDemo
 
       drag_speed = 0.2f32
       static drag_clamp = false
+      demo_marker("Widgets/Data Types/Drags")
       ImGui.text("Drags:")
       ImGui.checkbox("Clamp integers to 0..50", pointerof(drag_clamp.val))
       ImGui.same_line
@@ -1671,6 +1745,7 @@ module ImGuiDemo
       ImGui.drag_scalar("drag double", pointerof(f64_v.val), 0.0005f32, f64_zero, nil, "%.10f grams")
       ImGui.drag_scalar("drag double log", pointerof(f64_v.val), 0.0005f32, f64_zero, f64_one, "0 < %.10f < 1", ImGuiSliderFlags::Logarithmic)
 
+      demo_marker("Widgets/Data Types/Sliders")
       ImGui.text("Sliders")
       ImGui.slider_scalar("slider s8 full", pointerof(s8_v.val), s8_min, s8_max, "%d")
       ImGui.slider_scalar("slider u8 full", pointerof(u8_v.val), u8_min, u8_max, "%u")
@@ -1703,6 +1778,7 @@ module ImGuiDemo
       ImGui.slider_scalar("slider s64 reverse", pointerof(s64_v.val), s64_fifty, s64_zero, "%I64d")
       ImGui.slider_scalar("slider u64 reverse", pointerof(u64_v.val), u64_fifty, u64_zero, "%I64u ms")
 
+      demo_marker("Widgets/Data Types/Inputs")
       static inputs_step = true
       ImGui.text("Inputs")
       ImGui.checkbox("Show step buttons", pointerof(inputs_step.val))
@@ -1722,6 +1798,7 @@ module ImGuiDemo
       ImGui.tree_pop
     end
 
+    demo_marker("Widgets/Multi-component Widgets")
     if ImGui.tree_node("Multi-component Widgets")
       static vec4f = Slice[0.10f32, 0.20f32, 0.30f32, 0.44f32]
       static vec4i = Slice[1, 5, 100, 255]
@@ -1752,6 +1829,7 @@ module ImGuiDemo
       ImGui.tree_pop
     end
 
+    demo_marker("Widgets/Vertical Sliders")
     if ImGui.tree_node("Vertical Sliders")
       spacing = 4
       ImGui.push_style_var(ImGuiStyleVar::ItemSpacing, ImVec2.new(spacing, spacing))
@@ -1819,7 +1897,9 @@ module ImGuiDemo
       ImGui.tree_pop
     end
 
+    demo_marker("Widgets/Drag and drop")
     if ImGui.tree_node("Drag and Drop")
+      demo_marker("Widgets/Drag and drop/Standard widgets")
       if ImGui.tree_node("Drag and drop in standard widgets")
         help_marker("You can drag from the color squares.")
         static col1 = Slice[1.0f32, 0.0f32, 0.2f32]
@@ -1829,6 +1909,7 @@ module ImGuiDemo
         ImGui.tree_pop
       end
 
+      demo_marker("Widgets/Drag and drop/Copy-swap items")
       if ImGui.tree_node("Drag and drop to copy/swap items")
         static mode = Mode::Copy
         if ImGui.radio_button("Copy", mode.val == Mode::Copy)
@@ -1888,6 +1969,7 @@ module ImGuiDemo
         ImGui.tree_pop
       end
 
+      demo_marker("Widgets/Drag and Drop/Drag to reorder items (simple)")
       if ImGui.tree_node("Drag to reorder items (simple)")
         help_marker(
           "We don't use the drag and drop api at all here! " +
@@ -1912,9 +1994,10 @@ module ImGuiDemo
       ImGui.tree_pop
     end
 
+    demo_marker("Widgets/Querying Item Status (Edited,Active,Hovered etc.)")
     if ImGui.tree_node("Querying Item Status (Edited/Active/Hovered etc.)")
       item_names = [
-        "Text", "Button", "Button (w/ repeat)", "Checkbox", "SliderFloat", "InputText", "InputFloat",
+        "Text", "Button", "Button (w/ repeat)", "Checkbox", "SliderFloat", "InputText", "InputTextMultiline", "InputFloat",
         "InputFloat3", "ColorEdit4", "Selectable", "MenuItem", "TreeNode", "TreeNode (w/ double-click)", "Combo", "ListBox",
       ]
       static item_type = 4
@@ -1952,35 +2035,38 @@ module ImGuiDemo
         ret = ImGui.input_text("ITEM: InputText", str.val)
       end
       if item_type.val == 6
-        ret = ImGui.input_float("ITEM: InputFloat", pointerof(col4f.val[0]), 1.0f32)
+        ret = ImGui.input_text_multiline("ITEM: InputTextMultiline", str.val)
       end
       if item_type.val == 7
-        ret = ImGui.input_float3("ITEM: InputFloat3", col4f.val[...3])
+        ret = ImGui.input_float("ITEM: InputFloat", pointerof(col4f.val[0]), 1.0f32)
       end
       if item_type.val == 8
-        ret = ImGui.color_edit4("ITEM: ColorEdit4", col4f.val)
+        ret = ImGui.input_float3("ITEM: InputFloat3", col4f.val)
       end
       if item_type.val == 9
-        ret = ImGui.selectable("ITEM: Selectable")
+        ret = ImGui.color_edit4("ITEM: ColorEdit4", col4f.val)
       end
       if item_type.val == 10
-        ret = ImGui.menu_item("ITEM: MenuItem")
+        ret = ImGui.selectable("ITEM: Selectable")
       end
       if item_type.val == 11
+        ret = ImGui.menu_item("ITEM: MenuItem")
+      end
+      if item_type.val == 12
         ret = ImGui.tree_node("ITEM: TreeNode")
         if ret
           ImGui.tree_pop
         end
       end
-      if item_type.val == 12
+      if item_type.val == 13
         ret = ImGui.tree_node_ex("ITEM: TreeNode w/ ImGuiTreeNodeFlags_OpenOnDoubleClick", ImGuiTreeNodeFlags::OpenOnDoubleClick | ImGuiTreeNodeFlags::NoTreePushOnOpen)
       end
-      if item_type.val == 13
+      if item_type.val == 14
         items = ["Apple", "Banana", "Cherry", "Kiwi"]
         static current = 1
         ret = ImGui.combo("ITEM: Combo", pointerof(current.val), items)
       end
-      if item_type.val == 14
+      if item_type.val == 15
         items = ["Apple", "Banana", "Cherry", "Kiwi"]
         static current = 1
         ret = ImGui.list_box("ITEM: ListBox", pointerof(current.val), items, items.size)
@@ -2038,6 +2124,7 @@ module ImGuiDemo
       ImGui.tree_pop
     end
 
+    demo_marker("Widgets/Querying Window Status (Focused,Hovered etc.)")
     if ImGui.tree_node("Querying Window Status (Focused/Hovered etc.)")
       static embed_all_inside_a_child_window = false
       ImGui.checkbox("Embed everything inside a child window for testing _RootWindow flag.", pointerof(embed_all_inside_a_child_window.val))
@@ -2118,6 +2205,7 @@ module ImGuiDemo
       ImGui.end_disabled
     end
 
+    demo_marker("Widgets/Disable Block")
     if ImGui.tree_node("Disable block")
       ImGui.checkbox("Disable entire section above", pointerof(disable_all.val))
       ImGui.same_line
@@ -2127,10 +2215,12 @@ module ImGuiDemo
   end
 
   def self.show_demo_window_layout
+    demo_marker("Layout")
     if !ImGui.collapsing_header("Layout & Scrolling")
       return
     end
 
+    demo_marker("Layout/Child windows")
     if ImGui.tree_node("Child windows")
       help_marker("Use child windows to begin into a self-contained independent scrolling/clipping regions within a host window.")
       static disable_mouse_wheel = false
@@ -2205,6 +2295,7 @@ module ImGuiDemo
       ImGui.tree_pop
     end
 
+    demo_marker("Layout/Widgets Width")
     if ImGui.tree_node("Widgets Width")
       static f = 0.0f32
       static show_indented_items = true
@@ -2273,9 +2364,11 @@ module ImGuiDemo
       ImGui.tree_pop
     end
 
+    demo_marker("Layout/Basic Horizontal Layout")
     if ImGui.tree_node("Basic Horizontal Layout")
       ImGui.text_wrapped("(Use ImGui::SameLine() to keep adding items to the right of the preceding item)")
 
+      demo_marker("Layout/Basic Horizontal Layout/SameLine")
       ImGui.text("Two items: Hello")
       ImGui.same_line
       ImGui.text_colored(ImVec4.new(1, 1, 0, 1), "Sailor")
@@ -2299,6 +2392,7 @@ module ImGuiDemo
       ImGui.same_line
       ImGui.text("can fit within a text block.")
 
+      demo_marker("Layout/Basic Horizontal Layout/SameLine (with offset)")
       ImGui.text("Aligned")
       ImGui.same_line(150)
       ImGui.text("x=150")
@@ -2310,6 +2404,7 @@ module ImGuiDemo
       ImGui.same_line(300)
       ImGui.small_button("x=300")
 
+      demo_marker("Layout/Basic Horizontal Layout/SameLine (more)")
       static c1 = false
       static c2 = false
       static c3 = false
@@ -2350,6 +2445,7 @@ module ImGuiDemo
       end
       ImGui.pop_item_width
 
+      demo_marker("Layout/Basic Horizontal Layout/Dummy")
       button_sz = ImVec2.new(40, 40)
       ImGui.button("A", button_sz)
       ImGui.same_line
@@ -2357,7 +2453,8 @@ module ImGuiDemo
       ImGui.same_line
       ImGui.button("B", button_sz)
 
-      ImGui.text("Manually wrapping:")
+      demo_marker("Layout/Basic Horizontal Layout/Manual wrapping")
+      ImGui.text("Manual wrapping:")
       style = ImGui.get_style
       buttons_count = 20
       window_visible_x2 = ImGui.get_window_pos.x + ImGui.get_window_content_region_max.x
@@ -2375,6 +2472,7 @@ module ImGuiDemo
       ImGui.tree_pop
     end
 
+    demo_marker("Layout/Groups")
     if ImGui.tree_node("Groups")
       help_marker(
         "BeginGroup() basically locks the horizontal position for new line. " +
@@ -2421,6 +2519,7 @@ module ImGuiDemo
       ImGui.tree_pop
     end
 
+    demo_marker("Layout/Text Baseline Alignment")
     if ImGui.tree_node("Text Baseline Alignment")
       begin
         ImGui.bullet_text("Text baseline:")
@@ -2546,7 +2645,9 @@ module ImGuiDemo
       ImGui.tree_pop
     end
 
+    demo_marker("Layout/Scrolling")
     if ImGui.tree_node("Scrolling")
+      demo_marker("Layout/Scrolling/Vertical")
       help_marker("Use SetScrollHereY() or SetScrollFromPosY() to scroll to a given vertical position.")
 
       static track_item = 50
@@ -2620,6 +2721,7 @@ module ImGuiDemo
       end
       ImGui.pop_id
 
+      demo_marker("Layout/Scrolling/Horizontal")
       ImGui.spacing
       help_marker(
         "Use SetScrollHereX() or SetScrollFromPosX() to scroll to a given horizontal position.\n\n" +
@@ -2661,6 +2763,7 @@ module ImGuiDemo
       end
       ImGui.pop_id
 
+      demo_marker("Layout/Scrolling/Horizontal (more)")
       help_marker(
         "Horizontal scrolling for a window is enabled via the ImGuiWindowFlags_HorizontalScrollbar flag.\n\n" +
         "You may want to also explicitly specify content width by using SetNextWindowContentWidth() before Begin().")
@@ -2730,6 +2833,7 @@ module ImGuiDemo
           ImGui.set_next_window_content_size(ImVec2.new(contents_size_x.val, 0.0f32))
         end
         ImGui.begin("Horizontal contents size demo window", pointerof(show_horizontal_contents_size_demo_window.val), show_h_scrollbar.val ? ImGuiWindowFlags::HorizontalScrollbar : ImGuiWindowFlags::None)
+        demo_marker("Layout/Scrolling/Horizontal contents size demo window")
         ImGui.push_style_var(ImGuiStyleVar::ItemSpacing, ImVec2.new(2, 0))
         ImGui.push_style_var(ImGuiStyleVar::FramePadding, ImVec2.new(2, 0))
         help_marker("Test of different widgets react and impact the work rectangle growing when horizontal scrolling is enabled.\n\nUse 'Metrics->Tools->Show windows rectangles' to visualize rectangles.")
@@ -2812,6 +2916,7 @@ module ImGuiDemo
       ImGui.tree_pop
     end
 
+    demo_marker("Layout/Clipping")
     if ImGui.tree_node("Clipping")
       static size = ImVec2.new(100.0f32, 100.0f32)
       static offset = ImVec2.new(30.0f32, 30.0f32)
@@ -2872,9 +2977,11 @@ module ImGuiDemo
   end
 
   def self.show_demo_window_popups
+    demo_marker("Popups")
     if !ImGui.collapsing_header("Popups & Modal windows")
       return
     end
+    demo_marker("Popups/Popups")
     if ImGui.tree_node("Popups")
       ImGui.text_wrapped(
         "When a popup is active, it inhibits interacting with windows that are behind the popup. " +
@@ -2941,17 +3048,30 @@ module ImGuiDemo
         ImGui.end_popup
       end
 
-      if ImGui.button("File Menu..")
+      if ImGui.button("With a menu..")
         ImGui.open_popup("my_file_popup")
       end
-      if ImGui.begin_popup("my_file_popup")
-        show_example_menu_file
+      if ImGui.begin_popup("my_file_popup", ImGuiWindowFlags::MenuBar)
+        if ImGui.begin_menu_bar
+          if ImGui.begin_menu("File")
+            show_example_menu_file
+            ImGui.end_menu
+          end
+          if ImGui.begin_menu("Edit")
+            ImGui.menu_item("Dummy")
+            ImGui.end_menu
+          end
+          ImGui.end_menu_bar
+        end
+        ImGui.text("Hello from popup!")
+        ImGui.button("This is a dummy button..")
         ImGui.end_popup
       end
 
       ImGui.tree_pop
     end
 
+    demo_marker("Popups/Context menus")
     if ImGui.tree_node("Context menus")
       help_marker("\"Context\" functions are simple helpers to associate a Popup to a given Item or Window identifier.")
       begin
@@ -3015,6 +3135,7 @@ module ImGuiDemo
       ImGui.tree_pop
     end
 
+    demo_marker("Popups/Modals")
     if ImGui.tree_node("Modals")
       ImGui.text_wrapped("Modal windows are like popups but the user cannot close them by clicking outside.")
 
@@ -3086,6 +3207,7 @@ module ImGuiDemo
       ImGui.tree_pop
     end
 
+    demo_marker("Popups/Menus inside a regular window")
     if ImGui.tree_node("Menus inside a regular window")
       ImGui.text_wrapped("Below we are testing adding menu items to a regular window. It's rather unusual but should work!")
       ImGui.separator
@@ -3306,6 +3428,7 @@ module ImGuiDemo
     text_base_width = ImGui.calc_text_size("A").x
     text_base_height = ImGui.get_text_line_height_with_spacing
 
+    demo_marker("Tables")
     if !ImGui.collapsing_header("Tables & Columns")
       return
     end
@@ -3333,6 +3456,7 @@ module ImGuiDemo
     if open_action != -1
       ImGui.set_next_item_open(open_action != 0)
     end
+    demo_marker("Tables/Basic")
     if ImGui.tree_node("Basic")
       help_marker("Using TableNextRow() + calling TableSetColumnIndex() _before_ each cell, in a loop.")
       if ImGui.begin_table("table1", 3)
@@ -3377,6 +3501,7 @@ module ImGuiDemo
     if open_action != -1
       ImGui.set_next_item_open(open_action != 0)
     end
+    demo_marker("Tables/Borders, background")
     if ImGui.tree_node("Borders, background")
       static flags = ImGuiTableFlags::Borders | ImGuiTableFlags::RowBg
       static display_headers = false
@@ -3445,6 +3570,7 @@ module ImGuiDemo
     if open_action != -1
       ImGui.set_next_item_open(open_action != 0)
     end
+    demo_marker("Tables/Resizable, stretch")
     if ImGui.tree_node("Resizable, stretch")
       static flags = ImGuiTableFlags::SizingStretchSame | ImGuiTableFlags::Resizable | ImGuiTableFlags::BordersOuter | ImGuiTableFlags::BordersV | ImGuiTableFlags::ContextMenuInBody
       push_style_compact
@@ -3470,6 +3596,7 @@ module ImGuiDemo
     if open_action != -1
       ImGui.set_next_item_open(open_action != 0)
     end
+    demo_marker("Tables/Resizable, fixed")
     if ImGui.tree_node("Resizable, fixed")
       help_marker(
         "Using _Resizable + _SizingFixedFit flags.\n" +
@@ -3496,6 +3623,7 @@ module ImGuiDemo
     if open_action != -1
       ImGui.set_next_item_open(open_action != 0)
     end
+    demo_marker("Tables/Resizable, mixed")
     if ImGui.tree_node("Resizable, mixed")
       help_marker(
         "Using TableSetupColumn() to alter resizing policy on a per-column basis.\n\n" +
@@ -3539,6 +3667,7 @@ module ImGuiDemo
     if open_action != -1
       ImGui.set_next_item_open(open_action != 0)
     end
+    demo_marker("Tables/Reorderable, hideable, with headers")
     if ImGui.tree_node("Reorderable, hideable, with headers")
       help_marker(
         "Click and drag column headers to reorder columns.\n\n" +
@@ -3589,6 +3718,7 @@ module ImGuiDemo
     if open_action != -1
       ImGui.set_next_item_open(open_action != 0)
     end
+    demo_marker("Tables/Padding")
     if ImGui.tree_node("Padding")
       help_marker(
         "We often want outer padding activated when any using features which makes the edges of a column visible:\n" +
@@ -3688,6 +3818,7 @@ module ImGuiDemo
     if open_action != -1
       ImGui.set_next_item_open(open_action != 0)
     end
+    demo_marker("Tables/Explicit widths")
     if ImGui.tree_node("Sizing policies")
       static flags1 = ImGuiTableFlags::BordersV | ImGuiTableFlags::BordersOuterH | ImGuiTableFlags::RowBg | ImGuiTableFlags::ContextMenuInBody
       push_style_compact
@@ -3792,6 +3923,7 @@ module ImGuiDemo
     if open_action != -1
       ImGui.set_next_item_open(open_action != 0)
     end
+    demo_marker("Tables/Vertical scrolling, with clipping")
     if ImGui.tree_node("Vertical scrolling, with clipping")
       help_marker("Here we activate ScrollY, which will create a child window container to allow hosting scrollable contents.\n\nWe also demonstrate using ImGuiListClipper to virtualize the submission of many items.")
       static flags = ImGuiTableFlags::ScrollY | ImGuiTableFlags::RowBg | ImGuiTableFlags::BordersOuter | ImGuiTableFlags::BordersV | ImGuiTableFlags::Resizable | ImGuiTableFlags::Reorderable | ImGuiTableFlags::Hideable
@@ -3827,6 +3959,7 @@ module ImGuiDemo
     if open_action != -1
       ImGui.set_next_item_open(open_action != 0)
     end
+    demo_marker("Tables/Horizontal scrolling")
     if ImGui.tree_node("Horizontal scrolling")
       help_marker(
         "When ScrollX is enabled, the default sizing policy becomes ImGuiTableFlags_SizingFixedFit, " +
@@ -3904,6 +4037,7 @@ module ImGuiDemo
     if open_action != -1
       ImGui.set_next_item_open(open_action != 0)
     end
+    demo_marker("Tables/Columns flags")
     if ImGui.tree_node("Columns flags")
       column_count = 3
       column_names = ["One", "Two", "Three"]
@@ -3958,6 +4092,7 @@ module ImGuiDemo
     if open_action != -1
       ImGui.set_next_item_open(open_action != 0)
     end
+    demo_marker("Tables/Columns widths")
     if ImGui.tree_node("Columns widths")
       help_marker("Using TableSetupColumn() to setup default width.")
 
@@ -4017,6 +4152,7 @@ module ImGuiDemo
     if open_action != -1
       ImGui.set_next_item_open(open_action != 0)
     end
+    demo_marker("Tables/Nested tables")
     if ImGui.tree_node("Nested tables")
       help_marker("This demonstrate embedding a table into another table cell.")
 
@@ -4062,6 +4198,7 @@ module ImGuiDemo
     if open_action != -1
       ImGui.set_next_item_open(open_action != 0)
     end
+    demo_marker("Tables/Row height")
     if ImGui.tree_node("Row height")
       help_marker("You can pass a 'min_row_height' to TableNextRow().\n\nRows are padded with 'style.CellPadding.y' on top and bottom, so effectively the minimum row height will always be >= 'style.CellPadding.y * 2.0f'.\n\nWe cannot honor a _maximum_ row height as that would requires a unique clipping rectangle per row.")
       if ImGui.begin_table("table_row_height", 1, ImGuiTableFlags::BordersOuter | ImGuiTableFlags::BordersInnerV)
@@ -4079,6 +4216,7 @@ module ImGuiDemo
     if open_action != -1
       ImGui.set_next_item_open(open_action != 0)
     end
+    demo_marker("Tables/Outer size")
     if ImGui.tree_node("Outer size")
       ImGui.text("Using NoHostExtendX and NoHostExtendY:")
       push_style_compact
@@ -4136,6 +4274,7 @@ module ImGuiDemo
     if open_action != -1
       ImGui.set_next_item_open(open_action != 0)
     end
+    demo_marker("Tables/Background color")
     if ImGui.tree_node("Background color")
       static flags = ImGuiTableFlags::RowBg
       static row_bg_type = 1
@@ -4186,6 +4325,7 @@ module ImGuiDemo
     if open_action != -1
       ImGui.set_next_item_open(open_action != 0)
     end
+    demo_marker("Tables/Tree view")
     if ImGui.tree_node("Tree view")
       static flags = ImGuiTableFlags::BordersV | ImGuiTableFlags::BordersOuterH | ImGuiTableFlags::Resizable | ImGuiTableFlags::RowBg | ImGuiTableFlags::NoBordersInBody
 
@@ -4217,6 +4357,7 @@ module ImGuiDemo
     if open_action != -1
       ImGui.set_next_item_open(open_action != 0)
     end
+    demo_marker("Tables/Item width")
     if ImGui.tree_node("Item width")
       help_marker(
         "Showcase using PushItemWidth() and how it is preserved on a per-column basis.\n\n" +
@@ -4256,6 +4397,7 @@ module ImGuiDemo
     if open_action != -1
       ImGui.set_next_item_open(open_action != 0)
     end
+    demo_marker("Tables/Custom headers")
     if ImGui.tree_node("Custom headers")
       columns_count = 3
       if ImGui.begin_table("table_custom_headers", columns_count, ImGuiTableFlags::Borders | ImGuiTableFlags::Reorderable | ImGuiTableFlags::Hideable)
@@ -4293,6 +4435,7 @@ module ImGuiDemo
     if open_action != -1
       ImGui.set_next_item_open(open_action != 0)
     end
+    demo_marker("Tables/Context menus")
     if ImGui.tree_node("Context menus")
       help_marker("By default, right-clicking over a TableHeadersRow()/TableHeader() line will open the default context-menu.\nUsing ImGuiTableFlags_ContextMenuInBody we also allow right-clicking over columns body.")
       static flags1 = ImGuiTableFlags::Resizable | ImGuiTableFlags::Reorderable | ImGuiTableFlags::Hideable | ImGuiTableFlags::Borders | ImGuiTableFlags::ContextMenuInBody
@@ -4379,6 +4522,7 @@ module ImGuiDemo
     if open_action != -1
       ImGui.set_next_item_open(open_action != 0)
     end
+    demo_marker("Tables/Synced instances")
     if ImGui.tree_node("Synced instances")
       help_marker("Multiple tables with the same identifier will share their settings, width, visibility, order etc.")
       3.times do |n|
@@ -4406,6 +4550,7 @@ module ImGuiDemo
     if open_action != -1
       ImGui.set_next_item_open(open_action != 0)
     end
+    demo_marker("Tables/Sorting")
     if ImGui.tree_node("Sorting")
       static items = p! Array(MyItem).new(50) { |n|
         template_n = n % template_items_names.size
@@ -4471,6 +4616,7 @@ module ImGuiDemo
     if open_action != -1
       ImGui.set_next_item_open(open_action != 0)
     end
+    demo_marker("Tables/Advanced")
     if ImGui.tree_node("Advanced")
       static flags = ImGuiTableFlags::Resizable | ImGuiTableFlags::Reorderable | ImGuiTableFlags::Hideable | ImGuiTableFlags::Sortable | ImGuiTableFlags::SortMulti | ImGuiTableFlags::RowBg | ImGuiTableFlags::Borders | ImGuiTableFlags::NoBordersInBody | ImGuiTableFlags::ScrollX | ImGuiTableFlags::ScrollY | ImGuiTableFlags::SizingFixedFit
 
@@ -4757,6 +4903,7 @@ module ImGuiDemo
   end
 
   def self.show_demo_window_columns
+    demo_marker("Columns (legacy API)")
     open = ImGui.tree_node("Legacy Columns API")
     ImGui.same_line
     help_marker("Columns() is an old API! Prefer using the more flexible and powerful BeginTable() API!")
@@ -4764,6 +4911,7 @@ module ImGuiDemo
       return
     end
 
+    demo_marker("Columns (legacy API)/Basic")
     if ImGui.tree_node("Basic")
       ImGui.text("Without border:")
       ImGui.columns(3, "mycolumns3", false)
@@ -4812,6 +4960,7 @@ module ImGuiDemo
       ImGui.tree_pop
     end
 
+    demo_marker("Columns (legacy API)/Borders")
     if ImGui.tree_node("Borders")
       static h_borders = true
       static v_borders = true
@@ -4846,6 +4995,7 @@ module ImGuiDemo
       ImGui.tree_pop
     end
 
+    demo_marker("Columns (legacy API)/Mixed items")
     if ImGui.tree_node("Mixed items")
       ImGui.columns(3, "mixed")
       ImGui.separator
@@ -4884,6 +5034,7 @@ module ImGuiDemo
       ImGui.tree_pop
     end
 
+    demo_marker("Columns (legacy API)/Word-wrapping")
     if ImGui.tree_node("Word-wrapping")
       ImGui.columns(2, "word-wrapping")
       ImGui.separator
@@ -4897,6 +5048,7 @@ module ImGuiDemo
       ImGui.tree_pop
     end
 
+    demo_marker("Columns (legacy API)/Horizontal Scrolling")
     if ImGui.tree_node("Horizontal Scrolling")
       ImGui.set_next_window_content_size(ImVec2.new(1500.0f32, 0.0f32))
       child_size = ImVec2.new(0, ImGui.get_font_size * 20.0f32)
@@ -4919,6 +5071,7 @@ module ImGuiDemo
       ImGui.tree_pop
     end
 
+    demo_marker("Columns (legacy API)/Tree")
     if ImGui.tree_node("Tree")
       ImGui.columns(2, "tree", true)
       3.times do |x|
@@ -4954,6 +5107,7 @@ module ImGuiDemo
   end
 
   def self.show_demo_window_misc
+    demo_marker("Filtering")
     if ImGui.collapsing_header("Filtering")
       static filter = ImGuiTextFilter.new
       ImGui.text("Filter usage:\n" +
@@ -4970,6 +5124,7 @@ module ImGuiDemo
       end
     end
 
+    demo_marker("Inputs, Navigation & Focus")
     if ImGui.collapsing_header("Inputs, Navigation & Focus")
       io = ImGui.get_io
 
@@ -4980,6 +5135,7 @@ module ImGuiDemo
       ImGui.text("WantSetMousePos: %d", io.want_set_mouse_pos)
       ImGui.text("NavActive: %d, NavVisible: %d", io.nav_active, io.nav_visible)
 
+      demo_marker("Inputs, Navigation & Focus/Mouse State")
       if ImGui.tree_node("Mouse State")
         if ImGui.is_mouse_pos_valid
           ImGui.text("Mouse pos: (%g, %g)", io.mouse_pos.x, io.mouse_pos.y)
@@ -4987,29 +5143,24 @@ module ImGuiDemo
           ImGui.text("Mouse pos: <INVALID>")
         end
         ImGui.text("Mouse delta: (%g, %g)", io.mouse_delta.x, io.mouse_delta.y)
+
+        count = io.mouse_down.size
         ImGui.text("Mouse down:")
-        io.mouse_down.size.times do |i|
-          if ImGui.is_mouse_down(ImGuiMouseButton::Left)
+        count.times do |i|
+          if ImGui.is_mouse_down(ImGuiMouseButton.new(i))
             ImGui.same_line
             ImGui.text("b%d (%.02f secs)", i, io.mouse_down_duration[i])
           end
         end
         ImGui.text("Mouse clicked:")
-        io.mouse_down.size.times do |i|
+        count.times do |i|
           if ImGui.is_mouse_clicked(ImGuiMouseButton.new(i))
             ImGui.same_line
-            ImGui.text("b%d", i)
-          end
-        end
-        ImGui.text("Mouse dblclick:")
-        io.mouse_down.size.times do |i|
-          if ImGui.is_mouse_double_clicked(ImGuiMouseButton.new(i))
-            ImGui.same_line
-            ImGui.text("b%d", i)
+            ImGui.text("b%d (%d)", i, ImGui.get_mouse_clicked_count(ImGuiMouseButton.new(i)))
           end
         end
         ImGui.text("Mouse released:")
-        io.mouse_down.size.times do |i|
+        count.times do |i|
           if ImGui.is_mouse_released(ImGuiMouseButton.new(i))
             ImGui.same_line
             ImGui.text("b%d", i)
@@ -5020,6 +5171,7 @@ module ImGuiDemo
         ImGui.tree_pop
       end
 
+      demo_marker("Inputs, Navigation & Focus/Keyboard & Navigation State")
       if ImGui.tree_node("Keyboard & Navigation State")
         ImGui.text("Keys down:")
         io.keys_down.size.times do |i|
@@ -5077,6 +5229,7 @@ module ImGuiDemo
         ImGui.tree_pop
       end
 
+      demo_marker("Inputs, Navigation & Focus/Tabbing")
       if ImGui.tree_node("Tabbing")
         ImGui.text("Use TAB/SHIFT+TAB to cycle through keyboard editable fields.")
         static buf = ImGui::TextBuffer.new("hello", 32)
@@ -5092,6 +5245,7 @@ module ImGuiDemo
         ImGui.tree_pop
       end
 
+      demo_marker("Inputs, Navigation & Focus/Focus from code")
       if ImGui.tree_node("Focus from code")
         focus_1 = ImGui.button("Focus on 1")
         ImGui.same_line
@@ -5157,6 +5311,7 @@ module ImGuiDemo
         ImGui.tree_pop
       end
 
+      demo_marker("Inputs, Navigation & Focus/Dragging")
       if ImGui.tree_node("Dragging")
         ImGui.text_wrapped("You can use ImGui::GetMouseDragDelta(0) to query for the dragged amount on any widget.")
         3.times do |button|
@@ -5182,6 +5337,7 @@ module ImGuiDemo
         ImGui.tree_pop
       end
 
+      demo_marker("Inputs, Navigation & Focus/Mouse cursors")
       if ImGui.tree_node("Mouse cursors")
         current = ImGui.get_mouse_cursor
         ImGui.text("Current mouse cursor = %d: %s", current.to_i, current.to_s)
@@ -5210,6 +5366,7 @@ module ImGuiDemo
       ImGui.end
       return
     end
+    demo_marker("Tools/About Dear ImGui")
     ImGui.text("Dear ImGui %s", ImGui.get_version)
     ImGui.separator
     ImGui.text("By Omar Cornut and all Dear ImGui contributors.")
@@ -5346,6 +5503,8 @@ module ImGuiDemo
   end
 
   def self.show_style_editor(ref = nil)
+    demo_marker("Tools/Style Editor")
+
     style = ImGui.get_style
     static ref_saved_style = ImGuiStyle.new
 
@@ -5642,6 +5801,7 @@ module ImGuiDemo
   end
 
   def self.show_example_menu_file
+    demo_marker("Examples/Menu")
     ImGui.menu_item("(demo menu)", nil, false, false)
     if ImGui.menu_item("New")
     end
@@ -5668,6 +5828,7 @@ module ImGuiDemo
     end
 
     ImGui.separator
+    demo_marker("Examples/Menu/Options")
     if ImGui.begin_menu("Options")
       static enabled = true
       ImGui.menu_item("Enabled", "", pointerof(enabled.val))
@@ -5684,6 +5845,7 @@ module ImGuiDemo
       ImGui.end_menu
     end
 
+    demo_marker("Examples/Menu/Colors")
     if ImGui.begin_menu("Colors")
       sz = ImGui.get_text_line_height
       ImGuiCol.values.each do |col_i|
@@ -5698,6 +5860,7 @@ module ImGuiDemo
     end
 
     if ImGui.begin_menu("Options")
+      demo_marker("Examples/Menu/Append to an existing menu")
       static b = true
       ImGui.checkbox("SomeOption", pointerof(b.val))
       ImGui.end_menu
@@ -5714,6 +5877,8 @@ module ImGuiDemo
 
   class ExampleAppConsole
     def initialize
+      ImGuiDemo.demo_marker("Examples/Console")
+
       @input_buf = ImGui::TextBuffer.new(256)
       @items = [] of String
       @history = [] of String
@@ -6054,6 +6219,7 @@ module ImGuiDemo
 
     ImGui.set_next_window_size(ImVec2.new(500, 400), ImGuiCond::FirstUseEver)
     ImGui.begin("Example: Log", p_open)
+    demo_marker("Examples/Log")
     if ImGui.small_button("[Debug] Add 5 entries")
       static counter = 0
       categories = ["info", "warn", "error"]
@@ -6074,6 +6240,7 @@ module ImGuiDemo
   ImGui.pointer_wrapper def self.show_example_app_layout(p_open = Pointer(Bool).null)
     ImGui.set_next_window_size(ImVec2.new(500, 440), ImGuiCond::FirstUseEver)
     if ImGui.begin("Example: Simple layout", p_open, ImGuiWindowFlags::MenuBar)
+      demo_marker("Examples/Simple layout")
       if ImGui.begin_menu_bar
         if ImGui.begin_menu("File")
           if ImGui.menu_item("Close")
@@ -6170,6 +6337,7 @@ module ImGuiDemo
       ImGui.end
       return
     end
+    demo_marker("Examples/Property Editor")
 
     help_marker(
       "This example shows how you may implement a property editor using two columns.\n" +
@@ -6194,6 +6362,7 @@ module ImGuiDemo
       ImGui.end
       return
     end
+    demo_marker("Examples/Long text display")
 
     static test_type = 0
     static log = ImGui::TextBuffer.new
@@ -6245,6 +6414,7 @@ module ImGuiDemo
       ImGui.end
       return
     end
+    demo_marker("Examples/Auto-resizing window")
 
     static lines = 10
     ImGui.text_unformatted(
@@ -6305,6 +6475,7 @@ module ImGuiDemo
 
     flags = auto_resize.val ? ImGuiWindowFlags::AlwaysAutoResize : ImGuiWindowFlags::None
     if ImGui.begin("Example: Constrained Resize", p_open, flags)
+      demo_marker("Examples/Constrained Resizing window")
       if ImGui.button("200x200")
         ImGui.set_window_size(ImVec2.new(200, 200))
       end
@@ -6349,6 +6520,7 @@ module ImGuiDemo
     end
     ImGui.set_next_window_bg_alpha(0.35f32)
     if ImGui.begin("Example: Simple overlay", p_open, window_flags)
+      demo_marker("Examples/Simple Overlay")
       ImGui.text("Simple overlay\n" +
                  "in the corner of the screen.\n" +
                  "(right-click to change position)")
@@ -6417,6 +6589,7 @@ module ImGuiDemo
 
     ImGui.set_next_window_pos(ImVec2.new(base_pos.x + 100, base_pos.y + 100), ImGuiCond::FirstUseEver)
     ImGui.begin("Same title as another window##1")
+    demo_marker("Examples/Manipulating window titles")
     ImGui.text("This is window 1.\nMy title is the same as window 2, but my identifier is unique.")
     ImGui.end
 
@@ -6437,6 +6610,7 @@ module ImGuiDemo
       ImGui.end
       return
     end
+    demo_marker("Examples/Custom Rendering")
 
     if ImGui.begin_tab_bar("##TabBar")
       if ImGui.begin_tab_item("Primitives")
