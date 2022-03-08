@@ -365,11 +365,11 @@ lib LibImGui
   fun ColorConvertFloat4ToU32 = igColorConvertFloat4ToU32(in_ : ImGui::ImVec4) : UInt32
   fun ColorConvertRGBtoHSV = igColorConvertRGBtoHSV(r : LibC::Float, g : LibC::Float, b : LibC::Float, out_h : LibC::Float*, out_s : LibC::Float*, out_v : LibC::Float*)
   fun ColorConvertHSVtoRGB = igColorConvertHSVtoRGB(h : LibC::Float, s : LibC::Float, v : LibC::Float, out_r : LibC::Float*, out_g : LibC::Float*, out_b : LibC::Float*)
-  fun GetKeyIndex = igGetKeyIndex(imgui_key : ImGui::ImGuiKey) : LibC::Int
-  fun IsKeyDown = igIsKeyDown(user_key_index : LibC::Int) : Bool
-  fun IsKeyPressed = igIsKeyPressed(user_key_index : LibC::Int, repeat : Bool) : Bool
-  fun IsKeyReleased = igIsKeyReleased(user_key_index : LibC::Int) : Bool
-  fun GetKeyPressedAmount = igGetKeyPressedAmount(key_index : LibC::Int, repeat_delay : LibC::Float, rate : LibC::Float) : LibC::Int
+  fun IsKeyDown = igIsKeyDown(key : ImGui::ImGuiKey) : Bool
+  fun IsKeyPressed = igIsKeyPressed(key : ImGui::ImGuiKey, repeat : Bool) : Bool
+  fun IsKeyReleased = igIsKeyReleased(key : ImGui::ImGuiKey) : Bool
+  fun GetKeyPressedAmount = igGetKeyPressedAmount(key : ImGui::ImGuiKey, repeat_delay : LibC::Float, rate : LibC::Float) : LibC::Int
+  fun GetKeyName = igGetKeyName(key : ImGui::ImGuiKey) : LibC::Char*
   fun CaptureKeyboardFromApp = igCaptureKeyboardFromApp(want_capture_keyboard_value : Bool)
   fun IsMouseDown = igIsMouseDown(button : ImGui::ImGuiMouseButton) : Bool
   fun IsMouseClicked = igIsMouseClicked(button : ImGui::ImGuiMouseButton, repeat : Bool) : Bool
@@ -446,6 +446,13 @@ lib LibImGui
   fun ImGuiStyle_ImGuiStyle = ImGuiStyle_ImGuiStyle : ImGuiStyle*
   fun ImGuiStyle_ScaleAllSizes = ImGuiStyle_ScaleAllSizes(self : ImGuiStyle*, scale_factor : LibC::Float)
 
+  struct ImGuiKeyData
+    down : Bool
+    down_duration : LibC::Float
+    down_duration_prev : LibC::Float
+    analog_value : LibC::Float
+  end
+
   struct ImGuiIO
     config_flags : ImGui::ImGuiConfigFlags
     backend_flags : ImGui::ImGuiBackendFlags
@@ -457,7 +464,6 @@ lib LibImGui
     mouse_double_click_time : LibC::Float
     mouse_double_click_max_dist : LibC::Float
     mouse_drag_threshold : LibC::Float
-    key_map : LibC::Int[22]
     key_repeat_delay : LibC::Float
     key_repeat_rate : LibC::Float
     user_data : Void*
@@ -468,6 +474,7 @@ lib LibImGui
     display_framebuffer_scale : ImGui::ImVec2
     mouse_draw_cursor : Bool
     config_mac_osx_behaviors : Bool
+    config_input_trickle_event_queue : Bool
     config_input_text_cursor_blink : Bool
     config_drag_click_to_input_text : Bool
     config_windows_resize_from_edges : Bool
@@ -481,18 +488,8 @@ lib LibImGui
     get_clipboard_text_fn : (Void*) -> LibC::Char*
     set_clipboard_text_fn : (Void*, LibC::Char*) -> Void
     clipboard_user_data : Void*
-    ime_set_input_screen_pos_fn : (LibC::Int, LibC::Int) -> Void
-    ime_window_handle : Void*
-    mouse_pos : ImGui::ImVec2
-    mouse_down : Bool[5]
-    mouse_wheel : LibC::Float
-    mouse_wheel_h : LibC::Float
-    key_ctrl : Bool
-    key_shift : Bool
-    key_alt : Bool
-    key_super : Bool
-    keys_down : Bool[512]
-    nav_inputs : LibC::Float[20]
+    set_platform_ime_data_fn : (ImGuiViewport*, ImGuiPlatformImeData*) -> Void
+    _unused_padding : Void*
     want_capture_mouse : Bool
     want_capture_keyboard : Bool
     want_text_input : Bool
@@ -507,9 +504,21 @@ lib LibImGui
     metrics_active_windows : LibC::Int
     metrics_active_allocations : LibC::Int
     mouse_delta : ImGui::ImVec2
-    want_capture_mouse_unless_popup_close : Bool
+    key_map : LibC::Int[645]
+    keys_down : Bool[512]
+    mouse_pos : ImGui::ImVec2
+    mouse_down : Bool[5]
+    mouse_wheel : LibC::Float
+    mouse_wheel_h : LibC::Float
+    key_ctrl : Bool
+    key_shift : Bool
+    key_alt : Bool
+    key_super : Bool
+    nav_inputs : LibC::Float[20]
     key_mods : ImGui::ImGuiKeyModFlags
     key_mods_prev : ImGui::ImGuiKeyModFlags
+    keys_data : ImGuiKeyData[645]
+    want_capture_mouse_unless_popup_close : Bool
     mouse_pos_prev : ImGui::ImVec2
     mouse_clicked_pos : ImGui::ImVec2[5]
     mouse_clicked_time : LibC::Double[5]
@@ -522,24 +531,29 @@ lib LibImGui
     mouse_down_owned_unless_popup_close : Bool[5]
     mouse_down_duration : LibC::Float[5]
     mouse_down_duration_prev : LibC::Float[5]
-    mouse_drag_max_distance_abs : ImGui::ImVec2[5]
     mouse_drag_max_distance_sqr : LibC::Float[5]
-    keys_down_duration : LibC::Float[512]
-    keys_down_duration_prev : LibC::Float[512]
     nav_inputs_down_duration : LibC::Float[20]
     nav_inputs_down_duration_prev : LibC::Float[20]
     pen_pressure : LibC::Float
     app_focus_lost : Bool
+    backend_using_legacy_key_arrays : Int8
+    backend_using_legacy_nav_input_array : Bool
     input_queue_surrogate : ImWchar16
     input_queue_characters : ImVectorInternal
   end
 
+  fun ImGuiIO_AddKeyEvent = ImGuiIO_AddKeyEvent(self : ImGuiIO*, key : ImGui::ImGuiKey, down : Bool)
+  fun ImGuiIO_AddKeyAnalogEvent = ImGuiIO_AddKeyAnalogEvent(self : ImGuiIO*, key : ImGui::ImGuiKey, down : Bool, v : LibC::Float)
+  fun ImGuiIO_AddMousePosEvent = ImGuiIO_AddMousePosEvent(self : ImGuiIO*, x : LibC::Float, y : LibC::Float)
+  fun ImGuiIO_AddMouseButtonEvent = ImGuiIO_AddMouseButtonEvent(self : ImGuiIO*, button : LibC::Int, down : Bool)
+  fun ImGuiIO_AddMouseWheelEvent = ImGuiIO_AddMouseWheelEvent(self : ImGuiIO*, wh_x : LibC::Float, wh_y : LibC::Float)
+  fun ImGuiIO_AddFocusEvent = ImGuiIO_AddFocusEvent(self : ImGuiIO*, focused : Bool)
   fun ImGuiIO_AddInputCharacter = ImGuiIO_AddInputCharacter(self : ImGuiIO*, c : LibC::UInt)
   fun ImGuiIO_AddInputCharacterUTF16 = ImGuiIO_AddInputCharacterUTF16(self : ImGuiIO*, c : ImWchar16)
   fun ImGuiIO_AddInputCharactersUTF8 = ImGuiIO_AddInputCharactersUTF8(self : ImGuiIO*, str : LibC::Char*)
-  fun ImGuiIO_AddFocusEvent = ImGuiIO_AddFocusEvent(self : ImGuiIO*, focused : Bool)
   fun ImGuiIO_ClearInputCharacters = ImGuiIO_ClearInputCharacters(self : ImGuiIO*)
   fun ImGuiIO_ClearInputKeys = ImGuiIO_ClearInputKeys(self : ImGuiIO*)
+  fun ImGuiIO_SetKeyEventNativeData = ImGuiIO_SetKeyEventNativeData(self : ImGuiIO*, key : ImGui::ImGuiKey, native_keycode : LibC::Int, native_scancode : LibC::Int, native_legacy_index : LibC::Int)
   fun ImGuiIO_ImGuiIO = ImGuiIO_ImGuiIO : ImGuiIO*
 
   struct ImGuiInputTextCallbackData
@@ -941,11 +955,21 @@ lib LibImGui
     size : ImGui::ImVec2
     work_pos : ImGui::ImVec2
     work_size : ImGui::ImVec2
+    platform_handle_raw : Void*
   end
 
   fun ImGuiViewport_ImGuiViewport = ImGuiViewport_ImGuiViewport : ImGuiViewport*
   fun ImGuiViewport_GetCenter = ImGuiViewport_GetCenter(pOut : ImGui::ImVec2*, self : ImGuiViewport*)
   fun ImGuiViewport_GetWorkCenter = ImGuiViewport_GetWorkCenter(pOut : ImGui::ImVec2*, self : ImGuiViewport*)
+
+  struct ImGuiPlatformImeData
+    want_visible : Bool
+    input_pos : ImGui::ImVec2
+    input_line_height : LibC::Float
+  end
+
+  fun ImGuiPlatformImeData_ImGuiPlatformImeData = ImGuiPlatformImeData_ImGuiPlatformImeData : ImGuiPlatformImeData*
+  fun GetKeyIndex = igGetKeyIndex(key : ImGui::ImGuiKey) : LibC::Int
   fun ImHashData = igImHashData(data : Void*, data_size : LibC::SizeT, seed : UInt32) : ImGuiID
   fun ImHashStr = igImHashStr(data : LibC::Char*, data_size : LibC::SizeT, seed : UInt32) : ImGuiID
   fun ImQsort = igImQsort(base : Void*, count : LibC::SizeT, size_of_element : LibC::SizeT, compare_func : (Void, Void) -> LibC::Int)
@@ -1008,7 +1032,8 @@ lib LibImGui
   fun ImInvLength = igImInvLength(lhs : ImGui::ImVec2, fail_value : LibC::Float) : LibC::Float
   fun ImFloor_Float = igImFloor_Float(f : LibC::Float) : LibC::Float
   fun ImFloor_Vec2 = igImFloor_Vec2(pOut : ImGui::ImVec2*, v : ImGui::ImVec2)
-  fun ImFloorSigned = igImFloorSigned(f : LibC::Float) : LibC::Float
+  fun ImFloorSigned_Float = igImFloorSigned_Float(f : LibC::Float) : LibC::Float
+  fun ImFloorSigned_Vec2 = igImFloorSigned_Vec2(pOut : ImGui::ImVec2*, v : ImGui::ImVec2)
   fun ImModPositive = igImModPositive(a : LibC::Int, b : LibC::Int) : LibC::Int
   fun ImDot = igImDot(a : ImGui::ImVec2, b : ImGui::ImVec2) : LibC::Float
   fun ImRotate = igImRotate(pOut : ImGui::ImVec2*, v : ImGui::ImVec2, cos_a : LibC::Float, sin_a : LibC::Float)
@@ -1128,6 +1153,14 @@ lib LibImGui
   type ImGuiPtrOrIndex = Void*
   fun ImGuiPtrOrIndex_ImGuiPtrOrIndex_Ptr = ImGuiPtrOrIndex_ImGuiPtrOrIndex_Ptr(ptr : Void*) : ImGuiPtrOrIndex*
   fun ImGuiPtrOrIndex_ImGuiPtrOrIndex_Int = ImGuiPtrOrIndex_ImGuiPtrOrIndex_Int(index : LibC::Int) : ImGuiPtrOrIndex*
+  type ImGuiInputEventMousePos = Void*
+  type ImGuiInputEventMouseWheel = Void*
+  type ImGuiInputEventMouseButton = Void*
+  type ImGuiInputEventKey = Void*
+  type ImGuiInputEventText = Void*
+  type ImGuiInputEventAppFocused = Void*
+  type ImGuiInputEvent = Void*
+  fun ImGuiInputEvent_ImGuiInputEvent = ImGuiInputEvent_ImGuiInputEvent : ImGuiInputEvent*
   type ImGuiListClipperRange = Void*
   fun ImGuiListClipperRange_FromIndices = ImGuiListClipperRange_FromIndices(min : LibC::Int, max : LibC::Int) : ImGuiListClipperRange
   fun ImGuiListClipperRange_FromPositions = ImGuiListClipperRange_FromPositions(y1 : LibC::Float, y2 : LibC::Float, off_min : LibC::Int, off_max : LibC::Int) : ImGuiListClipperRange
@@ -1223,6 +1256,7 @@ lib LibImGui
   fun GetDefaultFont = igGetDefaultFont : ImFont*
   fun Initialize = igInitialize(context : ImGuiContext*)
   fun Shutdown = igShutdown(context : ImGuiContext*)
+  fun UpdateInputEvents = igUpdateInputEvents(trickle_fast_inputs : Bool)
   fun UpdateHoveredWindowAndCaptureFlags = igUpdateHoveredWindowAndCaptureFlags
   fun StartMouseMovingWindow = igStartMouseMovingWindow(window : ImGuiWindow*)
   fun UpdateMouseMovingWindowNewFrame = igUpdateMouseMovingWindowNewFrame
@@ -1301,6 +1335,7 @@ lib LibImGui
   fun NavMoveRequestCancel = igNavMoveRequestCancel
   fun NavMoveRequestApplyResult = igNavMoveRequestApplyResult
   fun NavMoveRequestTryWrapping = igNavMoveRequestTryWrapping(window : ImGuiWindow*, move_flags : ImGui::ImGuiNavMoveFlags)
+  fun GetNavInputName = igGetNavInputName(n : ImGui::ImGuiNavInput) : LibC::Char*
   fun GetNavInputAmount = igGetNavInputAmount(n : ImGui::ImGuiNavInput, mode : ImGui::ImGuiInputReadMode) : LibC::Float
   fun GetNavInputAmount2d = igGetNavInputAmount2d(pOut : ImGui::ImVec2*, dir_sources : ImGui::ImGuiNavDirSourceFlags, mode : ImGui::ImGuiInputReadMode, slow_factor : LibC::Float, fast_factor : LibC::Float)
   fun CalcTypematicRepeatAmount = igCalcTypematicRepeatAmount(t0 : LibC::Float, t1 : LibC::Float, repeat_delay : LibC::Float, repeat_rate : LibC::Float) : LibC::Int
@@ -1310,16 +1345,21 @@ lib LibImGui
   fun PopFocusScope = igPopFocusScope
   fun GetFocusedFocusScope = igGetFocusedFocusScope : ImGuiID
   fun GetFocusScope = igGetFocusScope : ImGuiID
+  fun IsNamedKey = igIsNamedKey(key : ImGui::ImGuiKey) : Bool
+  fun IsLegacyKey = igIsLegacyKey(key : ImGui::ImGuiKey) : Bool
+  fun IsGamepadKey = igIsGamepadKey(key : ImGui::ImGuiKey) : Bool
+  fun GetKeyData = igGetKeyData(key : ImGui::ImGuiKey) : ImGuiKeyData*
   fun SetItemUsingMouseWheel = igSetItemUsingMouseWheel
   fun SetActiveIdUsingNavAndKeys = igSetActiveIdUsingNavAndKeys
   fun IsActiveIdUsingNavDir = igIsActiveIdUsingNavDir(dir : ImGui::ImGuiDir) : Bool
   fun IsActiveIdUsingNavInput = igIsActiveIdUsingNavInput(input : ImGui::ImGuiNavInput) : Bool
   fun IsActiveIdUsingKey = igIsActiveIdUsingKey(key : ImGui::ImGuiKey) : Bool
+  fun SetActiveIdUsingKey = igSetActiveIdUsingKey(key : ImGui::ImGuiKey)
   fun IsMouseDragPastThreshold = igIsMouseDragPastThreshold(button : ImGui::ImGuiMouseButton, lock_threshold : LibC::Float) : Bool
-  fun IsKeyPressedMap = igIsKeyPressedMap(key : ImGui::ImGuiKey, repeat : Bool) : Bool
   fun IsNavInputDown = igIsNavInputDown(n : ImGui::ImGuiNavInput) : Bool
   fun IsNavInputTest = igIsNavInputTest(n : ImGui::ImGuiNavInput, rm : ImGui::ImGuiInputReadMode) : Bool
   fun GetMergedKeyModFlags = igGetMergedKeyModFlags : ImGui::ImGuiKeyModFlags
+  fun IsKeyPressedMap = igIsKeyPressedMap(key : ImGui::ImGuiKey, repeat : Bool) : Bool
   fun BeginDragDropTargetCustom = igBeginDragDropTargetCustom(bb : ImRect, id : ImGuiID) : Bool
   fun ClearDragDrop = igClearDragDrop
   fun IsDragDropPayloadBeingAccepted = igIsDragDropPayloadBeingAccepted : Bool
@@ -1428,7 +1468,7 @@ lib LibImGui
   fun DataTypeGetInfo = igDataTypeGetInfo(data_type : ImGui::ImGuiDataType) : ImGuiDataTypeInfo*
   fun DataTypeFormatString = igDataTypeFormatString(buf : LibC::Char*, buf_size : LibC::Int, data_type : ImGui::ImGuiDataType, p_data : Void*, format : LibC::Char*) : LibC::Int
   fun DataTypeApplyOp = igDataTypeApplyOp(data_type : ImGui::ImGuiDataType, op : LibC::Int, output : Void*, arg_1 : Void*, arg_2 : Void*)
-  fun DataTypeApplyOpFromText = igDataTypeApplyOpFromText(buf : LibC::Char*, initial_value_buf : LibC::Char*, data_type : ImGui::ImGuiDataType, p_data : Void*, format : LibC::Char*) : Bool
+  fun DataTypeApplyFromText = igDataTypeApplyFromText(buf : LibC::Char*, data_type : ImGui::ImGuiDataType, p_data : Void*, format : LibC::Char*) : Bool
   fun DataTypeCompare = igDataTypeCompare(data_type : ImGui::ImGuiDataType, arg_1 : Void*, arg_2 : Void*) : LibC::Int
   fun DataTypeClamp = igDataTypeClamp(data_type : ImGui::ImGuiDataType, p_data : Void*, p_min : Void*, p_max : Void*) : Bool
   fun InputTextEx = igInputTextEx(label : LibC::Char*, hint : LibC::Char*, buf : LibC::Char*, buf_size : LibC::Int, size_arg : ImGui::ImVec2, flags : ImGui::ImGuiInputTextFlags, callback : ImGuiInputTextCallback, user_data : Void*) : Bool

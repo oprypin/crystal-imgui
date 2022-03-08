@@ -734,6 +734,9 @@ class CEnumMember
 
   def name : String
     name = (assert self.c_name.lchop?(self.parent.name)).lchop("_")
+    if name.to_i?
+      name = "Num#{name}"
+    end
     if (chop = name.lchop?("_"))
       name = "#{chop}_"
     end
@@ -754,7 +757,7 @@ class CEnumMember
 
   with_location(url: false) do
     return nil if parent.location?.try(&.file) != "imgui.h"
-    regex = /^ *#{self.c_name}\b/
+    regex = /^[ \w,]*#{self.c_name}(,|$| *[=\/])/
     (parent.location.line + 1).step do |line|
       if IMGUI_H[line - 1] =~ regex
         return Location.new(parent.location.file, line)
@@ -788,6 +791,7 @@ class CEnum
     yield %(enum #{name})
     self.members.each do |member|
       next if member.name.in?("All", "COUNT")
+      next if member.name =~ /_[A-Z]{2,}$/
       member.comment(&block)
       yield %(#{member.name} = #{member.value})
     end
@@ -820,6 +824,7 @@ class CTypedef
     return unless self.name[0].ascii_uppercase?
     return if AllEnums.has_key?(self.name + "_")
     type_name = self.type.name(ctx)
+    return if type_name.includes?('<')
     if self.name == self.type.c_name
       return if AllStructs.has_key?(self.name)
       yield %(alias #{self.name} = Void) if ctx.lib?

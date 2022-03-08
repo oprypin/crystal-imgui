@@ -41,7 +41,7 @@ module ImGui
 
   alias TopLevel::ImVec4 = ImGui::ImVec4
 
-  # [enum ImGuiWindowFlags_](https://github.com/ocornut/imgui/blob/v1.86/imgui.h#L949)
+  # [enum ImGuiWindowFlags_](https://github.com/ocornut/imgui/blob/v1.87/imgui.h#L943)
   @[Flags]
   enum ImGuiWindowFlags
     None = 0
@@ -103,7 +103,7 @@ module ImGui
   end
   alias TopLevel::ImGuiWindowFlags = ImGui::ImGuiWindowFlags
 
-  # [enum ImGuiInputTextFlags_](https://github.com/ocornut/imgui/blob/v1.86/imgui.h#L989)
+  # [enum ImGuiInputTextFlags_](https://github.com/ocornut/imgui/blob/v1.87/imgui.h#L981)
   @[Flags]
   enum ImGuiInputTextFlags
     None = 0
@@ -150,7 +150,7 @@ module ImGui
   end
   alias TopLevel::ImGuiInputTextFlags = ImGui::ImGuiInputTextFlags
 
-  # [enum ImGuiTreeNodeFlags_](https://github.com/ocornut/imgui/blob/v1.86/imgui.h#L1020)
+  # [enum ImGuiTreeNodeFlags_](https://github.com/ocornut/imgui/blob/v1.87/imgui.h#L1012)
   @[Flags]
   enum ImGuiTreeNodeFlags
     None = 0
@@ -186,7 +186,7 @@ module ImGui
   end
   alias TopLevel::ImGuiTreeNodeFlags = ImGui::ImGuiTreeNodeFlags
 
-  # [enum ImGuiPopupFlags_](https://github.com/ocornut/imgui/blob/v1.86/imgui.h#L1049)
+  # [enum ImGuiPopupFlags_](https://github.com/ocornut/imgui/blob/v1.87/imgui.h#L1041)
   @[Flags]
   enum ImGuiPopupFlags
     None = 0
@@ -210,7 +210,7 @@ module ImGui
   end
   alias TopLevel::ImGuiPopupFlags = ImGui::ImGuiPopupFlags
 
-  # [enum ImGuiSelectableFlags_](https://github.com/ocornut/imgui/blob/v1.86/imgui.h#L1065)
+  # [enum ImGuiSelectableFlags_](https://github.com/ocornut/imgui/blob/v1.87/imgui.h#L1057)
   @[Flags]
   enum ImGuiSelectableFlags
     None = 0
@@ -227,7 +227,7 @@ module ImGui
   end
   alias TopLevel::ImGuiSelectableFlags = ImGui::ImGuiSelectableFlags
 
-  # [enum ImGuiComboFlags_](https://github.com/ocornut/imgui/blob/v1.86/imgui.h#L1076)
+  # [enum ImGuiComboFlags_](https://github.com/ocornut/imgui/blob/v1.87/imgui.h#L1068)
   @[Flags]
   enum ImGuiComboFlags
     None = 0
@@ -249,7 +249,7 @@ module ImGui
   end
   alias TopLevel::ImGuiComboFlags = ImGui::ImGuiComboFlags
 
-  # [enum ImGuiTabBarFlags_](https://github.com/ocornut/imgui/blob/v1.86/imgui.h#L1090)
+  # [enum ImGuiTabBarFlags_](https://github.com/ocornut/imgui/blob/v1.87/imgui.h#L1082)
   @[Flags]
   enum ImGuiTabBarFlags
     None = 0
@@ -274,7 +274,7 @@ module ImGui
   end
   alias TopLevel::ImGuiTabBarFlags = ImGui::ImGuiTabBarFlags
 
-  # [enum ImGuiTabItemFlags_](https://github.com/ocornut/imgui/blob/v1.86/imgui.h#L1106)
+  # [enum ImGuiTabItemFlags_](https://github.com/ocornut/imgui/blob/v1.87/imgui.h#L1098)
   @[Flags]
   enum ImGuiTabItemFlags
     None = 0
@@ -297,7 +297,7 @@ module ImGui
   end
   alias TopLevel::ImGuiTabItemFlags = ImGui::ImGuiTabItemFlags
 
-  # [enum ImGuiTableFlags_](https://github.com/ocornut/imgui/blob/v1.86/imgui.h#L1142)
+  # [enum ImGuiTableFlags_](https://github.com/ocornut/imgui/blob/v1.87/imgui.h#L1133)
   @[Flags]
   enum ImGuiTableFlags
     None = 0
@@ -373,7 +373,7 @@ module ImGui
   end
   alias TopLevel::ImGuiTableFlags = ImGui::ImGuiTableFlags
 
-  # [enum ImGuiTableColumnFlags_](https://github.com/ocornut/imgui/blob/v1.86/imgui.h#L1199)
+  # [enum ImGuiTableColumnFlags_](https://github.com/ocornut/imgui/blob/v1.87/imgui.h#L1190)
   @[Flags]
   enum ImGuiTableColumnFlags
     None = 0
@@ -429,16 +429,16 @@ module ImGui
   end
   alias TopLevel::ImGuiTableColumnFlags = ImGui::ImGuiTableColumnFlags
 
-  # [enum ImGuiTableRowFlags_](https://github.com/ocornut/imgui/blob/v1.86/imgui.h#L1241)
+  # [enum ImGuiTableRowFlags_](https://github.com/ocornut/imgui/blob/v1.87/imgui.h#L1232)
   @[Flags]
   enum ImGuiTableRowFlags
     None = 0
-    # Identify header row (set default background color + width of its contents accounted different for auto column width)
+    # Identify header row (set default background color + width of its contents accounted differently for auto column width)
     Headers = 1 << 0
   end
   alias TopLevel::ImGuiTableRowFlags = ImGui::ImGuiTableRowFlags
 
-  # [enum ImGuiTableBgTarget_](https://github.com/ocornut/imgui/blob/v1.86/imgui.h#L1256)
+  # [enum ImGuiTableBgTarget_](https://github.com/ocornut/imgui/blob/v1.87/imgui.h#L1247)
   enum ImGuiTableBgTarget
     None = 0
     # Set row background color 0 (generally used for background, automatically set when ImGuiTableFlags_RowBg is used)
@@ -450,7 +450,7 @@ module ImGui
   end
   alias TopLevel::ImGuiTableBgTarget = ImGui::ImGuiTableBgTarget
 
-  # [enum ImGuiFocusedFlags_](https://github.com/ocornut/imgui/blob/v1.86/imgui.h#L1265)
+  # [enum ImGuiFocusedFlags_](https://github.com/ocornut/imgui/blob/v1.87/imgui.h#L1256)
   @[Flags]
   enum ImGuiFocusedFlags
     None = 0
@@ -466,7 +466,7 @@ module ImGui
   end
   alias TopLevel::ImGuiFocusedFlags = ImGui::ImGuiFocusedFlags
 
-  # [enum ImGuiHoveredFlags_](https://github.com/ocornut/imgui/blob/v1.86/imgui.h#L1279)
+  # [enum ImGuiHoveredFlags_](https://github.com/ocornut/imgui/blob/v1.87/imgui.h#L1270)
   @[Flags]
   enum ImGuiHoveredFlags
     # Return true if directly over the item/window, not obstructed by another window, not obstructed by an active popup or modal blocking inputs under them.
@@ -492,7 +492,7 @@ module ImGui
   end
   alias TopLevel::ImGuiHoveredFlags = ImGui::ImGuiHoveredFlags
 
-  # [enum ImGuiDragDropFlags_](https://github.com/ocornut/imgui/blob/v1.86/imgui.h#L1297)
+  # [enum ImGuiDragDropFlags_](https://github.com/ocornut/imgui/blob/v1.87/imgui.h#L1288)
   @[Flags]
   enum ImGuiDragDropFlags
     None = 0
@@ -519,7 +519,7 @@ module ImGui
   end
   alias TopLevel::ImGuiDragDropFlags = ImGui::ImGuiDragDropFlags
 
-  # [enum ImGuiDataType_](https://github.com/ocornut/imgui/blob/v1.86/imgui.h#L1319)
+  # [enum ImGuiDataType_](https://github.com/ocornut/imgui/blob/v1.87/imgui.h#L1310)
   enum ImGuiDataType
     # signed char / char (with sensible compilers)
     S8 = 0
@@ -544,7 +544,7 @@ module ImGui
   end
   alias TopLevel::ImGuiDataType = ImGui::ImGuiDataType
 
-  # [enum ImGuiDir_](https://github.com/ocornut/imgui/blob/v1.86/imgui.h#L1335)
+  # [enum ImGuiDir_](https://github.com/ocornut/imgui/blob/v1.87/imgui.h#L1326)
   enum ImGuiDir
     None  = -1
     Left  =  0
@@ -554,7 +554,7 @@ module ImGui
   end
   alias TopLevel::ImGuiDir = ImGui::ImGuiDir
 
-  # [enum ImGuiSortDirection_](https://github.com/ocornut/imgui/blob/v1.86/imgui.h#L1346)
+  # [enum ImGuiSortDirection_](https://github.com/ocornut/imgui/blob/v1.87/imgui.h#L1337)
   enum ImGuiSortDirection
     None = 0
     # Ascending = 0->9, A->Z etc.
@@ -564,106 +564,264 @@ module ImGui
   end
   alias TopLevel::ImGuiSortDirection = ImGui::ImGuiSortDirection
 
-  # [enum ImGuiKey_](https://github.com/ocornut/imgui/blob/v1.86/imgui.h#L1354)
+  # [enum ImGuiKey_](https://github.com/ocornut/imgui/blob/v1.87/imgui.h#L1344)
   enum ImGuiKey
-    Tab         =  0
-    LeftArrow   =  1
-    RightArrow  =  2
-    UpArrow     =  3
-    DownArrow   =  4
-    PageUp      =  5
-    PageDown    =  6
-    Home        =  7
-    End         =  8
-    Insert      =  9
-    Delete      = 10
-    Backspace   = 11
-    Space       = 12
-    Enter       = 13
-    Escape      = 14
-    KeyPadEnter = 15
-    # for text edit CTRL+A: select all
-    A = 16
-    # for text edit CTRL+C: copy
-    C = 17
-    # for text edit CTRL+V: paste
-    V = 18
-    # for text edit CTRL+X: cut
-    X = 19
-    # for text edit CTRL+Y: redo
-    Y = 20
-    # for text edit CTRL+Z: undo
-    Z = 21
+    None = 0
+    # == ImGuiKey_NamedKey_BEGIN
+    Tab        = 512
+    LeftArrow  = 513
+    RightArrow = 514
+    UpArrow    = 515
+    DownArrow  = 516
+    PageUp     = 517
+    PageDown   = 518
+    Home       = 519
+    End        = 520
+    Insert     = 521
+    Delete     = 522
+    Backspace  = 523
+    Space      = 524
+    Enter      = 525
+    Escape     = 526
+    LeftCtrl   = 527
+    LeftShift  = 528
+    LeftAlt    = 529
+    LeftSuper  = 530
+    RightCtrl  = 531
+    RightShift = 532
+    RightAlt   = 533
+    RightSuper = 534
+    Menu       = 535
+    Num0       = 536
+    Num1       = 537
+    Num2       = 538
+    Num3       = 539
+    Num4       = 540
+    Num5       = 541
+    Num6       = 542
+    Num7       = 543
+    Num8       = 544
+    Num9       = 545
+    A          = 546
+    B          = 547
+    C          = 548
+    D          = 549
+    E          = 550
+    F          = 551
+    G          = 552
+    H          = 553
+    I          = 554
+    J          = 555
+    K          = 556
+    L          = 557
+    M          = 558
+    N          = 559
+    O          = 560
+    P          = 561
+    Q          = 562
+    R          = 563
+    S          = 564
+    T          = 565
+    U          = 566
+    V          = 567
+    W          = 568
+    X          = 569
+    Y          = 570
+    Z          = 571
+    F1         = 572
+    F2         = 573
+    F3         = 574
+    F4         = 575
+    F5         = 576
+    F6         = 577
+    F7         = 578
+    F8         = 579
+    F9         = 580
+    F10        = 581
+    F11        = 582
+    F12        = 583
+    # '
+    Apostrophe = 584
+    # ,
+    Comma = 585
+    # -
+    Minus = 586
+    # .
+    Period = 587
+    # /
+    Slash = 588
+    # ;
+    Semicolon = 589
+    # =
+    Equal = 590
+    # [
+    LeftBracket = 591
+    # \ (this text inhibit multiline comment caused by backslash)
+    Backslash = 592
+    # ]
+    RightBracket = 593
+    # `
+    GraveAccent    = 594
+    CapsLock       = 595
+    ScrollLock     = 596
+    NumLock        = 597
+    PrintScreen    = 598
+    Pause          = 599
+    Keypad0        = 600
+    Keypad1        = 601
+    Keypad2        = 602
+    Keypad3        = 603
+    Keypad4        = 604
+    Keypad5        = 605
+    Keypad6        = 606
+    Keypad7        = 607
+    Keypad8        = 608
+    Keypad9        = 609
+    KeypadDecimal  = 610
+    KeypadDivide   = 611
+    KeypadMultiply = 612
+    KeypadSubtract = 613
+    KeypadAdd      = 614
+    KeypadEnter    = 615
+    KeypadEqual    = 616
+    # Menu (Xbox)          + (Switch)   Start/Options (PS)
+    # --
+    GamepadStart = 617
+    # View (Xbox)          - (Switch)   Share (PS)
+    # --
+    GamepadBack = 618
+    # Y (Xbox)             X (Switch)   Triangle (PS)
+    # -> ImGuiNavInput_Input
+    GamepadFaceUp = 619
+    # A (Xbox)             B (Switch)   Cross (PS)
+    # -> ImGuiNavInput_Activate
+    GamepadFaceDown = 620
+    # X (Xbox)             Y (Switch)   Square (PS)
+    # -> ImGuiNavInput_Menu
+    GamepadFaceLeft = 621
+    # B (Xbox)             A (Switch)   Circle (PS)
+    # -> ImGuiNavInput_Cancel
+    GamepadFaceRight = 622
+    # D-pad Up
+    # -> ImGuiNavInput_DpadUp
+    GamepadDpadUp = 623
+    # D-pad Down
+    # -> ImGuiNavInput_DpadDown
+    GamepadDpadDown = 624
+    # D-pad Left
+    # -> ImGuiNavInput_DpadLeft
+    GamepadDpadLeft = 625
+    # D-pad Right
+    # -> ImGuiNavInput_DpadRight
+    GamepadDpadRight = 626
+    # L Bumper (Xbox)      L (Switch)   L1 (PS)
+    # -> ImGuiNavInput_FocusPrev + ImGuiNavInput_TweakSlow
+    GamepadL1 = 627
+    # R Bumper (Xbox)      R (Switch)   R1 (PS)
+    # -> ImGuiNavInput_FocusNext + ImGuiNavInput_TweakFast
+    GamepadR1 = 628
+    # L Trigger (Xbox)     ZL (Switch)  L2 (PS) [Analog]
+    GamepadL2 = 629
+    # R Trigger (Xbox)     ZR (Switch)  R2 (PS) [Analog]
+    GamepadR2 = 630
+    # L Thumbstick (Xbox)  L3 (Switch)  L3 (PS)
+    GamepadL3 = 631
+    # R Thumbstick (Xbox)  R3 (Switch)  R3 (PS)
+    GamepadR3 = 632
+    # [Analog]
+    # -> ImGuiNavInput_LStickUp
+    GamepadLStickUp = 633
+    # [Analog]
+    # -> ImGuiNavInput_LStickDown
+    GamepadLStickDown = 634
+    # [Analog]
+    # -> ImGuiNavInput_LStickLeft
+    GamepadLStickLeft = 635
+    # [Analog]
+    # -> ImGuiNavInput_LStickRight
+    GamepadLStickRight = 636
+    # [Analog]
+    GamepadRStickUp = 637
+    # [Analog]
+    GamepadRStickDown = 638
+    # [Analog]
+    GamepadRStickLeft = 639
+    # [Analog]
+    GamepadRStickRight = 640
+    ModCtrl            = 641
+    ModShift           = 642
+    ModAlt             = 643
+    ModSuper           = 644
   end
   alias TopLevel::ImGuiKey = ImGui::ImGuiKey
 
-  # [enum ImGuiKeyModFlags_](https://github.com/ocornut/imgui/blob/v1.86/imgui.h#L1382)
+  # [enum ImGuiKeyModFlags_](https://github.com/ocornut/imgui/blob/v1.87/imgui.h#L1458)
   @[Flags]
   enum ImGuiKeyModFlags
     None  = 0
     Ctrl  = 1 << 0
     Shift = 1 << 1
     Alt   = 1 << 2
+    # Cmd/Super/Windows key
     Super = 1 << 3
   end
   alias TopLevel::ImGuiKeyModFlags = ImGui::ImGuiKeyModFlags
 
-  # [enum ImGuiNavInput_](https://github.com/ocornut/imgui/blob/v1.86/imgui.h#L1395)
+  # [enum ImGuiNavInput_](https://github.com/ocornut/imgui/blob/v1.87/imgui.h#L1471)
   enum ImGuiNavInput
-    # activate / open / toggle / tweak value
+    # Activate / Open / Toggle / Tweak value
     # e.g. Cross  (PS4), A (Xbox), A (Switch), Space (Keyboard)
     Activate = 0
-    # cancel / close / exit
+    # Cancel / Close / Exit
     # e.g. Circle (PS4), B (Xbox), B (Switch), Escape (Keyboard)
     Cancel = 1
-    # text input / on-screen keyboard
+    # Text input / On-Screen keyboard
     # e.g. Triang.(PS4), Y (Xbox), X (Switch), Return (Keyboard)
     Input = 2
-    # tap: toggle menu / hold: focus, move, resize
+    # Tap: Toggle menu / Hold: Focus, Move, Resize
     # e.g. Square (PS4), X (Xbox), Y (Switch), Alt (Keyboard)
     Menu = 3
-    # move / tweak / resize window (w/ PadMenu)
+    # Move / Tweak / Resize window (w/ PadMenu)
     # e.g. D-pad Left/Right/Up/Down (Gamepads), Arrow keys (Keyboard)
     DpadLeft  = 4
     DpadRight = 5
     DpadUp    = 6
     DpadDown  = 7
-    # scroll / move window (w/ PadMenu)
+    # Scroll / Move window (w/ PadMenu)
     # e.g. Left Analog Stick Left/Right/Up/Down
     LStickLeft  =  8
     LStickRight =  9
     LStickUp    = 10
     LStickDown  = 11
-    # next window (w/ PadMenu)
+    # Focus Next window (w/ PadMenu)
     # e.g. L1 or L2 (PS4), LB or LT (Xbox), L or ZL (Switch)
     FocusPrev = 12
-    # prev window (w/ PadMenu)
+    # Focus Prev window (w/ PadMenu)
     # e.g. R1 or R2 (PS4), RB or RT (Xbox), R or ZL (Switch)
     FocusNext = 13
-    # slower tweaks
+    # Slower tweaks
     # e.g. L1 or L2 (PS4), LB or LT (Xbox), L or ZL (Switch)
     TweakSlow = 14
-    # faster tweaks
+    # Faster tweaks
     # e.g. R1 or R2 (PS4), RB or RT (Xbox), R or ZL (Switch)
     TweakFast = 15
-    # move left
+    # Move left
     # = Arrow keys
     KeyLeft_ = 16
-    # move right
+    # Move right
     KeyRight_ = 17
-    # move up
+    # Move up
     KeyUp_ = 18
-    # move down
-    KeyDown_       = 19
-    InternalStart_ = KeyLeft_
+    # Move down
+    KeyDown_ = 19
   end
   alias TopLevel::ImGuiNavInput = ImGui::ImGuiNavInput
 
-  # [enum ImGuiConfigFlags_](https://github.com/ocornut/imgui/blob/v1.86/imgui.h#L1426)
+  # [enum ImGuiConfigFlags_](https://github.com/ocornut/imgui/blob/v1.87/imgui.h#L1501)
   @[Flags]
   enum ImGuiConfigFlags
     None = 0
-    # Master keyboard navigation enable flag. NewFrame() will automatically fill io.NavInputs[] based on io.KeysDown[].
+    # Master keyboard navigation enable flag. NewFrame() will automatically fill io.NavInputs[] based on io.AddKeyEvent() calls
     NavEnableKeyboard = 1 << 0
     # Master gamepad navigation enable flag. This is mostly to instruct your imgui backend to fill io.NavInputs[]. Backend also needs to set ImGuiBackendFlags_HasGamepad.
     NavEnableGamepad = 1 << 1
@@ -682,7 +840,7 @@ module ImGui
   end
   alias TopLevel::ImGuiConfigFlags = ImGui::ImGuiConfigFlags
 
-  # [enum ImGuiBackendFlags_](https://github.com/ocornut/imgui/blob/v1.86/imgui.h#L1442)
+  # [enum ImGuiBackendFlags_](https://github.com/ocornut/imgui/blob/v1.87/imgui.h#L1517)
   @[Flags]
   enum ImGuiBackendFlags
     None = 0
@@ -697,7 +855,7 @@ module ImGui
   end
   alias TopLevel::ImGuiBackendFlags = ImGui::ImGuiBackendFlags
 
-  # [enum ImGuiCol_](https://github.com/ocornut/imgui/blob/v1.86/imgui.h#L1452)
+  # [enum ImGuiCol_](https://github.com/ocornut/imgui/blob/v1.87/imgui.h#L1527)
   enum ImGuiCol
     Text         = 0
     TextDisabled = 1
@@ -769,7 +927,7 @@ module ImGui
   end
   alias TopLevel::ImGuiCol = ImGui::ImGuiCol
 
-  # [enum ImGuiStyleVar_](https://github.com/ocornut/imgui/blob/v1.86/imgui.h#L1517)
+  # [enum ImGuiStyleVar_](https://github.com/ocornut/imgui/blob/v1.87/imgui.h#L1592)
   enum ImGuiStyleVar
     # float     Alpha
     Alpha = 0
@@ -824,7 +982,7 @@ module ImGui
   end
   alias TopLevel::ImGuiStyleVar = ImGui::ImGuiStyleVar
 
-  # [enum ImGuiButtonFlags_](https://github.com/ocornut/imgui/blob/v1.86/imgui.h#L1549)
+  # [enum ImGuiButtonFlags_](https://github.com/ocornut/imgui/blob/v1.87/imgui.h#L1624)
   @[Flags]
   enum ImGuiButtonFlags
     None = 0
@@ -839,7 +997,7 @@ module ImGui
   end
   alias TopLevel::ImGuiButtonFlags = ImGui::ImGuiButtonFlags
 
-  # [enum ImGuiColorEditFlags_](https://github.com/ocornut/imgui/blob/v1.86/imgui.h#L1562)
+  # [enum ImGuiColorEditFlags_](https://github.com/ocornut/imgui/blob/v1.87/imgui.h#L1637)
   @[Flags]
   enum ImGuiColorEditFlags
     None = 0
@@ -906,7 +1064,7 @@ module ImGui
   end
   alias TopLevel::ImGuiColorEditFlags = ImGui::ImGuiColorEditFlags
 
-  # [enum ImGuiSliderFlags_](https://github.com/ocornut/imgui/blob/v1.86/imgui.h#L1609)
+  # [enum ImGuiSliderFlags_](https://github.com/ocornut/imgui/blob/v1.87/imgui.h#L1682)
   @[Flags]
   enum ImGuiSliderFlags
     None = 0
@@ -923,7 +1081,7 @@ module ImGui
   end
   alias TopLevel::ImGuiSliderFlags = ImGui::ImGuiSliderFlags
 
-  # [enum ImGuiMouseButton_](https://github.com/ocornut/imgui/blob/v1.86/imgui.h#L1626)
+  # [enum ImGuiMouseButton_](https://github.com/ocornut/imgui/blob/v1.87/imgui.h#L1699)
   enum ImGuiMouseButton
     Left   = 0
     Right  = 1
@@ -931,7 +1089,7 @@ module ImGui
   end
   alias TopLevel::ImGuiMouseButton = ImGui::ImGuiMouseButton
 
-  # [enum ImGuiMouseCursor_](https://github.com/ocornut/imgui/blob/v1.86/imgui.h#L1636)
+  # [enum ImGuiMouseCursor_](https://github.com/ocornut/imgui/blob/v1.87/imgui.h#L1709)
   enum ImGuiMouseCursor
     None  = -1
     Arrow =  0
@@ -954,7 +1112,7 @@ module ImGui
   end
   alias TopLevel::ImGuiMouseCursor = ImGui::ImGuiMouseCursor
 
-  # [enum ImGuiCond_](https://github.com/ocornut/imgui/blob/v1.86/imgui.h#L1654)
+  # [enum ImGuiCond_](https://github.com/ocornut/imgui/blob/v1.87/imgui.h#L1727)
   enum ImGuiCond
     # No condition (always set the variable), same as _Always
     None = 0
@@ -1043,7 +1201,7 @@ module ImGui
 
   alias TopLevel::ImDrawChannel = ImGui::ImDrawChannel
 
-  # [enum ImDrawFlags_](https://github.com/ocornut/imgui/blob/v1.86/imgui.h#L2357)
+  # [enum ImDrawFlags_](https://github.com/ocornut/imgui/blob/v1.87/imgui.h#L2461)
   @[Flags]
   enum ImDrawFlags
     None = 0
@@ -1070,7 +1228,7 @@ module ImGui
   end
   alias TopLevel::ImDrawFlags = ImGui::ImDrawFlags
 
-  # [enum ImDrawListFlags_](https://github.com/ocornut/imgui/blob/v1.86/imgui.h#L2377)
+  # [enum ImDrawListFlags_](https://github.com/ocornut/imgui/blob/v1.87/imgui.h#L2481)
   @[Flags]
   enum ImDrawListFlags
     None = 0
@@ -1116,7 +1274,7 @@ module ImGui
 
   alias TopLevel::ImFontGlyphRangesBuilder = ImGui::ImFontGlyphRangesBuilder
 
-  # [enum ImFontAtlasFlags_](https://github.com/ocornut/imgui/blob/v1.86/imgui.h#L2612)
+  # [enum ImFontAtlasFlags_](https://github.com/ocornut/imgui/blob/v1.87/imgui.h#L2716)
   @[Flags]
   enum ImFontAtlasFlags
     None = 0
@@ -1129,7 +1287,7 @@ module ImGui
   end
   alias TopLevel::ImFontAtlasFlags = ImGui::ImFontAtlasFlags
 
-  # [enum ImGuiViewportFlags_](https://github.com/ocornut/imgui/blob/v1.86/imgui.h#L2795)
+  # [enum ImGuiViewportFlags_](https://github.com/ocornut/imgui/blob/v1.87/imgui.h#L2898)
   @[Flags]
   enum ImGuiViewportFlags
     None = 0
@@ -1224,26 +1382,6 @@ module ImGui
   end
 
   # :nodoc:
-  enum ImGuiInputSource
-    None      = 0
-    Mouse     = 1
-    Keyboard  = 2
-    Gamepad   = 3
-    Nav       = 4
-    Clipboard = 5
-  end
-
-  # :nodoc:
-  enum ImGuiInputReadMode
-    Down       = 0
-    Pressed    = 1
-    Released   = 2
-    Repeat     = 3
-    RepeatSlow = 4
-    RepeatFast = 5
-  end
-
-  # :nodoc:
   enum ImGuiPopupPositionPolicy
     Default  = 0
     ComboBox = 1
@@ -1270,6 +1408,37 @@ module ImGui
     None     = 0
     HasWidth = 1 << 0
     HasOpen  = 1 << 1
+  end
+
+  # :nodoc:
+  enum ImGuiInputEventType
+    None        = 0
+    MousePos    = 1
+    MouseWheel  = 2
+    MouseButton = 3
+    Key         = 4
+    Char        = 5
+    Focus       = 6
+  end
+
+  # :nodoc:
+  enum ImGuiInputSource
+    None      = 0
+    Mouse     = 1
+    Keyboard  = 2
+    Gamepad   = 3
+    Clipboard = 4
+    Nav       = 5
+  end
+
+  # :nodoc:
+  enum ImGuiInputReadMode
+    Down       = 0
+    Pressed    = 1
+    Released   = 2
+    Repeat     = 3
+    RepeatSlow = 4
+    RepeatFast = 5
   end
 
   # :nodoc:
