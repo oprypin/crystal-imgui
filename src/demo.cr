@@ -1,4 +1,4 @@
-# Based on https://github.com/ocornut/imgui/blob/v1.86/imgui_demo.cpp
+# Based on https://github.com/ocornut/imgui/blob/v1.87/imgui_demo.cpp
 
 require "./imgui"
 require "./util"
@@ -39,7 +39,6 @@ module ImGuiDemo
     ImGui.bullet_text("CTRL+X/C/V to use clipboard cut/copy/paste.")
     ImGui.bullet_text("CTRL+Z,CTRL+Y to undo/redo.")
     ImGui.bullet_text("ESCAPE to revert.")
-    ImGui.bullet_text("You can apply arithmetic operators +,*,/ on numerical values.\nUse +- to subtract.")
     ImGui.unindent
     ImGui.bullet_text("With keyboard navigation enabled:")
     ImGui.indent
@@ -268,16 +267,19 @@ module ImGuiDemo
             ImGui.same_line
             ImGui.text("<<PRESS SPACE TO DISABLE>>")
           end
-          if ImGui.is_key_pressed(ImGui.get_key_index(ImGuiKey::Space))
+          if ImGui.is_key_pressed(ImGuiKey::Space)
             io.config_flags &= ~ImGuiConfigFlags::NoMouse
           end
         end
         ImGui.checkbox_flags("io.ConfigFlags: NoMouseCursorChange", pointerof(io.config_flags), ImGuiConfigFlags::NoMouseCursorChange)
         ImGui.same_line
         help_marker("Instruct backend to not alter mouse cursor shape and visibility.")
+        ImGui.checkbox("io.ConfigInputTrickleEventQueue", pointerof(io.config_input_trickle_event_queue))
+        ImGui.same_line
+        help_marker("Enable input queue trickling: some types of events submitted during the same frame (e.g. button down + up) will be spread over multiple frames, improving interactions with low framerates.")
         ImGui.checkbox("io.ConfigInputTextCursorBlink", pointerof(io.config_input_text_cursor_blink))
         ImGui.same_line
-        help_marker("Enable blinking cursor (optional as some users consider it to be distracting)")
+        help_marker("Enable blinking cursor (optional as some users consider it to be distracting).")
         ImGui.checkbox("io.ConfigDragClickToInputText", pointerof(io.config_drag_click_to_input_text))
         ImGui.same_line
         help_marker("Enable turning DragXXX widgets into text input with a simple mouse click-release (without moving).")
@@ -506,11 +508,6 @@ module ImGuiDemo
         demo_marker("Widgets/Basic/InputInt, InputFloat")
         static i0 = 123
         ImGui.input_int("input int", pointerof(i0.val))
-        ImGui.same_line
-        help_marker(
-          "You can apply arithmetic operators +,*,/ on numerical values.\n" +
-          "  e.g. [ 100 ], input '*2', result becomes [ 200 ]\n" +
-          "Use +- to subtract.")
 
         static f0 = 0.001f32
         ImGui.input_float("input float", pointerof(f0.val), 0.01f32, 1.0f32, "%.3f")
@@ -5106,6 +5103,9 @@ module ImGuiDemo
     ImGui.tree_pop
   end
 
+  record KeyLayoutData,
+    row : Int32, col : Int32, label : String, key : ImGuiKey
+
   def self.show_demo_window_misc
     demo_marker("Filtering")
     if ImGui.collapsing_header("Filtering")
@@ -5171,27 +5171,44 @@ module ImGuiDemo
         ImGui.tree_pop
       end
 
-      demo_marker("Inputs, Navigation & Focus/Keyboard & Navigation State")
-      if ImGui.tree_node("Keyboard & Navigation State")
+      demo_marker("Inputs, Navigation & Focus/Keyboard, Gamepad & Navigation State")
+      if ImGui.tree_node("Keyboard, Gamepad & Navigation State")
+        is_legacy_native_dupe = ->(key : Int32) {
+          return key < 512 && ImGui.get_io.key_map[key] != -1
+        }
+        key_first = 0
+        key_last = ImGuiKey.values.last.value
         ImGui.text("Keys down:")
-        io.keys_down.size.times do |i|
-          if ImGui.is_key_down(i)
+        (key_first..key_last).each do |key|
+          if is_legacy_native_dupe.call(key)
+            next
+          end
+          key = ImGuiKey.new(key)
+          if ImGui.is_key_down(key)
             ImGui.same_line
-            ImGui.text("%d (0x%X) (%.02f secs)", i, i, io.keys_down_duration[i])
+            ImGui.text("\"%s\" %d (%.02f secs)", ImGui.get_key_name(key), key, LibImGui.GetKeyData(key).value.down_duration)
           end
         end
         ImGui.text("Keys pressed:")
-        io.keys_down.size.times do |i|
-          if ImGui.is_key_pressed(i)
+        (key_first..key_last).each do |key|
+          if is_legacy_native_dupe.call(key)
+            next
+          end
+          key = ImGuiKey.new(key)
+          if ImGui.is_key_pressed(key)
             ImGui.same_line
-            ImGui.text("%d (0x%X)", i, i)
+            ImGui.text("\"%s\" %d", ImGui.get_key_name(key), key)
           end
         end
-        ImGui.text("Keys release:")
-        io.keys_down.size.times do |i|
-          if ImGui.is_key_released(i)
+        ImGui.text("Keys released:")
+        (key_first..key_last).each do |key|
+          if is_legacy_native_dupe.call(key)
+            next
+          end
+          key = ImGuiKey.new(key)
+          if ImGui.is_key_released(key)
             ImGui.same_line
-            ImGui.text("%d (0x%X)", i, i)
+            ImGui.text("\"%s\" %d", ImGui.get_key_name(key), key)
           end
         end
         ImGui.text("Keys mods: %s%s%s%s", io.key_ctrl ? "CTRL " : "", io.key_shift ? "SHIFT " : "", io.key_alt ? "ALT " : "", io.key_super ? "SUPER " : "")
@@ -5201,7 +5218,6 @@ module ImGuiDemo
           ImGui.same_line
           ImGui.text("'%c' (0x%04X)", (c > ' ' && c.ord <= 255) ? c : '?', c)
         end
-
         ImGui.text("NavInputs down:")
         io.nav_inputs.size.times do |i|
           if io.nav_inputs[i] > 0.0f32
@@ -5217,6 +5233,49 @@ module ImGuiDemo
           end
         end
 
+        begin
+          key_size = ImVec2.new(35.0f32, 35.0f32)
+          key_rounding = 3.0f32
+          key_face_size = ImVec2.new(25.0f32, 25.0f32)
+          key_face_pos = ImVec2.new(5.0f32, 3.0f32)
+          key_face_rounding = 2.0f32
+          key_label_pos = ImVec2.new(7.0f32, 4.0f32)
+          key_step = ImVec2.new(key_size.x - 1.0f32, key_size.y - 1.0f32)
+          key_row_offset = 9.0f32
+
+          board_min = ImGui.get_cursor_screen_pos
+          board_max = ImVec2.new(board_min.x + 3 * key_step.x + 2 * key_row_offset + 10.0f32, board_min.y + 3 * key_step.y + 10.0f32)
+          start_pos = ImVec2.new(board_min.x + 5.0f32 - key_step.x, board_min.y)
+
+          keys_to_display = [
+            {0, 0, "", ImGuiKey::Tab}, {0, 1, "Q", ImGuiKey::Q}, {0, 2, "W", ImGuiKey::W}, {0, 3, "E", ImGuiKey::E}, {0, 4, "R", ImGuiKey::R}, {1, 0, "", ImGuiKey::CapsLock}, {1, 1, "A", ImGuiKey::A}, {1, 2, "S", ImGuiKey::S}, {1, 3, "D", ImGuiKey::D}, {1, 4, "F", ImGuiKey::F}, {2, 0, "", ImGuiKey::LeftShift}, {2, 1, "Z", ImGuiKey::Z}, {2, 2, "X", ImGuiKey::X}, {2, 3, "C", ImGuiKey::C}, {2, 4, "V", ImGuiKey::V},
+          ].map { |t| KeyLayoutData.new(*t) }
+
+          draw_list = ImGui.get_window_draw_list
+          draw_list.push_clip_rect(board_min, board_max, true)
+          keys_to_display.size.times do |n|
+            key_data = keys_to_display[n]
+            key_min = ImVec2.new(start_pos.x + key_data.col * key_step.x + key_data.row * key_row_offset, start_pos.y + key_data.row * key_step.y)
+            key_max = ImVec2.new(key_min.x + key_size.x, key_min.y + key_size.y)
+            draw_list.add_rect_filled(key_min, key_max, ImGui.col32(204, 204, 204, 255), key_rounding)
+            draw_list.add_rect(key_min, key_max, ImGui.col32(24, 24, 24, 255), key_rounding)
+            face_min = ImVec2.new(key_min.x + key_face_pos.x, key_min.y + key_face_pos.y)
+            face_max = ImVec2.new(face_min.x + key_face_size.x, face_min.y + key_face_size.y)
+            draw_list.add_rect(face_min, face_max, ImGui.col32(193, 193, 193, 255), key_face_rounding, ImDrawFlags::None, 2.0f32)
+            draw_list.add_rect_filled(face_min, face_max, ImGui.col32(252, 252, 252, 255), key_face_rounding)
+            label_min = ImVec2.new(key_min.x + key_label_pos.x, key_min.y + key_label_pos.y)
+            draw_list.add_text(label_min, ImGui.col32(64, 64, 64, 255), key_data.label)
+            if ImGui.is_key_down(key_data.key)
+              draw_list.add_rect_filled(key_min, key_max, ImGui.col32(255, 0, 0, 128), key_rounding)
+            end
+          end
+          draw_list.pop_clip_rect
+          ImGui.dummy(ImVec2.new(board_max.x - board_min.x, board_max.y - board_min.y))
+        end
+        ImGui.tree_pop
+      end
+
+      if ImGui.tree_node("Capture override")
         ImGui.button("Hovering me sets the\nkeyboard capture flag")
         if ImGui.is_item_hovered
           ImGui.capture_keyboard_from_app(true)
@@ -5690,9 +5749,9 @@ module ImGuiDemo
 
       if ImGui.begin_tab_item("Fonts")
         io = ImGui.get_io
-        # atlas = io.fonts
+        atlas = io.fonts
         help_marker("Read FAQ and docs/FONTS.md for details on font loading.")
-        # ImGui.show_font_atlas(atlas)
+        LibImGui.ShowFontAtlas(atlas)
 
         min_scale = 0.3f32
         max_scale = 2.0f32
@@ -5743,7 +5802,7 @@ module ImGuiDemo
 
             ImGui.begin_group
 
-            # ImGui.text("R: %.f\nN: %d", rad, draw_list._calc_circle_auto_segment_count(rad))
+            ImGui.text("R: %.f\nN: %d", rad, LibImGui.ImDrawList__CalcCircleAutoSegmentCount(draw_list, rad))
 
             canvas_width = {min_widget_width, rad * 2.0f32}.max
             offset_x = (canvas_width * 0.5f32).floor
@@ -6772,8 +6831,8 @@ module ImGuiDemo
         end
 
         drag_delta = ImGui.get_mouse_drag_delta(ImGuiMouseButton::Right)
-        if opt_enable_context_menu.val && ImGui.is_mouse_released(ImGuiMouseButton::Right) && drag_delta.x == 0.0f32 && drag_delta.y == 0.0f32
-          ImGui.open_popup_on_item_click("context")
+        if opt_enable_context_menu.val && drag_delta.x == 0.0f32 && drag_delta.y == 0.0f32
+          ImGui.open_popup_on_item_click("context", ImGuiPopupFlags::MouseButtonRight)
         end
         if ImGui.begin_popup("context")
           if adding_line.val
