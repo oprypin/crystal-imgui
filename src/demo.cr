@@ -1,4 +1,4 @@
-# Based on https://github.com/ocornut/imgui/blob/v1.87/imgui_demo.cpp
+# Based on https://github.com/ocornut/imgui/blob/v1.88/imgui_demo.cpp
 
 require "./imgui"
 require "./util"
@@ -110,12 +110,16 @@ module ImGuiDemo
     end
 
     static show_app_metrics = false
+    static show_app_debug_log = false
     static show_app_stack_tool = false
-    static show_app_style_editor = false
     static show_app_about = false
+    static show_app_style_editor = false
 
     if show_app_metrics.val
       ImGui.show_metrics_window(pointerof(show_app_metrics.val))
+    end
+    if show_app_debug_log.val
+      ImGui.show_debug_log_window(pointerof(show_app_debug_log.val))
     end
     if show_app_stack_tool.val
       ImGui.show_stack_tool_window(pointerof(show_app_stack_tool.val))
@@ -213,8 +217,10 @@ module ImGuiDemo
 
       if ImGui.begin_menu("Tools")
         demo_marker("Menu/Tools")
-        ImGui.menu_item("Metrics/Debugger", "", pointerof(show_app_metrics.val))
-        ImGui.menu_item("Stack Tool", "", pointerof(show_app_stack_tool.val))
+        has_debug_tools = true
+        ImGui.menu_item("Metrics/Debugger", "", pointerof(show_app_metrics.val), has_debug_tools)
+        ImGui.menu_item("Debug Log", "", pointerof(show_app_debug_log.val), has_debug_tools)
+        ImGui.menu_item("Stack Tool", "", pointerof(show_app_stack_tool.val), has_debug_tools)
         ImGui.menu_item("Style Editor", "", pointerof(show_app_style_editor.val))
         ImGui.menu_item("About Dear ImGui", "", pointerof(show_app_about.val))
         ImGui.end_menu
@@ -222,7 +228,7 @@ module ImGuiDemo
       ImGui.end_menu_bar
     end
 
-    ImGui.text("dear imgui says hello. (%s)", ImGui.get_version)
+    ImGui.text("dear imgui says hello! (%s)", ImGui.get_version)
     ImGui.spacing
 
     demo_marker("Help")
@@ -1539,11 +1545,10 @@ module ImGuiDemo
       ImGui.same_line
       help_marker(
         "ColorEdit defaults to displaying RGB inputs if you don't specify a display mode, " +
-        "but the user can change it with a right-click.\n\nColorPicker defaults to displaying RGB+HSV+Hex " +
+        "but the user can change it with a right-click on those inputs.\n\nColorPicker defaults to displaying RGB+HSV+Hex " +
         "if you don't specify a display mode.\n\nYou can change the defaults using SetColorEditOptions().")
-      ImGui.combo("Picker Mode", pointerof(picker_mode.val), "Auto/Current\0Hue bar + SV rect\0Hue wheel + SV triangle\0")
       ImGui.same_line
-      help_marker("User can right-click the picker to change mode.")
+      help_marker("When not specified explicitly (Auto/Current mode), user can right-click the picker to change mode.")
       flags = misc_flags
       if !alpha.val
         flags |= ImGuiColorEditFlags::NoAlpha
@@ -1587,6 +1592,14 @@ module ImGuiDemo
       if ImGui.button("Default: Float + HDR + Hue Wheel")
         ImGui.set_color_edit_options(ImGuiColorEditFlags::Float | ImGuiColorEditFlags::HDR | ImGuiColorEditFlags::PickerHueWheel)
       end
+
+      ImGui.text("Both types:")
+      w = (ImGui.get_content_region_avail.x - ImGui.get_style.item_spacing.y) * 0.40f32
+      ImGui.set_next_item_width(w)
+      ImGui.color_picker3("##MyColor##5", pointerof(color.val), ImGuiColorEditFlags::PickerHueBar | ImGuiColorEditFlags::NoSidePreview | ImGuiColorEditFlags::NoInputs | ImGuiColorEditFlags::NoAlpha)
+      ImGui.same_line
+      ImGui.set_next_item_width(w)
+      ImGui.color_picker3("##MyColor##6", pointerof(color.val), ImGuiColorEditFlags::PickerHueWheel | ImGuiColorEditFlags::NoSidePreview | ImGuiColorEditFlags::NoInputs | ImGuiColorEditFlags::NoAlpha)
 
       static color_hsv = ImVec4.new(0.23f32, 1.0f32, 1.0f32, 1.0f32)
       ImGui.spacing
@@ -1734,6 +1747,7 @@ module ImGuiDemo
       ImGui.drag_scalar("drag s16", pointerof(s16_v.val), drag_speed, drag_clamp.val ? s16_zero : nil, drag_clamp.val ? s16_fifty : nil)
       ImGui.drag_scalar("drag u16", pointerof(u16_v.val), drag_speed, drag_clamp.val ? u16_zero : nil, drag_clamp.val ? u16_fifty : nil, "%u ms")
       ImGui.drag_scalar("drag s32", pointerof(s32_v.val), drag_speed, drag_clamp.val ? s32_zero : nil, drag_clamp.val ? s32_fifty : nil)
+      ImGui.drag_scalar("drag s32 hex", pointerof(s32_v.val), drag_speed, drag_clamp.val ? s32_zero : nil, drag_clamp.val ? s32_fifty : nil, "0x%08X")
       ImGui.drag_scalar("drag u32", pointerof(u32_v.val), drag_speed, drag_clamp.val ? u32_zero : nil, drag_clamp.val ? u32_fifty : nil, "%u ms")
       ImGui.drag_scalar("drag s64", pointerof(s64_v.val), drag_speed, drag_clamp.val ? s64_zero : nil, drag_clamp.val ? s64_fifty : nil)
       ImGui.drag_scalar("drag u64", pointerof(u64_v.val), drag_speed, drag_clamp.val ? u64_zero : nil, drag_clamp.val ? u64_fifty : nil)
@@ -1751,6 +1765,7 @@ module ImGuiDemo
       ImGui.slider_scalar("slider s32 low", pointerof(s32_v.val), s32_zero, s32_fifty, "%d")
       ImGui.slider_scalar("slider s32 high", pointerof(s32_v.val), s32_hi_a, s32_hi_b, "%d")
       ImGui.slider_scalar("slider s32 full", pointerof(s32_v.val), s32_min, s32_max, "%d")
+      ImGui.slider_scalar("slider s32 hex", pointerof(s32_v.val), s32_zero, s32_fifty, "0x%04X")
       ImGui.slider_scalar("slider u32 low", pointerof(u32_v.val), u32_zero, u32_fifty, "%u")
       ImGui.slider_scalar("slider u32 high", pointerof(u32_v.val), u32_hi_a, u32_hi_b, "%u")
       ImGui.slider_scalar("slider u32 full", pointerof(u32_v.val), u32_min, u32_max, "%u")
@@ -1784,9 +1799,9 @@ module ImGuiDemo
       ImGui.input_scalar("input s16", pointerof(s16_v.val), inputs_step.val ? s16_one : nil, nil, "%d")
       ImGui.input_scalar("input u16", pointerof(u16_v.val), inputs_step.val ? u16_one : nil, nil, "%u")
       ImGui.input_scalar("input s32", pointerof(s32_v.val), inputs_step.val ? s32_one : nil, nil, "%d")
-      ImGui.input_scalar("input s32 hex", pointerof(s32_v.val), inputs_step.val ? s32_one : nil, nil, "%08X", ImGuiInputTextFlags::CharsHexadecimal)
+      ImGui.input_scalar("input s32 hex", pointerof(s32_v.val), inputs_step.val ? s32_one : nil, nil, "%04X")
       ImGui.input_scalar("input u32", pointerof(u32_v.val), inputs_step.val ? u32_one : nil, nil, "%u")
-      ImGui.input_scalar("input u32 hex", pointerof(u32_v.val), inputs_step.val ? u32_one : nil, nil, "%08X", ImGuiInputTextFlags::CharsHexadecimal)
+      ImGui.input_scalar("input u32 hex", pointerof(u32_v.val), inputs_step.val ? u32_one : nil, nil, "%08X")
       ImGui.input_scalar("input s64", pointerof(s64_v.val), inputs_step.val ? s64_one : nil)
       ImGui.input_scalar("input u64", pointerof(u64_v.val), inputs_step.val ? u64_one : nil)
       ImGui.input_scalar("input float", pointerof(f32_v.val), inputs_step.val ? f32_one : nil)
@@ -2920,53 +2935,53 @@ module ImGuiDemo
       ImGui.drag_float2("size", pointerof(size.val), 0.5f32, 1.0f32, 200.0f32, "%.0f")
       ImGui.text_wrapped("(Click and drag to scroll)")
 
+      help_marker(
+        "(Left) Using ImGui::PushClipRect():\n" +
+        "Will alter ImGui hit-testing logic + ImDrawList rendering.\n" +
+        "(use this if you want your clipping rectangle to affect interactions)\n\n" +
+        "(Center) Using ImDrawList::PushClipRect():\n" +
+        "Will alter ImDrawList rendering only.\n" +
+        "(use this as a shortcut if you are only using ImDrawList calls)\n\n" +
+        "(Right) Using ImDrawList::AddText() with a fine ClipRect:\n" +
+        "Will alter only this specific ImDrawList::AddText() rendering.\n" +
+        "This is often used internally to avoid altering the clipping rectangle and minimize draw calls.")
+
       3.times do |n|
         if n > 0
           ImGui.same_line
         end
-        ImGui.push_id(n)
-        ImGui.begin_group
 
-        ImGui.invisible_button("##empty", size.val)
+        ImGui.push_id(n)
+        ImGui.invisible_button("##canvas", size.val)
         if ImGui.is_item_active && ImGui.is_mouse_dragging(ImGuiMouseButton::Left)
           offset.val = ImVec2.new(offset.val.x + ImGui.get_io.mouse_delta.x, offset.val.y + ImGui.get_io.mouse_delta.y)
         end
+        ImGui.pop_id
+        if !ImGui.is_item_visible
+          next
+        end
+
         p0 = ImGui.get_item_rect_min
         p1 = ImGui.get_item_rect_max
         text_str = "Line 1 hello\nLine 2 clip me!"
         text_pos = ImVec2.new(p0.x + offset.val.x, p0.y + offset.val.y)
         draw_list = ImGui.get_window_draw_list
-
         case n
         when 0
-          help_marker(
-            "Using ImGui::PushClipRect():\n" +
-            "Will alter ImGui hit-testing logic + ImDrawList rendering.\n" +
-            "(use this if you want your clipping rectangle to affect interactions)")
           ImGui.push_clip_rect(p0, p1, true)
           draw_list.add_rect_filled(p0, p1, ImGui.col32(90, 90, 120, 255))
           draw_list.add_text(text_pos, ImGui.col32(255, 255, 255), text_str)
           ImGui.pop_clip_rect
         when 1
-          help_marker(
-            "Using ImDrawList::PushClipRect():\n" +
-            "Will alter ImDrawList rendering only.\n" +
-            "(use this as a shortcut if you are only using ImDrawList calls)")
           draw_list.push_clip_rect(p0, p1, true)
           draw_list.add_rect_filled(p0, p1, ImGui.col32(90, 90, 120, 255))
           draw_list.add_text(text_pos, ImGui.col32(255, 255, 255), text_str)
           draw_list.pop_clip_rect
         when 2
-          help_marker(
-            "Using ImDrawList::AddText() with a fine ClipRect:\n" +
-            "Will alter only this specific ImDrawList::AddText() rendering.\n" +
-            "(this is often used internally to avoid altering the clipping rectangle and minimize draw calls)")
           clip_rect = ImVec4.new(p0.x, p0.y, p1.x, p1.y)
           draw_list.add_rect_filled(p0, p1, ImGui.col32(90, 90, 120, 255))
           draw_list.add_text(ImGui.get_font, ImGui.get_font_size, text_pos, ImGui.col32(255, 255, 255), text_str, 0.0f32, pointerof(clip_rect))
         end
-        ImGui.end_group
-        ImGui.pop_id
       end
 
       ImGui.tree_pop
@@ -3091,7 +3106,7 @@ module ImGuiDemo
       begin
         help_marker("Text() elements don't have stable identifiers so we need to provide one.")
         static value = 0.5f32
-        ImGui.text("Value = %.3f <-- (1) right-click this value", value.val)
+        ImGui.text("Value = %.3f <-- (1) right-click this text", value.val)
         if ImGui.begin_popup_context_item("my popup")
           if ImGui.selectable("Set to zero")
             value.val = 0.0f32
@@ -3209,13 +3224,11 @@ module ImGuiDemo
       ImGui.text_wrapped("Below we are testing adding menu items to a regular window. It's rather unusual but should work!")
       ImGui.separator
 
-      ImGui.push_id("foo")
       ImGui.menu_item("Menu item", "CTRL+M")
       if ImGui.begin_menu("Menu inside a regular window")
         show_example_menu_file
         ImGui.end_menu
       end
-      ImGui.pop_id
       ImGui.separator
       ImGui.tree_pop
     end
@@ -3554,7 +3567,7 @@ module ImGuiDemo
             buf = sprintf("Hello %d,%d", column, row)
             if contents_type.val == ContentsType1::Text
               ImGui.text_unformatted(buf)
-            elsif contents_type.val
+            elsif contents_type.val == ContentsType1::FillButton
               ImGui.button(buf, ImVec2.new(-Float32::MIN_POSITIVE, 0.0f32))
             end
           end
@@ -4053,7 +4066,9 @@ module ImGuiDemo
           edit_table_columns_flags(pointerof(column_flags.val[column]))
           ImGui.spacing
           ImGui.text("Output flags:")
+          ImGui.begin_disabled
           show_table_columns_status_flags(column_flags_out.val[column])
+          ImGui.end_disabled
           ImGui.pop_id
         end
         pop_style_compact
@@ -4383,7 +4398,7 @@ module ImGuiDemo
           ImGui.table_set_column_index(1)
           ImGui.slider_float("float1", pointerof(dummy_f.val), 0.0f32, 1.0f32)
           ImGui.table_set_column_index(2)
-          ImGui.slider_float("float2", pointerof(dummy_f.val), 0.0f32, 1.0f32)
+          ImGui.slider_float("##float2", pointerof(dummy_f.val), 0.0f32, 1.0f32)
           ImGui.pop_id
         end
         ImGui.end_table
@@ -5128,12 +5143,17 @@ module ImGuiDemo
     if ImGui.collapsing_header("Inputs, Navigation & Focus")
       io = ImGui.get_io
 
-      ImGui.text("WantCaptureMouse: %d", io.want_capture_mouse)
-      ImGui.text("WantCaptureMouseUnlessPopupClose: %d", io.want_capture_mouse_unless_popup_close)
-      ImGui.text("WantCaptureKeyboard: %d", io.want_capture_keyboard)
-      ImGui.text("WantTextInput: %d", io.want_text_input)
-      ImGui.text("WantSetMousePos: %d", io.want_set_mouse_pos)
-      ImGui.text("NavActive: %d, NavVisible: %d", io.nav_active, io.nav_visible)
+      demo_marker("Inputs, Navigation & Focus/Output")
+      ImGui.set_next_item_open(true, ImGuiCond::Once)
+      if ImGui.tree_node("Output")
+        ImGui.text("io.WantCaptureMouse: %d", io.want_capture_mouse)
+        ImGui.text("io.WantCaptureMouseUnlessPopupClose: %d", io.want_capture_mouse_unless_popup_close)
+        ImGui.text("io.WantCaptureKeyboard: %d", io.want_capture_keyboard)
+        ImGui.text("io.WantTextInput: %d", io.want_text_input)
+        ImGui.text("io.WantSetMousePos: %d", io.want_set_mouse_pos)
+        ImGui.text("io.NavActive: %d, io.NavVisible: %d", io.nav_active, io.nav_visible)
+        ImGui.tree_pop
+      end
 
       demo_marker("Inputs, Navigation & Focus/Mouse State")
       if ImGui.tree_node("Mouse State")
@@ -5251,40 +5271,64 @@ module ImGuiDemo
             {0, 0, "", ImGuiKey::Tab}, {0, 1, "Q", ImGuiKey::Q}, {0, 2, "W", ImGuiKey::W}, {0, 3, "E", ImGuiKey::E}, {0, 4, "R", ImGuiKey::R}, {1, 0, "", ImGuiKey::CapsLock}, {1, 1, "A", ImGuiKey::A}, {1, 2, "S", ImGuiKey::S}, {1, 3, "D", ImGuiKey::D}, {1, 4, "F", ImGuiKey::F}, {2, 0, "", ImGuiKey::LeftShift}, {2, 1, "Z", ImGuiKey::Z}, {2, 2, "X", ImGuiKey::X}, {2, 3, "C", ImGuiKey::C}, {2, 4, "V", ImGuiKey::V},
           ].map { |t| KeyLayoutData.new(*t) }
 
-          draw_list = ImGui.get_window_draw_list
-          draw_list.push_clip_rect(board_min, board_max, true)
-          keys_to_display.size.times do |n|
-            key_data = keys_to_display[n]
-            key_min = ImVec2.new(start_pos.x + key_data.col * key_step.x + key_data.row * key_row_offset, start_pos.y + key_data.row * key_step.y)
-            key_max = ImVec2.new(key_min.x + key_size.x, key_min.y + key_size.y)
-            draw_list.add_rect_filled(key_min, key_max, ImGui.col32(204, 204, 204, 255), key_rounding)
-            draw_list.add_rect(key_min, key_max, ImGui.col32(24, 24, 24, 255), key_rounding)
-            face_min = ImVec2.new(key_min.x + key_face_pos.x, key_min.y + key_face_pos.y)
-            face_max = ImVec2.new(face_min.x + key_face_size.x, face_min.y + key_face_size.y)
-            draw_list.add_rect(face_min, face_max, ImGui.col32(193, 193, 193, 255), key_face_rounding, ImDrawFlags::None, 2.0f32)
-            draw_list.add_rect_filled(face_min, face_max, ImGui.col32(252, 252, 252, 255), key_face_rounding)
-            label_min = ImVec2.new(key_min.x + key_label_pos.x, key_min.y + key_label_pos.y)
-            draw_list.add_text(label_min, ImGui.col32(64, 64, 64, 255), key_data.label)
-            if ImGui.is_key_down(key_data.key)
-              draw_list.add_rect_filled(key_min, key_max, ImGui.col32(255, 0, 0, 128), key_rounding)
-            end
-          end
-          draw_list.pop_clip_rect
           ImGui.dummy(ImVec2.new(board_max.x - board_min.x, board_max.y - board_min.y))
+          if ImGui.is_item_visible
+            draw_list = ImGui.get_window_draw_list
+            draw_list.push_clip_rect(board_min, board_max, true)
+            keys_to_display.size.times do |n|
+              key_data = keys_to_display[n]
+              key_min = ImVec2.new(start_pos.x + key_data.col * key_step.x + key_data.row * key_row_offset, start_pos.y + key_data.row * key_step.y)
+              key_max = ImVec2.new(key_min.x + key_size.x, key_min.y + key_size.y)
+              draw_list.add_rect_filled(key_min, key_max, ImGui.col32(204, 204, 204, 255), key_rounding)
+              draw_list.add_rect(key_min, key_max, ImGui.col32(24, 24, 24, 255), key_rounding)
+              face_min = ImVec2.new(key_min.x + key_face_pos.x, key_min.y + key_face_pos.y)
+              face_max = ImVec2.new(face_min.x + key_face_size.x, face_min.y + key_face_size.y)
+              draw_list.add_rect(face_min, face_max, ImGui.col32(193, 193, 193, 255), key_face_rounding, ImDrawFlags::None, 2.0f32)
+              draw_list.add_rect_filled(face_min, face_max, ImGui.col32(252, 252, 252, 255), key_face_rounding)
+              label_min = ImVec2.new(key_min.x + key_label_pos.x, key_min.y + key_label_pos.y)
+              draw_list.add_text(label_min, ImGui.col32(64, 64, 64, 255), key_data.label)
+              if ImGui.is_key_down(key_data.key)
+                draw_list.add_rect_filled(key_min, key_max, ImGui.col32(255, 0, 0, 128), key_rounding)
+              end
+            end
+            draw_list.pop_clip_rect
+          end
         end
         ImGui.tree_pop
       end
 
       if ImGui.tree_node("Capture override")
-        ImGui.button("Hovering me sets the\nkeyboard capture flag")
-        if ImGui.is_item_hovered
-          ImGui.capture_keyboard_from_app(true)
+        help_marker(
+          "The value of io.WantCaptureMouse and io.WantCaptureKeyboard are normally set by Dear ImGui " +
+          "to instruct your application of how to route inputs. Typically, when a value is true, it means " +
+          "Dear ImGui wants the corresponding inputs and we expect the underlying application to ignore them.\n\n" +
+          "The most typical case is: when hovering a window, Dear ImGui set io.WantCaptureMouse to true, " +
+          "and underlying application should ignore mouse inputs (in practice there are many and more subtle " +
+          "rules leading to how those flags are set).")
+
+        ImGui.text("io.WantCaptureMouse: %d", io.want_capture_mouse)
+        ImGui.text("io.WantCaptureMouseUnlessPopupClose: %d", io.want_capture_mouse_unless_popup_close)
+        ImGui.text("io.WantCaptureKeyboard: %d", io.want_capture_keyboard)
+
+        help_marker(
+          "Hovering the colored canvas will override io.WantCaptureXXX fields.\n" +
+          "Notice how normally (when set to none), the value of io.WantCaptureKeyboard would be false when hovering and true when clicking.")
+        static capture_override_mouse = -1
+        static capture_override_keyboard = -1
+        capture_override_desc = ["None", "Set to false", "Set to true"]
+        ImGui.set_next_item_width(ImGui.get_font_size * 15)
+        ImGui.slider_int("SetNextFrameWantCaptureMouse()", pointerof(capture_override_mouse.val), -1, +1, capture_override_desc[capture_override_mouse.val + 1], ImGuiSliderFlags::AlwaysClamp)
+        ImGui.set_next_item_width(ImGui.get_font_size * 15)
+        ImGui.slider_int("SetNextFrameWantCaptureKeyboard()", pointerof(capture_override_keyboard.val), -1, +1, capture_override_desc[capture_override_keyboard.val + 1], ImGuiSliderFlags::AlwaysClamp)
+
+        ImGui.color_button("##panel", ImVec4.new(0.7f32, 0.1f32, 0.7f32, 1.0f32), ImGuiColorEditFlags::NoTooltip | ImGuiColorEditFlags::NoDragDrop, ImVec2.new(256.0f32, 192.0f32))
+        if ImGui.is_item_hovered && capture_override_mouse.val != -1
+          ImGui.set_next_frame_want_capture_mouse(capture_override_mouse.val == 1)
         end
-        ImGui.same_line
-        ImGui.button("Holding me clears the\nthe keyboard capture flag")
-        if ImGui.is_item_active
-          ImGui.capture_keyboard_from_app(false)
+        if ImGui.is_item_hovered && capture_override_keyboard.val != -1
+          ImGui.set_next_frame_want_capture_keyboard(capture_override_keyboard.val == 1)
         end
+
         ImGui.tree_pop
       end
 
@@ -6616,7 +6660,7 @@ module ImGuiDemo
 
   ImGui.pointer_wrapper def self.show_example_app_fullscreen(p_open = Pointer(Bool).null)
     static use_work_area = true
-    static flags = ImGuiWindowFlags::NoDecoration | ImGuiWindowFlags::NoMove | ImGuiWindowFlags::NoResize | ImGuiWindowFlags::NoSavedSettings
+    static flags = ImGuiWindowFlags::NoDecoration | ImGuiWindowFlags::NoMove | ImGuiWindowFlags::NoSavedSettings
 
     viewport = ImGui.get_main_viewport
     ImGui.set_next_window_pos(use_work_area.val ? viewport.work_pos : viewport.pos)
