@@ -369,7 +369,4 @@ module ImGui
     r, g, b = color_convert_hsv_to_rgb(h.to_f32, s.to_f32, v.to_f32)
     ImVec4.new(r, g, b, a)
   end
-
-  PAYLOAD_TYPE_COLOR_3F = "_COL3F"
-  PAYLOAD_TYPE_COLOR_4F = "_COL4F"
 end

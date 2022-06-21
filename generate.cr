@@ -893,6 +893,15 @@ def render(ctx : Context, &block : String ->)
     yield %(module ImGui)
   end
 
+  if ctx.ext?
+    IMGUI_H.each do |line|
+      if line =~ /^ *#define +IMGUI_((?:VERSION|PAYLOAD_TYPE)\w*) +([^\/]+)/
+        yield "#{$1} = #{$2}"
+      end
+    end
+    yield ""
+  end
+
   items = AllEnums.values + AllTypedefs.values + AllStructs.values + AllFunctions.values
   items.sort_by! { |x| {x.location? || Location.new(":0"), x.name} }
   items.each do |it|

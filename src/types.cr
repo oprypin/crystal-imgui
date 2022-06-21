@@ -1,4 +1,9 @@
 module ImGui
+  VERSION               = "1.88"
+  VERSION_NUM           = 18800
+  PAYLOAD_TYPE_COLOR_3F = "_COL3F"
+  PAYLOAD_TYPE_COLOR_4F = "_COL4F"
+
   alias ImDrawCallback = LibImGui::ImDrawCallback
   alias ImDrawIdx = LibImGui::ImDrawIdx
   alias ImFileHandle = LibImGui::ImFileHandle

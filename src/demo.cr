@@ -228,7 +228,7 @@ module ImGuiDemo
       ImGui.end_menu_bar
     end
 
-    ImGui.text("dear imgui says hello! (%s)", ImGui.get_version)
+    ImGui.text("dear imgui says hello! (%s) (%d)", ImGui::VERSION, ImGui::VERSION_NUM)
     ImGui.spacing
 
     demo_marker("Help")
@@ -5489,7 +5489,7 @@ module ImGuiDemo
         ImGui.log_text("```\n")
       end
 
-      ImGui.text("Dear ImGui %s", ImGui.get_version)
+      ImGui.text("Dear ImGui %s (%d)", ImGui::VERSION, ImGui::VERSION_NUM)
       ImGui.separator
       ImGui.text("sizeof(size_t): %d, sizeof(ImDrawIdx): %d, sizeof(ImDrawVert): %d", sizeof(LibC::SizeT), sizeof(ImGui::ImDrawIdx), sizeof(ImDrawVert))
       ImGui.separator
