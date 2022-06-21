@@ -292,7 +292,7 @@ class COverload
 
   def ret : CType?
     if (t = @ret)
-      t if (t.c_name) != "void"
+      t if !t.c_name.in?("void", "")
     else
       assert self.parent.name == "#{self.funcname}_#{self.funcname}"
       CType.new("#{self.funcname}*")
