@@ -947,14 +947,14 @@ module ImGui
   end
 
   # [ImGui::Image()](https://github.com/ocornut/imgui/blob/v1.88/imgui.h#L497)
-  def self.image(user_texture_id : ImTextureID, size : ImVec2, uv0 : ImVec2 = ImVec2.new(0, 0), uv1 : ImVec2 = ImVec2.new(1, 1), tint_col : ImVec4 = ImVec4(1, 1, 1, 1), border_col : ImVec4 = ImVec4(0, 0, 0, 0)) : Void
+  def self.image(user_texture_id : ImTextureID, size : ImVec2, uv0 : ImVec2 = ImVec2.new(0, 0), uv1 : ImVec2 = ImVec2.new(1, 1), tint_col : ImVec4 = ImVec4.new(1, 1, 1, 1), border_col : ImVec4 = ImVec4.new(0, 0, 0, 0)) : Void
     LibImGui.Image(user_texture_id, size, uv0, uv1, tint_col, border_col)
   end
 
   # <0 frame_padding uses default frame padding settings. 0 for no padding
   #
   # [ImGui::ImageButton()](https://github.com/ocornut/imgui/blob/v1.88/imgui.h#L498)
-  def self.image_button(user_texture_id : ImTextureID, size : ImVec2, uv0 : ImVec2 = ImVec2.new(0, 0), uv1 : ImVec2 = ImVec2.new(1, 1), frame_padding : Int32 = -1, bg_col : ImVec4 = ImVec4(0, 0, 0, 0), tint_col : ImVec4 = ImVec4(1, 1, 1, 1)) : Bool
+  def self.image_button(user_texture_id : ImTextureID, size : ImVec2, uv0 : ImVec2 = ImVec2.new(0, 0), uv1 : ImVec2 = ImVec2.new(1, 1), frame_padding : Int32 = -1, bg_col : ImVec4 = ImVec4.new(0, 0, 0, 0), tint_col : ImVec4 = ImVec4.new(1, 1, 1, 1)) : Bool
     LibImGui.ImageButton(user_texture_id, size, uv0, uv1, frame_padding, bg_col, tint_col)
   end
 
