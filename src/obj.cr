@@ -196,6 +196,11 @@ module ImGui
   pointer_wrapper def self.begin(name : String, p_open : Bool* = Pointer(Bool).null, flags : ImGuiWindowFlags = ImGuiWindowFlags.new(0)) : Bool
     LibImGui.Begin(name, p_open, flags)
   end
+  # Calls `begin`, conditionally yields to the block, then calls `end`.
+  pointer_wrapper def self.window(name : String, p_open : Bool* = Pointer(Bool).null, flags : ImGuiWindowFlags = ImGuiWindowFlags.new(0)) : Nil
+    yield if self.begin(name, p_open, flags)
+    self.end
+  end
 
   # [ImGui::End()](https://github.com/ocornut/imgui/blob/v1.88/imgui.h#L327)
   def self.end : Void
@@ -207,9 +212,21 @@ module ImGui
     LibImGui.BeginChild_Str(str_id, size, border, flags)
   end
 
+  # Calls `begin_child`, conditionally yields to the block, then calls `end_child`.
+  def self.child(str_id : String, size : ImVec2 = ImVec2.new(0, 0), border : Bool = false, flags : ImGuiWindowFlags = ImGuiWindowFlags.new(0)) : Nil
+    yield if self.begin_child(str_id, size, border, flags)
+    self.end_child
+  end
+
   # [ImGui::BeginChild()](https://github.com/ocornut/imgui/blob/v1.88/imgui.h#L338)
   def self.begin_child(id : ImGuiID, size : ImVec2 = ImVec2.new(0, 0), border : Bool = false, flags : ImGuiWindowFlags = ImGuiWindowFlags.new(0)) : Bool
     LibImGui.BeginChild_ID(id, size, border, flags)
+  end
+
+  # Calls `begin_child`, conditionally yields to the block, then calls `end_child`.
+  def self.child(id : ImGuiID, size : ImVec2 = ImVec2.new(0, 0), border : Bool = false, flags : ImGuiWindowFlags = ImGuiWindowFlags.new(0)) : Nil
+    yield if self.begin_child(id, size, border, flags)
+    self.end_child
   end
 
   # [ImGui::EndChild()](https://github.com/ocornut/imgui/blob/v1.88/imgui.h#L339)
@@ -500,6 +517,13 @@ module ImGui
     LibImGui.PushFont(font)
   end
 
+  # Calls `push_font`, yields to the block, then calls `pop_font`.
+  def self.with_font(font : ImFont) : Nil
+    self.push_font(font)
+    yield
+    self.pop_font
+  end
+
   # [ImGui::PopFont()](https://github.com/ocornut/imgui/blob/v1.88/imgui.h#L394)
   def self.pop_font : Void
     LibImGui.PopFont
@@ -512,9 +536,23 @@ module ImGui
     LibImGui.PushStyleColor_U32(idx, col)
   end
 
+  # Calls `push_style_color`, yields to the block, then calls `pop_style_color`.
+  def self.with_style_color(idx : ImGuiCol, col : UInt32) : Nil
+    self.push_style_color(idx, col)
+    yield
+    self.pop_style_color
+  end
+
   # [ImGui::PushStyleColor()](https://github.com/ocornut/imgui/blob/v1.88/imgui.h#L396)
   def self.push_style_color(idx : ImGuiCol, col : ImVec4) : Void
     LibImGui.PushStyleColor_Vec4(idx, col)
+  end
+
+  # Calls `push_style_color`, yields to the block, then calls `pop_style_color`.
+  def self.with_style_color(idx : ImGuiCol, col : ImVec4) : Nil
+    self.push_style_color(idx, col)
+    yield
+    self.pop_style_color
   end
 
   # [ImGui::PopStyleColor()](https://github.com/ocornut/imgui/blob/v1.88/imgui.h#L397)
@@ -529,11 +567,25 @@ module ImGui
     LibImGui.PushStyleVar_Float(idx, val)
   end
 
+  # Calls `push_style_var`, yields to the block, then calls `pop_style_var`.
+  def self.with_style_var(idx : ImGuiStyleVar, val : Float32) : Nil
+    self.push_style_var(idx, val)
+    yield
+    self.pop_style_var
+  end
+
   # modify a style ImVec2 variable. always use this if you modify the style after NewFrame().
   #
   # [ImGui::PushStyleVar()](https://github.com/ocornut/imgui/blob/v1.88/imgui.h#L399)
   def self.push_style_var(idx : ImGuiStyleVar, val : ImVec2) : Void
     LibImGui.PushStyleVar_Vec2(idx, val)
+  end
+
+  # Calls `push_style_var`, yields to the block, then calls `pop_style_var`.
+  def self.with_style_var(idx : ImGuiStyleVar, val : ImVec2) : Nil
+    self.push_style_var(idx, val)
+    yield
+    self.pop_style_var
   end
 
   # [ImGui::PopStyleVar()](https://github.com/ocornut/imgui/blob/v1.88/imgui.h#L400)
@@ -548,6 +600,13 @@ module ImGui
     LibImGui.PushAllowKeyboardFocus(allow_keyboard_focus)
   end
 
+  # Calls `push_allow_keyboard_focus`, yields to the block, then calls `pop_allow_keyboard_focus`.
+  def self.with_allow_keyboard_focus(allow_keyboard_focus : Bool) : Nil
+    self.push_allow_keyboard_focus(allow_keyboard_focus)
+    yield
+    self.pop_allow_keyboard_focus
+  end
+
   # [ImGui::PopAllowKeyboardFocus()](https://github.com/ocornut/imgui/blob/v1.88/imgui.h#L402)
   def self.pop_allow_keyboard_focus : Void
     LibImGui.PopAllowKeyboardFocus
@@ -560,6 +619,13 @@ module ImGui
     LibImGui.PushButtonRepeat(repeat)
   end
 
+  # Calls `push_button_repeat`, yields to the block, then calls `pop_button_repeat`.
+  def self.with_button_repeat(repeat : Bool) : Nil
+    self.push_button_repeat(repeat)
+    yield
+    self.pop_button_repeat
+  end
+
   # [ImGui::PopButtonRepeat()](https://github.com/ocornut/imgui/blob/v1.88/imgui.h#L404)
   def self.pop_button_repeat : Void
     LibImGui.PopButtonRepeat
@@ -570,6 +636,13 @@ module ImGui
   # [ImGui::PushItemWidth()](https://github.com/ocornut/imgui/blob/v1.88/imgui.h#L407)
   def self.push_item_width(item_width : Float32) : Void
     LibImGui.PushItemWidth(item_width)
+  end
+
+  # Calls `push_item_width`, yields to the block, then calls `pop_item_width`.
+  def self.with_item_width(item_width : Float32) : Nil
+    self.push_item_width(item_width)
+    yield
+    self.pop_item_width
   end
 
   # [ImGui::PopItemWidth()](https://github.com/ocornut/imgui/blob/v1.88/imgui.h#L408)
@@ -596,6 +669,13 @@ module ImGui
   # [ImGui::PushTextWrapPos()](https://github.com/ocornut/imgui/blob/v1.88/imgui.h#L411)
   def self.push_text_wrap_pos(wrap_local_pos_x : Float32 = 0.0) : Void
     LibImGui.PushTextWrapPos(wrap_local_pos_x)
+  end
+
+  # Calls `push_text_wrap_pos`, yields to the block, then calls `pop_text_wrap_pos`.
+  def self.with_text_wrap_pos(wrap_local_pos_x : Float32 = 0.0) : Nil
+    self.push_text_wrap_pos(wrap_local_pos_x)
+    yield
+    self.pop_text_wrap_pos
   end
 
   # [ImGui::PopTextWrapPos()](https://github.com/ocornut/imgui/blob/v1.88/imgui.h#L412)
@@ -711,6 +791,13 @@ module ImGui
     LibImGui.BeginGroup
   end
 
+  # Calls `begin_group`, yields to the block, then calls `end_group`.
+  def self.group : Nil
+    self.begin_group
+    yield
+    self.end_group
+  end
+
   # unlock horizontal starting position + capture the whole group bounding box into one "item" (so you can use IsItemHovered() or layout primitives such as SameLine() on whole group, etc.)
   #
   # [ImGui::EndGroup()](https://github.com/ocornut/imgui/blob/v1.88/imgui.h#L439)
@@ -824,11 +911,25 @@ module ImGui
     LibImGui.PushID_Str(str_id)
   end
 
+  # Calls `push_id`, yields to the block, then calls `pop_id`.
+  def self.with_id(str_id : String) : Nil
+    self.push_id(str_id)
+    yield
+    self.pop_id
+  end
+
   # push string into the ID stack (will hash string).
   #
   # [ImGui::PushID()](https://github.com/ocornut/imgui/blob/v1.88/imgui.h#L467)
   def self.push_id(str_id : Bytes | String) : Void
     LibImGui.PushID_StrStr(str_id, (str_id.to_unsafe + str_id.bytesize))
+  end
+
+  # Calls `push_id`, yields to the block, then calls `pop_id`.
+  def self.with_id(str_id : Bytes | String) : Nil
+    self.push_id(str_id)
+    yield
+    self.pop_id
   end
 
   # push pointer into the ID stack (will hash pointer).
@@ -838,11 +939,25 @@ module ImGui
     LibImGui.PushID_Ptr(to_void_id(ptr_id))
   end
 
+  # Calls `push_id`, yields to the block, then calls `pop_id`.
+  def self.with_id(ptr_id : Reference | ClassType | Int | Void*) : Nil
+    self.push_id(ptr_id)
+    yield
+    self.pop_id
+  end
+
   # push integer into the ID stack (will hash integer).
   #
   # [ImGui::PushID()](https://github.com/ocornut/imgui/blob/v1.88/imgui.h#L469)
   def self.push_id(int_id : Int32) : Void
     LibImGui.PushID_Int(int_id)
+  end
+
+  # Calls `push_id`, yields to the block, then calls `pop_id`.
+  def self.with_id(int_id : Int32) : Nil
+    self.push_id(int_id)
+    yield
+    self.pop_id
   end
 
   # pop from the ID stack.
@@ -998,6 +1113,13 @@ module ImGui
   # [ImGui::BeginCombo()](https://github.com/ocornut/imgui/blob/v1.88/imgui.h#L510)
   def self.begin_combo(label : String, preview_value : String, flags : ImGuiComboFlags = ImGuiComboFlags.new(0)) : Bool
     LibImGui.BeginCombo(label, preview_value, flags)
+  end
+
+  # Calls `begin_combo`, conditionally yields to the block, then conditionally calls `end_combo`.
+  def self.combo(label : String, preview_value : String, flags : ImGuiComboFlags = ImGuiComboFlags.new(0)) : Nil
+    return unless self.begin_combo(label, preview_value, flags)
+    yield
+    self.end_combo
   end
 
   # only call EndCombo() if BeginCombo() returns true!
@@ -1285,11 +1407,25 @@ module ImGui
     LibImGui.TreeNode_Str(label)
   end
 
+  # Calls `tree_node`, conditionally yields to the block, then conditionally calls `tree_pop`.
+  def self.tree_node(label : String) : Nil
+    return unless self.tree_node(label)
+    yield
+    self.tree_pop
+  end
+
   # helper variation to easily decorelate the id from the displayed string. Read the FAQ about why and how to use ID. to align arbitrary text at the same level as a TreeNode() you can use Bullet().
   #
   # [ImGui::TreeNode()](https://github.com/ocornut/imgui/blob/v1.88/imgui.h#L593)
   def self.tree_node(str_id : String, fmt : String, *args) : Bool
     LibImGui.TreeNode_StrStr(str_id, fmt, *args._promote_va_args)
+  end
+
+  # Calls `tree_node`, conditionally yields to the block, then conditionally calls `tree_pop`.
+  def self.tree_node(str_id : String, fmt : String, *args) : Nil
+    return unless self.tree_node(str_id, fmt, *args)
+    yield
+    self.tree_pop
   end
 
   # "
@@ -1299,9 +1435,23 @@ module ImGui
     LibImGui.TreeNode_Ptr(to_void_id(ptr_id), fmt, *args._promote_va_args)
   end
 
+  # Calls `tree_node`, conditionally yields to the block, then conditionally calls `tree_pop`.
+  def self.tree_node(ptr_id : Reference | ClassType | Int | Void*, fmt : String, *args) : Nil
+    return unless self.tree_node(ptr_id, fmt, *args)
+    yield
+    self.tree_pop
+  end
+
   # [ImGui::TreeNodeEx()](https://github.com/ocornut/imgui/blob/v1.88/imgui.h#L597)
   def self.tree_node_ex(label : String, flags : ImGuiTreeNodeFlags = ImGuiTreeNodeFlags.new(0)) : Bool
     LibImGui.TreeNodeEx_Str(label, flags)
+  end
+
+  # Calls `tree_node_ex`, conditionally yields to the block, then conditionally calls `tree_pop`.
+  def self.tree_node_ex(label : String, flags : ImGuiTreeNodeFlags = ImGuiTreeNodeFlags.new(0)) : Nil
+    return unless self.tree_node_ex(label, flags)
+    yield
+    self.tree_pop
   end
 
   # [ImGui::TreeNodeEx()](https://github.com/ocornut/imgui/blob/v1.88/imgui.h#L598)
@@ -1309,9 +1459,23 @@ module ImGui
     LibImGui.TreeNodeEx_StrStr(str_id, flags, fmt, *args._promote_va_args)
   end
 
+  # Calls `tree_node_ex`, conditionally yields to the block, then conditionally calls `tree_pop`.
+  def self.tree_node_ex(str_id : String, flags : ImGuiTreeNodeFlags, fmt : String, *args) : Nil
+    return unless self.tree_node_ex(str_id, flags, fmt, *args)
+    yield
+    self.tree_pop
+  end
+
   # [ImGui::TreeNodeEx()](https://github.com/ocornut/imgui/blob/v1.88/imgui.h#L599)
   def self.tree_node_ex(ptr_id : Reference | ClassType | Int | Void*, flags : ImGuiTreeNodeFlags, fmt : String, *args) : Bool
     LibImGui.TreeNodeEx_Ptr(to_void_id(ptr_id), flags, fmt, *args._promote_va_args)
+  end
+
+  # Calls `tree_node_ex`, conditionally yields to the block, then conditionally calls `tree_pop`.
+  def self.tree_node_ex(ptr_id : Reference | ClassType | Int | Void*, flags : ImGuiTreeNodeFlags, fmt : String, *args) : Nil
+    return unless self.tree_node_ex(ptr_id, flags, fmt, *args)
+    yield
+    self.tree_pop
   end
 
   # ~ Indent()+PushId(). Already called by TreeNode() when returning true, but you can call TreePush/TreePop yourself if desired.
@@ -1321,11 +1485,25 @@ module ImGui
     LibImGui.TreePush_Str(str_id)
   end
 
+  # Calls `tree_push`, yields to the block, then calls `tree_pop`.
+  def self.with_tree(str_id : String) : Nil
+    self.tree_push(str_id)
+    yield
+    self.tree_pop
+  end
+
   # "
   #
   # [ImGui::TreePush()](https://github.com/ocornut/imgui/blob/v1.88/imgui.h#L603)
   def self.tree_push(ptr_id : Reference | ClassType | Int | Void* = Pointer(Reference | ClassType | Int | Void).null) : Void
     LibImGui.TreePush_Ptr(to_void_id(ptr_id))
+  end
+
+  # Calls `tree_push`, yields to the block, then calls `tree_pop`.
+  def self.with_tree(ptr_id : Reference | ClassType | Int | Void* = Pointer(Reference | ClassType | Int | Void).null) : Nil
+    self.tree_push(ptr_id)
+    yield
+    self.tree_pop
   end
 
   # ~ Unindent()+PopId()
@@ -1380,6 +1558,13 @@ module ImGui
   # [ImGui::BeginListBox()](https://github.com/ocornut/imgui/blob/v1.88/imgui.h#L622)
   def self.begin_list_box(label : String, size : ImVec2 = ImVec2.new(0, 0)) : Bool
     LibImGui.BeginListBox(label, size)
+  end
+
+  # Calls `begin_list_box`, conditionally yields to the block, then conditionally calls `end_list_box`.
+  def self.list_box(label : String, size : ImVec2 = ImVec2.new(0, 0)) : Nil
+    return unless self.begin_list_box(label, size)
+    yield
+    self.end_list_box
   end
 
   # only call EndListBox() if BeginListBox() returned true!
@@ -1445,6 +1630,13 @@ module ImGui
     LibImGui.BeginMenuBar
   end
 
+  # Calls `begin_menu_bar`, conditionally yields to the block, then conditionally calls `end_menu_bar`.
+  def self.menu_bar : Nil
+    return unless self.begin_menu_bar
+    yield
+    self.end_menu_bar
+  end
+
   # only call EndMenuBar() if BeginMenuBar() returns true!
   #
   # [ImGui::EndMenuBar()](https://github.com/ocornut/imgui/blob/v1.88/imgui.h#L647)
@@ -1459,6 +1651,13 @@ module ImGui
     LibImGui.BeginMainMenuBar
   end
 
+  # Calls `begin_main_menu_bar`, conditionally yields to the block, then conditionally calls `end_main_menu_bar`.
+  def self.main_menu_bar : Nil
+    return unless self.begin_main_menu_bar
+    yield
+    self.end_main_menu_bar
+  end
+
   # only call EndMainMenuBar() if BeginMainMenuBar() returns true!
   #
   # [ImGui::EndMainMenuBar()](https://github.com/ocornut/imgui/blob/v1.88/imgui.h#L649)
@@ -1471,6 +1670,13 @@ module ImGui
   # [ImGui::BeginMenu()](https://github.com/ocornut/imgui/blob/v1.88/imgui.h#L650)
   def self.begin_menu(label : String, enabled : Bool = true) : Bool
     LibImGui.BeginMenu(label, enabled)
+  end
+
+  # Calls `begin_menu`, conditionally yields to the block, then conditionally calls `end_menu`.
+  def self.menu(label : String, enabled : Bool = true) : Nil
+    return unless self.begin_menu(label, enabled)
+    yield
+    self.end_menu
   end
 
   # only call EndMenu() if BeginMenu() returns true!
@@ -1500,6 +1706,13 @@ module ImGui
     LibImGui.BeginTooltip
   end
 
+  # Calls `begin_tooltip`, yields to the block, then calls `end_tooltip`.
+  def self.tooltip : Nil
+    self.begin_tooltip
+    yield
+    self.end_tooltip
+  end
+
   # [ImGui::EndTooltip()](https://github.com/ocornut/imgui/blob/v1.88/imgui.h#L658)
   def self.end_tooltip : Void
     LibImGui.EndTooltip
@@ -1519,11 +1732,24 @@ module ImGui
     LibImGui.BeginPopup(str_id, flags)
   end
 
+  # Calls `begin_popup`, conditionally yields to the block, then conditionally calls `end_popup`.
+  def self.popup(str_id : String, flags : ImGuiWindowFlags = ImGuiWindowFlags.new(0)) : Nil
+    return unless self.begin_popup(str_id, flags)
+    yield
+    self.end_popup
+  end
+
   # return true if the modal is open, and you can start outputting to it.
   #
   # [ImGui::BeginPopupModal()](https://github.com/ocornut/imgui/blob/v1.88/imgui.h#L675)
   pointer_wrapper def self.begin_popup_modal(name : String, p_open : Bool* = Pointer(Bool).null, flags : ImGuiWindowFlags = ImGuiWindowFlags.new(0)) : Bool
     LibImGui.BeginPopupModal(name, p_open, flags)
+  end
+  # Calls `begin_popup_modal`, conditionally yields to the block, then conditionally calls `end_popup`.
+  pointer_wrapper def self.popup_modal(name : String, p_open : Bool* = Pointer(Bool).null, flags : ImGuiWindowFlags = ImGuiWindowFlags.new(0)) : Nil
+    return unless self.begin_popup_modal(name, p_open, flags)
+    yield
+    self.end_popup
   end
 
   # only call EndPopup() if BeginPopupXXX() returns true!
@@ -1568,6 +1794,13 @@ module ImGui
     LibImGui.BeginPopupContextItem(str_id, popup_flags)
   end
 
+  # Calls `begin_popup_context_item`, conditionally yields to the block, then conditionally calls `end_popup`.
+  def self.popup_context_item(str_id : String? = nil, popup_flags : ImGuiPopupFlags = ImGuiPopupFlags.new(1)) : Nil
+    return unless self.begin_popup_context_item(str_id, popup_flags)
+    yield
+    self.end_popup
+  end
+
   # open+begin popup when clicked on current window.
   #
   # [ImGui::BeginPopupContextWindow()](https://github.com/ocornut/imgui/blob/v1.88/imgui.h#L697)
@@ -1575,11 +1808,25 @@ module ImGui
     LibImGui.BeginPopupContextWindow(str_id, popup_flags)
   end
 
+  # Calls `begin_popup_context_window`, conditionally yields to the block, then conditionally calls `end_popup`.
+  def self.popup_context_window(str_id : String? = nil, popup_flags : ImGuiPopupFlags = ImGuiPopupFlags.new(1)) : Nil
+    return unless self.begin_popup_context_window(str_id, popup_flags)
+    yield
+    self.end_popup
+  end
+
   # open+begin popup when clicked in void (where there are no windows).
   #
   # [ImGui::BeginPopupContextVoid()](https://github.com/ocornut/imgui/blob/v1.88/imgui.h#L698)
   def self.begin_popup_context_void(str_id : String? = nil, popup_flags : ImGuiPopupFlags = ImGuiPopupFlags.new(1)) : Bool
     LibImGui.BeginPopupContextVoid(str_id, popup_flags)
+  end
+
+  # Calls `begin_popup_context_void`, conditionally yields to the block, then conditionally calls `end_popup`.
+  def self.popup_context_void(str_id : String? = nil, popup_flags : ImGuiPopupFlags = ImGuiPopupFlags.new(1)) : Nil
+    return unless self.begin_popup_context_void(str_id, popup_flags)
+    yield
+    self.end_popup
   end
 
   # return true if the popup is open.
@@ -1592,6 +1839,13 @@ module ImGui
   # [ImGui::BeginTable()](https://github.com/ocornut/imgui/blob/v1.88/imgui.h#L729)
   def self.begin_table(str_id : String, column : Int32, flags : ImGuiTableFlags = ImGuiTableFlags.new(0), outer_size : ImVec2 = ImVec2.new(0.0, 0.0), inner_width : Float32 = 0.0) : Bool
     LibImGui.BeginTable(str_id, column, flags, outer_size, inner_width)
+  end
+
+  # Calls `begin_table`, conditionally yields to the block, then conditionally calls `end_table`.
+  def self.table(str_id : String, column : Int32, flags : ImGuiTableFlags = ImGuiTableFlags.new(0), outer_size : ImVec2 = ImVec2.new(0.0, 0.0), inner_width : Float32 = 0.0) : Nil
+    return unless self.begin_table(str_id, column, flags, outer_size, inner_width)
+    yield
+    self.end_table
   end
 
   # only call EndTable() if BeginTable() returns true!
@@ -1765,6 +2019,13 @@ module ImGui
     LibImGui.BeginTabBar(str_id, flags)
   end
 
+  # Calls `begin_tab_bar`, conditionally yields to the block, then conditionally calls `end_tab_bar`.
+  def self.tab_bar(str_id : String, flags : ImGuiTabBarFlags = ImGuiTabBarFlags.new(0)) : Nil
+    return unless self.begin_tab_bar(str_id, flags)
+    yield
+    self.end_tab_bar
+  end
+
   # only call EndTabBar() if BeginTabBar() returns true!
   #
   # [ImGui::EndTabBar()](https://github.com/ocornut/imgui/blob/v1.88/imgui.h#L776)
@@ -1777,6 +2038,12 @@ module ImGui
   # [ImGui::BeginTabItem()](https://github.com/ocornut/imgui/blob/v1.88/imgui.h#L777)
   pointer_wrapper def self.begin_tab_item(label : String, p_open : Bool* = Pointer(Bool).null, flags : ImGuiTabItemFlags = ImGuiTabItemFlags.new(0)) : Bool
     LibImGui.BeginTabItem(label, p_open, flags)
+  end
+  # Calls `begin_tab_item`, conditionally yields to the block, then conditionally calls `end_tab_item`.
+  pointer_wrapper def self.tab_item(label : String, p_open : Bool* = Pointer(Bool).null, flags : ImGuiTabItemFlags = ImGuiTabItemFlags.new(0)) : Nil
+    return unless self.begin_tab_item(label, p_open, flags)
+    yield
+    self.end_tab_item
   end
 
   # only call EndTabItem() if BeginTabItem() returns true!
@@ -1849,6 +2116,13 @@ module ImGui
     LibImGui.BeginDragDropSource(flags)
   end
 
+  # Calls `begin_drag_drop_source`, conditionally yields to the block, then conditionally calls `end_drag_drop_source`.
+  def self.drag_drop_source(flags : ImGuiDragDropFlags = ImGuiDragDropFlags.new(0)) : Nil
+    return unless self.begin_drag_drop_source(flags)
+    yield
+    self.end_drag_drop_source
+  end
+
   # type is a user defined string of maximum 32 characters. Strings starting with '_' are reserved for dear imgui internal types. Data is copied and held by imgui. Return true when payload has been accepted.
   #
   # [ImGui::SetDragDropPayload()](https://github.com/ocornut/imgui/blob/v1.88/imgui.h#L798)
@@ -1868,6 +2142,13 @@ module ImGui
   # [ImGui::BeginDragDropTarget()](https://github.com/ocornut/imgui/blob/v1.88/imgui.h#L800)
   def self.begin_drag_drop_target : Bool
     LibImGui.BeginDragDropTarget
+  end
+
+  # Calls `begin_drag_drop_target`, conditionally yields to the block, then conditionally calls `end_drag_drop_target`.
+  def self.drag_drop_target : Nil
+    return unless self.begin_drag_drop_target
+    yield
+    self.end_drag_drop_target
   end
 
   # accept contents of a given type. If ImGuiDragDropFlags_AcceptBeforeDelivery is set you can peek into the payload before the mouse button is released.
@@ -1898,6 +2179,13 @@ module ImGui
     LibImGui.BeginDisabled(disabled)
   end
 
+  # Calls `begin_disabled`, yields to the block, then calls `end_disabled`.
+  def self.disabled(disabled : Bool = true) : Nil
+    self.begin_disabled(disabled)
+    yield
+    self.end_disabled
+  end
+
   # [ImGui::EndDisabled()](https://github.com/ocornut/imgui/blob/v1.88/imgui.h#L810)
   def self.end_disabled : Void
     LibImGui.EndDisabled
@@ -1906,6 +2194,13 @@ module ImGui
   # [ImGui::PushClipRect()](https://github.com/ocornut/imgui/blob/v1.88/imgui.h#L814)
   def self.push_clip_rect(clip_rect_min : ImVec2, clip_rect_max : ImVec2, intersect_with_current_clip_rect : Bool) : Void
     LibImGui.PushClipRect(clip_rect_min, clip_rect_max, intersect_with_current_clip_rect)
+  end
+
+  # Calls `push_clip_rect`, yields to the block, then calls `pop_clip_rect`.
+  def self.with_clip_rect(clip_rect_min : ImVec2, clip_rect_max : ImVec2, intersect_with_current_clip_rect : Bool) : Nil
+    self.push_clip_rect(clip_rect_min, clip_rect_max, intersect_with_current_clip_rect)
+    yield
+    self.pop_clip_rect
   end
 
   # [ImGui::PopClipRect()](https://github.com/ocornut/imgui/blob/v1.88/imgui.h#L815)
@@ -2135,6 +2430,12 @@ module ImGui
   # [ImGui::BeginChildFrame()](https://github.com/ocornut/imgui/blob/v1.88/imgui.h#L862)
   def self.begin_child_frame(id : ImGuiID, size : ImVec2, flags : ImGuiWindowFlags = ImGuiWindowFlags.new(0)) : Bool
     LibImGui.BeginChildFrame(id, size, flags)
+  end
+
+  # Calls `begin_child_frame`, conditionally yields to the block, then calls `end_child_frame`.
+  def self.child_frame(id : ImGuiID, size : ImVec2, flags : ImGuiWindowFlags = ImGuiWindowFlags.new(0)) : Nil
+    yield if self.begin_child_frame(id, size, flags)
+    self.end_child_frame
   end
 
   # always call EndChildFrame() regardless of BeginChildFrame() return values (which indicates a collapsed/clipped window)
