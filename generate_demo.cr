@@ -224,6 +224,49 @@ end
 
 outp << "end"
 
+(outp.size - 1).downto(0) do |ai|
+  a = outp[ai]
+  ia = get_indent(a)
+  if (a =~ /^ *(if )?(ImGui\.)((?:push|begin|tree)(?:_(?!pop\b)\w+)?)(\(.*\))?$/ ||
+     a =~ /^ *(if )?()(push_style\w+)(\(.*\))?$/)
+    with_if, with_imgui, def_name, args = $1?, $2, $3, $4?
+    if def_name.starts_with?("tree_node")
+      new_name = def_name
+      pop_name = "tree_pop"
+    elsif def_name == "tree_push"
+      new_name = "with_tree"
+      pop_name = "tree_pop"
+    else
+      push, sep, common = def_name.partition('_')
+      new_name = ({"push" => "with", "begin" => ""}[push] + sep + common).lchop("_")
+      pop_name = {"push" => "pop", "begin" => "end"}[push] + sep + common
+    end
+    if def_name == "begin"
+      new_name = "window"
+    elsif def_name.starts_with?("begin_popup")
+      pop_name = "end_popup"
+    end
+    (ai + 1..outp.size).each do |bi|
+      b = outp[bi]
+      next if b.empty?
+      ib = get_indent(b)
+      if (ib == ia || with_if && ib == ia + 2) && b =~ /^ *#{with_imgui}#{pop_name}$/
+        outp[ai] = " " * ia + "#{with_imgui}#{new_name}#{args} do"
+        if with_if
+          outp.delete_at(bi)
+        else
+          (ai + 1..bi - 1).each do |i|
+            outp[i] = "#{"  " unless outp[i].empty?}#{outp[i]}"
+          end
+          outp[bi] = " " * ib + "end"
+        end
+        break
+      end
+      break if ib < ia || with_if && ib == ia
+    end
+  end
+end
+
 outp.each_with_index do |line, i|
   next if line.empty? && ((outp[i - 1] || "").strip.empty? || get_indent(outp.fetch(i - 1, "")) < get_indent(outp.fetch(i + 1, "")))
   puts line
