@@ -9,7 +9,14 @@ unless File.file?(filename)
 
   `clang-tidy #{Process.quote(filename)} -fix -fix-errors -checks="readability-braces-around-statements,readability-isolate-declaration" -- -Icimgui/imgui`
 
-  `clang-format -i #{Process.quote(filename)} -style='{ColumnLimit: 0, PointerAlignment: Left, SpacesBeforeTrailingComments: 2, AlignTrailingComments: false, AllowShortFunctionsOnASingleLine: None}'`
+  `clang-format -i #{Process.quote(filename)} -style="{ColumnLimit: 0, PointerAlignment: Left, SpacesBeforeTrailingComments: 2, AlignTrailingComments: false, AllowShortFunctionsOnASingleLine: None, ContinuationIndentWidth: 2, AlignOperands: DontAlign, AlignAfterOpenBracket: DontAlign}"`
+end
+
+def nested_brackets_re(brackets = "([])")
+  subs = (0...brackets.size//2).map do |i|
+    "#{Regex.escape(brackets[i])}(?:(?>[^#{Regex.escape(brackets)}]*)|\\g<brack>)#{Regex.escape(brackets[-1 - i])}"
+  end
+  /(?<brack>#{subs.join('|')})/
 end
 
 static_names = Set(String).new
@@ -20,17 +27,21 @@ outp << "# Based on #{file_url}" << ""
 outp << %(require "./imgui")
 outp << %(require "./util") << ""
 outp << "module ImGuiDemo"
-outp << "include ImGui::TopLevel"
+outp << "  include ImGui::TopLevel"
 
 def get_indent(line)
   line.size - line.lstrip.size
 end
+
+in_case = nil
+in_macro = false
 
 File.each_line(filename) do |fline|
   line = fline.lstrip
   indent = get_indent(fline)
   indent += 2 unless line.empty?
 
+  line = line.gsub(/(ImGui::Begin\(")(?i:Dear ImGui)\b/, "\\1crystal-imgui")
   line = line.gsub(/\bimgui_demo\.cpp\b/, "src/demo.cr")
 
   guarded_strings = [] of String
@@ -45,14 +56,16 @@ File.each_line(filename) do |fline|
     %("<STRING#{guarded_strings.size}>")
   end
 
-  if line.starts_with?("#")
+  if line.starts_with?("#") || in_macro
+    in_macro = line.ends_with?("\\")
     next
   end
+
   if !line.empty?
     line = line.gsub(/( +|^)\/\/.*/, "")
     next if line.empty?
   end
-  line = line.gsub(/(?<=[^%][^%][^%])\b(\d+)f\b/, "\\1f32")
+  line = line.gsub(/(?<=[^%][^%][^%])\b(\d+)\.?f\b/, "\\1f32")
   if line == "{"
     line = "begin"
   elsif line.in?("}", "};")
@@ -62,17 +75,31 @@ File.each_line(filename) do |fline|
   line = line.gsub(/^for \(.+? (\w+) = (0); \1 < ([^&]+); \1\+\+\) \{$/, "(\\3).times do |\\1|")
   line = line.gsub(/^for \(.+? (\w+) = (.+); \1 < ([^&]+); \1\+\+\) \{$/, "(\\2...\\3).each do |\\1|")
   line = line.gsub(/^for \(;;\) \{$/, "loop do")
+
+  oldline = line
   line = line.gsub(/^case (.+): \{$/, "when \\1 then begin")
   line = line.gsub(/^case (.+):$/, "when \\1")
   line = line.gsub(/^switch \((.+)\) \{$/, "case \\1")
+  if oldline != line
+    in_case = indent
+  end
+
+  if in_case && line == "break;" && indent == in_case + 2
+    in_case = nil
+    next
+  end
+
   line = line.gsub(/^(if|while) \((.+)\) \{$/, "\\1 \\2")
   line = line.gsub(/^struct (.+) \{$/, "class \\1")
   line = line.gsub(/^\} else if \((.+)\) \{$/, "elsif \\1")
   line = line.gsub(/^\} else \{$/, "else")
 
-  line = line.gsub(/\B\((unsigned int\*|float|intptr_t)\)/, "")
+  line = line.gsub(/\B\(int\)\(([^(),;]*#{nested_brackets_re}?[^(),;]*)\)/, "(\\1).to_i")
+  line = line.gsub(/\B\(int\)([^(),; ]+#{nested_brackets_re}?)/, "\\1.to_i")
+  line = line.gsub(/\B\((int\*|unsigned int\*|float\*?|intptr_t\*?|void\*?)\)/, "")
   line = line.gsub(/\b&/, "")
-  line = line.gsub(/&\b([^,) ;]+)/, "pointerof(\\1)")
+  line = line.gsub(/&\(([^(),;]*#{nested_brackets_re}?[^(),;]*)\)/, "pointerof(\\1)")
+  line = line.gsub(/&(\w[^(),;]*#{nested_brackets_re}?)/, "pointerof(\\1)")
   line = line.gsub(/->/, ".")
   line = line.gsub(/\.(\w+)/) do
     ".#{$1.underscore}"
@@ -94,6 +121,11 @@ File.each_line(filename) do |fline|
   line = line.gsub(/\b(\w+)\b, IM_ARRAYSIZE\(\1\)/, "\\1")
   line = line.gsub(/, ImGuiDataType::\w+,/, ",")
 
+  line = line.gsub(/(ImGui::MenuItem\([^,]+), NULL,/, %(\\1, "",))
+  line = line.gsub(/, NULL, (ImGui\w*Flags::)/, ", flags: \\1")
+  line = line.gsub(/\B(Mouse\w*\()0(,|\))/, "\\1:Left\\2")
+  line = line.gsub(/\B(Mouse\w*\()1(,|\))/, "\\1:Right\\2")
+
   replaced_static = false
   line = line.gsub(/^static (\w+[^= ]*) (\w+)(\[.*?\]|\*|)( =(( .+);|$)|(\([^a-zA-Z].*\))?;$)/) do
     name = $2
@@ -107,7 +139,7 @@ File.each_line(filename) do |fline|
   end
   if !replaced_static
     static_names.each do |k|
-      line = line.gsub(/(?<![."%])\b#{k}\b/, "#{k}.val")
+      line = line.gsub(/(?<![."%])\b#{k}\b(?!:)/, "#{k}.val")
     end
   end
 
@@ -127,7 +159,7 @@ File.each_line(filename) do |fline|
     next
   end
 
-  line = line.gsub(/^sprintf\((\w+), (".+?"), (.+)\);$/, "\\1 = sprintf(\\2, \\3)")
+  line = line.gsub(/\bImColor\(/, "ImGui.color_convert_float4_to_u32(")
 
   line = line.gsub(/\b([A-Z][a-z]\w*)\(/) do
     "#{$1.underscore}("
@@ -137,6 +169,14 @@ File.each_line(filename) do |fline|
   line = line.gsub(/^\b([\w.]+)(\+|-)\2;/, "\\1 \\2= 1")
   line = line.gsub(", ...", ", *args")
 
+  line = line.gsub(/\((.+?) & ImGui\w*Flags::(\w+)\) == 0/, "!\\1.includes?(:\\2)")
+  line = line.gsub(/ & ImGui\w*Flags::(\w+)\b/, ".includes?(:\\1)")
+  line = line.gsub(/\b(\w+) & 1\b/, "\\1.odd?")
+
+  line = line.gsub(/\bstrlen\((.+?)\)/, "\\1.size")
+  line = line.gsub(/\b(ceil|floor)f?\((.+?)\)/, "(\\2).\\1")
+  line = line.gsub(/\bfmodf?\((.+?), (.+?)\)/, "\\1 % \\2")
+  line = line.gsub(/\bstrcmp\((.+?), (.+?)\)/, "\\1 <=> \\2")
   line = line.gsub(/\b(sin|cos|sqrt)f\(/, "Math.\\1(")
   line = line.gsub(/(\(ImVec4\))?ImColor::HSV\(/, "ImGui.hsv(")
   line = line.gsub(/IM_ARRAYSIZE\((.+?)\)/, "\\1.size")
@@ -144,6 +184,7 @@ File.each_line(filename) do |fline|
   line = line.gsub(/IM_MAX\((.+?, .+?)\)/, "{\\1}.max")
   line = line.gsub(/IM_CLAMP\((.+?), (.+?, .+?)\)/, "\\1.clamp(\\2)")
   line = line.gsub(/IM_COL32\((.+?, .+?, .+?, .+?)\)/, "ImGui.col32(\\1)")
+  line = line.gsub(/IM_COLOR\((.+?, .+?, .+?, .+?)\)/, "ImGui.col32(\\1)")
   line = line.gsub(/IM_ASSERT\((.+?)\)/, "assert(\\1)")
   line = line.gsub(/ *IM_FMTARGS\((.+?)\)/, "")
   line = line.gsub(/\bIM_UNICODE_CODEPOINT_MAX\b/, "Char.MAX_CODEPOINT")
@@ -156,12 +197,20 @@ File.each_line(filename) do |fline|
   line = line.gsub(/\bIM_COL32_WHITE\b/, "ImGui.col32(255, 255, 255)")
   line = line.gsub(/\bIMGUI_(VERSION|PAYLOAD_TYPE)/, "ImGui::\\1")
   line = line.gsub(/" *IM_NEWLINE\b/, "\\n\"")
+  line = line.gsub(/^sn?printf\((\w+), (".+?"), (.+)\);$/, "\\1 = sprintf(\\2, \\3)")
+
+  line = line.gsub(/(?<!:)\b[A-Z]{3,}_[A-Z_]+\b/) do
+    $0.downcase
+  end
 
   line = line.gsub(/\bconst /, "")
+  line = line.gsub(/^\*(\w+) (\W?\W?=) (.+)/, "\\1.value \\2 \\3")
 
   line = line.gsub(/ImGui::(\w+)\(/) do
     "ImGui.#{$1.underscore}("
   end
+  line = line.gsub(/\bImGui\.(show_about_window|show_demo_window|show_user_guide|show_style_editor)\b/, "\\1")
+
   line = line.gsub(/^continue;$/, "next")
   line = line.gsub(/;($| +#)/, "\\1")
   line = line.gsub(/\b\(\)/, "")
@@ -170,7 +219,7 @@ File.each_line(filename) do |fline|
     line = line.sub(%(<STRING#{i + 1}>), s)
   end
 
-  outp << " " * indent + line
+  outp << "#{" " * indent unless line.empty?}#{line}"
 end
 
 outp << "end"

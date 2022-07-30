@@ -268,8 +268,8 @@ module ImGuiDemo
         ImGui.same_line
         help_marker("Instruct navigation to move the mouse cursor. See comment for ImGuiConfigFlags_NavEnableSetMousePos.")
         ImGui.checkbox_flags("io.ConfigFlags: NoMouse", pointerof(io.config_flags), ImGuiConfigFlags::NoMouse)
-        if io.config_flags.includes? :NoMouse
-          if (ImGui.get_time % 0.40f32) < 0.20f32
+        if io.config_flags.includes?(:NoMouse)
+          if ImGui.get_time % 0.40f32 < 0.20f32
             ImGui.same_line
             ImGui.text("<<PRESS SPACE TO DISABLE>>")
           end
@@ -318,7 +318,7 @@ module ImGuiDemo
       demo_marker("Configuration/Style")
       if ImGui.tree_node("Style")
         help_marker("The same contents can be accessed in 'Tools->Style Editor' or by calling the ShowStyleEditor() function.")
-        ImGui.show_style_editor
+        show_style_editor
         ImGui.tree_pop
         ImGui.separator
       end
@@ -942,7 +942,7 @@ module ImGuiDemo
         ImGui.text("(I am not selectable)")
         ImGui.selectable("4. I am selectable", pointerof(selection.val[3]))
         if ImGui.selectable("5. I am double clickable", selection.val[4], ImGuiSelectableFlags::AllowDoubleClick)
-          if ImGui.is_mouse_double_clicked(ImGuiMouseButton::Left)
+          if ImGui.is_mouse_double_clicked(:Left)
             selection.val[4] = !selection.val[4]
           end
         end
@@ -1084,17 +1084,18 @@ module ImGuiDemo
     if ImGui.tree_node("Text Input")
       demo_marker("Widgets/Text Input/Multi-line Text Input")
       if ImGui.tree_node("Multi-line Text Input")
-        static text = ImGui::TextBuffer.new(1024 * 16) <<
-                      "/*\n" <<
-                      " The Pentium F00F bug, shorthand for F0 0F C7 C8,\n" <<
-                      " the hexadecimal encoding of one offending instruction,\n" <<
-                      " more formally, the invalid operand with locked CMPXCHG8B\n" <<
-                      " instruction bug, is a design flaw in the majority of\n" <<
-                      " Intel Pentium, Pentium MMX, and Pentium OverDrive\n" <<
-                      " processors (all in the P5 microarchitecture).\n" <<
-                      "*/\n\n" <<
-                      "label:\n" <<
-                      "\tlock cmpxchg8b eax\n"
+        static text = ImGui::TextBuffer.new(1024 * 16) << (
+          "/*\n" +
+          " The Pentium F00F bug, shorthand for F0 0F C7 C8,\n" +
+          " the hexadecimal encoding of one offending instruction,\n" +
+          " more formally, the invalid operand with locked CMPXCHG8B\n" +
+          " instruction bug, is a design flaw in the majority of\n" +
+          " Intel Pentium, Pentium MMX, and Pentium OverDrive\n" +
+          " processors (all in the P5 microarchitecture).\n" +
+          "*/\n\n" +
+          "label:\n" +
+          "\tlock cmpxchg8b eax\n"
+        )
 
         static flags = ImGuiInputTextFlags::AllowTabInput
         help_marker("You can use the ImGuiInputTextFlags_CallbackResize facility if you need to wire InputTextMultiline() to a dynamic string type. See misc/cpp/imgui_stdlib.h for an example. (This is not demonstrated in src/demo.cr because we don't want to include <string> in here)")
@@ -1231,7 +1232,7 @@ module ImGuiDemo
         ImGui.checkbox_flags("ImGuiTabBarFlags_AutoSelectNewTabs", pointerof(tab_bar_flags.val), ImGuiTabBarFlags::AutoSelectNewTabs)
         ImGui.checkbox_flags("ImGuiTabBarFlags_TabListPopupButton", pointerof(tab_bar_flags.val), ImGuiTabBarFlags::TabListPopupButton)
         ImGui.checkbox_flags("ImGuiTabBarFlags_NoCloseWithMiddleMouseButton", pointerof(tab_bar_flags.val), ImGuiTabBarFlags::NoCloseWithMiddleMouseButton)
-        if (tab_bar_flags.val.includes? :FittingPolicyMask_)
+        if !tab_bar_flags.val.includes?(:FittingPolicyMask_)
           tab_bar_flags.val |= ImGuiTabBarFlags::FittingPolicyDefault_
         end
         if ImGui.checkbox_flags("ImGuiTabBarFlags_FittingPolicyResizeDown", pointerof(tab_bar_flags.val), ImGuiTabBarFlags::FittingPolicyResizeDown)
@@ -1992,7 +1993,7 @@ module ImGuiDemo
           ImGui.selectable(item)
 
           if ImGui.is_item_active && !ImGui.is_item_hovered
-            n_next = n + (ImGui.get_mouse_drag_delta(ImGuiMouseButton::Left).y < 0f32 ? -1 : 1)
+            n_next = n + (ImGui.get_mouse_drag_delta(:Left).y < 0f32 ? -1 : 1)
             if n_next >= 0 && n_next < item_names.val.size
               item_names.val[n] = item_names.val[n_next]
               item_names.val[n_next] = item
@@ -2617,7 +2618,7 @@ module ImGuiDemo
         ImGui.same_line
         ImGui.button("50x50", ImVec2.new(50, 50))
         ImGui.same_line
-        ImGui.button("button()")
+        ImGui.button("Button()")
         ImGui.same_line
         ImGui.small_button("SmallButton()")
 
@@ -2786,7 +2787,7 @@ module ImGuiDemo
       scrolling_child_size = ImVec2.new(0, ImGui.get_frame_height_with_spacing * 7 + 30)
       ImGui.begin_child("scrolling", scrolling_child_size, true, ImGuiWindowFlags::HorizontalScrollbar)
       lines.val.times do |line|
-        num_buttons = 10 + (line.odd? ? line * 9 : line * 3)
+        num_buttons = 10 + ((line.odd?) ? line * 9 : line * 3)
         num_buttons.times do |n|
           if n > 0
             ImGui.same_line
@@ -3435,13 +3436,13 @@ module ImGuiDemo
   end
 
   def self.show_demo_window_tables
-    text_base_width = ImGui.calc_text_size("A").x
-    text_base_height = ImGui.get_text_line_height_with_spacing
-
     demo_marker("Tables")
     if !ImGui.collapsing_header("Tables & Columns")
       return
     end
+
+    text_base_width = ImGui.calc_text_size("A").x
+    text_base_height = ImGui.get_text_line_height_with_spacing
 
     ImGui.push_id("Tables")
 
@@ -4505,7 +4506,7 @@ module ImGuiDemo
         hovered_column = -1
         (columns_count + 1).times do |column|
           ImGui.push_id(column)
-          if ImGui.table_get_column_flags(column).includes? :IsHovered
+          if ImGui.table_get_column_flags(column).includes?(:IsHovered)
             hovered_column = column
           end
           if hovered_column == column && !ImGui.is_any_item_hovered && ImGui.is_mouse_released(:Right)
@@ -4564,7 +4565,7 @@ module ImGuiDemo
     end
     demo_marker("Tables/Sorting")
     if ImGui.tree_node("Sorting")
-      static items = p! Array(MyItem).new(50) { |n|
+      static items = Array(MyItem).new(50) { |n|
         template_n = n % template_items_names.size
         MyItem.new(
           id: n,
@@ -4778,13 +4779,13 @@ module ImGuiDemo
       table_scroll_max = ImVec2.new
       table_draw_list = nil
 
-      inner_width_to_use = (flags.val.includes? :ScrollX) ? inner_width_with_scroll.val : 0.0f32
+      inner_width_to_use = (flags.val.includes?(:ScrollX)) ? inner_width_with_scroll.val : 0.0f32
       if ImGui.begin_table("table_advanced", 6, flags.val, outer_size_enabled.val ? outer_size_value.val : ImVec2.new(0, 0), inner_width_to_use)
         ImGui.table_setup_column("ID", ImGuiTableColumnFlags::DefaultSort | ImGuiTableColumnFlags::WidthFixed | ImGuiTableColumnFlags::NoHide, 0.0f32, MyItemColumnID::ID.to_u32)
         ImGui.table_setup_column("Name", ImGuiTableColumnFlags::WidthFixed, 0.0f32, MyItemColumnID::Name.to_u32)
         ImGui.table_setup_column("Action", ImGuiTableColumnFlags::NoSort | ImGuiTableColumnFlags::WidthFixed, 0.0f32, MyItemColumnID::Action.to_u32)
         ImGui.table_setup_column("Quantity", ImGuiTableColumnFlags::PreferSortDescending, 0.0f32, MyItemColumnID::Quantity.to_u32)
-        ImGui.table_setup_column("Description", (flags.val.includes? :NoHostExtendX) ? ImGuiTableColumnFlags::None : ImGuiTableColumnFlags::WidthStretch, 0.0f32, MyItemColumnID::Description.to_u32)
+        ImGui.table_setup_column("Description", (flags.val.includes?(:NoHostExtendX)) ? ImGuiTableColumnFlags::None : ImGuiTableColumnFlags::WidthStretch, 0.0f32, MyItemColumnID::Description.to_u32)
         ImGui.table_setup_column("Hidden", ImGuiTableColumnFlags::DefaultHide | ImGuiTableColumnFlags::NoSort)
         ImGui.table_setup_scroll_freeze(freeze_cols.val, freeze_rows.val)
 
@@ -4800,7 +4801,7 @@ module ImGuiDemo
         end
         items_need_sort.val = false
 
-        sorts_specs_using_quantity = (ImGui.table_get_column_flags(3).includes? :IsSorted)
+        sorts_specs_using_quantity = (ImGui.table_get_column_flags(3).includes?(:IsSorted))
 
         if show_headers.val
           ImGui.table_headers_row
@@ -5430,8 +5431,8 @@ module ImGuiDemo
           ImGui.get_foreground_draw_list.add_line(io.mouse_clicked_pos[0], io.mouse_pos, ImGui.get_color_u32(ImGuiCol::Button), 4.0f32)
         end
 
-        value_raw = ImGui.get_mouse_drag_delta(ImGuiMouseButton::Left, 0.0f32)
-        value_with_lock_threshold = ImGui.get_mouse_drag_delta(ImGuiMouseButton::Left)
+        value_raw = ImGui.get_mouse_drag_delta(:Left, 0.0f32)
+        value_with_lock_threshold = ImGui.get_mouse_drag_delta(:Left)
         mouse_delta = io.mouse_delta
         ImGui.text("GetMouseDragDelta(0):")
         ImGui.text("  w/ default threshold: (%.1f, %.1f)", value_with_lock_threshold.x, value_with_lock_threshold.y)
@@ -5496,22 +5497,22 @@ module ImGuiDemo
       ImGui.text("io.BackendPlatformName: %s", io.backend_platform_name || "NULL")
       ImGui.text("io.BackendRendererName: %s", io.backend_renderer_name || "NULL")
       ImGui.text("io.ConfigFlags: 0x%08X", io.config_flags)
-      if io.config_flags.includes? :NavEnableKeyboard
+      if io.config_flags.includes?(:NavEnableKeyboard)
         ImGui.text(" NavEnableKeyboard")
       end
-      if io.config_flags.includes? :NavEnableGamepad
+      if io.config_flags.includes?(:NavEnableGamepad)
         ImGui.text(" NavEnableGamepad")
       end
-      if io.config_flags.includes? :NavEnableSetMousePos
+      if io.config_flags.includes?(:NavEnableSetMousePos)
         ImGui.text(" NavEnableSetMousePos")
       end
-      if io.config_flags.includes? :NavNoCaptureKeyboard
+      if io.config_flags.includes?(:NavNoCaptureKeyboard)
         ImGui.text(" NavNoCaptureKeyboard")
       end
-      if io.config_flags.includes? :NoMouse
+      if io.config_flags.includes?(:NoMouse)
         ImGui.text(" NoMouse")
       end
-      if io.config_flags.includes? :NoMouseCursorChange
+      if io.config_flags.includes?(:NoMouseCursorChange)
         ImGui.text(" NoMouseCursorChange")
       end
       if io.mouse_draw_cursor
@@ -5533,16 +5534,16 @@ module ImGuiDemo
         ImGui.text("io.ConfigMemoryCompactTimer = %.1f", io.config_memory_compact_timer)
       end
       ImGui.text("io.BackendFlags: 0x%08X", io.backend_flags)
-      if io.backend_flags.includes? :HasGamepad
+      if io.backend_flags.includes?(:HasGamepad)
         ImGui.text(" HasGamepad")
       end
-      if io.backend_flags.includes? :HasMouseCursors
+      if io.backend_flags.includes?(:HasMouseCursors)
         ImGui.text(" HasMouseCursors")
       end
-      if io.backend_flags.includes? :HasSetMousePos
+      if io.backend_flags.includes?(:HasSetMousePos)
         ImGui.text(" HasSetMousePos")
       end
-      if io.backend_flags.includes? :RendererHasVtxOffset
+      if io.backend_flags.includes?(:RendererHasVtxOffset)
         ImGui.text(" RendererHasVtxOffset")
       end
       ImGui.separator
@@ -5850,7 +5851,7 @@ module ImGuiDemo
 
             canvas_width = {min_widget_width, rad * 2.0f32}.max
             offset_x = (canvas_width * 0.5f32).floor
-            offset_y = rad_max.floor
+            offset_y = (rad_max).floor
 
             p1 = ImGui.get_cursor_screen_pos
             draw_list.add_circle(ImVec2.new(p1.x + offset_x, p1.y + offset_y), rad, ImGui.get_color_u32(ImGuiCol::Text))
@@ -5905,7 +5906,7 @@ module ImGuiDemo
 
   def self.show_example_menu_file
     demo_marker("Examples/Menu")
-    ImGui.menu_item("(demo menu)", nil, false, false)
+    ImGui.menu_item("(demo menu)", "", false, false)
     if ImGui.menu_item("New")
     end
     if ImGui.menu_item("Open", "Ctrl+O")
@@ -6491,7 +6492,7 @@ module ImGuiDemo
     case test_type.val
     when 0
       ImGui.text_unformatted(log.val.to_slice)
-    when 1
+    when 1 then begin
       ImGui.push_style_var(ImGuiStyleVar::ItemSpacing, ImVec2.new(0, 0))
       clipper = ImGuiListClipper.new
       clipper.begin(lines.val)
@@ -6501,6 +6502,7 @@ module ImGuiDemo
         end
       end
       ImGui.pop_style_var
+    end
     when 2
       ImGui.push_style_var(ImGuiStyleVar::ItemSpacing, ImVec2.new(0, 0))
       lines.val.times do |i|
@@ -6634,19 +6636,19 @@ module ImGuiDemo
         ImGui.text("Mouse Position: <invalid>")
       end
       if ImGui.begin_popup_context_window
-        if ImGui.menu_item("Custom", nil, corner.val == -1)
+        if ImGui.menu_item("Custom", "", corner.val == -1)
           corner.val = -1
         end
-        if ImGui.menu_item("Top-left", nil, corner.val == 0)
+        if ImGui.menu_item("Top-left", "", corner.val == 0)
           corner.val = 0
         end
-        if ImGui.menu_item("Top-right", nil, corner.val == 1)
+        if ImGui.menu_item("Top-right", "", corner.val == 1)
           corner.val = 1
         end
-        if ImGui.menu_item("Bottom-left", nil, corner.val == 2)
+        if ImGui.menu_item("Bottom-left", "", corner.val == 2)
           corner.val = 2
         end
-        if ImGui.menu_item("Bottom-right", nil, corner.val == 3)
+        if ImGui.menu_item("Bottom-right", "", corner.val == 3)
           corner.val = 3
         end
         if p_open && ImGui.menu_item("Close")
@@ -6883,7 +6885,7 @@ module ImGuiDemo
             points.val.pop(2)
           end
           adding_line.val = false
-          if ImGui.menu_item("Remove one", nil, false, points.val.size > 0)
+          if ImGui.menu_item("Remove one", "", false, points.val.size > 0)
             points.val.pop(2)
           end
           if ImGui.menu_item("Remove all", nil, false, points.val.size > 0)
@@ -6943,10 +6945,10 @@ module ImGuiDemo
 
   class MyDocument
     getter name
-    property? open
-    property? open_prev
-    property? dirty
-    property? want_close
+    property open
+    property open_prev
+    property dirty
+    property want_close
     property color
 
     def initialize(@name : String, @open = true, @color = ImVec4.new(1.0f32, 1.0f32, 1.0f32, 1.0f32))
@@ -6995,10 +6997,10 @@ module ImGuiDemo
       end
 
       buf = sprintf("Save %s", doc.name)
-      if ImGui.menu_item(buf, "CTRL+S", false, doc.open?)
+      if ImGui.menu_item(buf, "CTRL+S", false, doc.open)
         doc.do_save
       end
-      if ImGui.menu_item("Close", "CTRL+W", false, doc.open?)
+      if ImGui.menu_item("Close", "CTRL+W", false, doc.open)
         doc.do_queue_close
       end
       ImGui.end_popup
@@ -7023,10 +7025,10 @@ module ImGuiDemo
   def self.notify_of_documents_closed_elsewhere(app)
     app.documents.size.times do |doc_n|
       doc = app.documents[doc_n]
-      if !doc.open? && doc.open_prev?
+      if !doc.open && doc.open_prev
         ImGui.set_tab_item_closed(doc.name)
       end
-      doc.open_prev = doc.open?
+      doc.open_prev = doc.open
     end
   end
 
@@ -7046,13 +7048,13 @@ module ImGuiDemo
       if ImGui.begin_menu("File")
         open_count = 0
         app.val.documents.size.times do |doc_n|
-          open_count += app.val.documents[doc_n].open? ? 1 : 0
+          open_count += app.val.documents[doc_n].open ? 1 : 0
         end
 
         if ImGui.begin_menu("Open", open_count < app.val.documents.size)
           app.val.documents.size.times do |doc_n|
             doc = app.val.documents[doc_n]
-            if !doc.open?
+            if !doc.open
               if ImGui.menu_item(doc.name)
                 doc.do_open
               end
@@ -7078,8 +7080,8 @@ module ImGuiDemo
         ImGui.same_line
       end
       ImGui.push_id(doc)
-      if ImGui.checkbox(doc.name, pointerof(doc.open?))
-        if !doc.open?
+      if ImGui.checkbox(doc.name, pointerof(doc.open))
+        if !doc.open
           doc.do_force_close
         end
       end
@@ -7096,14 +7098,14 @@ module ImGuiDemo
 
         app.val.documents.size.times do |doc_n|
           doc = app.val.documents[doc_n]
-          if !doc.open?
+          if !doc.open
             next
           end
 
-          tab_flags = (doc.dirty? ? ImGuiTabItemFlags::UnsavedDocument : ImGuiTabItemFlags::None)
-          visible = ImGui.begin_tab_item(doc.name, pointerof(doc.open?), tab_flags)
+          tab_flags = (doc.dirty ? ImGuiTabItemFlags::UnsavedDocument : ImGuiTabItemFlags::None)
+          visible = ImGui.begin_tab_item(doc.name, pointerof(doc.open), tab_flags)
 
-          if !doc.open? && doc.dirty?
+          if !doc.open && doc.dirty
             doc.open = true
             doc.do_queue_close
           end
@@ -7123,7 +7125,7 @@ module ImGuiDemo
     if close_queue.val.empty?
       app.val.documents.size.times do |doc_n|
         doc = app.val.documents[doc_n]
-        if doc.want_close?
+        if doc.want_close
           doc.want_close = false
           close_queue.val << doc
         end
@@ -7133,7 +7135,7 @@ module ImGuiDemo
     if !close_queue.val.empty?
       close_queue_unsaved_documents = 0
       close_queue.val.size.times do |n|
-        if close_queue.val[n].dirty?
+        if close_queue.val[n].dirty
           close_queue_unsaved_documents += 1
         end
       end
@@ -7152,7 +7154,7 @@ module ImGuiDemo
           item_height = ImGui.get_text_line_height_with_spacing
           if ImGui.begin_child_frame(ImGui.get_id("frame"), ImVec2.new(-Float32::MIN_POSITIVE, 6.25f32 * item_height))
             close_queue.val.size.times do |n|
-              if close_queue.val[n].dirty?
+              if close_queue.val[n].dirty
                 ImGui.text("%s", close_queue.val[n].name)
               end
             end
@@ -7162,7 +7164,7 @@ module ImGuiDemo
           button_size = ImVec2.new(ImGui.get_font_size * 7.0f32, 0.0f32)
           if ImGui.button("Yes", button_size)
             close_queue.val.size.times do |n|
-              if close_queue.val[n].dirty?
+              if close_queue.val[n].dirty
                 close_queue.val[n].do_save
               end
               close_queue.val[n].do_force_close
