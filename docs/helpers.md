@@ -75,7 +75,7 @@ The clipper calculates the range of visible items and advance the cursor to comp
 
 Usage:  
   [`ImGui::ImGuiListClipper`][] clipper;
-  clipper.[`ImGui.begin`][](1000);         // We have 1000 elements, evenly spaced.
+  clipper.Begin(1000);         // We have 1000 elements, evenly spaced.
   while (clipper.Step())
       for (int i = clipper.DisplayStart; i < clipper.DisplayEnd; i++)
           [`ImGui.text`][]("line number %d", i);
@@ -97,7 +97,7 @@ Generally what happens is:
 
 ##### ::: ImGui::ImGuiListClipper.display_end
 
- [`ImGui.end`][] of items to display (exclusive)  
+ End of items to display (exclusive)  
 
 ##### ::: ImGui::ImGuiListClipper.items_count
 
@@ -109,7 +109,7 @@ Generally what happens is:
 
 ##### ::: ImGui::ImGuiListClipper.start_pos_y
 
- [Internal] Cursor position at the time of [`ImGui.begin`][] or after table frozen rows are all processed  
+ [Internal] Cursor position at the time of Begin() or after table frozen rows are all processed  
 
 ##### ::: ImGui::ImGuiListClipper.temp_data
 

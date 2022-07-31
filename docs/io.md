@@ -108,7 +108,7 @@ If prior to 1.87 you used io.KeysDownDuration[] (which was marked as internal), 
 
 ##### ::: ImGui::ImGuiIO.config_mac_osx_behaviors
 
- = defined(__APPLE__) // OS X style: [`ImGui.text`][] editing cursor movement using Alt instead of Ctrl, Shortcuts using Cmd/Super instead of Ctrl, Line/[`ImGui.text`][] Start and [`ImGui.end`][] using Cmd+Arrows instead of Home/[`ImGui.end`][], Double click selects by word instead of selecting whole text, Multi-selection in lists uses Cmd/Super instead of Ctrl.  
+ = defined(__APPLE__) // OS X style: [`ImGui.text`][] editing cursor movement using Alt instead of Ctrl, Shortcuts using Cmd/Super instead of Ctrl, Line/[`ImGui.text`][] Start and End using Cmd+Arrows instead of Home/End, Double click selects by word instead of selecting whole text, Multi-selection in lists uses Cmd/Super instead of Ctrl.  
 
 ##### ::: ImGui::ImGuiIO.config_input_trickle_event_queue
 

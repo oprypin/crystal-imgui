@@ -40,7 +40,7 @@
  Has a menu-bar  
 
 - `HorizontalScrollbar`  
- Allow horizontal scrollbar to appear (off by default). You may use [`ImGui.set_next_window_content_size`][]([`ImGui::ImVec2`][](width,0.0f)); prior to calling [`ImGui.begin`][] to specify width. Read code in imgui_demo in the "Horizontal Scrolling" section.  
+ Allow horizontal scrollbar to appear (off by default). You may use [`ImGui.set_next_window_content_size`][]([`ImGui::ImVec2`][](width,0.0f)); prior to calling Begin() to specify width. Read code in imgui_demo in the "Horizontal Scrolling" section.  
 
 - `NoFocusOnAppearing`  
  Disable taking focus when transitioning from hidden to visible state  
@@ -197,7 +197,7 @@
 - `Leaf`  
  No collapsing, no arrow (use as a convenience for leaf nodes).  
 
-- `[`ImGui.bullet`][]`  
+- `Bullet`  
  Display a bullet instead of arrow  
 
 - `FramePadding`  
@@ -844,7 +844,7 @@ Keys value >= 512 are named keys (>= 1.87)
 
 - `Home`  
 
-- `[`ImGui.end`][]`  
+- `End`  
 
 - `Insert`  
 
@@ -1023,7 +1023,7 @@ Gamepad (some of those are analog values, 0.0f to 1.0f)                         
 
 - `ModCtrl`, `ModShift`, `ModAlt`, `ModSuper`  
 
-#### [`ImGui.end`][] of list  
+#### End of list  
 
 - `COUNT`  
  No valid [`ImGui::ImGuiKey`][] is ever greater than this value  
@@ -1191,9 +1191,9 @@ Backend capabilities flags stored in io.BackendFlags. Set by imgui_impl_xxx or c
 
 ### ::: ImGui::ImGuiCol
 
-- `[`ImGui.text`][]`  
+- `Text`  
 
-- `[`ImGui.text_disabled`][]`  
+- `TextDisabled`  
 
 - `WindowBg`  
  Background of normal windows  
@@ -1237,7 +1237,7 @@ Backend capabilities flags stored in io.BackendFlags. Set by imgui_impl_xxx or c
 
 - `SliderGrabActive`  
 
-- `[`ImGui.button`][]`  
+- `Button`  
 
 - `ButtonHovered`  
 
@@ -1250,7 +1250,7 @@ Backend capabilities flags stored in io.BackendFlags. Set by imgui_impl_xxx or c
 
 - `HeaderActive`  
 
-- `[`ImGui.separator`][]`  
+- `Separator`  
 
 - `SeparatorHovered`  
 

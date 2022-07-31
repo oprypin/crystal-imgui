@@ -1057,7 +1057,8 @@ while i < IMGUI_H.size
   prev_cmt = code.blank? ? cmt : ""
 end
 
-referrable_items_re = /(ImGui::)?\b(#{REFERRABLE_ITEMS.keys.map { |s| Regex.escape(s) }.join('|')})\b(\(\))?/
+keys = REFERRABLE_ITEMS.keys.map { |s| Regex.escape(s) }.join('|')
+referrable_items_re = /(?!Begin\b)(?!End\b)(ImGui::)?\b(#{keys})\b(?!`)(\(\))?/
 
 file = nil
 file_mappings = {

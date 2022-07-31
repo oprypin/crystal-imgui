@@ -69,7 +69,7 @@ Callbacks (follow a flag name and see comments in [`ImGui::ImGuiInputTextFlags`]
 Helper functions for text manipulation.  
 Use those function to benefit from the CallbackResize behaviors. Calling those function reset the selection.  
 
-Resizing callback data to apply custom constraint. As enabled by [`ImGui.set_next_window_size_constraints`][]. Callback is called during the next [`ImGui.begin`][].  
+Resizing callback data to apply custom constraint. As enabled by [`ImGui.set_next_window_size_constraints`][]. Callback is called during the next Begin().  
 NB: For basic min/max size constraint on each axis you don't need to use the callback! The [`ImGui.set_next_window_size_constraints`][] parameters are enough.  
 
 ### ::: ImGui::ImGuiSizeCallbackData

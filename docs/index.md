@@ -101,16 +101,16 @@
 
 ## Windows  
 
-- [`ImGui.begin`][] = push window to the stack and start appending to it. [`ImGui.end`][] = pop window from the stack.
+- Begin() = push window to the stack and start appending to it. End() = pop window from the stack.
 - Passing 'bool* p_open != NULL' shows a window-closing widget in the upper-right corner of the window,
   which clicking will set the boolean to false when clicked.
-- You may append multiple times to the same window during the same frame by calling [`ImGui.begin`][]/[`ImGui.end`][] pairs multiple times.
-  Some information such as 'flags' or 'p_open' will only be considered by the first call to [`ImGui.begin`][].
-- [`ImGui.begin`][] return false to indicate the window is collapsed or fully clipped, so you may early out and omit submitting
-  anything to the window. Always call a matching [`ImGui.end`][] for each [`ImGui.begin`][] call, regardless of its return value!
+- You may append multiple times to the same window during the same frame by calling Begin()/End() pairs multiple times.
+  Some information such as 'flags' or 'p_open' will only be considered by the first call to Begin().
+- Begin() return false to indicate the window is collapsed or fully clipped, so you may early out and omit submitting
+  anything to the window. Always call a matching End() for each Begin() call, regardless of its return value!
   [Important: due to legacy reason, this is inconsistent with most other functions such as [`ImGui.begin_menu`][]/[`ImGui.end_menu`][],
    [`ImGui.begin_popup`][]/[`ImGui.end_popup`][], etc. where the EndXXX call should only be called if the corresponding BeginXXX function
-   returned true. [`ImGui.begin`][] and BeginChild are the only odd ones out. Will be fixed in a future update.]
+   returned true. Begin and BeginChild are the only odd ones out. Will be fixed in a future update.]
 - Note that the bottom of window stack always contains a window called "Debug".
 
 ### ::: ImGui.begin
@@ -125,7 +125,7 @@
   Always call a matching [`ImGui.end_child`][] for each BeginChild() call, regardless of its return value.
   [Important: due to legacy reason, this is inconsistent with most other functions such as [`ImGui.begin_menu`][]/[`ImGui.end_menu`][],
    [`ImGui.begin_popup`][]/[`ImGui.end_popup`][], etc. where the EndXXX call should only be called if the corresponding BeginXXX function
-   returned true. [`ImGui.begin`][] and BeginChild are the only odd ones out. Will be fixed in a future update.]
+   returned true. Begin and BeginChild are the only odd ones out. Will be fixed in a future update.]
 
 ### ::: ImGui.begin_child
 
@@ -135,7 +135,7 @@
 
 ## Windows Utilities  
 
-- 'current window' = the window we are appending into while inside a [`ImGui.begin`][]/[`ImGui.end`][] block. 'next window' = next window we will [`ImGui.begin`][] into.
+- 'current window' = the window we are appending into while inside a Begin()/End() block. 'next window' = next window we will Begin() into.
 
 ### ::: ImGui.is_window_appearing
 
@@ -171,15 +171,15 @@
 
 ## Window manipulation  
 
-- Prefer using SetNextXXX functions (before [`ImGui.begin`][]) rather that SetXXX functions (after [`ImGui.begin`][]).
+- Prefer using SetNextXXX functions (before Begin) rather that SetXXX functions (after Begin).
 
 ### ::: ImGui.set_next_window_pos
 
- set next window position. call before [`ImGui.begin`][]. use pivot=(0.5f,0.5f) to center on given point, etc.  
+ set next window position. call before Begin(). use pivot=(0.5f,0.5f) to center on given point, etc.  
 
 ### ::: ImGui.set_next_window_size
 
- set next window size. set axis to 0.0f to force an auto-fit on this axis. call before [`ImGui.begin`][]  
+ set next window size. set axis to 0.0f to force an auto-fit on this axis. call before Begin()  
 
 ### ::: ImGui.set_next_window_size_constraints
 
@@ -187,15 +187,15 @@
 
 ### ::: ImGui.set_next_window_content_size
 
- set next window content size (~ scrollable client area, which enforce the range of scrollbars). Not including window decorations (title bar, menu bar, etc.) nor WindowPadding. set an axis to 0.0f to leave it automatic. call before [`ImGui.begin`][]  
+ set next window content size (~ scrollable client area, which enforce the range of scrollbars). Not including window decorations (title bar, menu bar, etc.) nor WindowPadding. set an axis to 0.0f to leave it automatic. call before Begin()  
 
 ### ::: ImGui.set_next_window_collapsed
 
- set next window collapsed state. call before [`ImGui.begin`][]  
+ set next window collapsed state. call before Begin()  
 
 ### ::: ImGui.set_next_window_focus
 
- set next window to be focused / top-most. call before [`ImGui.begin`][]  
+ set next window to be focused / top-most. call before Begin()  
 
 ### ::: ImGui.set_next_window_bg_alpha
 
@@ -203,11 +203,11 @@
 
 ### ::: ImGui.set_window_pos
 
- (not recommended) set current window position - call within [`ImGui.begin`][]/[`ImGui.end`][]. prefer using [`ImGui.set_next_window_pos`][], as this may incur tearing and side-effects.  
+ (not recommended) set current window position - call within Begin()/End(). prefer using [`ImGui.set_next_window_pos`][], as this may incur tearing and side-effects.  
 
 ### ::: ImGui.set_window_size
 
- (not recommended) set current window size - call within [`ImGui.begin`][]/[`ImGui.end`][]. set to [`ImGui::ImVec2`][](0, 0) to force an auto-fit. prefer using [`ImGui.set_next_window_size`][], as this may incur tearing and minor side-effects.  
+ (not recommended) set current window size - call within Begin()/End(). set to [`ImGui::ImVec2`][](0, 0) to force an auto-fit. prefer using [`ImGui.set_next_window_size`][], as this may incur tearing and minor side-effects.  
 
 ### ::: ImGui.set_window_collapsed
 
@@ -924,7 +924,7 @@ Widgets: Value() Helpers.
 
   - They block normal mouse hovering detection (and therefore most mouse interactions) behind them.
   - If not modal: they can be closed by clicking anywhere outside them, or by pressing ESCAPE.
-  - Their visibility state (~bool) is held internally instead of being held by the programmer as we are used to with regular [`ImGui.begin`][]*() calls.
+  - Their visibility state (~bool) is held internally instead of being held by the programmer as we are used to with regular Begin*() calls.
   - The 3 properties above are related: we need to retain popup visibility state in the library because popups may be closed as any time.
   - You can bypass the hovering restriction by using ImGuiHoveredFlags_AllowWhenBlockedByPopup when calling [`ImGui.is_item_hovered`][] or [`ImGui.is_window_hovered`][].
   - IMPORTANT: Popup identifiers are relative to the current ID stack, so OpenPopup and [`ImGui.begin_popup`][] generally needs to be at the same level of the stack.
