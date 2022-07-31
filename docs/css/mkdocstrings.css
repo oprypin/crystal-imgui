@@ -1,0 +1,14 @@
+/* https://mkdocstrings.github.io/crystal/styling.html#recommended-styles */
+
+/* Indent and distinguish sub-items */
+div.doc-contents {
+  padding-left: 15px;
+  border-left: 4px solid rgba(230, 230, 230);
+}
+
+.doc-heading {
+  background-color: var(--md-code-bg-color);
+}
+h4.doc-heading {
+  font-weight: initial;
+}

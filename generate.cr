@@ -22,6 +22,10 @@ macro def_map_from_json(field, parent_field = nil)
   def self.new(pull : JSON::PullParser)
     self.new(pull.string_value, {{field.type}}.new(pull))
   end
+
+  def name(ctx : Context = Context::Lib)
+    @name
+  end
 end
 
 macro with_location(url = true, &block)
@@ -39,22 +43,6 @@ macro with_location(url = true, &block)
 
   def location : Location
     assert self.location?
-  end
-
-  def comment
-    return nil if self.location?.try(&.file) != "imgui.h"
-    first_comment = IMGUI_H[self.location.line - 1].partition("// ").last
-    unless first_comment.strip.empty?
-      first_comment.split(" // ").each do |s|
-        yield "  # " + s.strip unless s.strip.empty?
-      end
-      {% if url %}
-      yield "  #"
-      {% end %}
-    end
-    {% if url %}
-    yield "  # [#{self.cpp_name}](#{location.url})"
-    {% end %}
   end
 end
 
@@ -270,7 +258,7 @@ class COverload
     end
   end
 
-  def name(ctx : Context) : String
+  def name(ctx : Context = Context::Lib) : String
     if ctx.obj?
       if self.destructor?
         "finalize"
@@ -351,9 +339,7 @@ class COverload
   end
 
   def render(ctx, inside_class = false, &block : String ->)
-    return if self.templated?
-    return if self.destructor?
-    return if self.args.any? { |arg| arg.type.c_name == "va_list" }
+    return if !usable_overload?(self)
 
     if ctx.lib?
       args = self.args.map do |arg|
@@ -466,7 +452,6 @@ class COverload
       outp2, rets = convert_returns!(outp2, rets)
       ret_s = to_tuple(rets) || "Void"
       any_outputter = self.parent.overloads.any?(&.input_output_arg?)
-      self.comment(&block)
       def_name = self.name(ctx)
       yield %(  #{"pointer_wrapper " if any_outputter}def #{"self." if !inside_class}#{def_name}(#{args.join(", ")}) : #{ret_s})
       call = %(    LibImGui.#{self.name(Context::Lib)}(#{call_args.join(", ")}))
@@ -569,6 +554,10 @@ class CFunction
   end
 end
 
+def usable_overload?(f : COverload) : Bool
+  !(f.templated? || f.destructor? || f.args.any? { |arg| arg.type.c_name == "va_list" })
+end
+
 AllFunctions = Hash(String, CFunction).from_json(
   File.read("cimgui/generator/output/definitions.json")
 )
@@ -583,7 +572,7 @@ class CStructMember
     @c_name.partition("[")[0]
   end
 
-  def name(ctx : Context) : String
+  def name(ctx : Context = Context::Obj) : String
     self.c_name.underscore.presence || "val"
   end
 
@@ -660,7 +649,6 @@ class CStructMember
     end
     if ctx.obj?
       if (self.type.is_a?(CTemplateType)) && ctx.obj?
-        self.comment(&block)
         yield %(def #{varname} : #{typename})
         yield %(t = #{this}#{varname})
         yield %(pointerof(t).as(#{typename}*).value)
@@ -669,7 +657,6 @@ class CStructMember
         yield set_call += %(.as(#{typeinternal}*).value)
         yield %(end)
       elsif self.parent.class?
-        self.comment(&block)
         yield %(def #{varname} : #{typename})
         yield call
         yield %(end)
@@ -684,6 +671,10 @@ end
 class CStruct
   def_map_from_json(members : Array(CStructMember), parent)
 
+  def c_name
+    name
+  end
+
   def render(ctx : Context, &block : String ->)
     if self.internal?
       if ctx.lib?
@@ -692,7 +683,6 @@ class CStruct
         yield %(alias #{self.name} = LibImGui::#{self.name})
       end
     elsif ctx.obj?
-      self.comment(&block)
       if self.class?
         yield %(struct #{self.name})
         yield %(include ClassType(LibImGui::#{self.name}))
@@ -763,7 +753,7 @@ class CEnumMember
   @[JSON::Field(key: "name")]
   getter c_name : String
 
-  def name : String
+  def name(context = Context::Obj) : String
     name = (assert self.c_name.lchop?(self.parent.name)).lchop("_")
     if name.to_i?
       name = "Num#{name}"
@@ -801,7 +791,11 @@ end
 class CEnum
   def_map_from_json(members : Array(CEnumMember), parent)
 
-  def name : String
+  def c_name
+    @name
+  end
+
+  def name(ctx : Context = Context::Lib) : String
     @name.rchop("_")
   end
 
@@ -816,14 +810,12 @@ class CEnum
 
     yield %()
     yield "# :nodoc:" if self.internal?
-    self.comment(&block)
     yield %(@[Flags]) if self.name.ends_with?("Flags")
 
     yield %(enum #{name})
     self.members.each do |member|
       next if member.name.in?("All", "COUNT")
       next if member.name =~ /_[A-Z]{2,}$/
-      member.comment(&block)
       yield %(#{member.name} = #{member.value})
     end
     yield %(end)
@@ -912,7 +904,10 @@ end
 
 IMGUI_H = File.read_lines("cimgui/imgui/imgui.h")
 
-def render(ctx : Context, &block : String ->)
+items = AllEnums.values + AllTypedefs.values + AllStructs.values + AllFunctions.values
+items.sort_by! { |x| {x.location? || Location.new(":0"), x.name} }
+
+def render(items, ctx : Context, &block : String ->)
   if ctx.lib?
     yield %(require "./custom")
     yield %(require "./types")
@@ -933,8 +928,6 @@ def render(ctx : Context, &block : String ->)
     yield ""
   end
 
-  items = AllEnums.values + AllTypedefs.values + AllStructs.values + AllFunctions.values
-  items.sort_by! { |x| {x.location? || Location.new(":0"), x.name} }
   items.each do |it|
     case it
     in CEnum    ; it.render(ctx, &block)
@@ -948,11 +941,155 @@ def render(ctx : Context, &block : String ->)
 end
 
 File.open("src/lib.cr", "w") do |f|
-  render(Context::Lib, &->f.puts(String))
+  render(items, Context::Lib, &->f.puts(String))
 end
 File.open("src/types.cr", "w") do |f|
-  render(Context::Ext, &->f.puts(String))
+  render(items, Context::Ext, &->f.puts(String))
 end
 File.open("src/obj.cr", "w") do |f|
-  render(Context::Obj, &->f.puts(String))
+  render(items, Context::Obj, &->f.puts(String))
 end
+
+items = (
+  AllEnums.values.reject!(&.internal?) +
+  AllStructs.values.reject!(&.internal?) +
+  AllFunctions.values.reject!(&.struct?).flat_map(&.overloads).reject!(&.internal?).select { |f| usable_overload?(f) }
+)
+items.sort_by! { |x| {x.location?.not_nil!, x.name} }
+
+REFERRABLE_ITEMS = {} of String => String
+
+def refer(header_level : Int, item)
+  sep = (item.is_a?(COverload) || item.is_a?(CStructMember) ? "." : "::")
+  name = sep + item.name(Context::Obj)
+  if item.is_a?(CStructMember) || item.is_a?(CEnumMember)
+    name = "::" + item.parent.name(Context::Obj) + name
+  else
+    REFERRABLE_ITEMS[item.c_name] = REFERRABLE_ITEMS[item.c_name.rchop('_')] = "ImGui" + name
+  end
+  "#" * header_level + " ::: ImGui" + name
+end
+
+out_api = ["# Basic types"]
+i = 0
+until IMGUI_H[i] =~ %r(^// ImVec2:)
+  i += 1
+end
+inside = nil
+item_i = 0
+item = items[0]
+prev_cmt = ""
+prev_line = ""
+while i < IMGUI_H.size
+  line = IMGUI_H[i - 1]
+  if line.includes?("-----")
+    line = ""
+  end
+
+  if i == item.location.line
+    if item.is_a?(CEnum) || item.is_a?(CStruct)
+      inside = item
+    end
+    sep = (item.is_a?(COverload) ? "." : "::")
+    out_api << "" << refer(3, item) << ""
+  end
+
+  code, _, cmt = line.partition(%r((^| )// ))
+  if cmt =~ /^\[SECTION\] (.+)/
+    cmt = "# #{$1}"
+  elsif line =~ %r(^ {0,4}// ) && cmt =~ /^\[?[A-Z][^\.]*$/ && prev_line.strip.strip("{").empty?
+    cmt = "###{"##" if inside} #{cmt}"
+  end
+
+  if code == "};"
+    inside = nil
+  end
+  if inside
+    found = [] of String
+    if inside.is_a?(CEnum)
+      inside.members.each do |member|
+        if code =~ /\b#{member.c_name}\b/
+          found << "`#{member.name}`"
+        end
+      end
+    else
+      inside.members.each do |member|
+        if code =~ /^[^({]+\b#{member.c_name}\b/ && !member.internal?
+          out_api << "" << refer(5, member) << ""
+        end
+      end
+    end
+    if !found.empty?
+      out_api << "" << "- " + found.join(", ") + "  "
+    end
+    # if inside.is_a?(CStruct)
+    #   inside.functions.each do |member|
+    #     if code =~ /\b#{member.c_name}\b/
+    #       out_api << "### ::: ImGui::#{inside.name(Context::Obj)}.#{member.name(Context::Obj)}"
+    #     end
+    #   end
+    # end
+  end
+
+  if !inside && prev_cmt =~ /^(-| |$)/ && cmt !~ /^(-| |$)/
+    out_api << ""
+  end
+  if cmt =~ /^ *(-|[0-9]+\.) / && prev_cmt !~ /^(-| |$)/
+    out_api << ""
+  end
+
+  cmt = cmt.gsub(/^( +)(-|[0-9]+\.)/, "\\1\\1\\2")
+
+  if !cmt.blank? && !cmt[0].in?(' ', '-')
+    cmt += "  "
+  end
+  if !code.blank? && !cmt.blank?
+    cmt = " #{cmt}"
+  end
+  out_api << cmt
+
+  if i >= item.location.line
+    item = items[item_i += 1]? || break
+  end
+
+  i += 1
+  prev_line = line
+  prev_cmt = code.blank? ? cmt : ""
+end
+
+referrable_items_re = /(ImGui::)?\b(#{REFERRABLE_ITEMS.keys.map { |s| Regex.escape(s) }.join('|')})\b(\(\))?/
+
+file = nil
+file_mappings = {
+  /Basic types/   => "types",
+  /API functions/ => "index",
+  /\bFlags\b/     => "flags",
+  /Helpers/       => "helpers",
+  /Style\b/       => "style",
+  /IO\b/          => "io",
+  /data struct/   => "structs",
+  /Viewports/     => "viewports",
+  /Platform/      => "platform",
+  /Obsolete/      => "obsolete",
+  /Drawing/       => "drawing",
+  /\bFont\b/      => "font",
+}
+out_api.each_with_index do |line, i|
+  if line =~ /^# (.+?) *$/
+    title = $1
+    file.try(&.close)
+    fn = file_mappings.find { |k, v| title =~ k } || raise title
+    fn = fn.last
+    file = fn ? File.open("docs/#{fn}.md", "w") : nil
+  elsif !line.includes?(" ::: ")
+    line = line.gsub(referrable_items_re) do
+      s = REFERRABLE_ITEMS[$2]
+      "[`#{s}`][]"
+    end
+  end
+
+  next if line.empty? && out_api[i - 1].strip.empty?
+
+  file.try(&.puts line)
+end
+file.try(&.close)
