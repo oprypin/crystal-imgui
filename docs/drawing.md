@@ -1,5 +1,5 @@
 # Drawing API (ImDrawCmd, ImDrawIdx, ImDrawVert, ImDrawChannel, ImDrawListSplitter, ImDrawListFlags, ImDrawList, ImDrawData)  
-Hold a series of drawing commands. The user provides a renderer for [`ImGui::ImDrawData`][] which essentially contains an array of [`ImGui::ImDrawList`][].  
+Hold a series of drawing commands. The user provides a renderer for [`ImDrawData`][ImGui::ImDrawData] which essentially contains an array of [`ImDrawList`][ImGui::ImDrawList].  
 
 The maximum line width to bake anti-aliased textures for. Build atlas with ImFontAtlasFlags_NoBakedLines to disable baking.  
 
@@ -15,7 +15,7 @@ If you want to override the signature of ImDrawCallback, you can simply use e.g.
 Special Draw callback value to request renderer backend to reset the graphics/render state.  
 The renderer backend needs to handle this special value, otherwise it will crash trying to call a function at this address.  
 This is useful for example if you submitted callbacks which you know have altered the render state and you want it to be restored.  
-It is not done by default because they are many perfectly useful way of altering render state for imgui contents (e.g. changing shader/blending settings before an [`ImGui.image`][] call).  
+It is not done by default because they are many perfectly useful way of altering render state for imgui contents (e.g. changing shader/blending settings before an [`image`][ImGui.image] call).  
 
 ## Typically, 1 command = 1 GPU draw call (unless command is a callback)  
 
@@ -28,11 +28,11 @@ It is not done by default because they are many perfectly useful way of altering
 
 ##### ::: ImGui::ImDrawCmd.clip_rect
 
- 4*4  // Clipping rectangle (x1, y1, x2, y2). Subtract [`ImGui::ImDrawData`][]->DisplayPos to get clipping rectangle in "viewport" coordinates  
+ 4*4  // Clipping rectangle (x1, y1, x2, y2). Subtract [`ImDrawData`][ImGui::ImDrawData]->DisplayPos to get clipping rectangle in "viewport" coordinates  
 
 ##### ::: ImGui::ImDrawCmd.texture_id
 
- 4-8  // User-provided texture ID. Set by user in ImfontAtlas::SetTexID() for fonts or passed to [`ImGui.image`][]*() functions. Ignore if never using images or multiple fonts atlas.  
+ 4-8  // User-provided texture ID. Set by user in ImfontAtlas::SetTexID() for fonts or passed to [`image`][ImGui.image]*() functions. Ignore if never using images or multiple fonts atlas.  
 
 ##### ::: ImGui::ImDrawCmd.vtx_offset
 
@@ -44,7 +44,7 @@ It is not done by default because they are many perfectly useful way of altering
 
 ##### ::: ImGui::ImDrawCmd.elem_count
 
- 4    // Number of indices (multiple of 3) to be rendered as triangles. Vertices are stored in the callee [`ImGui::ImDrawList`][]'s vtx_buffer[] array, indices in idx_buffer[].  
+ 4    // Number of indices (multiple of 3) to be rendered as triangles. Vertices are stored in the callee [`ImDrawList`][ImGui::ImDrawList]'s vtx_buffer[] array, indices in idx_buffer[].  
 
 ##### ::: ImGui::ImDrawCmd.user_callback
 
@@ -69,11 +69,11 @@ Since 1.83: returns ImTextureID associated with this draw call. Warning: DO NOT 
 ##### ::: ImGui::ImDrawVert.col
 
 You can override the vertex format layout by defining IMGUI_OVERRIDE_DRAWVERT_STRUCT_LAYOUT in imconfig.h  
-The code expect [`ImGui::ImVec2`][] pos (8 bytes), [`ImGui::ImVec2`][] uv (8 bytes), ImU32 col (4 bytes), but you can re-order them or add other fields as needed to simplify integration in your engine.  
-The type has to be described within the macro (you can either declare the struct or use a typedef). This is because [`ImGui::ImVec2`][]/ImU32 are likely not declared a the time you'd want to set your type up.  
+The code expect [`ImVec2`][ImGui::ImVec2] pos (8 bytes), [`ImVec2`][ImGui::ImVec2] uv (8 bytes), ImU32 col (4 bytes), but you can re-order them or add other fields as needed to simplify integration in your engine.  
+The type has to be described within the macro (you can either declare the struct or use a typedef). This is because [`ImVec2`][ImGui::ImVec2]/ImU32 are likely not declared a the time you'd want to set your type up.  
 NOTE: IMGUI DOESN'T CLEAR THE STRUCTURE AND DOESN'T CALL A CONSTRUCTOR SO ANY CUSTOM FIELD WILL BE UNINITIALIZED. IF YOU ADD EXTRA FIELDS (SUCH AS A 'Z' COORDINATES) YOU WILL NEED TO CLEAR THEM DURING RENDER OR TO IGNORE THEM.  
 
-## [Internal] For use by [`ImGui::ImDrawList`][]  
+## [Internal] For use by [`ImDrawList`][ImGui::ImDrawList]  
 
 ### ::: ImGui::ImDrawCmdHeader
 
@@ -83,12 +83,12 @@ NOTE: IMGUI DOESN'T CLEAR THE STRUCTURE AND DOESN'T CALL A CONSTRUCTOR SO ANY CU
 
 ##### ::: ImGui::ImDrawCmdHeader.vtx_offset
 
-## [Internal] For use by [`ImGui::ImDrawListSplitter`][]  
+## [Internal] For use by [`ImDrawListSplitter`][ImGui::ImDrawListSplitter]  
 
 ### ::: ImGui::ImDrawChannel
 
 Split/Merge functions are used to split the draw list into different layers which can be drawn into out of order.  
-This is used by the [`ImGui.columns`][]/Tables API, so items of each column can be batched together in a same draw call.  
+This is used by the [`columns`][ImGui.columns]/Tables API, so items of each column can be batched together in a same draw call.  
 
 ### ::: ImGui::ImDrawListSplitter
 
@@ -98,7 +98,7 @@ This is used by the [`ImGui.columns`][]/Tables API, so items of each column can 
 
  Do not clear Channels[] so our allocations are reused next frame  
 
-## Flags for [`ImGui::ImDrawList`][] functions  
+## Flags for [`ImDrawList`][ImGui::ImDrawList] functions  
 (Legacy: bit 0 must always correspond to ImDrawFlags_Closed to be backward compatible with old API using a bool. Bits 1..3 must be unused)  
 
 ### ::: ImGui::ImDrawFlags
@@ -138,8 +138,8 @@ This is used by the [`ImGui.columns`][]/Tables API, so items of each column can 
 
 - `RoundCornersNone`, `RoundCornersAll`, `RoundCornersMask_`  
 
-Flags for [`ImGui::ImDrawList`][] instance. Those are set automatically by ImGui:: functions from [`ImGui::ImGuiIO`][] settings, and generally not manipulated directly.  
-It is however possible to temporarily alter flags between calls to [`ImGui::ImDrawList`][]:: functions.  
+Flags for [`ImDrawList`][ImGui::ImDrawList] instance. Those are set automatically by ImGui:: functions from [`ImGuiIO`][ImGui::ImGuiIO] settings, and generally not manipulated directly.  
+It is however possible to temporarily alter flags between calls to [`ImDrawList`][ImGui::ImDrawList]:: functions.  
 
 ### ::: ImGui::ImDrawListFlags
 
@@ -159,11 +159,11 @@ It is however possible to temporarily alter flags between calls to [`ImGui::ImDr
 
 ## Draw command list  
 This is the low-level list of polygons that ImGui:: functions are filling. At the end of the frame,  
-all command lists are passed to your [`ImGui::ImGuiIO`][]::RenderDrawListFn function for rendering.  
-Each dear imgui window contains its own [`ImGui::ImDrawList`][]. You can use [`ImGui.get_window_draw_list`][] to  
+all command lists are passed to your [`ImGuiIO`][ImGui::ImGuiIO]::RenderDrawListFn function for rendering.  
+Each dear imgui window contains its own [`ImDrawList`][ImGui::ImDrawList]. You can use [`get_window_draw_list`][ImGui.get_window_draw_list] to  
 access the current window draw list and draw custom primitives.  
 You can interleave normal ImGui:: calls and adding primitives to the current draw list.  
-In single viewport mode, top-left is == [`ImGui.get_main_viewport`][]->Pos (generally 0,0), bottom-right is == [`ImGui.get_main_viewport`][]->Pos+Size (generally io.DisplaySize).  
+In single viewport mode, top-left is == [`get_main_viewport`][ImGui.get_main_viewport]->Pos (generally 0,0), bottom-right is == [`get_main_viewport`][ImGui.get_main_viewport]->Pos+Size (generally io.DisplaySize).  
 You are totally free to apply whatever transformation matrix to want to the data (depending on the use of the transformation you may want to apply it to ClipRect as well!)  
 Important: Primitives are always added to the list and not culled (culling is done at higher-level by ImGui:: functions), if you use this API a lot consider coarse culling your drawn objects.  
 
@@ -177,7 +177,7 @@ Important: Primitives are always added to the list and not culled (culling is do
 
 ##### ::: ImGui::ImDrawList.idx_buffer
 
- Index buffer. Each command consume [`ImGui::ImDrawCmd`][]::ElemCount of those  
+ Index buffer. Each command consume [`ImDrawCmd`][ImGui::ImDrawCmd]::ElemCount of those  
 
 ##### ::: ImGui::ImDrawList.vtx_buffer
 
@@ -189,20 +189,20 @@ Important: Primitives are always added to the list and not culled (culling is do
 
 #### [Internal, used while building lists]  
  [Internal] generally == VtxBuffer.Size unless we are past 64K vertices, in which case this gets reset to 0.  
- Pointer to shared draw data (you can use [`ImGui.get_draw_list_shared_data`][] to get the one from current ImGui context)  
+ Pointer to shared draw data (you can use [`get_draw_list_shared_data`][ImGui.get_draw_list_shared_data] to get the one from current ImGui context)  
  Pointer to owner window's name for debugging  
- [Internal] point within VtxBuffer.Data after each add command (to avoid using the [`ImGui::ImVector`][]<> operators too much)  
- [Internal] point within IdxBuffer.Data after each add command (to avoid using the [`ImGui::ImVector`][]<> operators too much)  
+ [Internal] point within VtxBuffer.Data after each add command (to avoid using the [`ImVector`][ImGui::ImVector]<> operators too much)  
+ [Internal] point within IdxBuffer.Data after each add command (to avoid using the [`ImVector`][ImGui::ImVector]<> operators too much)  
  [Internal]  
  [Internal]  
  [Internal] current path building  
  [Internal] template of active commands. Fields should match those of CmdBuffer.back().  
- [Internal] for channels api (note: prefer using your own persistent instance of [`ImGui::ImDrawListSplitter`][]!)  
+ [Internal] for channels api (note: prefer using your own persistent instance of [`ImDrawListSplitter`][ImGui::ImDrawListSplitter]!)  
  [Internal] anti-alias fringe is scaled by this value, this helps to keep things sharp while zooming at vertex buffer content  
 
-#### If you want to create [`ImGui::ImDrawList`][] instances, pass them [`ImGui.get_draw_list_shared_data`][] or create and use your own ImDrawListSharedData (so you can use [`ImGui::ImDrawList`][] without ImGui)  
+#### If you want to create [`ImDrawList`][ImGui::ImDrawList] instances, pass them [`get_draw_list_shared_data`][ImGui.get_draw_list_shared_data] or create and use your own ImDrawListSharedData (so you can use [`ImDrawList`][ImGui::ImDrawList] without ImGui)  
 
- [`ImGui.render`][]-level scissoring. This is passed down to your render function but not used for CPU-side coarse clipping. Prefer using higher-level [`ImGui.push_clip_rect`][] to affect logic (hit-testing and widget culling)  
+ [`render`][ImGui.render]-level scissoring. This is passed down to your render function but not used for CPU-side coarse clipping. Prefer using higher-level [`push_clip_rect`][ImGui.push_clip_rect] to affect logic (hit-testing and widget culling)  
 
 #### Primitives  
 
@@ -219,7 +219,7 @@ Important: Primitives are always added to the list and not culled (culling is do
  Cubic Bezier (4 control points)  
  Quadratic Bezier (3 control points)  
 
-#### [`ImGui.image`][] primitives  
+#### [`image`][ImGui.image] primitives  
 
 - Read FAQ to understand what ImTextureID is.
 - "p_min" and "p_max" represent the upper-left and lower-right corners of the rectangle.
@@ -234,7 +234,7 @@ Important: Primitives are always added to the list and not culled (culling is do
  Quadratic Bezier (3 control points)  
 
 #### Advanced  
- Your rendering function must check for 'UserCallback' in [`ImGui::ImDrawCmd`][] and call the function instead of rendering triangles.  
+ Your rendering function must check for 'UserCallback' in [`ImDrawCmd`][ImGui::ImDrawCmd] and call the function instead of rendering triangles.  
  This is useful if you need to forcefully create a new draw call (to allow for dependent rendering / blending). Otherwise primitives are merged into the same draw-call as much as possible  
  Create a clone of the CmdBuffer/IdxBuffer/VtxBuffer.  
 
@@ -242,9 +242,9 @@ Important: Primitives are always added to the list and not culled (culling is do
 
 - Use to split render into layers. By switching channels to can render out-of-order (e.g. submit FG primitives before BG primitives)
 - Use to minimize draw calls (e.g. if going back-and-forth between multiple clipping rectangles, prefer to append into separate channels then merge at the end)
-- FIXME-OBSOLETE: This API shouldn't have been in [`ImGui::ImDrawList`][] in the first place!
-  Prefer using your own persistent instance of [`ImGui::ImDrawListSplitter`][] as you can stack them.
-  Using the [`ImGui::ImDrawList`][]::ChannelsXXXX you cannot stack a split over another.
+- FIXME-OBSOLETE: This API shouldn't have been in [`ImDrawList`][ImGui::ImDrawList] in the first place!
+  Prefer using your own persistent instance of [`ImDrawListSplitter`][ImGui::ImDrawListSplitter] as you can stack them.
+  Using the [`ImDrawList`][ImGui::ImDrawList]::ChannelsXXXX you cannot stack a split over another.
 
 #### Advanced: Primitives allocations  
 
@@ -262,37 +262,37 @@ Important: Primitives are always added to the list and not culled (culling is do
 
 ## All draw data to render a Dear ImGui frame  
 (NB: the style and the naming convention here is a little inconsistent, we currently preserve them for backward compatibility purpose,  
-as this is one of the oldest structure exposed by the library! Basically, [`ImGui::ImDrawList`][] == CmdList)  
+as this is one of the oldest structure exposed by the library! Basically, [`ImDrawList`][ImGui::ImDrawList] == CmdList)  
 
 ### ::: ImGui::ImDrawData
 
 ##### ::: ImGui::ImDrawData.valid
 
- Only valid after [`ImGui.render`][] is called and before the next [`ImGui.new_frame`][] is called.  
+ Only valid after [`render`][ImGui.render] is called and before the next [`new_frame`][ImGui.new_frame] is called.  
 
 ##### ::: ImGui::ImDrawData.cmd_lists_count
 
- Number of [`ImGui::ImDrawList`][]* to render  
+ Number of [`ImDrawList`][ImGui::ImDrawList]* to render  
 
 ##### ::: ImGui::ImDrawData.total_idx_count
 
- For convenience, sum of all [`ImGui::ImDrawList`][]'s IdxBuffer.Size  
+ For convenience, sum of all [`ImDrawList`][ImGui::ImDrawList]'s IdxBuffer.Size  
 
 ##### ::: ImGui::ImDrawData.total_vtx_count
 
- For convenience, sum of all [`ImGui::ImDrawList`][]'s VtxBuffer.Size  
+ For convenience, sum of all [`ImDrawList`][ImGui::ImDrawList]'s VtxBuffer.Size  
 
 ##### ::: ImGui::ImDrawData.cmd_lists
 
- Array of [`ImGui::ImDrawList`][]* to render. The [`ImGui::ImDrawList`][] are owned by ImGuiContext and only pointed to from here.  
+ Array of [`ImDrawList`][ImGui::ImDrawList]* to render. The [`ImDrawList`][ImGui::ImDrawList] are owned by ImGuiContext and only pointed to from here.  
 
 ##### ::: ImGui::ImDrawData.display_pos
 
- Top-left position of the viewport to render (== top-left of the orthogonal projection matrix to use) (== [`ImGui.get_main_viewport`][]->Pos for the main viewport, == (0.0) in most single-viewport applications)  
+ Top-left position of the viewport to render (== top-left of the orthogonal projection matrix to use) (== [`get_main_viewport`][ImGui.get_main_viewport]->Pos for the main viewport, == (0.0) in most single-viewport applications)  
 
 ##### ::: ImGui::ImDrawData.display_size
 
- Size of the viewport to render (== [`ImGui.get_main_viewport`][]->Size for the main viewport, == io.DisplaySize in most single-viewport applications)  
+ Size of the viewport to render (== [`get_main_viewport`][ImGui.get_main_viewport]->Size for the main viewport, == io.DisplaySize in most single-viewport applications)  
 
 ##### ::: ImGui::ImDrawData.framebuffer_scale
 
@@ -300,7 +300,7 @@ as this is one of the oldest structure exposed by the library! Basically, [`ImGu
 
 #### Functions  
 
- The [`ImGui::ImDrawList`][] are owned by ImGuiContext!  
+ The [`ImDrawList`][ImGui::ImDrawList] are owned by ImGuiContext!  
  Helper to convert all buffers from indexed to non-indexed, in case you cannot render indexed. Note: this is slow and most likely a waste of resources. Always prefer indexed rendering!  
- Helper to scale the ClipRect field of each [`ImGui::ImDrawCmd`][]. Use if your final output buffer is at a different scale than Dear ImGui expects, or if there is a difference between your window resolution and framebuffer resolution.  
+ Helper to scale the ClipRect field of each [`ImDrawCmd`][ImGui::ImDrawCmd]. Use if your final output buffer is at a different scale than Dear ImGui expects, or if there is a difference between your window resolution and framebuffer resolution.  
 

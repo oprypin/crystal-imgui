@@ -1,9 +1,9 @@
 # ImGuiIO  
 
 Communicate most settings and inputs/outputs to Dear ImGui using this structure.  
-Access via [`ImGui.get_io`][]. Read 'Programmer guide' section in .cpp file for general usage.  
+Access via [`get_io`][ImGui.get_io]. Read 'Programmer guide' section in .cpp file for general usage.  
 
-[Internal] Storage used by [`ImGui.is_key_down`][], [`ImGui.is_key_pressed`][] etc functions.  
+[Internal] Storage used by [`is_key_down`][ImGui.is_key_down], [`is_key_pressed`][ImGui.is_key_pressed] etc functions.  
 If prior to 1.87 you used io.KeysDownDuration[] (which was marked as internal), you should use GetKeyData(key)->DownDuration and not io.KeysData[key]->DownDuration.  
 
 ### ::: ImGui::ImGuiKeyData
@@ -30,15 +30,15 @@ If prior to 1.87 you used io.KeysDownDuration[] (which was marked as internal), 
 
 ##### ::: ImGui::ImGuiIO.config_flags
 
- = 0              // See [`ImGui::ImGuiConfigFlags`][] enum. Set by user/application. Gamepad/keyboard navigation options, etc.  
+ = 0              // See [`ImGuiConfigFlags`][ImGui::ImGuiConfigFlags] enum. Set by user/application. Gamepad/keyboard navigation options, etc.  
 
 ##### ::: ImGui::ImGuiIO.backend_flags
 
- = 0              // See [`ImGui::ImGuiBackendFlags`][] enum. Set by backend (imgui_impl_xxx files or custom backend) to communicate features supported by the backend.  
+ = 0              // See [`ImGuiBackendFlags`][ImGui::ImGuiBackendFlags] enum. Set by backend (imgui_impl_xxx files or custom backend) to communicate features supported by the backend.  
 
 ##### ::: ImGui::ImGuiIO.display_size
 
- <unset>          // Main display size, in pixels (generally == [`ImGui.get_main_viewport`][]->Size). May change every frame.  
+ <unset>          // Main display size, in pixels (generally == [`get_main_viewport`][ImGui.get_main_viewport]->Size). May change every frame.  
 
 ##### ::: ImGui::ImGuiIO.delta_time
 
@@ -54,7 +54,7 @@ If prior to 1.87 you used io.KeysDownDuration[] (which was marked as internal), 
 
 ##### ::: ImGui::ImGuiIO.log_filename
 
- = "imgui_log.txt"// Path to .log file (default parameter to [`ImGui.log_to_file`][] when no file is specified).  
+ = "imgui_log.txt"// Path to .log file (default parameter to [`log_to_file`][ImGui.log_to_file] when no file is specified).  
 
 ##### ::: ImGui::ImGuiIO.mouse_double_click_time
 
@@ -94,11 +94,11 @@ If prior to 1.87 you used io.KeysDownDuration[] (which was marked as internal), 
 
 ##### ::: ImGui::ImGuiIO.font_default
 
- = NULL           // Font to use on [`ImGui.new_frame`][]. Use NULL to uses Fonts->Fonts[0].  
+ = NULL           // Font to use on [`new_frame`][ImGui.new_frame]. Use NULL to uses Fonts->Fonts[0].  
 
 ##### ::: ImGui::ImGuiIO.display_framebuffer_scale
 
- = (1, 1)         // For retina display or other situations where window coordinates are different from framebuffer coordinates. This generally ends up in [`ImGui::ImDrawData`][]::FramebufferScale.  
+ = (1, 1)         // For retina display or other situations where window coordinates are different from framebuffer coordinates. This generally ends up in [`ImDrawData`][ImGui::ImDrawData]::FramebufferScale.  
 
 #### Miscellaneous options  
 
@@ -108,7 +108,7 @@ If prior to 1.87 you used io.KeysDownDuration[] (which was marked as internal), 
 
 ##### ::: ImGui::ImGuiIO.config_mac_osx_behaviors
 
- = defined(__APPLE__) // OS X style: [`ImGui.text`][] editing cursor movement using Alt instead of Ctrl, Shortcuts using Cmd/Super instead of Ctrl, Line/[`ImGui.text`][] Start and End using Cmd+Arrows instead of Home/End, Double click selects by word instead of selecting whole text, Multi-selection in lists uses Cmd/Super instead of Ctrl.  
+ = defined(__APPLE__) // OS X style: [`text`][ImGui.text] editing cursor movement using Alt instead of Ctrl, Shortcuts using Cmd/Super instead of Ctrl, Line/[`text`][ImGui.text] Start and End using Cmd+Arrows instead of Home/End, Double click selects by word instead of selecting whole text, Multi-selection in lists uses Cmd/Super instead of Ctrl.  
 
 ##### ::: ImGui::ImGuiIO.config_input_trickle_event_queue
 
@@ -167,11 +167,11 @@ Optional: Platform/Renderer backend name (informational only! will be displayed 
 Optional: Notify OS Input Method Editor of the screen position of your cursor for text input position (e.g. when using Japanese/Chinese IME on Windows)  
 (default to use native imm32 api on Windows)  
 
- = NULL           // [Obsolete] Set [`ImGui::ImGuiViewport`][]::PlatformHandleRaw instead. Set this to your HWND to get automatic IME cursor positioning.  
+ = NULL           // [Obsolete] Set [`ImGuiViewport`][ImGui::ImGuiViewport]::PlatformHandleRaw instead. Set this to your HWND to get automatic IME cursor positioning.  
 
  Unused field to keep data structure the same size.  
 
-#### Input - Call before calling [`ImGui.new_frame`][]  
+#### Input - Call before calling [`new_frame`][ImGui.new_frame]  
 
 #### Input Functions  
  Queue a new key down/up event. Key should be "translated" (as in, generally ImGuiKey_A matches the key end-user would use to emit an 'A' character)  
@@ -189,9 +189,9 @@ Optional: Notify OS Input Method Editor of the screen position of your cursor fo
  [Internal] Clear the text input buffer manually  
  [Internal] Release all keys  
 
-#### Output - Updated by [`ImGui.new_frame`][] or [`ImGui.end_frame`][]/[`ImGui.render`][]  
+#### Output - Updated by [`new_frame`][ImGui.new_frame] or [`end_frame`][ImGui.end_frame]/[`render`][ImGui.render]  
 (when reading from the io.WantCaptureMouse, io.WantCaptureKeyboard flags to dispatch your inputs, it is  
- generally easier and more correct to use their state BEFORE calling [`ImGui.new_frame`][]. See FAQ for details!)
+ generally easier and more correct to use their state BEFORE calling [`new_frame`][ImGui.new_frame]. See FAQ for details!)
 
 ##### ::: ImGui::ImGuiIO.want_capture_mouse
 
@@ -199,11 +199,11 @@ Optional: Notify OS Input Method Editor of the screen position of your cursor fo
 
 ##### ::: ImGui::ImGuiIO.want_capture_keyboard
 
- Set when Dear ImGui will use keyboard inputs, in this case do not dispatch them to your main game/application (either way, always pass keyboard inputs to imgui). (e.g. [`ImGui.input_text`][] active, or an imgui window is focused and navigation is enabled, etc.).  
+ Set when Dear ImGui will use keyboard inputs, in this case do not dispatch them to your main game/application (either way, always pass keyboard inputs to imgui). (e.g. [`input_text`][ImGui.input_text] active, or an imgui window is focused and navigation is enabled, etc.).  
 
 ##### ::: ImGui::ImGuiIO.want_text_input
 
- Mobile/console: when set, you may display an on-screen keyboard. This is set by Dear ImGui when it wants textual keyboard input to happen (e.g. when a [`ImGui.input_text`][] widget is active).  
+ Mobile/console: when set, you may display an on-screen keyboard. This is set by Dear ImGui when it wants textual keyboard input to happen (e.g. when a [`input_text`][ImGui.input_text] widget is active).  
 
 ##### ::: ImGui::ImGuiIO.want_set_mouse_pos
 
@@ -211,7 +211,7 @@ Optional: Notify OS Input Method Editor of the screen position of your cursor fo
 
 ##### ::: ImGui::ImGuiIO.want_save_ini_settings
 
- When manual .ini load/save is active (io.IniFilename == NULL), this will be set to notify your application that you can call [`ImGui.save_ini_settings_to_memory`][] and save yourself. Important: clear io.WantSaveIniSettings yourself after saving!  
+ When manual .ini load/save is active (io.IniFilename == NULL), this will be set to notify your application that you can call [`save_ini_settings_to_memory`][ImGui.save_ini_settings_to_memory] and save yourself. Important: clear io.WantSaveIniSettings yourself after saving!  
 
 ##### ::: ImGui::ImGuiIO.nav_active
 
@@ -227,11 +227,11 @@ Optional: Notify OS Input Method Editor of the screen position of your cursor fo
 
 ##### ::: ImGui::ImGuiIO.metrics_render_vertices
 
- Vertices output during last call to [`ImGui.render`][]  
+ Vertices output during last call to [`render`][ImGui.render]  
 
 ##### ::: ImGui::ImGuiIO.metrics_render_indices
 
- Indices output during last call to [`ImGui.render`][] = number of triangles * 3  
+ Indices output during last call to [`render`][ImGui.render] = number of triangles * 3  
 
 ##### ::: ImGui::ImGuiIO.metrics_render_windows
 
@@ -243,7 +243,7 @@ Optional: Notify OS Input Method Editor of the screen position of your cursor fo
 
 ##### ::: ImGui::ImGuiIO.metrics_active_allocations
 
- Number of active allocations, updated by [`ImGui.mem_alloc`][]/[`ImGui.mem_free`][] based on current context. May be off if you have multiple imgui contexts.  
+ Number of active allocations, updated by [`mem_alloc`][ImGui.mem_alloc]/[`mem_free`][ImGui.mem_free] based on current context. May be off if you have multiple imgui contexts.  
 
 ##### ::: ImGui::ImGuiIO.mouse_delta
 
@@ -254,11 +254,11 @@ This is still temporarily supported as a legacy feature. However the new preferr
 
 ##### ::: ImGui::ImGuiIO.key_map
 
- [LEGACY] Input: map of indices into the KeysDown[512] entries array which represent your "native" keyboard state. The first 512 are now unused and should be kept zero. Legacy backend will write into KeyMap[] using [`ImGui::ImGuiKey`][] indices which are always >512.  
+ [LEGACY] Input: map of indices into the KeysDown[512] entries array which represent your "native" keyboard state. The first 512 are now unused and should be kept zero. Legacy backend will write into KeyMap[] using [`ImGuiKey`][ImGui::ImGuiKey] indices which are always >512.  
 
 ##### ::: ImGui::ImGuiIO.keys_down
 
- [LEGACY] Input: Keyboard keys that are pressed (ideally left in the "native" order your engine has access to keyboard keys, so you can use your own defines/enums for keys). This used to be [512] sized. It is now ImGuiKey_COUNT to allow legacy io.KeysDown[[`ImGui.get_key_index`][](...)] to work without an overflow.  
+ [LEGACY] Input: Keyboard keys that are pressed (ideally left in the "native" order your engine has access to keyboard keys, so you can use your own defines/enums for keys). This used to be [512] sized. It is now ImGuiKey_COUNT to allow legacy io.KeysDown[[`get_key_index`][ImGui.get_key_index](...)] to work without an overflow.  
 
 [Internal] Dear ImGui will maintain those fields. Forward compatibility not guaranteed!  
 
@@ -268,7 +268,7 @@ This is still temporarily supported as a legacy feature. However the new preferr
 
 ##### ::: ImGui::ImGuiIO.mouse_pos
 
- Mouse position, in pixels. Set to [`ImGui::ImVec2`][](-FLT_MAX, -FLT_MAX) if mouse is unavailable (on another screen, etc.)  
+ Mouse position, in pixels. Set to [`ImVec2`][ImGui::ImVec2](-FLT_MAX, -FLT_MAX) if mouse is unavailable (on another screen, etc.)  
 
 ##### ::: ImGui::ImGuiIO.mouse_down
 
@@ -300,13 +300,13 @@ This is still temporarily supported as a legacy feature. However the new preferr
 
 ##### ::: ImGui::ImGuiIO.nav_inputs
 
- Gamepad inputs. Cleared back to zero by [`ImGui.end_frame`][]. Keyboard keys will be auto-mapped and be written here by [`ImGui.new_frame`][].  
+ Gamepad inputs. Cleared back to zero by [`end_frame`][ImGui.end_frame]. Keyboard keys will be auto-mapped and be written here by [`new_frame`][ImGui.new_frame].  
 
 #### Other state maintained from data above + IO function calls  
 
 ##### ::: ImGui::ImGuiIO.key_mods
 
- Key mods flags (same as io.KeyCtrl/KeyShift/KeyAlt/KeySuper but merged into flags), updated by [`ImGui.new_frame`][]  
+ Key mods flags (same as io.KeyCtrl/KeyShift/KeyAlt/KeySuper but merged into flags), updated by [`new_frame`][ImGui.new_frame]  
 
 ##### ::: ImGui::ImGuiIO.keys_data
 

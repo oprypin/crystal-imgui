@@ -12,7 +12,7 @@
 
 ##### ::: ImGui::ImFontConfig.font_data_owned_by_atlas
 
- true     // TTF/OTF data ownership taken by the container [`ImGui::ImFontAtlas`][] (will delete memory itself).  
+ true     // TTF/OTF data ownership taken by the container [`ImFontAtlas`][ImGui::ImFontAtlas] (will delete memory itself).  
 
 ##### ::: ImGui::ImFontConfig.font_no
 
@@ -56,7 +56,7 @@
 
 ##### ::: ImGui::ImFontConfig.merge_mode
 
- false    // Merge into previous [`ImGui::ImFont`][], so you can combine multiple inputs font into one [`ImGui::ImFont`][] (e.g. ASCII font + icons + Japanese glyphs). You may want to use GlyphOffset.y when merge font of different heights.  
+ false    // Merge into previous [`ImFont`][ImGui::ImFont], so you can combine multiple inputs font into one [`ImFont`][ImGui::ImFont] (e.g. ASCII font + icons + Japanese glyphs). You may want to use GlyphOffset.y when merge font of different heights.  
 
 ##### ::: ImGui::ImFontConfig.font_builder_flags
 
@@ -97,7 +97,7 @@ Hold rendering data for one glyph.
 
 ##### ::: ImGui::ImFontGlyph.advance_x
 
- Distance to next character (= data from font + [`ImGui::ImFontConfig`][]::GlyphExtraSpacing.x baked in)  
+ Distance to next character (= data from font + [`ImFontConfig`][ImGui::ImFontConfig]::GlyphExtraSpacing.x baked in)  
 
 ##### ::: ImGui::ImFontGlyph.x0
 
@@ -132,10 +132,10 @@ This is essentially a tightly packed of vector of 64k booleans = 8KB storage.
  Set bit n in the array  
  Add character  
  Add string (each character of the UTF-8 string are added)  
- Add ranges, e.g. builder.AddRanges([`ImGui::ImFontAtlas`][]::GetGlyphRangesDefault()) to force add all of ASCII/Latin+Ext  
+ Add ranges, e.g. builder.AddRanges([`ImFontAtlas`][ImGui::ImFontAtlas]::GetGlyphRangesDefault()) to force add all of ASCII/Latin+Ext  
  Output new ranges  
 
-See [`ImGui::ImFontAtlas`][]::AddCustomRectXXX functions.  
+See [`ImFontAtlas`][ImGui::ImFontAtlas]::AddCustomRectXXX functions.  
 
 ### ::: ImGui::ImFontAtlasCustomRect
 
@@ -167,7 +167,7 @@ See [`ImGui::ImFontAtlas`][]::AddCustomRectXXX functions.
 
  Input    // For custom font glyphs only: target font  
 
-## Flags for [`ImGui::ImFontAtlas`][] build  
+## Flags for [`ImFontAtlas`][ImGui::ImFontAtlas] build  
 
 ### ::: ImGui::ImFontAtlasFlags
 
@@ -207,10 +207,10 @@ Common pitfalls:
 
 ### ::: ImGui::ImFontAtlas
 
- Note: Transfer ownership of 'ttf_data' to [`ImGui::ImFontAtlas`][]! Will be deleted after destruction of the atlas. Set font_cfg->FontDataOwnedByAtlas=false to keep ownership of your data and it won't be freed.  
+ Note: Transfer ownership of 'ttf_data' to [`ImFontAtlas`][ImGui::ImFontAtlas]! Will be deleted after destruction of the atlas. Set font_cfg->FontDataOwnedByAtlas=false to keep ownership of your data and it won't be freed.  
  'compressed_font_data' still owned by caller. Compress with binary_to_compressed_c.cpp.  
  'compressed_font_data_base85' still owned by caller. Compress with binary_to_compressed_c.cpp with -base85 parameter.  
- Clear input data (all [`ImGui::ImFontConfig`][] structures including sizes, TTF data, glyph ranges, etc.) = all the data used to build the texture and fonts.  
+ Clear input data (all [`ImFontConfig`][ImGui::ImFontConfig] structures including sizes, TTF data, glyph ranges, etc.) = all the data used to build the texture and fonts.  
  Clear output texture data (CPU side). Saves RAM once the texture has been copied to graphics memory.  
  Clear output font data (glyphs storage, UV coordinates).  
  Clear all input and output.  
@@ -229,7 +229,7 @@ the texture (e.g. when using the AddCustomRect*** api), then the RGB pixels emit
 
 #### Helpers to retrieve list of common Unicode ranges (2 value per range, values are inclusive, zero-terminated list)  
 NB: Make sure that your string are UTF-8 and NOT in your local code page. In C++11, you can create UTF-8 string literal using the u8"Hello world" syntax. See FAQ for details.  
-NB: Consider using [`ImGui::ImFontGlyphRangesBuilder`][] to build glyph ranges from textual data.  
+NB: Consider using [`ImFontGlyphRangesBuilder`][ImGui::ImFontGlyphRangesBuilder] to build glyph ranges from textual data.  
  Basic Latin, Extended Latin  
  Default + Korean characters  
  Default + Hiragana, Katakana, Half-Width, Selection of 2999 Ideographs  
@@ -256,11 +256,11 @@ You can request arbitrary rectangles to be packed into the atlas, for your own p
 
 ##### ::: ImGui::ImFontAtlas.flags
 
- Build flags (see [`ImGui::ImFontAtlasFlags`][])  
+ Build flags (see [`ImFontAtlasFlags`][ImGui::ImFontAtlasFlags])  
 
 ##### ::: ImGui::ImFontAtlas.tex_id
 
- User data to refer to the texture once it has been uploaded to user's graphic systems. It is passed back to you during rendering via the [`ImGui::ImDrawCmd`][] structure.  
+ User data to refer to the texture once it has been uploaded to user's graphic systems. It is passed back to you during rendering via the [`ImDrawCmd`][ImGui::ImDrawCmd] structure.  
 
 ##### ::: ImGui::ImFontAtlas.tex_desired_width
 
@@ -272,7 +272,7 @@ You can request arbitrary rectangles to be packed into the atlas, for your own p
 
 ##### ::: ImGui::ImFontAtlas.locked
 
- Marked as Locked by [`ImGui.new_frame`][] so attempt to modify the atlas will assert.  
+ Marked as Locked by [`new_frame`][ImGui.new_frame] so attempt to modify the atlas will assert.  
 
 #### [Internal]  
 NB: Access texture data via GetTexData*() calls! Which will setup a default font for you.  
@@ -311,7 +311,7 @@ NB: Access texture data via GetTexData*() calls! Which will setup a default font
 
 ##### ::: ImGui::ImFontAtlas.fonts
 
- Hold all the fonts returned by AddFont*. Fonts[0] is the default font upon calling [`ImGui.new_frame`][], use [`ImGui.push_font`][]/[`ImGui.pop_font`][] to change the current font.  
+ Hold all the fonts returned by AddFont*. Fonts[0] is the default font upon calling [`new_frame`][ImGui.new_frame], use [`push_font`][ImGui.push_font]/[`pop_font`][ImGui.pop_font] to change the current font.  
 
 ##### ::: ImGui::ImFontAtlas.custom_rects
 
@@ -333,7 +333,7 @@ NB: Access texture data via GetTexData*() calls! Which will setup a default font
 
 ##### ::: ImGui::ImFontAtlas.font_builder_flags
 
- Shared flags (for all fonts) for custom font builder. THIS IS BUILD IMPLEMENTATION DEPENDENT. Per-font override is also available in [`ImGui::ImFontConfig`][].  
+ Shared flags (for all fonts) for custom font builder. THIS IS BUILD IMPLEMENTATION DEPENDENT. Per-font override is also available in [`ImFontConfig`][ImGui::ImFontConfig].  
 
 #### [Internal] Packing data  
 
@@ -350,15 +350,15 @@ NB: Access texture data via GetTexData*() calls! Which will setup a default font
  OBSOLETED in 1.67+  
 
 ## Font runtime data and rendering  
-[`ImGui::ImFontAtlas`][] automatically loads a default embedded font for you when you call GetTexDataAsAlpha8() or GetTexDataAsRGBA32().  
+[`ImFontAtlas`][ImGui::ImFontAtlas] automatically loads a default embedded font for you when you call GetTexDataAsAlpha8() or GetTexDataAsRGBA32().  
 
 ### ::: ImGui::ImFont
 
-#### Members: Hot ~20/24 bytes (for [`ImGui.calc_text_size`][])  
+#### Members: Hot ~20/24 bytes (for [`calc_text_size`][ImGui.calc_text_size])  
 
 ##### ::: ImGui::ImFont.index_advance_x
 
- 12-16 // out //            // Sparse. Glyphs->AdvanceX in a directly indexable way (cache-friendly for [`ImGui.calc_text_size`][] functions which only this this info, and are often bottleneck in large UI).  
+ 12-16 // out //            // Sparse. Glyphs->AdvanceX in a directly indexable way (cache-friendly for [`calc_text_size`][ImGui.calc_text_size] functions which only this this info, and are often bottleneck in large UI).  
 
 ##### ::: ImGui::ImFont.fallback_advance_x
 
@@ -368,7 +368,7 @@ NB: Access texture data via GetTexData*() calls! Which will setup a default font
 
  4     // in  //            // Height of characters/line, set during loading (don't change after loading)  
 
-#### Members: Hot ~28/40 bytes (for [`ImGui.calc_text_size`][] + render loop)  
+#### Members: Hot ~28/40 bytes (for [`calc_text_size`][ImGui.calc_text_size] + render loop)  
 
 ##### ::: ImGui::ImFont.index_lookup
 
@@ -394,7 +394,7 @@ NB: Access texture data via GetTexData*() calls! Which will setup a default font
 
 ##### ::: ImGui::ImFont.config_data_count
 
- 2     // in  // ~ 1        // Number of [`ImGui::ImFontConfig`][] involved in creating this font. Bigger than 1 when merging multiple font sources into one [`ImGui::ImFont`][].  
+ 2     // in  // ~ 1        // Number of [`ImFontConfig`][ImGui::ImFontConfig] involved in creating this font. Bigger than 1 when merging multiple font sources into one [`ImFont`][ImGui::ImFont].  
 
 ##### ::: ImGui::ImFont.fallback_char
 
@@ -414,7 +414,7 @@ NB: Access texture data via GetTexData*() calls! Which will setup a default font
 
 ##### ::: ImGui::ImFont.scale
 
- 4     // in  // = 1.f      // Base font scale, multiplied by the per-window font scale which you can adjust with [`ImGui.set_window_font_scale`][]  
+ 4     // in  // = 1.f      // Base font scale, multiplied by the per-window font scale which you can adjust with [`set_window_font_scale`][ImGui.set_window_font_scale]  
 
 ##### ::: ImGui::ImFont.ascent
 

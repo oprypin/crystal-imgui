@@ -3,8 +3,8 @@
 
 ## Context creation and access  
 
-- Each context create its own [`ImGui::ImFontAtlas`][] by default. You may instance one yourself and pass it to [`ImGui.create_context`][] to share a font atlas between contexts.
-- DLL users: heaps and globals are not shared across DLL boundaries! You will need to call [`ImGui.set_current_context`][] + [`ImGui.set_allocator_functions`][]
+- Each context create its own [`ImFontAtlas`][ImGui::ImFontAtlas] by default. You may instance one yourself and pass it to [`create_context`][ImGui.create_context] to share a font atlas between contexts.
+- DLL users: heaps and globals are not shared across DLL boundaries! You will need to call [`set_current_context`][ImGui.set_current_context] + [`set_allocator_functions`][ImGui.set_allocator_functions]
   for each static/DLL boundary you are calling from. Read "Context and Memory Allocators" section of imgui.cpp for details.
 
 ### ::: ImGui.create_context
@@ -29,19 +29,19 @@
 
 ### ::: ImGui.new_frame
 
- start a new Dear ImGui frame, you can submit any command from this point until [`ImGui.render`][]/[`ImGui.end_frame`][].  
+ start a new Dear ImGui frame, you can submit any command from this point until [`render`][ImGui.render]/[`end_frame`][ImGui.end_frame].  
 
 ### ::: ImGui.end_frame
 
- ends the Dear ImGui frame. automatically called by [`ImGui.render`][]. If you don't need to render data (skipping rendering) you may call [`ImGui.end_frame`][] without [`ImGui.render`][]... but you'll have wasted CPU already! If you don't need to render, better to not create any windows and not call [`ImGui.new_frame`][] at all!  
+ ends the Dear ImGui frame. automatically called by [`render`][ImGui.render]. If you don't need to render data (skipping rendering) you may call [`end_frame`][ImGui.end_frame] without [`render`][ImGui.render]... but you'll have wasted CPU already! If you don't need to render, better to not create any windows and not call [`new_frame`][ImGui.new_frame] at all!  
 
 ### ::: ImGui.render
 
- ends the Dear ImGui frame, finalize the draw data. You can then get call [`ImGui.get_draw_data`][].  
+ ends the Dear ImGui frame, finalize the draw data. You can then get call [`get_draw_data`][ImGui.get_draw_data].  
 
 ### ::: ImGui.get_draw_data
 
- valid after [`ImGui.render`][] and until the next call to [`ImGui.new_frame`][]. this is what you have to render.  
+ valid after [`render`][ImGui.render] and until the next call to [`new_frame`][ImGui.new_frame]. this is what you have to render.  
 
 ## Demo, Debug, Information  
 
@@ -67,7 +67,7 @@
 
 ### ::: ImGui.show_style_editor
 
- add style editor block (not a window). you can pass in a reference [`ImGui::ImGuiStyle`][] structure to compare to, revert to and save to (else it uses the default style)  
+ add style editor block (not a window). you can pass in a reference [`ImGuiStyle`][ImGui::ImGuiStyle] structure to compare to, revert to and save to (else it uses the default style)  
 
 ### ::: ImGui.show_style_selector
 
@@ -108,8 +108,8 @@
   Some information such as 'flags' or 'p_open' will only be considered by the first call to Begin().
 - Begin() return false to indicate the window is collapsed or fully clipped, so you may early out and omit submitting
   anything to the window. Always call a matching End() for each Begin() call, regardless of its return value!
-  [Important: due to legacy reason, this is inconsistent with most other functions such as [`ImGui.begin_menu`][]/[`ImGui.end_menu`][],
-   [`ImGui.begin_popup`][]/[`ImGui.end_popup`][], etc. where the EndXXX call should only be called if the corresponding BeginXXX function
+  [Important: due to legacy reason, this is inconsistent with most other functions such as [`begin_menu`][ImGui.begin_menu]/[`end_menu`][ImGui.end_menu],
+   [`begin_popup`][ImGui.begin_popup]/[`end_popup`][ImGui.end_popup], etc. where the EndXXX call should only be called if the corresponding BeginXXX function
    returned true. Begin and BeginChild are the only odd ones out. Will be fixed in a future update.]
 - Note that the bottom of window stack always contains a window called "Debug".
 
@@ -120,11 +120,11 @@
 ## Child Windows  
 
 - Use child windows to begin into a self-contained independent scrolling/clipping regions within a host window. Child windows can embed their own child.
-- For each independent axis of 'size': ==0.0f: use remaining host window size / >0.0f: fixed size / <0.0f: use remaining window size minus abs(size) / Each axis can use a different mode, e.g. [`ImGui::ImVec2`][](0,400).
+- For each independent axis of 'size': ==0.0f: use remaining host window size / >0.0f: fixed size / <0.0f: use remaining window size minus abs(size) / Each axis can use a different mode, e.g. [`ImVec2`][ImGui::ImVec2](0,400).
 - BeginChild() returns false to indicate the window is collapsed or fully clipped, so you may early out and omit submitting anything to the window.
-  Always call a matching [`ImGui.end_child`][] for each BeginChild() call, regardless of its return value.
-  [Important: due to legacy reason, this is inconsistent with most other functions such as [`ImGui.begin_menu`][]/[`ImGui.end_menu`][],
-   [`ImGui.begin_popup`][]/[`ImGui.end_popup`][], etc. where the EndXXX call should only be called if the corresponding BeginXXX function
+  Always call a matching [`end_child`][ImGui.end_child] for each BeginChild() call, regardless of its return value.
+  [Important: due to legacy reason, this is inconsistent with most other functions such as [`begin_menu`][ImGui.begin_menu]/[`end_menu`][ImGui.end_menu],
+   [`begin_popup`][ImGui.begin_popup]/[`end_popup`][ImGui.end_popup], etc. where the EndXXX call should only be called if the corresponding BeginXXX function
    returned true. Begin and BeginChild are the only odd ones out. Will be fixed in a future update.]
 
 ### ::: ImGui.begin_child
@@ -163,11 +163,11 @@
 
 ### ::: ImGui.get_window_width
 
- get current window width (shortcut for [`ImGui.get_window_size`][].x)  
+ get current window width (shortcut for [`get_window_size`][ImGui.get_window_size].x)  
 
 ### ::: ImGui.get_window_height
 
- get current window height (shortcut for [`ImGui.get_window_size`][].y)  
+ get current window height (shortcut for [`get_window_size`][ImGui.get_window_size].y)  
 
 ## Window manipulation  
 
@@ -203,23 +203,23 @@
 
 ### ::: ImGui.set_window_pos
 
- (not recommended) set current window position - call within Begin()/End(). prefer using [`ImGui.set_next_window_pos`][], as this may incur tearing and side-effects.  
+ (not recommended) set current window position - call within Begin()/End(). prefer using [`set_next_window_pos`][ImGui.set_next_window_pos], as this may incur tearing and side-effects.  
 
 ### ::: ImGui.set_window_size
 
- (not recommended) set current window size - call within Begin()/End(). set to [`ImGui::ImVec2`][](0, 0) to force an auto-fit. prefer using [`ImGui.set_next_window_size`][], as this may incur tearing and minor side-effects.  
+ (not recommended) set current window size - call within Begin()/End(). set to [`ImVec2`][ImGui::ImVec2](0, 0) to force an auto-fit. prefer using [`set_next_window_size`][ImGui.set_next_window_size], as this may incur tearing and minor side-effects.  
 
 ### ::: ImGui.set_window_collapsed
 
- (not recommended) set current window collapsed state. prefer using [`ImGui.set_next_window_collapsed`][].  
+ (not recommended) set current window collapsed state. prefer using [`set_next_window_collapsed`][ImGui.set_next_window_collapsed].  
 
 ### ::: ImGui.set_window_focus
 
- (not recommended) set current window to be focused / top-most. prefer using [`ImGui.set_next_window_focus`][].  
+ (not recommended) set current window to be focused / top-most. prefer using [`set_next_window_focus`][ImGui.set_next_window_focus].  
 
 ### ::: ImGui.set_window_font_scale
 
- [OBSOLETE] set font scale. Adjust IO.FontGlobalScale if you want to scale all windows. This is an old API! For correct scaling, prefer to reload font + rebuild [`ImGui::ImFontAtlas`][] + call style.ScaleAllSizes().  
+ [OBSOLETE] set font scale. Adjust IO.FontGlobalScale if you want to scale all windows. This is an old API! For correct scaling, prefer to reload font + rebuild [`ImFontAtlas`][ImGui::ImFontAtlas] + call style.ScaleAllSizes().  
 
 ### ::: ImGui.set_window_pos
 
@@ -239,12 +239,12 @@
 
 ## Content region  
 
-- Retrieve available space from a given point. [`ImGui.get_content_region_avail`][] is frequently useful.
+- Retrieve available space from a given point. [`get_content_region_avail`][ImGui.get_content_region_avail] is frequently useful.
 - Those functions are bound to be redesigned (they are confusing, incomplete and the Min/Max return values are in local window coordinates which increases confusion)
 
 ### ::: ImGui.get_content_region_avail
 
- == [`ImGui.get_content_region_max`][] - [`ImGui.get_cursor_pos`][]  
+ == [`get_content_region_max`][ImGui.get_content_region_max] - [`get_cursor_pos`][ImGui.get_cursor_pos]  
 
 ### ::: ImGui.get_content_region_max
 
@@ -256,25 +256,25 @@
 
 ### ::: ImGui.get_window_content_region_max
 
- content boundaries max for the full window (roughly (0,0)+Size-Scroll) where Size can be override with [`ImGui.set_next_window_content_size`][], in window coordinates  
+ content boundaries max for the full window (roughly (0,0)+Size-Scroll) where Size can be override with [`set_next_window_content_size`][ImGui.set_next_window_content_size], in window coordinates  
 
 ## Windows Scrolling  
 
 ### ::: ImGui.get_scroll_x
 
- get scrolling amount [0 .. [`ImGui.get_scroll_max_x`][]]  
+ get scrolling amount [0 .. [`get_scroll_max_x`][ImGui.get_scroll_max_x]]  
 
 ### ::: ImGui.get_scroll_y
 
- get scrolling amount [0 .. [`ImGui.get_scroll_max_y`][]]  
+ get scrolling amount [0 .. [`get_scroll_max_y`][ImGui.get_scroll_max_y]]  
 
 ### ::: ImGui.set_scroll_x
 
- set scrolling amount [0 .. [`ImGui.get_scroll_max_x`][]]  
+ set scrolling amount [0 .. [`get_scroll_max_x`][ImGui.get_scroll_max_x]]  
 
 ### ::: ImGui.set_scroll_y
 
- set scrolling amount [0 .. [`ImGui.get_scroll_max_y`][]]  
+ set scrolling amount [0 .. [`get_scroll_max_y`][ImGui.get_scroll_max_y]]  
 
 ### ::: ImGui.get_scroll_max_x
 
@@ -286,19 +286,19 @@
 
 ### ::: ImGui.set_scroll_here_x
 
- adjust scrolling amount to make current cursor position visible. center_x_ratio=0.0: left, 0.5: center, 1.0: right. When using to make a "default/current item" visible, consider using [`ImGui.set_item_default_focus`][] instead.  
+ adjust scrolling amount to make current cursor position visible. center_x_ratio=0.0: left, 0.5: center, 1.0: right. When using to make a "default/current item" visible, consider using [`set_item_default_focus`][ImGui.set_item_default_focus] instead.  
 
 ### ::: ImGui.set_scroll_here_y
 
- adjust scrolling amount to make current cursor position visible. center_y_ratio=0.0: top, 0.5: center, 1.0: bottom. When using to make a "default/current item" visible, consider using [`ImGui.set_item_default_focus`][] instead.  
+ adjust scrolling amount to make current cursor position visible. center_y_ratio=0.0: top, 0.5: center, 1.0: bottom. When using to make a "default/current item" visible, consider using [`set_item_default_focus`][ImGui.set_item_default_focus] instead.  
 
 ### ::: ImGui.set_scroll_from_pos_x
 
- adjust scrolling amount to make given position visible. Generally [`ImGui.get_cursor_start_pos`][] + offset to compute a valid position.  
+ adjust scrolling amount to make given position visible. Generally [`get_cursor_start_pos`][ImGui.get_cursor_start_pos] + offset to compute a valid position.  
 
 ### ::: ImGui.set_scroll_from_pos_y
 
- adjust scrolling amount to make given position visible. Generally [`ImGui.get_cursor_start_pos`][] + offset to compute a valid position.  
+ adjust scrolling amount to make given position visible. Generally [`get_cursor_start_pos`][ImGui.get_cursor_start_pos] + offset to compute a valid position.  
 
 ## Parameters stacks (shared)  
 
@@ -310,7 +310,7 @@
 
 ### ::: ImGui.push_style_color
 
- modify a style color. always use this if you modify the style after [`ImGui.new_frame`][].  
+ modify a style color. always use this if you modify the style after [`new_frame`][ImGui.new_frame].  
 
 ### ::: ImGui.push_style_color
 
@@ -318,11 +318,11 @@
 
 ### ::: ImGui.push_style_var
 
- modify a style float variable. always use this if you modify the style after [`ImGui.new_frame`][].  
+ modify a style float variable. always use this if you modify the style after [`new_frame`][ImGui.new_frame].  
 
 ### ::: ImGui.push_style_var
 
- modify a style [`ImGui::ImVec2`][] variable. always use this if you modify the style after [`ImGui.new_frame`][].  
+ modify a style [`ImVec2`][ImGui::ImVec2] variable. always use this if you modify the style after [`new_frame`][ImGui.new_frame].  
 
 ### ::: ImGui.pop_style_var
 
@@ -334,7 +334,7 @@
 
 ### ::: ImGui.push_button_repeat
 
- in 'repeat' mode, [`ImGui.button`][]*() functions return repeated true in a typematic manner (using io.KeyRepeatDelay/io.KeyRepeatRate setting). Note that you can call [`ImGui.is_item_active`][] after any [`ImGui.button`][] to tell if the button is held in the current frame.  
+ in 'repeat' mode, [`button`][ImGui.button]*() functions return repeated true in a typematic manner (using io.KeyRepeatDelay/io.KeyRepeatRate setting). Note that you can call [`is_item_active`][ImGui.is_item_active] after any [`button`][ImGui.button] to tell if the button is held in the current frame.  
 
 ### ::: ImGui.pop_button_repeat
 
@@ -356,13 +356,13 @@
 
 ### ::: ImGui.push_text_wrap_pos
 
- push word-wrapping position for [`ImGui.text`][]*() commands. < 0.0f: no wrapping; 0.0f: wrap to end of window (or column); > 0.0f: wrap at 'wrap_pos_x' position in window local space  
+ push word-wrapping position for [`text`][ImGui.text]*() commands. < 0.0f: no wrapping; 0.0f: wrap to end of window (or column); > 0.0f: wrap at 'wrap_pos_x' position in window local space  
 
 ### ::: ImGui.pop_text_wrap_pos
 
 ## Style read access  
 
-- Use the style editor ([`ImGui.show_style_editor`][] function) to interactively see what the colors are)
+- Use the style editor ([`show_style_editor`][ImGui.show_style_editor] function) to interactively see what the colors are)
 
 ### ::: ImGui.get_font
 
@@ -374,32 +374,32 @@
 
 ### ::: ImGui.get_font_tex_uv_white_pixel
 
- get UV coordinate for a while pixel, useful to draw custom shapes via the [`ImGui::ImDrawList`][] API  
+ get UV coordinate for a while pixel, useful to draw custom shapes via the [`ImDrawList`][ImGui::ImDrawList] API  
 
 ### ::: ImGui.get_color_u32
 
- retrieve given style color with style alpha applied and optional extra alpha multiplier, packed as a 32-bit value suitable for [`ImGui::ImDrawList`][]  
+ retrieve given style color with style alpha applied and optional extra alpha multiplier, packed as a 32-bit value suitable for [`ImDrawList`][ImGui::ImDrawList]  
 
 ### ::: ImGui.get_color_u32
 
- retrieve given color with style alpha applied, packed as a 32-bit value suitable for [`ImGui::ImDrawList`][]  
+ retrieve given color with style alpha applied, packed as a 32-bit value suitable for [`ImDrawList`][ImGui::ImDrawList]  
 
 ### ::: ImGui.get_color_u32
 
- retrieve given color with style alpha applied, packed as a 32-bit value suitable for [`ImGui::ImDrawList`][]  
+ retrieve given color with style alpha applied, packed as a 32-bit value suitable for [`ImDrawList`][ImGui::ImDrawList]  
 
 ### ::: ImGui.get_style_color_vec4
 
- retrieve style color as stored in [`ImGui::ImGuiStyle`][] structure. use to feed back into PushStyleColor(), otherwise use GetColorU32() to get style color with style alpha baked in.  
+ retrieve style color as stored in [`ImGuiStyle`][ImGui::ImGuiStyle] structure. use to feed back into PushStyleColor(), otherwise use GetColorU32() to get style color with style alpha baked in.  
 
 ## Cursor / Layout  
 
 - By "cursor" we mean the current output position.
 - The typical widget behavior is to output themselves at the current cursor position, then move the cursor one line down.
-- You can call [`ImGui.same_line`][] between widgets to undo the last carriage return and output at the right of the preceding widget.
+- You can call [`same_line`][ImGui.same_line] between widgets to undo the last carriage return and output at the right of the preceding widget.
 - Attention! We currently have inconsistencies between window-local and absolute positions we will aim to fix with future API:
-   Window-local coordinates:   [`ImGui.same_line`][], [`ImGui.get_cursor_pos`][], [`ImGui.set_cursor_pos`][], [`ImGui.get_cursor_start_pos`][], [`ImGui.get_content_region_max`][], GetWindowContentRegion*(), [`ImGui.push_text_wrap_pos`][]
-   Absolute coordinate:        [`ImGui.get_cursor_screen_pos`][], [`ImGui.set_cursor_screen_pos`][], all [`ImGui::ImDrawList`][]:: functions.
+   Window-local coordinates:   [`same_line`][ImGui.same_line], [`get_cursor_pos`][ImGui.get_cursor_pos], [`set_cursor_pos`][ImGui.set_cursor_pos], [`get_cursor_start_pos`][ImGui.get_cursor_start_pos], [`get_content_region_max`][ImGui.get_content_region_max], GetWindowContentRegion*(), [`push_text_wrap_pos`][ImGui.push_text_wrap_pos]
+   Absolute coordinate:        [`get_cursor_screen_pos`][ImGui.get_cursor_screen_pos], [`set_cursor_screen_pos`][ImGui.set_cursor_screen_pos], all [`ImDrawList`][ImGui::ImDrawList]:: functions.
 
 ### ::: ImGui.separator
 
@@ -411,7 +411,7 @@
 
 ### ::: ImGui.new_line
 
- undo a [`ImGui.same_line`][] or force a new line when in an horizontal-layout context.  
+ undo a [`same_line`][ImGui.same_line] or force a new line when in an horizontal-layout context.  
 
 ### ::: ImGui.spacing
 
@@ -419,7 +419,7 @@
 
 ### ::: ImGui.dummy
 
- add a dummy item of given size. unlike [`ImGui.invisible_button`][], [`ImGui.dummy`][] won't take the mouse click or be navigable into.  
+ add a dummy item of given size. unlike [`invisible_button`][ImGui.invisible_button], [`dummy`][ImGui.dummy] won't take the mouse click or be navigable into.  
 
 ### ::: ImGui.indent
 
@@ -435,7 +435,7 @@
 
 ### ::: ImGui.end_group
 
- unlock horizontal starting position + capture the whole group bounding box into one "item" (so you can use [`ImGui.is_item_hovered`][] or layout primitives such as [`ImGui.same_line`][] on whole group, etc.)  
+ unlock horizontal starting position + capture the whole group bounding box into one "item" (so you can use [`is_item_hovered`][ImGui.is_item_hovered] or layout primitives such as [`same_line`][ImGui.same_line] on whole group, etc.)  
 
 ### ::: ImGui.get_cursor_pos
 
@@ -443,11 +443,11 @@
 
 ### ::: ImGui.get_cursor_pos_x
 
-   (some functions are using window-relative coordinates, such as: [`ImGui.get_cursor_pos`][], [`ImGui.get_cursor_start_pos`][], [`ImGui.get_content_region_max`][], GetWindowContentRegion* etc.
+   (some functions are using window-relative coordinates, such as: [`get_cursor_pos`][ImGui.get_cursor_pos], [`get_cursor_start_pos`][ImGui.get_cursor_start_pos], [`get_content_region_max`][ImGui.get_content_region_max], GetWindowContentRegion* etc.
 
 ### ::: ImGui.get_cursor_pos_y
 
-    other functions such as [`ImGui.get_cursor_screen_pos`][] or everything in [`ImGui::ImDrawList`][]::
+    other functions such as [`get_cursor_screen_pos`][ImGui.get_cursor_screen_pos] or everything in [`ImDrawList`][ImGui::ImDrawList]::
 
 ### ::: ImGui.set_cursor_pos
 
@@ -455,7 +455,7 @@
 
 ### ::: ImGui.set_cursor_pos_x
 
-    [`ImGui.get_window_pos`][] + [`ImGui.get_cursor_pos`][] == [`ImGui.get_cursor_screen_pos`][] etc.)
+    [`get_window_pos`][ImGui.get_window_pos] + [`get_cursor_pos`][ImGui.get_cursor_pos] == [`get_cursor_screen_pos`][ImGui.get_cursor_screen_pos] etc.)
 
 ### ::: ImGui.set_cursor_pos_y
 
@@ -465,7 +465,7 @@
 
 ### ::: ImGui.get_cursor_screen_pos
 
- cursor position in absolute coordinates (useful to work with [`ImGui::ImDrawList`][] API). generally top-left == [`ImGui.get_main_viewport`][]->Pos == (0,0) in single viewport mode, and bottom-right == [`ImGui.get_main_viewport`][]->Pos+Size == io.DisplaySize in single-viewport mode.  
+ cursor position in absolute coordinates (useful to work with [`ImDrawList`][ImGui::ImDrawList] API). generally top-left == [`get_main_viewport`][ImGui.get_main_viewport]->Pos == (0,0) in single viewport mode, and bottom-right == [`get_main_viewport`][ImGui.get_main_viewport]->Pos+Size == io.DisplaySize in single-viewport mode.  
 
 ### ::: ImGui.set_cursor_screen_pos
 
@@ -526,17 +526,17 @@ Read the FAQ (docs/FAQ.md or http://dearimgui.org/faq) for more details about ho
 
 ### ::: ImGui.get_id
 
- calculate unique ID (hash of whole ID stack + given parameter). e.g. if you want to query into [`ImGui::ImGuiStorage`][] yourself  
+ calculate unique ID (hash of whole ID stack + given parameter). e.g. if you want to query into [`ImGuiStorage`][ImGui::ImGuiStorage] yourself  
 
 ### ::: ImGui.get_id
 
 ### ::: ImGui.get_id
 
-## Widgets: [`ImGui.text`][]  
+## Widgets: [`text`][ImGui.text]  
 
 ### ::: ImGui.text_unformatted
 
- raw text without formatting. Roughly equivalent to [`ImGui.text`][]("%s", text) but: A) doesn't require null terminated string if 'text_end' is specified, B) it's faster, no memory copy is done, no buffer size limits, recommended for long chunks of text.  
+ raw text without formatting. Roughly equivalent to [`text`][ImGui.text]("%s", text) but: A) doesn't require null terminated string if 'text_end' is specified, B) it's faster, no memory copy is done, no buffer size limits, recommended for long chunks of text.  
 
 ### ::: ImGui.text
 
@@ -544,15 +544,15 @@ Read the FAQ (docs/FAQ.md or http://dearimgui.org/faq) for more details about ho
 
 ### ::: ImGui.text_colored
 
- shortcut for PushStyleColor(ImGuiCol_Text, col); [`ImGui.text`][](fmt, ...); [`ImGui.pop_style_color`][];  
+ shortcut for PushStyleColor(ImGuiCol_Text, col); [`text`][ImGui.text](fmt, ...); [`pop_style_color`][ImGui.pop_style_color];  
 
 ### ::: ImGui.text_disabled
 
- shortcut for PushStyleColor(ImGuiCol_Text, style.Colors[ImGuiCol_TextDisabled]); [`ImGui.text`][](fmt, ...); [`ImGui.pop_style_color`][];  
+ shortcut for PushStyleColor(ImGuiCol_Text, style.Colors[ImGuiCol_TextDisabled]); [`text`][ImGui.text](fmt, ...); [`pop_style_color`][ImGui.pop_style_color];  
 
 ### ::: ImGui.text_wrapped
 
- shortcut for [`ImGui.push_text_wrap_pos`][](0.0f); [`ImGui.text`][](fmt, ...); [`ImGui.pop_text_wrap_pos`][];. Note that this won't work on an auto-resizing window if there's no other widgets to extend the window width, yoy may need to set a size using [`ImGui.set_next_window_size`][].  
+ shortcut for [`push_text_wrap_pos`][ImGui.push_text_wrap_pos](0.0f); [`text`][ImGui.text](fmt, ...); [`pop_text_wrap_pos`][ImGui.pop_text_wrap_pos];. Note that this won't work on an auto-resizing window if there's no other widgets to extend the window width, yoy may need to set a size using [`set_next_window_size`][ImGui.set_next_window_size].  
 
 ### ::: ImGui.label_text
 
@@ -560,12 +560,12 @@ Read the FAQ (docs/FAQ.md or http://dearimgui.org/faq) for more details about ho
 
 ### ::: ImGui.bullet_text
 
- shortcut for [`ImGui.bullet`][]+[`ImGui.text`][]  
+ shortcut for [`bullet`][ImGui.bullet]+[`text`][ImGui.text]  
 
 ## Widgets: Main  
 
 - Most widgets return true when the value has been changed or when pressed/selected
-- You may also use one of the many IsItemXXX functions (e.g. [`ImGui.is_item_active`][], [`ImGui.is_item_hovered`][], etc.) to query widget state.
+- You may also use one of the many IsItemXXX functions (e.g. [`is_item_active`][ImGui.is_item_active], [`is_item_hovered`][ImGui.is_item_hovered], etc.) to query widget state.
 
 ### ::: ImGui.button
 
@@ -577,7 +577,7 @@ Read the FAQ (docs/FAQ.md or http://dearimgui.org/faq) for more details about ho
 
 ### ::: ImGui.invisible_button
 
- flexible button behavior without the visuals, frequently useful to build custom behaviors using the public api (along with [`ImGui.is_item_active`][], [`ImGui.is_item_hovered`][], etc.)  
+ flexible button behavior without the visuals, frequently useful to build custom behaviors using the public api (along with [`is_item_active`][ImGui.is_item_active], [`is_item_hovered`][ImGui.is_item_hovered], etc.)  
 
 ### ::: ImGui.arrow_button
 
@@ -607,18 +607,18 @@ Read the FAQ (docs/FAQ.md or http://dearimgui.org/faq) for more details about ho
 
 ### ::: ImGui.bullet
 
- draw a small circle + keep the cursor on the same line. advance cursor x position by [`ImGui.get_tree_node_to_label_spacing`][], same distance that TreeNode() uses  
+ draw a small circle + keep the cursor on the same line. advance cursor x position by [`get_tree_node_to_label_spacing`][ImGui.get_tree_node_to_label_spacing], same distance that TreeNode() uses  
 
 ## Widgets: Combo Box  
 
-- The [`ImGui.begin_combo`][]/[`ImGui.end_combo`][] api allows you to manage your contents and selection state however you want it, by creating e.g. Selectable() items.
-- The old Combo() api are helpers over [`ImGui.begin_combo`][]/[`ImGui.end_combo`][] which are kept available for convenience purpose. This is analogous to how ListBox are created.
+- The [`begin_combo`][ImGui.begin_combo]/[`end_combo`][ImGui.end_combo] api allows you to manage your contents and selection state however you want it, by creating e.g. Selectable() items.
+- The old Combo() api are helpers over [`begin_combo`][ImGui.begin_combo]/[`end_combo`][ImGui.end_combo] which are kept available for convenience purpose. This is analogous to how ListBox are created.
 
 ### ::: ImGui.begin_combo
 
 ### ::: ImGui.end_combo
 
- only call [`ImGui.end_combo`][] if [`ImGui.begin_combo`][] returns true!  
+ only call [`end_combo`][ImGui.end_combo] if [`begin_combo`][ImGui.begin_combo] returns true!  
 
 ### ::: ImGui.combo
 
@@ -639,8 +639,8 @@ Read the FAQ (docs/FAQ.md or http://dearimgui.org/faq) for more details about ho
 - Use v_min < v_max to clamp edits to given limits. Note that CTRL+Click manual input can override those limits if ImGuiSliderFlags_AlwaysClamp is not used.
 - Use v_max = FLT_MAX / INT_MAX etc to avoid clamping to a maximum, same with v_min = -FLT_MAX / INT_MIN to avoid clamping to a minimum.
 - We use the same sets of flags for DragXXX() and SliderXXX() functions as the features are the same and it makes it easier to swap them.
-- Legacy: Pre-1.78 there are DragXXX() function signatures that takes a final `float power=1.0f' argument instead of the `[`ImGui::ImGuiSliderFlags`][] flags=0' argument.
-  If you get a warning converting a float to [`ImGui::ImGuiSliderFlags`][], read https://github.com/ocornut/imgui/issues/3361
+- Legacy: Pre-1.78 there are DragXXX() function signatures that takes a final `float power=1.0f' argument instead of the `[`ImGuiSliderFlags`][ImGui::ImGuiSliderFlags] flags=0' argument.
+  If you get a warning converting a float to [`ImGuiSliderFlags`][ImGui::ImGuiSliderFlags], read https://github.com/ocornut/imgui/issues/3361
 
 ### ::: ImGui.drag_float
 
@@ -675,8 +675,8 @@ Read the FAQ (docs/FAQ.md or http://dearimgui.org/faq) for more details about ho
 - CTRL+Click on any slider to turn them into an input box. Manually input values aren't clamped by default and can go off-bounds. Use ImGuiSliderFlags_AlwaysClamp to always clamp.
 - Adjust format string to decorate the value with a prefix, a suffix, or adapt the editing and display precision e.g. "%.3f" -> 1.234; "%5.2f secs" -> 01.23 secs; "Biscuit: %.0f" -> Biscuit: 1; etc.
 - Format string may also be set to NULL or use the default format ("%f" or "%d").
-- Legacy: Pre-1.78 there are SliderXXX() function signatures that takes a final `float power=1.0f' argument instead of the `[`ImGui::ImGuiSliderFlags`][] flags=0' argument.
-  If you get a warning converting a float to [`ImGui::ImGuiSliderFlags`][], read https://github.com/ocornut/imgui/issues/3361
+- Legacy: Pre-1.78 there are SliderXXX() function signatures that takes a final `float power=1.0f' argument instead of the `[`ImGuiSliderFlags`][ImGui::ImGuiSliderFlags] flags=0' argument.
+  If you get a warning converting a float to [`ImGuiSliderFlags`][ImGui::ImGuiSliderFlags], read https://github.com/ocornut/imgui/issues/3361
 
 ### ::: ImGui.slider_float
 
@@ -710,8 +710,8 @@ Read the FAQ (docs/FAQ.md or http://dearimgui.org/faq) for more details about ho
 
 ## Widgets: Input with Keyboard  
 
-- If you want to use [`ImGui.input_text`][] with std::string or any custom dynamic string type, see misc/cpp/imgui_stdlib.h and comments in imgui_demo.cpp.
-- Most of the [`ImGui::ImGuiInputTextFlags`][] flags are only useful for [`ImGui.input_text`][] and not for InputFloatX, InputIntX, [`ImGui.input_double`][] etc.
+- If you want to use [`input_text`][ImGui.input_text] with std::string or any custom dynamic string type, see misc/cpp/imgui_stdlib.h and comments in imgui_demo.cpp.
+- Most of the [`ImGuiInputTextFlags`][ImGui::ImGuiInputTextFlags] flags are only useful for [`input_text`][ImGui.input_text] and not for InputFloatX, InputIntX, [`input_double`][ImGui.input_double] etc.
 
 ### ::: ImGui.input_text
 
@@ -764,13 +764,13 @@ Widgets: Color Editor/Picker (tip: the ColorEdit* functions have a little color 
 
 ## Widgets: Trees  
 
-- TreeNode functions return true when the node is open, in which case you need to also call [`ImGui.tree_pop`][] when you are finished displaying the tree node contents.
+- TreeNode functions return true when the node is open, in which case you need to also call [`tree_pop`][ImGui.tree_pop] when you are finished displaying the tree node contents.
 
 ### ::: ImGui.tree_node
 
 ### ::: ImGui.tree_node
 
- helper variation to easily decorelate the id from the displayed string. Read the FAQ about why and how to use ID. to align arbitrary text at the same level as a TreeNode() you can use [`ImGui.bullet`][].  
+ helper variation to easily decorelate the id from the displayed string. Read the FAQ about why and how to use ID. to align arbitrary text at the same level as a TreeNode() you can use [`bullet`][ImGui.bullet].  
 
 ### ::: ImGui.tree_node
 
@@ -784,7 +784,7 @@ Widgets: Color Editor/Picker (tip: the ColorEdit* functions have a little color 
 
 ### ::: ImGui.tree_push
 
- ~ [`ImGui.indent`][]+PushId(). Already called by TreeNode() when returning true, but you can call TreePush/[`ImGui.tree_pop`][] yourself if desired.  
+ ~ [`indent`][ImGui.indent]+PushId(). Already called by TreeNode() when returning true, but you can call TreePush/[`tree_pop`][ImGui.tree_pop] yourself if desired.  
 
 ### ::: ImGui.tree_push
 
@@ -792,15 +792,15 @@ Widgets: Color Editor/Picker (tip: the ColorEdit* functions have a little color 
 
 ### ::: ImGui.tree_pop
 
- ~ [`ImGui.unindent`][]+PopId()  
+ ~ [`unindent`][ImGui.unindent]+PopId()  
 
 ### ::: ImGui.get_tree_node_to_label_spacing
 
- horizontal distance preceding label when using TreeNode*() or [`ImGui.bullet`][] == (g.FontSize + style.FramePadding.x*2) for a regular unframed TreeNode  
+ horizontal distance preceding label when using TreeNode*() or [`bullet`][ImGui.bullet] == (g.FontSize + style.FramePadding.x*2) for a regular unframed TreeNode  
 
 ### ::: ImGui.collapsing_header
 
- if returning 'true' the header is open. doesn't indent nor push on ID stack. user doesn't have to call [`ImGui.tree_pop`][].  
+ if returning 'true' the header is open. doesn't indent nor push on ID stack. user doesn't have to call [`tree_pop`][ImGui.tree_pop].  
 
 ### ::: ImGui.collapsing_header
 
@@ -825,9 +825,9 @@ Widgets: Color Editor/Picker (tip: the ColorEdit* functions have a little color 
 
 ## Widgets: List Boxes  
 
-- This is essentially a thin wrapper to using BeginChild/[`ImGui.end_child`][] with some stylistic changes.
-- The [`ImGui.begin_list_box`][]/[`ImGui.end_list_box`][] api allows you to manage your contents and selection state however you want it, by creating e.g. Selectable() or any items.
-- The simplified/old ListBox() api are helpers over [`ImGui.begin_list_box`][]/[`ImGui.end_list_box`][] which are kept available for convenience purpose. This is analoguous to how Combos are created.
+- This is essentially a thin wrapper to using BeginChild/[`end_child`][ImGui.end_child] with some stylistic changes.
+- The [`begin_list_box`][ImGui.begin_list_box]/[`end_list_box`][ImGui.end_list_box] api allows you to manage your contents and selection state however you want it, by creating e.g. Selectable() or any items.
+- The simplified/old ListBox() api are helpers over [`begin_list_box`][ImGui.begin_list_box]/[`end_list_box`][ImGui.end_list_box] which are kept available for convenience purpose. This is analoguous to how Combos are created.
 - Choose frame width:   size.x > 0.0f: custom  /  size.x < 0.0f or -FLT_MIN: right-align   /  size.x = 0.0f (default): use current ItemWidth
 - Choose frame height:  size.y > 0.0f: custom  /  size.y < 0.0f or -FLT_MIN: bottom-align  /  size.y = 0.0f (default): arbitrary default height which can fit ~7 items
 
@@ -837,7 +837,7 @@ Widgets: Color Editor/Picker (tip: the ColorEdit* functions have a little color 
 
 ### ::: ImGui.end_list_box
 
- only call [`ImGui.end_list_box`][] if [`ImGui.begin_list_box`][] returned true!  
+ only call [`end_list_box`][ImGui.end_list_box] if [`begin_list_box`][ImGui.begin_list_box] returned true!  
 
 ### ::: ImGui.list_box
 
@@ -857,7 +857,7 @@ Widgets: Color Editor/Picker (tip: the ColorEdit* functions have a little color 
 
 Widgets: Value() Helpers.  
 
-- Those are merely shortcut to calling [`ImGui.text`][] with a format string. Output single value in "name: value" format (tip: freely declare more in your code to handle your types. you can add functions to the ImGui namespace)
+- Those are merely shortcut to calling [`text`][ImGui.text] with a format string. Output single value in "name: value" format (tip: freely declare more in your code to handle your types. you can add functions to the ImGui namespace)
 
 ### ::: ImGui.value
 
@@ -869,9 +869,9 @@ Widgets: Value() Helpers.
 
 ## Widgets: Menus  
 
-- Use [`ImGui.begin_menu_bar`][] on a window ImGuiWindowFlags_MenuBar to append to its menu bar.
-- Use [`ImGui.begin_main_menu_bar`][] to create a menu bar at the top of the screen and append to it.
-- Use [`ImGui.begin_menu`][] to create a menu. You can call [`ImGui.begin_menu`][] multiple time with the same identifier to append more items to it.
+- Use [`begin_menu_bar`][ImGui.begin_menu_bar] on a window ImGuiWindowFlags_MenuBar to append to its menu bar.
+- Use [`begin_main_menu_bar`][ImGui.begin_main_menu_bar] to create a menu bar at the top of the screen and append to it.
+- Use [`begin_menu`][ImGui.begin_menu] to create a menu. You can call [`begin_menu`][ImGui.begin_menu] multiple time with the same identifier to append more items to it.
 - Not that MenuItem() keyboardshortcuts are displayed as a convenience but _not processed_ by Dear ImGui at the moment.
 
 ### ::: ImGui.begin_menu_bar
@@ -880,7 +880,7 @@ Widgets: Value() Helpers.
 
 ### ::: ImGui.end_menu_bar
 
- only call [`ImGui.end_menu_bar`][] if [`ImGui.begin_menu_bar`][] returns true!  
+ only call [`end_menu_bar`][ImGui.end_menu_bar] if [`begin_menu_bar`][ImGui.begin_menu_bar] returns true!  
 
 ### ::: ImGui.begin_main_menu_bar
 
@@ -888,15 +888,15 @@ Widgets: Value() Helpers.
 
 ### ::: ImGui.end_main_menu_bar
 
- only call [`ImGui.end_main_menu_bar`][] if [`ImGui.begin_main_menu_bar`][] returns true!  
+ only call [`end_main_menu_bar`][ImGui.end_main_menu_bar] if [`begin_main_menu_bar`][ImGui.begin_main_menu_bar] returns true!  
 
 ### ::: ImGui.begin_menu
 
- create a sub-menu entry. only call [`ImGui.end_menu`][] if this returns true!  
+ create a sub-menu entry. only call [`end_menu`][ImGui.end_menu] if this returns true!  
 
 ### ::: ImGui.end_menu
 
- only call [`ImGui.end_menu`][] if [`ImGui.begin_menu`][] returns true!  
+ only call [`end_menu`][ImGui.end_menu] if [`begin_menu`][ImGui.begin_menu] returns true!  
 
 ### ::: ImGui.menu_item
 
@@ -918,7 +918,7 @@ Widgets: Value() Helpers.
 
 ### ::: ImGui.set_tooltip
 
- set a text-only tooltip, typically use with [`ImGui.is_item_hovered`][]. override any previous call to [`ImGui.set_tooltip`][].  
+ set a text-only tooltip, typically use with [`is_item_hovered`][ImGui.is_item_hovered]. override any previous call to [`set_tooltip`][ImGui.set_tooltip].  
 
 ## Popups, Modals  
 
@@ -926,14 +926,14 @@ Widgets: Value() Helpers.
   - If not modal: they can be closed by clicking anywhere outside them, or by pressing ESCAPE.
   - Their visibility state (~bool) is held internally instead of being held by the programmer as we are used to with regular Begin*() calls.
   - The 3 properties above are related: we need to retain popup visibility state in the library because popups may be closed as any time.
-  - You can bypass the hovering restriction by using ImGuiHoveredFlags_AllowWhenBlockedByPopup when calling [`ImGui.is_item_hovered`][] or [`ImGui.is_window_hovered`][].
-  - IMPORTANT: Popup identifiers are relative to the current ID stack, so OpenPopup and [`ImGui.begin_popup`][] generally needs to be at the same level of the stack.
+  - You can bypass the hovering restriction by using ImGuiHoveredFlags_AllowWhenBlockedByPopup when calling [`is_item_hovered`][ImGui.is_item_hovered] or [`is_window_hovered`][ImGui.is_window_hovered].
+  - IMPORTANT: Popup identifiers are relative to the current ID stack, so OpenPopup and [`begin_popup`][ImGui.begin_popup] generally needs to be at the same level of the stack.
    This is sometimes leading to confusing mistakes. May rework this in the future.
 
 ## Popups: begin/end functions  
 
-  - [`ImGui.begin_popup`][]: query popup state, if open start appending into the window. Call [`ImGui.end_popup`][] afterwards. [`ImGui::ImGuiWindowFlags`][] are forwarded to the window.
-  - [`ImGui.begin_popup_modal`][]: block every interactions behind the window, cannot be closed by user, add a dimming background, has a title bar.
+  - [`begin_popup`][ImGui.begin_popup]: query popup state, if open start appending into the window. Call [`end_popup`][ImGui.end_popup] afterwards. [`ImGuiWindowFlags`][ImGui::ImGuiWindowFlags] are forwarded to the window.
+  - [`begin_popup_modal`][ImGui.begin_popup_modal]: block every interactions behind the window, cannot be closed by user, add a dimming background, has a title bar.
 
 ### ::: ImGui.begin_popup
 
@@ -945,17 +945,17 @@ Widgets: Value() Helpers.
 
 ### ::: ImGui.end_popup
 
- only call [`ImGui.end_popup`][] if BeginPopupXXX() returns true!  
+ only call [`end_popup`][ImGui.end_popup] if BeginPopupXXX() returns true!  
 
 ## Popups: open/close functions  
 
-  - OpenPopup(): set popup state to open. [`ImGui::ImGuiPopupFlags`][] are available for opening options.
+  - OpenPopup(): set popup state to open. [`ImGuiPopupFlags`][ImGui::ImGuiPopupFlags] are available for opening options.
   - If not modal: they can be closed by clicking anywhere outside them, or by pressing ESCAPE.
-  - [`ImGui.close_current_popup`][]: use inside the [`ImGui.begin_popup`][]/[`ImGui.end_popup`][] scope to close manually.
-  - [`ImGui.close_current_popup`][] is called by default by Selectable()/MenuItem() when activated (FIXME: need some options).
+  - [`close_current_popup`][ImGui.close_current_popup]: use inside the [`begin_popup`][ImGui.begin_popup]/[`end_popup`][ImGui.end_popup] scope to close manually.
+  - [`close_current_popup`][ImGui.close_current_popup] is called by default by Selectable()/MenuItem() when activated (FIXME: need some options).
   - Use ImGuiPopupFlags_NoOpenOverExistingPopup to avoid opening a popup if there's already one at the same level. This is equivalent to e.g. testing for !IsAnyPopupOpen() prior to OpenPopup().
-  - Use [`ImGui.is_window_appearing`][] after [`ImGui.begin_popup`][] to tell if a window just opened.
-  - IMPORTANT: Notice that for [`ImGui.open_popup_on_item_click`][] we exceptionally default flags to 1 (== ImGuiPopupFlags_MouseButtonRight) for backward compatibility with older API taking 'int mouse_button = 1' parameter
+  - Use [`is_window_appearing`][ImGui.is_window_appearing] after [`begin_popup`][ImGui.begin_popup] to tell if a window just opened.
+  - IMPORTANT: Notice that for [`open_popup_on_item_click`][ImGui.open_popup_on_item_click] we exceptionally default flags to 1 (== ImGuiPopupFlags_MouseButtonRight) for backward compatibility with older API taking 'int mouse_button = 1' parameter
 
 ### ::: ImGui.open_popup
 
@@ -975,14 +975,14 @@ Widgets: Value() Helpers.
 
 ## Popups: open+begin combined functions helpers  
 
-  - Helpers to do OpenPopup+[`ImGui.begin_popup`][] where the Open action is triggered by e.g. hovering an item and right-clicking.
+  - Helpers to do OpenPopup+[`begin_popup`][ImGui.begin_popup] where the Open action is triggered by e.g. hovering an item and right-clicking.
   - They are convenient to easily create context menus, hence the name.
-  - IMPORTANT: Notice that BeginPopupContextXXX takes [`ImGui::ImGuiPopupFlags`][] just like OpenPopup() and unlike [`ImGui.begin_popup`][]. For full consistency, we may add [`ImGui::ImGuiWindowFlags`][] to the BeginPopupContextXXX functions in the future.
+  - IMPORTANT: Notice that BeginPopupContextXXX takes [`ImGuiPopupFlags`][ImGui::ImGuiPopupFlags] just like OpenPopup() and unlike [`begin_popup`][ImGui.begin_popup]. For full consistency, we may add [`ImGuiWindowFlags`][ImGui::ImGuiWindowFlags] to the BeginPopupContextXXX functions in the future.
   - IMPORTANT: Notice that we exceptionally default their flags to 1 (== ImGuiPopupFlags_MouseButtonRight) for backward compatibility with older API taking 'int mouse_button = 1' parameter, so if you add other flags remember to re-add the ImGuiPopupFlags_MouseButtonRight.
 
 ### ::: ImGui.begin_popup_context_item
 
- open+begin popup when clicked on last item. Use str_id==NULL to associate the popup to previous item. If you want to use that on a non-interactive item such as [`ImGui.text`][] you need to pass in an explicit ID here. read comments in .cpp!  
+ open+begin popup when clicked on last item. Use str_id==NULL to associate the popup to previous item. If you want to use that on a non-interactive item such as [`text`][ImGui.text] you need to pass in an explicit ID here. read comments in .cpp!  
 
 ### ::: ImGui.begin_popup_context_window
 
@@ -992,8 +992,8 @@ Widgets: Value() Helpers.
 
 ## Popups: query functions  
 
-  - IsPopupOpen(): return true if the popup is open at the current [`ImGui.begin_popup`][] level of the popup stack.
-  - IsPopupOpen() with ImGuiPopupFlags_AnyPopupId: return true if any popup is open at the current [`ImGui.begin_popup`][] level of the popup stack.
+  - IsPopupOpen(): return true if the popup is open at the current [`begin_popup`][ImGui.begin_popup] level of the popup stack.
+  - IsPopupOpen() with ImGuiPopupFlags_AnyPopupId: return true if any popup is open at the current [`begin_popup`][ImGui.begin_popup] level of the popup stack.
   - IsPopupOpen() with ImGuiPopupFlags_AnyPopupId + ImGuiPopupFlags_AnyPopupLevel: return true if any popup is open.
 
 ### ::: ImGui.is_popup_open
@@ -1002,36 +1002,36 @@ Widgets: Value() Helpers.
 
 ## Tables  
 
-- Full-featured replacement for old [`ImGui.columns`][] API.
+- Full-featured replacement for old [`columns`][ImGui.columns] API.
 - See Demo->Tables for demo code. See top of imgui_tables.cpp for general commentary.
-- See [`ImGui::ImGuiTableFlags`][] and [`ImGui::ImGuiTableColumnFlags`][] enums for a description of available flags.
+- See [`ImGuiTableFlags`][ImGui::ImGuiTableFlags] and [`ImGuiTableColumnFlags`][ImGui::ImGuiTableColumnFlags] enums for a description of available flags.
 
 The typical call flow is:  
 
-- 1. Call [`ImGui.begin_table`][], early out if returning false.
-- 2. Optionally call [`ImGui.table_setup_column`][] to submit column name/flags/defaults.
-- 3. Optionally call [`ImGui.table_setup_scroll_freeze`][] to request scroll freezing of columns/rows.
-- 4. Optionally call [`ImGui.table_headers_row`][] to submit a header row. Names are pulled from [`ImGui.table_setup_column`][] data.
+- 1. Call [`begin_table`][ImGui.begin_table], early out if returning false.
+- 2. Optionally call [`table_setup_column`][ImGui.table_setup_column] to submit column name/flags/defaults.
+- 3. Optionally call [`table_setup_scroll_freeze`][ImGui.table_setup_scroll_freeze] to request scroll freezing of columns/rows.
+- 4. Optionally call [`table_headers_row`][ImGui.table_headers_row] to submit a header row. Names are pulled from [`table_setup_column`][ImGui.table_setup_column] data.
 - 5. Populate contents:
-      - In most situations you can use [`ImGui.table_next_row`][] + [`ImGui.table_set_column_index`][](N) to start appending into a column.
+      - In most situations you can use [`table_next_row`][ImGui.table_next_row] + [`table_set_column_index`][ImGui.table_set_column_index](N) to start appending into a column.
       - If you are using tables as a sort of grid, where every columns is holding the same type of contents,
-     you may prefer using [`ImGui.table_next_column`][] instead of [`ImGui.table_next_row`][] + [`ImGui.table_set_column_index`][].
-     [`ImGui.table_next_column`][] will automatically wrap-around into the next row if needed.
-      - IMPORTANT: Comparatively to the old [`ImGui.columns`][] API, we need to call [`ImGui.table_next_column`][] for the first column!
+     you may prefer using [`table_next_column`][ImGui.table_next_column] instead of [`table_next_row`][ImGui.table_next_row] + [`table_set_column_index`][ImGui.table_set_column_index].
+     [`table_next_column`][ImGui.table_next_column] will automatically wrap-around into the next row if needed.
+      - IMPORTANT: Comparatively to the old [`columns`][ImGui.columns] API, we need to call [`table_next_column`][ImGui.table_next_column] for the first column!
       - Summary of possible call flow:
 
-       [`ImGui.table_next_row`][] -> [`ImGui.table_set_column_index`][](0) -> [`ImGui.text`][]("Hello 0") -> [`ImGui.table_set_column_index`][](1) -> [`ImGui.text`][]("Hello 1")  // OK
-       [`ImGui.table_next_row`][] -> [`ImGui.table_next_column`][]      -> [`ImGui.text`][]("Hello 0") -> [`ImGui.table_next_column`][]      -> [`ImGui.text`][]("Hello 1")  // OK
-                         [`ImGui.table_next_column`][]      -> [`ImGui.text`][]("Hello 0") -> [`ImGui.table_next_column`][]      -> [`ImGui.text`][]("Hello 1")  // OK: [`ImGui.table_next_column`][] automatically gets to next row!
-       [`ImGui.table_next_row`][]                           -> [`ImGui.text`][]("Hello 0")                                               // Not OK! Missing [`ImGui.table_set_column_index`][] or [`ImGui.table_next_column`][]! [`ImGui.text`][] will not appear!
+       [`table_next_row`][ImGui.table_next_row] -> [`table_set_column_index`][ImGui.table_set_column_index](0) -> [`text`][ImGui.text]("Hello 0") -> [`table_set_column_index`][ImGui.table_set_column_index](1) -> [`text`][ImGui.text]("Hello 1")  // OK
+       [`table_next_row`][ImGui.table_next_row] -> [`table_next_column`][ImGui.table_next_column]      -> [`text`][ImGui.text]("Hello 0") -> [`table_next_column`][ImGui.table_next_column]      -> [`text`][ImGui.text]("Hello 1")  // OK
+                         [`table_next_column`][ImGui.table_next_column]      -> [`text`][ImGui.text]("Hello 0") -> [`table_next_column`][ImGui.table_next_column]      -> [`text`][ImGui.text]("Hello 1")  // OK: [`table_next_column`][ImGui.table_next_column] automatically gets to next row!
+       [`table_next_row`][ImGui.table_next_row]                           -> [`text`][ImGui.text]("Hello 0")                                               // Not OK! Missing [`table_set_column_index`][ImGui.table_set_column_index] or [`table_next_column`][ImGui.table_next_column]! [`text`][ImGui.text] will not appear!
 
-- 5. Call [`ImGui.end_table`][]
+- 5. Call [`end_table`][ImGui.end_table]
 
 ### ::: ImGui.begin_table
 
 ### ::: ImGui.end_table
 
- only call [`ImGui.end_table`][] if [`ImGui.begin_table`][] returns true!  
+ only call [`end_table`][ImGui.end_table] if [`begin_table`][ImGui.begin_table] returns true!  
 
 ### ::: ImGui.table_next_row
 
@@ -1045,15 +1045,15 @@ The typical call flow is:
 
  append into the specified column. Return true when column is visible.  
 
-## Tables: Headers & [`ImGui.columns`][] declaration  
+## Tables: Headers & [`columns`][ImGui.columns] declaration  
 
-- Use [`ImGui.table_setup_column`][] to specify label, resizing policy, default width/weight, id, various other flags etc.
-- Use [`ImGui.table_headers_row`][] to create a header row and automatically submit a [`ImGui.table_header`][] for each column.
+- Use [`table_setup_column`][ImGui.table_setup_column] to specify label, resizing policy, default width/weight, id, various other flags etc.
+- Use [`table_headers_row`][ImGui.table_headers_row] to create a header row and automatically submit a [`table_header`][ImGui.table_header] for each column.
   Headers are required to perform: reordering, sorting, and opening the context menu.
   The context menu can also be made available in columns body using ImGuiTableFlags_ContextMenuInBody.
-- You may manually submit headers using [`ImGui.table_next_row`][] + [`ImGui.table_header`][] calls, but this is only useful in
+- You may manually submit headers using [`table_next_row`][ImGui.table_next_row] + [`table_header`][ImGui.table_header] calls, but this is only useful in
   some advanced use cases (e.g. adding custom widgets in header row).
-- Use [`ImGui.table_setup_scroll_freeze`][] to lock columns/rows so they stay visible when scrolled.
+- Use [`table_setup_scroll_freeze`][ImGui.table_setup_scroll_freeze] to lock columns/rows so they stay visible when scrolled.
 
 ### ::: ImGui.table_setup_column
 
@@ -1063,7 +1063,7 @@ The typical call flow is:
 
 ### ::: ImGui.table_headers_row
 
- submit all headers cells based on data provided to [`ImGui.table_setup_column`][] + submit context menu  
+ submit all headers cells based on data provided to [`table_setup_column`][ImGui.table_setup_column] + submit context menu  
 
 ### ::: ImGui.table_header
 
@@ -1071,7 +1071,7 @@ The typical call flow is:
 
 ## Tables: Sorting & Miscellaneous functions  
 
-- Sorting: call [`ImGui.table_get_sort_specs`][] to retrieve latest sort specs for the table. NULL when not sorting.
+- Sorting: call [`table_get_sort_specs`][ImGui.table_get_sort_specs] to retrieve latest sort specs for the table. NULL when not sorting.
   When 'sort_specs->SpecsDirty == true' you should sort your data. It will be true when sorting specs have
   changed since last call, or the first time. Make sure to set 'SpecsDirty = false' after sorting,
   else you may wastefully sort your data every frame!
@@ -1079,11 +1079,11 @@ The typical call flow is:
 
 ### ::: ImGui.table_get_sort_specs
 
- get latest sort specs for the table (NULL if not sorting).  Lifetime: don't hold on this pointer over multiple frames or past any subsequent call to [`ImGui.begin_table`][].  
+ get latest sort specs for the table (NULL if not sorting).  Lifetime: don't hold on this pointer over multiple frames or past any subsequent call to [`begin_table`][ImGui.begin_table].  
 
 ### ::: ImGui.table_get_column_count
 
- return number of columns (value passed to [`ImGui.begin_table`][])  
+ return number of columns (value passed to [`begin_table`][ImGui.begin_table])  
 
 ### ::: ImGui.table_get_column_index
 
@@ -1095,7 +1095,7 @@ The typical call flow is:
 
 ### ::: ImGui.table_get_column_name
 
- return "" if column didn't have a name declared by [`ImGui.table_setup_column`][]. Pass -1 to use current column.  
+ return "" if column didn't have a name declared by [`table_setup_column`][ImGui.table_setup_column]. Pass -1 to use current column.  
 
 ### ::: ImGui.table_get_column_flags
 
@@ -1105,11 +1105,11 @@ The typical call flow is:
 
 ### ::: ImGui.table_set_bg_color
 
- change the color of a cell, row, or column. See [`ImGui::ImGuiTableBgTarget`][] flags for details.  
+ change the color of a cell, row, or column. See [`ImGuiTableBgTarget`][ImGui::ImGuiTableBgTarget] flags for details.  
 
-## Legacy [`ImGui.columns`][] API (prefer using Tables!)  
+## Legacy [`columns`][ImGui.columns] API (prefer using Tables!)  
 
-- You can also use [`ImGui.same_line`][](pos_x) to mimic simplified columns.
+- You can also use [`same_line`][ImGui.same_line](pos_x) to mimic simplified columns.
 
 ### ::: ImGui.columns
 
@@ -1131,7 +1131,7 @@ The typical call flow is:
 
 ### ::: ImGui.get_column_offset
 
- get position of column line (in pixels, from the left side of the contents region). pass -1 to use current column, otherwise 0..[`ImGui.get_columns_count`][] inclusive. column 0 is typically 0.0f  
+ get position of column line (in pixels, from the left side of the contents region). pass -1 to use current column, otherwise 0..[`get_columns_count`][ImGui.get_columns_count] inclusive. column 0 is typically 0.0f  
 
 ### ::: ImGui.set_column_offset
 
@@ -1147,7 +1147,7 @@ The typical call flow is:
 
 ### ::: ImGui.end_tab_bar
 
- only call [`ImGui.end_tab_bar`][] if [`ImGui.begin_tab_bar`][] returns true!  
+ only call [`end_tab_bar`][ImGui.end_tab_bar] if [`begin_tab_bar`][ImGui.begin_tab_bar] returns true!  
 
 ### ::: ImGui.begin_tab_item
 
@@ -1155,7 +1155,7 @@ The typical call flow is:
 
 ### ::: ImGui.end_tab_item
 
- only call [`ImGui.end_tab_item`][] if [`ImGui.begin_tab_item`][] returns true!  
+ only call [`end_tab_item`][ImGui.end_tab_item] if [`begin_tab_item`][ImGui.begin_tab_item] returns true!  
 
 ### ::: ImGui.tab_item_button
 
@@ -1163,7 +1163,7 @@ The typical call flow is:
 
 ### ::: ImGui.set_tab_item_closed
 
- notify TabBar or Docking system of a closed tab/window ahead (useful to reduce visual flicker on reorderable tab bars). For tab-bar: call after [`ImGui.begin_tab_bar`][] and before Tab submissions. Otherwise call with a window name.  
+ notify TabBar or Docking system of a closed tab/window ahead (useful to reduce visual flicker on reorderable tab bars). For tab-bar: call after [`begin_tab_bar`][ImGui.begin_tab_bar] and before Tab submissions. Otherwise call with a window name.  
 
 ## Logging/Capture  
 
@@ -1195,14 +1195,14 @@ The typical call flow is:
 
 ## Drag and Drop  
 
-- On source items, call [`ImGui.begin_drag_drop_source`][], if it returns true also call [`ImGui.set_drag_drop_payload`][] + [`ImGui.end_drag_drop_source`][].
-- On target candidates, call [`ImGui.begin_drag_drop_target`][], if it returns true also call [`ImGui.accept_drag_drop_payload`][] + [`ImGui.end_drag_drop_target`][].
-- If you stop calling [`ImGui.begin_drag_drop_source`][] the payload is preserved however it won't have a preview tooltip (we currently display a fallback "..." tooltip, see #1725)
+- On source items, call [`begin_drag_drop_source`][ImGui.begin_drag_drop_source], if it returns true also call [`set_drag_drop_payload`][ImGui.set_drag_drop_payload] + [`end_drag_drop_source`][ImGui.end_drag_drop_source].
+- On target candidates, call [`begin_drag_drop_target`][ImGui.begin_drag_drop_target], if it returns true also call [`accept_drag_drop_payload`][ImGui.accept_drag_drop_payload] + [`end_drag_drop_target`][ImGui.end_drag_drop_target].
+- If you stop calling [`begin_drag_drop_source`][ImGui.begin_drag_drop_source] the payload is preserved however it won't have a preview tooltip (we currently display a fallback "..." tooltip, see #1725)
 - An item can be both drag source and drop target.
 
 ### ::: ImGui.begin_drag_drop_source
 
- call after submitting an item which may be dragged. when this return true, you can call [`ImGui.set_drag_drop_payload`][] + [`ImGui.end_drag_drop_source`][]  
+ call after submitting an item which may be dragged. when this return true, you can call [`set_drag_drop_payload`][ImGui.set_drag_drop_payload] + [`end_drag_drop_source`][ImGui.end_drag_drop_source]  
 
 ### ::: ImGui.set_drag_drop_payload
 
@@ -1210,11 +1210,11 @@ The typical call flow is:
 
 ### ::: ImGui.end_drag_drop_source
 
- only call [`ImGui.end_drag_drop_source`][] if [`ImGui.begin_drag_drop_source`][] returns true!  
+ only call [`end_drag_drop_source`][ImGui.end_drag_drop_source] if [`begin_drag_drop_source`][ImGui.begin_drag_drop_source] returns true!  
 
 ### ::: ImGui.begin_drag_drop_target
 
- call after submitting an item that may receive a payload. If this returns true, you can call [`ImGui.accept_drag_drop_payload`][] + [`ImGui.end_drag_drop_target`][]  
+ call after submitting an item that may receive a payload. If this returns true, you can call [`accept_drag_drop_payload`][ImGui.accept_drag_drop_payload] + [`end_drag_drop_target`][ImGui.end_drag_drop_target]  
 
 ### ::: ImGui.accept_drag_drop_payload
 
@@ -1222,17 +1222,17 @@ The typical call flow is:
 
 ### ::: ImGui.end_drag_drop_target
 
- only call [`ImGui.end_drag_drop_target`][] if [`ImGui.begin_drag_drop_target`][] returns true!  
+ only call [`end_drag_drop_target`][ImGui.end_drag_drop_target] if [`begin_drag_drop_target`][ImGui.begin_drag_drop_target] returns true!  
 
 ### ::: ImGui.get_drag_drop_payload
 
- peek directly into the current payload from anywhere. may return NULL. use [`ImGui::ImGuiPayload`][]::IsDataType() to test for the payload type.  
+ peek directly into the current payload from anywhere. may return NULL. use [`ImGuiPayload`][ImGui::ImGuiPayload]::IsDataType() to test for the payload type.  
 
 ## Disabling [BETA API]  
 
 - Disable all user interactions and dim items visuals (applying style.DisabledAlpha over current colors)
-- Those can be nested but it cannot be used to enable an already disabled section (a single [`ImGui.begin_disabled`][](true) in the stack is enough to keep everything disabled)
-- [`ImGui.begin_disabled`][](false) essentially does nothing useful but is provided to facilitate use of boolean expressions. If you can avoid calling [`ImGui.begin_disabled`][](False)/[`ImGui.end_disabled`][] best to avoid it.
+- Those can be nested but it cannot be used to enable an already disabled section (a single [`begin_disabled`][ImGui.begin_disabled](true) in the stack is enough to keep everything disabled)
+- [`begin_disabled`][ImGui.begin_disabled](false) essentially does nothing useful but is provided to facilitate use of boolean expressions. If you can avoid calling [`begin_disabled`][ImGui.begin_disabled](False)/[`end_disabled`][ImGui.end_disabled] best to avoid it.
 
 ### ::: ImGui.begin_disabled
 
@@ -1240,7 +1240,7 @@ The typical call flow is:
 
 ## Clipping  
 
-- Mouse hovering is affected by [`ImGui.push_clip_rect`][] calls, unlike direct calls to [`ImGui::ImDrawList`][]::[`ImGui.push_clip_rect`][] which are render only.
+- Mouse hovering is affected by [`push_clip_rect`][ImGui.push_clip_rect] calls, unlike direct calls to [`ImDrawList`][ImGui::ImDrawList]::[`push_clip_rect`][ImGui.push_clip_rect] which are render only.
 
 ### ::: ImGui.push_clip_rect
 
@@ -1248,7 +1248,7 @@ The typical call flow is:
 
 ## Focus, Activation  
 
-- Prefer using "[`ImGui.set_item_default_focus`][]" over "if ([`ImGui.is_window_appearing`][]) [`ImGui.set_scroll_here_y`][]" when applicable to signify "this is the default item"
+- Prefer using "[`set_item_default_focus`][ImGui.set_item_default_focus]" over "if ([`is_window_appearing`][ImGui.is_window_appearing]) [`set_scroll_here_y`][ImGui.set_scroll_here_y]" when applicable to signify "this is the default item"
 
 ### ::: ImGui.set_item_default_focus
 
@@ -1265,7 +1265,7 @@ The typical call flow is:
 
 ### ::: ImGui.is_item_hovered
 
- is the last item hovered? (and usable, aka not blocked by a popup, etc.). See [`ImGui::ImGuiHoveredFlags`][] for more options.  
+ is the last item hovered? (and usable, aka not blocked by a popup, etc.). See [`ImGuiHoveredFlags`][ImGui::ImGuiHoveredFlags] for more options.  
 
 ### ::: ImGui.is_item_active
 
@@ -1277,7 +1277,7 @@ The typical call flow is:
 
 ### ::: ImGui.is_item_clicked
 
- is the last item hovered and mouse clicked on? (**)  == [`ImGui.is_mouse_clicked`][](mouse_button) && [`ImGui.is_item_hovered`][]Important. (**) this it NOT equivalent to the behavior of e.g. [`ImGui.button`][]. Read comments in function definition.  
+ is the last item hovered and mouse clicked on? (**)  == [`is_mouse_clicked`][ImGui.is_mouse_clicked](mouse_button) && [`is_item_hovered`][ImGui.is_item_hovered]Important. (**) this it NOT equivalent to the behavior of e.g. [`button`][ImGui.button]. Read comments in function definition.  
 
 ### ::: ImGui.is_item_visible
 
@@ -1371,7 +1371,7 @@ The typical call flow is:
 
 ### ::: ImGui.get_draw_list_shared_data
 
- you may use this when creating your own [`ImGui::ImDrawList`][] instances.  
+ you may use this when creating your own [`ImDrawList`][ImGui::ImDrawList] instances.  
 
 ### ::: ImGui.get_style_color_name
 
@@ -1389,9 +1389,9 @@ The typical call flow is:
 
 ### ::: ImGui.end_child_frame
 
- always call [`ImGui.end_child_frame`][] regardless of [`ImGui.begin_child_frame`][] return values (which indicates a collapsed/clipped window)  
+ always call [`end_child_frame`][ImGui.end_child_frame] regardless of [`begin_child_frame`][ImGui.begin_child_frame] return values (which indicates a collapsed/clipped window)  
 
-## [`ImGui.text`][] Utilities  
+## [`text`][ImGui.text] Utilities  
 
 ### ::: ImGui.calc_text_size
 
@@ -1408,12 +1408,12 @@ The typical call flow is:
 ## Inputs Utilities: Keyboard  
 Without IMGUI_DISABLE_OBSOLETE_KEYIO: (legacy support)  
 
-    - For '[`ImGui::ImGuiKey`][] key' you can still use your legacy native/user indices according to how your backend/engine stored them in io.KeysDown[].
+    - For '[`ImGuiKey`][ImGui::ImGuiKey] key' you can still use your legacy native/user indices according to how your backend/engine stored them in io.KeysDown[].
 
 With IMGUI_DISABLE_OBSOLETE_KEYIO: (this is the way forward)  
 
-    - Any use of '[`ImGui::ImGuiKey`][]' will assert when key < 512 will be passed, previously reserved as native/user keys indices
-    - [`ImGui.get_key_index`][] is pass-through and therefore deprecated (gone if IMGUI_DISABLE_OBSOLETE_KEYIO is defined)
+    - Any use of '[`ImGuiKey`][ImGui::ImGuiKey]' will assert when key < 512 will be passed, previously reserved as native/user keys indices
+    - [`get_key_index`][ImGui.get_key_index] is pass-through and therefore deprecated (gone if IMGUI_DISABLE_OBSOLETE_KEYIO is defined)
 
 ### ::: ImGui.is_key_down
 
@@ -1437,7 +1437,7 @@ With IMGUI_DISABLE_OBSOLETE_KEYIO: (this is the way forward)
 
 ### ::: ImGui.set_next_frame_want_capture_keyboard
 
- Override io.WantCaptureKeyboard flag next frame (said flag is left for your application to handle, typically when true it instructs your app to ignore inputs). e.g. force capture keyboard when your widget is being hovered. This is equivalent to setting "io.WantCaptureKeyboard = want_capture_keyboard"; after the next [`ImGui.new_frame`][] call.  
+ Override io.WantCaptureKeyboard flag next frame (said flag is left for your application to handle, typically when true it instructs your app to ignore inputs). e.g. force capture keyboard when your widget is being hovered. This is equivalent to setting "io.WantCaptureKeyboard = want_capture_keyboard"; after the next [`new_frame`][ImGui.new_frame] call.  
 
 ## Inputs Utilities: Mouse  
 
@@ -1451,7 +1451,7 @@ With IMGUI_DISABLE_OBSOLETE_KEYIO: (this is the way forward)
 
 ### ::: ImGui.is_mouse_clicked
 
- did mouse button clicked? (went from !Down to Down). Same as [`ImGui.get_mouse_clicked_count`][] == 1.  
+ did mouse button clicked? (went from !Down to Down). Same as [`get_mouse_clicked_count`][ImGui.get_mouse_clicked_count] == 1.  
 
 ### ::: ImGui.is_mouse_released
 
@@ -1459,7 +1459,7 @@ With IMGUI_DISABLE_OBSOLETE_KEYIO: (this is the way forward)
 
 ### ::: ImGui.is_mouse_double_clicked
 
- did mouse button double-clicked? Same as [`ImGui.get_mouse_clicked_count`][] == 2. (note that a double-click will also report [`ImGui.is_mouse_clicked`][] == true)  
+ did mouse button double-clicked? Same as [`get_mouse_clicked_count`][ImGui.get_mouse_clicked_count] == 2. (note that a double-click will also report [`is_mouse_clicked`][ImGui.is_mouse_clicked] == true)  
 
 ### ::: ImGui.get_mouse_clicked_count
 
@@ -1477,11 +1477,11 @@ With IMGUI_DISABLE_OBSOLETE_KEYIO: (this is the way forward)
 
 ### ::: ImGui.get_mouse_pos
 
- shortcut to [`ImGui.get_io`][].MousePos provided by user, to be consistent with other calls  
+ shortcut to [`get_io`][ImGui.get_io].MousePos provided by user, to be consistent with other calls  
 
 ### ::: ImGui.get_mouse_pos_on_opening_current_popup
 
- retrieve mouse position at the time of opening popup we have [`ImGui.begin_popup`][] into (helper to avoid user backing that value themselves)  
+ retrieve mouse position at the time of opening popup we have [`begin_popup`][ImGui.begin_popup] into (helper to avoid user backing that value themselves)  
 
 ### ::: ImGui.is_mouse_dragging
 
@@ -1495,7 +1495,7 @@ With IMGUI_DISABLE_OBSOLETE_KEYIO: (this is the way forward)
 
 ### ::: ImGui.get_mouse_cursor
 
- get desired cursor type, reset in [`ImGui.new_frame`][], this is updated during the frame. valid before [`ImGui.render`][]. If you use software rendering by setting io.MouseDrawCursor ImGui will render those for you  
+ get desired cursor type, reset in [`new_frame`][ImGui.new_frame], this is updated during the frame. valid before [`render`][ImGui.render]. If you use software rendering by setting io.MouseDrawCursor ImGui will render those for you  
 
 ### ::: ImGui.set_mouse_cursor
 
@@ -1503,11 +1503,11 @@ With IMGUI_DISABLE_OBSOLETE_KEYIO: (this is the way forward)
 
 ### ::: ImGui.set_next_frame_want_capture_mouse
 
- Override io.WantCaptureMouse flag next frame (said flag is left for your application to handle, typical when true it instucts your app to ignore inputs). This is equivalent to setting "io.WantCaptureMouse = want_capture_mouse;" after the next [`ImGui.new_frame`][] call.  
+ Override io.WantCaptureMouse flag next frame (said flag is left for your application to handle, typical when true it instucts your app to ignore inputs). This is equivalent to setting "io.WantCaptureMouse = want_capture_mouse;" after the next [`new_frame`][ImGui.new_frame] call.  
 
 ## Clipboard Utilities  
 
-- Also see the [`ImGui.log_to_clipboard`][] function to capture GUI into clipboard, or easily output text data to the clipboard.
+- Also see the [`log_to_clipboard`][ImGui.log_to_clipboard] function to capture GUI into clipboard, or easily output text data to the clipboard.
 
 ### ::: ImGui.get_clipboard_text
 
@@ -1521,15 +1521,15 @@ Settings/.Ini Utilities
 
 ### ::: ImGui.load_ini_settings_from_disk
 
- call after [`ImGui.create_context`][] and before the first call to [`ImGui.new_frame`][]. [`ImGui.new_frame`][] automatically calls [`ImGui.load_ini_settings_from_disk`][](io.IniFilename).  
+ call after [`create_context`][ImGui.create_context] and before the first call to [`new_frame`][ImGui.new_frame]. [`new_frame`][ImGui.new_frame] automatically calls [`load_ini_settings_from_disk`][ImGui.load_ini_settings_from_disk](io.IniFilename).  
 
 ### ::: ImGui.load_ini_settings_from_memory
 
- call after [`ImGui.create_context`][] and before the first call to [`ImGui.new_frame`][] to provide .ini data from your own data source.  
+ call after [`create_context`][ImGui.create_context] and before the first call to [`new_frame`][ImGui.new_frame] to provide .ini data from your own data source.  
 
 ### ::: ImGui.save_ini_settings_to_disk
 
- this is automatically called (if io.IniFilename is not empty) a few seconds after any modification that should be reflected in the .ini file (and also by [`ImGui.destroy_context`][]).  
+ this is automatically called (if io.IniFilename is not empty) a few seconds after any modification that should be reflected in the .ini file (and also by [`destroy_context`][ImGui.destroy_context]).  
 
 ### ::: ImGui.save_ini_settings_to_memory
 
@@ -1546,7 +1546,7 @@ Settings/.Ini Utilities
 ## Memory Allocators  
 
 - Those functions are not reliant on the current context.
-- DLL users: heaps and globals are not shared across DLL boundaries! You will need to call [`ImGui.set_current_context`][] + [`ImGui.set_allocator_functions`][]
+- DLL users: heaps and globals are not shared across DLL boundaries! You will need to call [`set_current_context`][ImGui.set_current_context] + [`set_allocator_functions`][ImGui.set_allocator_functions]
   for each static/DLL boundary you are calling from. Read "Context and Memory Allocators" section of imgui.cpp for more details.
 
 ### ::: ImGui.set_allocator_functions

@@ -1,6 +1,6 @@
 # Viewports  
 
-Flags stored in [`ImGui::ImGuiViewport`][]::Flags, giving indications to the platform backends.  
+Flags stored in [`ImGuiViewport`][ImGui::ImGuiViewport]::Flags, giving indications to the platform backends.  
 
 ### ::: ImGui::ImGuiViewportFlags
 
@@ -27,7 +27,7 @@ Flags stored in [`ImGui::ImGuiViewport`][]::Flags, giving indications to the pla
 
 ##### ::: ImGui::ImGuiViewport.flags
 
- See [`ImGui::ImGuiViewportFlags`][]  
+ See [`ImGuiViewportFlags`][ImGui::ImGuiViewportFlags]  
 
 ##### ::: ImGui::ImGuiViewport.pos
 

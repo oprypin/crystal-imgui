@@ -1,8 +1,8 @@
 # ImGuiStyle  
 
-You may modify the [`ImGui.get_style`][] main instance during initialization and before [`ImGui.new_frame`][].  
-During the frame, use ImGui::PushStyleVar(ImGuiStyleVar_XXXX)/[`ImGui.pop_style_var`][] to alter the main style values,  
-and ImGui::PushStyleColor(ImGuiCol_XXX)/[`ImGui.pop_style_color`][] for colors.  
+You may modify the [`get_style`][ImGui.get_style] main instance during initialization and before [`new_frame`][ImGui.new_frame].  
+During the frame, use ImGui::PushStyleVar(ImGuiStyleVar_XXXX)/[`pop_style_var`][ImGui.pop_style_var] to alter the main style values,  
+and ImGui::PushStyleColor(ImGuiCol_XXX)/[`pop_style_color`][ImGui.pop_style_color] for colors.  
 
 ### ::: ImGui::ImGuiStyle
 
@@ -12,7 +12,7 @@ and ImGui::PushStyleColor(ImGuiCol_XXX)/[`ImGui.pop_style_color`][] for colors.
 
 ##### ::: ImGui::ImGuiStyle.disabled_alpha
 
- Additional alpha multiplier applied by [`ImGui.begin_disabled`][]. Multiply over current value of Alpha.  
+ Additional alpha multiplier applied by [`begin_disabled`][ImGui.begin_disabled]. Multiply over current value of Alpha.  
 
 ##### ::: ImGui::ImGuiStyle.window_padding
 
@@ -28,7 +28,7 @@ and ImGui::PushStyleColor(ImGuiCol_XXX)/[`ImGui.pop_style_color`][] for colors.
 
 ##### ::: ImGui::ImGuiStyle.window_min_size
 
- Minimum window size. This is a global setting. If you want to constraint individual windows, use [`ImGui.set_next_window_size_constraints`][].  
+ Minimum window size. This is a global setting. If you want to constraint individual windows, use [`set_next_window_size_constraints`][ImGui.set_next_window_size_constraints].  
 
 ##### ::: ImGui::ImGuiStyle.window_title_align
 
@@ -124,7 +124,7 @@ and ImGui::PushStyleColor(ImGuiCol_XXX)/[`ImGui.pop_style_color`][] for colors.
 
 ##### ::: ImGui::ImGuiStyle.color_button_position
 
- Side of the color button in the [`ImGui.color_edit4`][] widget (left/right). Defaults to ImGuiDir_Right.  
+ Side of the color button in the [`color_edit4`][ImGui.color_edit4] widget (left/right). Defaults to ImGuiDir_Right.  
 
 ##### ::: ImGui::ImGuiStyle.button_text_align
 
@@ -148,15 +148,15 @@ and ImGui::PushStyleColor(ImGuiCol_XXX)/[`ImGui.pop_style_color`][] for colors.
 
 ##### ::: ImGui::ImGuiStyle.anti_aliased_lines
 
- Enable anti-aliased lines/borders. Disable if you are really tight on CPU/GPU. Latched at the beginning of the frame (copied to [`ImGui::ImDrawList`][]).  
+ Enable anti-aliased lines/borders. Disable if you are really tight on CPU/GPU. Latched at the beginning of the frame (copied to [`ImDrawList`][ImGui::ImDrawList]).  
 
 ##### ::: ImGui::ImGuiStyle.anti_aliased_lines_use_tex
 
- Enable anti-aliased lines/borders using textures where possible. Require backend to render with bilinear filtering (NOT point/nearest filtering). Latched at the beginning of the frame (copied to [`ImGui::ImDrawList`][]).  
+ Enable anti-aliased lines/borders using textures where possible. Require backend to render with bilinear filtering (NOT point/nearest filtering). Latched at the beginning of the frame (copied to [`ImDrawList`][ImGui::ImDrawList]).  
 
 ##### ::: ImGui::ImGuiStyle.anti_aliased_fill
 
- Enable anti-aliased edges around filled shapes (rounded rectangles, circles, etc.). Disable if you are really tight on CPU/GPU. Latched at the beginning of the frame (copied to [`ImGui::ImDrawList`][]).  
+ Enable anti-aliased edges around filled shapes (rounded rectangles, circles, etc.). Disable if you are really tight on CPU/GPU. Latched at the beginning of the frame (copied to [`ImDrawList`][ImGui::ImDrawList]).  
 
 ##### ::: ImGui::ImGuiStyle.curve_tessellation_tol
 

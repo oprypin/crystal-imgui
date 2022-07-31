@@ -4,4 +4,4 @@ Please keep your copy of dear imgui up to date! Occasionally set '#define IMGUI_
 
 ### ::: ImGui.get_key_index
 
- map [`ImGui::ImGuiKey`][]* values into legacy native key index. == io.KeyMap[key]  
+ map [`ImGuiKey`][ImGui::ImGuiKey]* values into legacy native key index. == io.KeyMap[key]  

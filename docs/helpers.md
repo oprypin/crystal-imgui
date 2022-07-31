@@ -8,7 +8,7 @@
  Maximum Unicode code point supported by this build.  
 
 Helper: Execute a block of code at maximum once a frame. Convenient if you want to quickly create an UI within deep-nested code that runs multiple times every frame.  
-Usage: static [`ImGui::ImGuiOnceUponAFrame`][] oaf; if (oaf) [`ImGui.text`][]("This will be called only once per frame");  
+Usage: static [`ImGuiOnceUponAFrame`][ImGui::ImGuiOnceUponAFrame] oaf; if (oaf) [`text`][ImGui.text]("This will be called only once per frame");  
 
 ### ::: ImGui::ImGuiOnceUponAFrame
 
@@ -18,7 +18,7 @@ Helper: Parse and apply text filters. In format "aaaaa[,bbbb][,ccccc]"
 
 ### ::: ImGui::ImGuiTextFilter
 
- Helper calling [`ImGui.input_text`][]+Build  
+ Helper calling [`input_text`][ImGui.input_text]+Build  
 
 #### [Internal]  
 
@@ -59,7 +59,7 @@ Types are NOT stored, so it is up to you to make sure your Key don't collide wit
 - Get***Ref() functions finds pair, insert on demand if missing, return pointer. Useful if you intend to do Get+Set.
 - References are only valid until a new value is added to the storage. Calling a Set***() function or a Get***Ref() function invalidates the pointer.
 - A typical use case where this is convenient for quick hacking (e.g. add storage during a live Edit&Continue session if you can't modify existing struct)
-     float* pvar = ImGui::GetFloatRef(key); [`ImGui.slider_float`][]("var", pvar, 0, 100.0f); some_var += *pvar;
+     float* pvar = ImGui::GetFloatRef(key); [`slider_float`][ImGui.slider_float]("var", pvar, 0, 100.0f); some_var += *pvar;
 
 #### Use on your own storage if you know only integer are being stored (open/close all tree nodes)  
 
@@ -70,15 +70,15 @@ If you have lots evenly spaced items and you have a random access to the list, y
 clipping based on visibility to only submit items that are in view.  
 The clipper calculates the range of visible items and advance the cursor to compensate for the non-visible items we have skipped.  
 (Dear ImGui already clip items based on their bounds but: it needs to first layout the item to do so, and generally  
- fetching/submitting your own data incurs additional cost. Coarse clipping using [`ImGui::ImGuiListClipper`][] allows you to easily
+ fetching/submitting your own data incurs additional cost. Coarse clipping using [`ImGuiListClipper`][ImGui::ImGuiListClipper] allows you to easily
  scale using lists with tens of thousands of items without a problem)
 
 Usage:  
-  [`ImGui::ImGuiListClipper`][] clipper;
+  [`ImGuiListClipper`][ImGui::ImGuiListClipper] clipper;
   clipper.Begin(1000);         // We have 1000 elements, evenly spaced.
   while (clipper.Step())
       for (int i = clipper.DisplayStart; i < clipper.DisplayEnd; i++)
-          [`ImGui.text`][]("line number %d", i);
+          [`text`][ImGui.text]("line number %d", i);
 
 Generally what happens is:  
 
@@ -116,7 +116,7 @@ Generally what happens is:
  [Internal] Internal data  
 
 items_count: Use INT_MAX if you don't know how many items you have (in which case the cursor won't be advanced in the final step)  
-items_height: Use -1.0f to be calculated automatically on first step. Otherwise pass in the distance between your items, typically [`ImGui.get_text_line_height_with_spacing`][] or [`ImGui.get_frame_height_with_spacing`][].  
+items_height: Use -1.0f to be calculated automatically on first step. Otherwise pass in the distance between your items, typically [`get_text_line_height_with_spacing`][ImGui.get_text_line_height_with_spacing] or [`get_frame_height_with_spacing`][ImGui.get_frame_height_with_spacing].  
 
  Automatically called on the last call of Step() that returns false.  
  Call until it returns false. The DisplayStart/DisplayEnd fields will be set and you can process/draw those items.  
@@ -135,10 +135,10 @@ User can declare their own format by #defining the 5 _SHIFT/_MASK macros in thei
 
  Transparent black = 0x00000000  
 
-## Helper: [`ImGui::ImColor`][] implicitly converts colors to either ImU32 (packed 4x1 byte) or [`ImGui::ImVec4`][] (4x1 float)  
-Prefer using IM_COL32() macros if you want a guaranteed compile-time ImU32 for usage with [`ImGui::ImDrawList`][] API.  
-**Avoid storing [`ImGui::ImColor`][]! Store either u32 of [`ImGui::ImVec4`][]. This is not a full-featured color class. MAY OBSOLETE.  
-**None of the ImGui API are using [`ImGui::ImColor`][] directly but you can use it as a convenience to pass colors in either ImU32 or [`ImGui::ImVec4`][] formats. Explicitly cast to ImU32 or [`ImGui::ImVec4`][] if needed.  
+## Helper: [`ImColor`][ImGui::ImColor] implicitly converts colors to either ImU32 (packed 4x1 byte) or [`ImVec4`][ImGui::ImVec4] (4x1 float)  
+Prefer using IM_COL32() macros if you want a guaranteed compile-time ImU32 for usage with [`ImDrawList`][ImGui::ImDrawList] API.  
+**Avoid storing [`ImColor`][ImGui::ImColor]! Store either u32 of [`ImVec4`][ImGui::ImVec4]. This is not a full-featured color class. MAY OBSOLETE.  
+**None of the ImGui API are using [`ImColor`][ImGui::ImColor] directly but you can use it as a convenience to pass colors in either ImU32 or [`ImVec4`][ImGui::ImVec4] formats. Explicitly cast to ImU32 or [`ImVec4`][ImGui::ImVec4] if needed.  
 
 ### ::: ImGui::ImColor
 

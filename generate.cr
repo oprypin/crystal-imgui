@@ -1085,7 +1085,7 @@ out_api.each_with_index do |line, i|
   elsif !line.includes?(" ::: ")
     line = line.gsub(referrable_items_re) do
       s = REFERRABLE_ITEMS[$2]
-      "[`#{s}`][]"
+      "[`#{s.lchop("ImGui::").lchop("ImGui.")}`][#{s}]"
     end
   end
 

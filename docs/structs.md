@@ -1,10 +1,10 @@
 # Misc data structures  
 
-Shared state of [`ImGui.input_text`][], passed as an argument to your callback when a ImGuiInputTextFlags_Callback* flag is used.  
+Shared state of [`input_text`][ImGui.input_text], passed as an argument to your callback when a ImGuiInputTextFlags_Callback* flag is used.  
 The callback function should return 0 by default.  
-Callbacks (follow a flag name and see comments in [`ImGui::ImGuiInputTextFlags`][] declarations for more details)  
+Callbacks (follow a flag name and see comments in [`ImGuiInputTextFlags`][ImGui::ImGuiInputTextFlags] declarations for more details)  
 
-- ImGuiInputTextFlags_CallbackEdit:        Callback on buffer edit (note that [`ImGui.input_text`][] already returns true on edit, the callback is useful mainly to manipulate the underlying buffer while focus is active)
+- ImGuiInputTextFlags_CallbackEdit:        Callback on buffer edit (note that [`input_text`][ImGui.input_text] already returns true on edit, the callback is useful mainly to manipulate the underlying buffer while focus is active)
 - ImGuiInputTextFlags_CallbackAlways:      Callback on each iteration
 - ImGuiInputTextFlags_CallbackCompletion:  Callback on pressing TAB
 - ImGuiInputTextFlags_CallbackHistory:     Callback on pressing Up/Down arrows
@@ -19,16 +19,16 @@ Callbacks (follow a flag name and see comments in [`ImGui::ImGuiInputTextFlags`]
 
 ##### ::: ImGui::ImGuiInputTextCallbackData.flags
 
- What user passed to [`ImGui.input_text`][]      // Read-only  
+ What user passed to [`input_text`][ImGui.input_text]      // Read-only  
 
 ##### ::: ImGui::ImGuiInputTextCallbackData.user_data
 
- What user passed to [`ImGui.input_text`][]      // Read-only  
+ What user passed to [`input_text`][ImGui.input_text]      // Read-only  
 
 #### Arguments for the different callback events  
 
 - To modify the text buffer in a callback, prefer using the InsertChars() / DeleteChars() function. InsertChars() will take care of calling the resize callback if necessary.
-- If you know your edits are not going to resize the underlying buffer allocation, you may modify the contents of 'Buf[]' directly. You need to update 'BufTextLen' accordingly (0 <= BufTextLen < BufSize) and set 'BufDirty'' to true so [`ImGui.input_text`][] can update its internal state.
+- If you know your edits are not going to resize the underlying buffer allocation, you may modify the contents of 'Buf[]' directly. You need to update 'BufTextLen' accordingly (0 <= BufTextLen < BufSize) and set 'BufDirty'' to true so [`input_text`][ImGui.input_text] can update its internal state.
 
 ##### ::: ImGui::ImGuiInputTextCallbackData.event_char
 
@@ -40,11 +40,11 @@ Callbacks (follow a flag name and see comments in [`ImGui::ImGuiInputTextFlags`]
 
 ##### ::: ImGui::ImGuiInputTextCallbackData.buf
 
- [`ImGui.text`][] buffer                          // Read-write   // [Resize] Can replace pointer / [Completion,History,Always] Only write to pointed data, don't replace the actual pointer!  
+ [`text`][ImGui.text] buffer                          // Read-write   // [Resize] Can replace pointer / [Completion,History,Always] Only write to pointed data, don't replace the actual pointer!  
 
 ##### ::: ImGui::ImGuiInputTextCallbackData.buf_text_len
 
- [`ImGui.text`][] length (in bytes)               // Read-write   // [Resize,Completion,History,Always] Exclude zero-terminator storage. In C land: == strlen(some_text), in C++ land: string.length()  
+ [`text`][ImGui.text] length (in bytes)               // Read-write   // [Resize,Completion,History,Always] Exclude zero-terminator storage. In C land: == strlen(some_text), in C++ land: string.length()  
 
 ##### ::: ImGui::ImGuiInputTextCallbackData.buf_size
 
@@ -69,14 +69,14 @@ Callbacks (follow a flag name and see comments in [`ImGui::ImGuiInputTextFlags`]
 Helper functions for text manipulation.  
 Use those function to benefit from the CallbackResize behaviors. Calling those function reset the selection.  
 
-Resizing callback data to apply custom constraint. As enabled by [`ImGui.set_next_window_size_constraints`][]. Callback is called during the next Begin().  
-NB: For basic min/max size constraint on each axis you don't need to use the callback! The [`ImGui.set_next_window_size_constraints`][] parameters are enough.  
+Resizing callback data to apply custom constraint. As enabled by [`set_next_window_size_constraints`][ImGui.set_next_window_size_constraints]. Callback is called during the next Begin().  
+NB: For basic min/max size constraint on each axis you don't need to use the callback! The [`set_next_window_size_constraints`][ImGui.set_next_window_size_constraints] parameters are enough.  
 
 ### ::: ImGui::ImGuiSizeCallbackData
 
 ##### ::: ImGui::ImGuiSizeCallbackData.user_data
 
- Read-only.   What user passed to [`ImGui.set_next_window_size_constraints`][]  
+ Read-only.   What user passed to [`set_next_window_size_constraints`][ImGui.set_next_window_size_constraints]  
 
 ##### ::: ImGui::ImGuiSizeCallbackData.pos
 
@@ -90,7 +90,7 @@ NB: For basic min/max size constraint on each axis you don't need to use the cal
 
  Read-write.  Desired size, based on user's mouse position. Write to this field to restrain resizing.  
 
-## Data payload for Drag and Drop operations: [`ImGui.accept_drag_drop_payload`][], [`ImGui.get_drag_drop_payload`][]  
+## Data payload for Drag and Drop operations: [`accept_drag_drop_payload`][ImGui.accept_drag_drop_payload], [`get_drag_drop_payload`][ImGui.get_drag_drop_payload]  
 
 ### ::: ImGui::ImGuiPayload
 
@@ -124,11 +124,11 @@ NB: For basic min/max size constraint on each axis you don't need to use the cal
 
 ##### ::: ImGui::ImGuiPayload.preview
 
- Set when [`ImGui.accept_drag_drop_payload`][] was called and mouse has been hovering the target item (nb: handle overlapping drag targets)  
+ Set when [`accept_drag_drop_payload`][ImGui.accept_drag_drop_payload] was called and mouse has been hovering the target item (nb: handle overlapping drag targets)  
 
 ##### ::: ImGui::ImGuiPayload.delivery
 
- Set when [`ImGui.accept_drag_drop_payload`][] was called and mouse button is released over the target item.  
+ Set when [`accept_drag_drop_payload`][ImGui.accept_drag_drop_payload] was called and mouse button is released over the target item.  
 
 ## Sorting specification for one column of a table (sizeof == 12 bytes)  
 
@@ -136,7 +136,7 @@ NB: For basic min/max size constraint on each axis you don't need to use the cal
 
 ##### ::: ImGui::ImGuiTableColumnSortSpecs.column_user_id
 
- User id of the column (if specified by a [`ImGui.table_setup_column`][] call)  
+ User id of the column (if specified by a [`table_setup_column`][ImGui.table_setup_column] call)  
 
 ##### ::: ImGui::ImGuiTableColumnSortSpecs.column_index
 
@@ -144,14 +144,14 @@ NB: For basic min/max size constraint on each axis you don't need to use the cal
 
 ##### ::: ImGui::ImGuiTableColumnSortSpecs.sort_order
 
- Index within parent [`ImGui::ImGuiTableSortSpecs`][] (always stored in order starting from 0, tables sorted on a single criteria will always have a 0 here)  
+ Index within parent [`ImGuiTableSortSpecs`][ImGui::ImGuiTableSortSpecs] (always stored in order starting from 0, tables sorted on a single criteria will always have a 0 here)  
 
 ##### ::: ImGui::ImGuiTableColumnSortSpecs.sort_direction
 
  ImGuiSortDirection_Ascending or ImGuiSortDirection_Descending (you can use this or SortSign, whichever is more convenient for your sort function)  
 
 ## Sorting specifications for a table (often handling sort specs for a single column, occasionally more)  
-Obtained by calling [`ImGui.table_get_sort_specs`][].  
+Obtained by calling [`table_get_sort_specs`][ImGui.table_get_sort_specs].  
 When 'SpecsDirty == true' you can sort your data. It will be true with sorting specs have changed since last call, or the first time.  
 Make sure to set 'SpecsDirty = false' after sorting, else you may wastefully sort your data every frame!  
 
