@@ -3,6 +3,7 @@ module ImGui
     GC.malloc(size)
   }, ->(ptr, data) {}, nil)
 
+  # :nodoc:
   private module ClassType(T)
     macro included
       @this : T*
@@ -18,6 +19,7 @@ module ImGui
     end
   end
 
+  # :nodoc:
   private module StructType
     def to_unsafe
       {{"pointerof(@#{@type.instance_vars.first}).as(#{@type}*)".id}}

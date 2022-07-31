@@ -1,0 +1,40 @@
+site_name: crystal-imgui
+use_directory_urls: false
+repo_url: https://github.com/oprypin/crsfml/
+edit_uri: blob/master/
+
+theme:
+  name: material
+  features:
+    #- navigation.tabs
+
+extra_css:
+  - css/mkdocstrings.css
+
+markdown_extensions:
+  - admonition
+  - pymdownx.magiclink
+  - pymdownx.superfences
+  - toc:
+      permalink: "#"
+
+plugins:
+  - search
+  - mkdocstrings:
+      default_handler: crystal
+      handlers:
+        crystal:
+          selection:
+            file_filters: ['!']
+
+markdown_extensions:
+  - pymdownx.highlight
+  - pymdownx.magiclink
+  - pymdownx.saneheaders
+  - pymdownx.superfences
+  - deduplicate-toc
+  - callouts
+  - toc:
+      permalink: "#"
+
+watch: [src]
