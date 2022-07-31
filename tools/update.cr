@@ -19,6 +19,6 @@ merger.set_old DEMO, content: `git show HEAD:generate_demo.cr | crystal eval`
 
 merger.checkout_new
 
-merger.merge do |file, content|
+merger.merge(lstrip: false) do |file, content|
   File.write(file, content)
 end

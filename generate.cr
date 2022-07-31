@@ -467,13 +467,44 @@ class COverload
       ret_s = to_tuple(rets) || "Void"
       any_outputter = self.parent.overloads.any?(&.input_output_arg?)
       self.comment(&block)
-      yield %(  #{"pointer_wrapper " if any_outputter}def #{"self." if !inside_class}#{self.name(ctx)}(#{args.join(", ")}) : #{ret_s})
+      def_name = self.name(ctx)
+      yield %(  #{"pointer_wrapper " if any_outputter}def #{"self." if !inside_class}#{def_name}(#{args.join(", ")}) : #{ret_s})
       call = %(    LibImGui.#{self.name(Context::Lib)}(#{call_args.join(", ")}))
       call = %(    result = #{call}) if outp.first? == "result" && outp2 != ["result"]
       yield call
       yield (assert to_tuple(outp2)) unless outp2.empty? || outp2 == ["result"]
       yield %(  end)
       yield %(  {% end %}) if as_datatype
+
+      return if inside_class
+      always_pop_names = %w[begin begin_child begin_child_frame begin_disabled begin_group begin_tooltip push_allow_keyboard_focus push_button_repeat push_clip_rect push_clip_rect_full_screen push_font push_id push_item_width push_style_color push_style_var push_texture_id push_text_wrap_pos tree_push]
+      cond_pop_names = %w[begin_combo begin_drag_drop_source begin_drag_drop_target begin_list_box begin_main_menu_bar begin_menu begin_menu_bar begin_popup begin_popup_context_item begin_popup_context_void begin_popup_context_window begin_popup_modal begin_tab_bar begin_tab_item begin_table tree_node tree_node_ex]
+
+      if (cond_pop = cond_pop_names.includes?(def_name)) || always_pop_names.includes?(def_name)
+        cond_call = !cond_pop && (ret_s == "Bool")
+        if def_name.starts_with?("tree_node")
+          new_name = def_name
+          pop_name = "tree_pop"
+        elsif def_name == "tree_push"
+          new_name = "with_tree"
+          pop_name = "tree_pop"
+        else
+          push, sep, common = def_name.partition('_')
+          new_name = ({"push" => "with", "begin" => ""}[push] + sep + common).lchop("_")
+          pop_name = {"push" => "pop", "begin" => "end"}[push] + sep + common
+        end
+        if def_name == "begin"
+          new_name = "window"
+        elsif def_name.starts_with?("begin_popup")
+          pop_name = "end_popup"
+        end
+        yield %(  # Calls `#{def_name}`, #{"conditionally " if cond_pop || cond_call}yields to the block, then #{"conditionally " if cond_pop}calls `#{pop_name}`.)
+        yield %(  #{"pointer_wrapper " if any_outputter}def self.#{new_name}(#{args.join(", ")}) : Nil)
+        yield %(    #{cond_pop ? "return unless " : cond_call ? "yield if " : ""}self.#{def_name}(#{args.map(&.partition(' ').first).join(", ")}))
+        yield %(    yield) if !cond_call
+        yield %(    self.#{pop_name})
+        yield %(  end)
+      end
     end
   end
 end

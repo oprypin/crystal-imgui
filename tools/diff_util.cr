@@ -77,11 +77,14 @@ class UpstreamMerger(T)
     end
   {% end %}
 
-  def merge(&block : (T, String) ->)
+  def merge(lstrip : Bool = false, &block : (T, String) ->)
     Dir.mkdir(tmp_dir = File.tempname)
     @contents.each do |file, subfiles|
       file_names = SUBFILES.map do |subfile|
         if (content = subfiles[subfile]?)
+          if lstrip
+            content = content.split('\n').map(&.lstrip).join('\n')
+          end
           File.write(File.join(tmp_dir, subfile.to_s), content)
           subfile.to_s
         else
