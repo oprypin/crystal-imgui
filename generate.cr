@@ -764,7 +764,7 @@ class CEnumMember
   getter c_name : String
 
   def name : String
-    name = (assert self.c_name.lchop?(self.parent.name)).lchop("_")
+    name = (assert(self.c_name.lchop?(self.parent.name) || self.c_name.lchop?("ImGui"))).lchop("_")
     if name.to_i?
       name = "Num#{name}"
     end
@@ -821,7 +821,8 @@ class CEnum
 
     yield %(enum #{name})
     self.members.each do |member|
-      next if member.name.in?("All", "COUNT")
+      next if member.name == "All"
+      next if member.name == "COUNT" && self.name != "ImGuiKey"
       next if member.name =~ /_[A-Z]{2,}$/
       member.comment(&block)
       yield %(#{member.name} = #{member.value})
