@@ -1,4 +1,4 @@
-# Based on https://github.com/ocornut/imgui/blob/v1.88/imgui_demo.cpp
+# Based on https://github.com/ocornut/imgui/blob/v1.89.1/imgui_demo.cpp
 
 require "./imgui"
 require "./util"
@@ -8,7 +8,7 @@ module ImGuiDemo
 
   def self.help_marker(desc)
     ImGui.text_disabled("(?)")
-    if ImGui.is_item_hovered
+    if ImGui.is_item_hovered(ImGuiHoveredFlags::DelayShort)
       ImGui.tooltip do
         ImGui.with_text_wrap_pos(ImGui.get_font_size * 35.0f32) do
           ImGui.text_unformatted(desc)
@@ -20,42 +20,11 @@ module ImGuiDemo
   def self.demo_marker(section)
   end
 
-  def self.show_user_guide
-    io = ImGui.get_io
-    ImGui.bullet_text("Double-click on title bar to collapse window.")
-    ImGui.bullet_text(
-      "Click and drag on lower corner to resize window\n" +
-      "(double-click to auto fit window to its contents).")
-    ImGui.bullet_text("CTRL+Click on a slider or drag box to input value as text.")
-    ImGui.bullet_text("TAB/SHIFT+TAB to cycle through keyboard editable fields.")
-    ImGui.bullet_text("CTRL+Tab to select a window.")
-    if io.font_allow_user_scaling
-      ImGui.bullet_text("CTRL+Mouse Wheel to zoom window contents.")
-    end
-    ImGui.bullet_text("While inputing text:\n")
-    ImGui.indent
-    ImGui.bullet_text("CTRL+Left/Right to word jump.")
-    ImGui.bullet_text("CTRL+A or double-click to select all.")
-    ImGui.bullet_text("CTRL+X/C/V to use clipboard cut/copy/paste.")
-    ImGui.bullet_text("CTRL+Z,CTRL+Y to undo/redo.")
-    ImGui.bullet_text("ESCAPE to revert.")
-    ImGui.unindent
-    ImGui.bullet_text("With keyboard navigation enabled:")
-    ImGui.indent
-    ImGui.bullet_text("Arrow keys to navigate.")
-    ImGui.bullet_text("Space to activate a widget.")
-    ImGui.bullet_text("Return to input text into a widget.")
-    ImGui.bullet_text("Escape to deactivate a widget, close popup, exit child window.")
-    ImGui.bullet_text("Alt to jump to the menu layer of a window.")
-    ImGui.unindent
-  end
-
   ImGui.pointer_wrapper def self.show_demo_window(p_open = Pointer(Bool).null)
     assert(ImGui.get_current_context != nil && "Missing dear imgui context. Refer to examples app!")
 
     static show_app_main_menu_bar = false
     static show_app_documents = false
-
     static show_app_console = false
     static show_app_log = false
     static show_app_layout = false
@@ -74,7 +43,6 @@ module ImGuiDemo
     if show_app_documents.val
       show_example_app_documents(pointerof(show_app_documents.val))
     end
-
     if show_app_console.val
       show_example_app_console(pointerof(show_app_console.val))
     end
@@ -281,6 +249,9 @@ module ImGuiDemo
           ImGui.checkbox("io.ConfigInputTextCursorBlink", pointerof(io.config_input_text_cursor_blink))
           ImGui.same_line
           help_marker("Enable blinking cursor (optional as some users consider it to be distracting).")
+          ImGui.checkbox("io.ConfigInputTextEnterKeepActive", pointerof(io.config_input_text_enter_keep_active))
+          ImGui.same_line
+          help_marker("Pressing Enter will keep item active and select contents (single-line only).")
           ImGui.checkbox("io.ConfigDragClickToInputText", pointerof(io.config_drag_click_to_input_text))
           ImGui.same_line
           help_marker("Enable turning DragXXX widgets into text input with a simple mouse click-release (without moving).")
@@ -364,7 +335,7 @@ module ImGuiDemo
       show_demo_window_layout
       show_demo_window_popups
       show_demo_window_tables
-      show_demo_window_misc
+      show_demo_window_inputs
     end
     ImGui.end
   end
@@ -450,22 +421,6 @@ module ImGuiDemo
       ImGui.same_line
       ImGui.text("%d", counter.val)
 
-      demo_marker("Widgets/Basic/Tooltips")
-      ImGui.text("Hover over me")
-      if ImGui.is_item_hovered
-        ImGui.set_tooltip("I am a tooltip")
-      end
-
-      ImGui.same_line
-      ImGui.text("- or me")
-      if ImGui.is_item_hovered
-        ImGui.tooltip do
-          ImGui.text("I am a fancy tooltip")
-          static arr = [0.6f32, 0.1f32, 1.0f32, 0.5f32, 0.92f32, 0.1f32, 0.2f32]
-          ImGui.plot_lines("Curve", arr.val)
-        end
-      end
-
       ImGui.separator
       ImGui.label_text("label", "Value")
 
@@ -488,7 +443,7 @@ module ImGuiDemo
           "USER:\n" +
           "Hold SHIFT or use mouse to select text.\n" +
           "CTRL+Left/Right to word jump.\n" +
-          "CTRL+A or double-click to select all.\n" +
+          "CTRL+A or Double-Click to select all.\n" +
           "CTRL+X,CTRL+C,CTRL+V clipboard.\n" +
           "CTRL+Z,CTRL+Y undo/redo.\n" +
           "ESCAPE to revert.\n\n" +
@@ -586,6 +541,39 @@ module ImGuiDemo
         ImGui.same_line
         help_marker(
           "Using the simplified one-liner ListBox API here.\nRefer to the \"List boxes\" section below for an explanation of how to use the more flexible and general BeginListBox/EndListBox API.")
+      end
+
+      begin
+        demo_marker("Widgets/Basic/Tooltips")
+        ImGui.align_text_to_frame_padding
+        ImGui.text("Tooltips:")
+
+        ImGui.same_line
+        ImGui.button("Button")
+        if ImGui.is_item_hovered
+          ImGui.set_tooltip("I am a tooltip")
+        end
+
+        ImGui.same_line
+        ImGui.button("Fancy")
+        if ImGui.is_item_hovered
+          ImGui.tooltip do
+            ImGui.text("I am a fancy tooltip")
+            static arr = [0.6f32, 0.1f32, 1.0f32, 0.5f32, 0.92f32, 0.1f32, 0.2f32]
+            ImGui.plot_lines("Curve", arr.val)
+            ImGui.text("Sin(time) = %f", Math.sin(ImGui.get_time))
+          end
+        end
+
+        ImGui.same_line
+        ImGui.button("Delayed")
+        if ImGui.is_item_hovered(ImGuiHoveredFlags::DelayNormal)
+          ImGui.set_tooltip("I am a tooltip with a delay.")
+        end
+
+        ImGui.same_line
+        help_marker(
+          "Tooltip are created by using the IsItemHovered() function over any kind of item.")
       end
     end
 
@@ -750,7 +738,7 @@ module ImGuiDemo
       demo_marker("Widgets/Text/UTF-8 Text")
       ImGui.tree_node("UTF-8 Text") do
         ImGui.text_wrapped(
-          "CJK text will only appears if the font was loaded with the appropriate CJK character ranges. " +
+          "CJK text will only appear if the font was loaded with the appropriate CJK character ranges. " +
           "Call io.Fonts->AddFontFromFileTTF() manually to load extra character ranges. " +
           "Read docs/FONTS.md for details.")
         ImGui.text("Hiragana: かきくけこ (kakikukeko)")
@@ -809,14 +797,19 @@ module ImGuiDemo
       static pressed_count = 0
       8.times do |i|
         ImGui.with_id(i) do
-          frame_padding = -1 + i
+          if i > 0
+            ImGui.push_style_var(ImGuiStyleVar::FramePadding, ImVec2.new(i - 1.0f32, i - 1.0f32))
+          end
           size = ImVec2.new(32.0f32, 32.0f32)
           uv0 = ImVec2.new(0.0f32, 0.0f32)
           uv1 = ImVec2.new(32.0f32 / my_tex_w, 32.0f32 / my_tex_h)
           bg_col = ImVec4.new(0.0f32, 0.0f32, 0.0f32, 1.0f32)
           tint_col = ImVec4.new(1.0f32, 1.0f32, 1.0f32, 1.0f32)
-          if ImGui.image_button(my_tex_id, size, uv0, uv1, frame_padding, bg_col, tint_col)
+          if ImGui.image_button("", my_tex_id, size, uv0, uv1, bg_col, tint_col)
             pressed_count.val += 1
+          end
+          if i > 0
+            ImGui.pop_style_var
           end
         end
         ImGui.same_line
@@ -1132,7 +1125,7 @@ module ImGuiDemo
         static buf3 = ImGui::TextBuffer.new(64)
         ImGui.input_text("Edit", buf3.val, ImGuiInputTextFlags::CallbackEdit, &my_callback)
         ImGui.same_line
-        help_marker("Here we toggle the casing of the first character on every edits + count edits.")
+        help_marker("Here we toggle the casing of the first character on every edit + count edits.")
         ImGui.same_line
         ImGui.text("(%d)", edit_count.val)
       end
@@ -1667,7 +1660,7 @@ module ImGuiDemo
       ImGui.checkbox("Clamp integers to 0..50", pointerof(drag_clamp.val))
       ImGui.same_line
       help_marker(
-        "As with every widgets in dear imgui, we never modify values unless there is a user interaction.\n" +
+        "As with every widget in dear imgui, we never modify values unless there is a user interaction.\n" +
         "You can override the clamping limits by using CTRL+Click to input a value.")
       ImGui.drag_scalar("drag s8", pointerof(s8_v.val), drag_speed, drag_clamp.val ? s8_zero : nil, drag_clamp.val ? s8_fifty : nil)
       ImGui.drag_scalar("drag u8", pointerof(u8_v.val), drag_speed, drag_clamp.val ? u8_zero : nil, drag_clamp.val ? u8_fifty : nil, "%u ms")
@@ -1998,6 +1991,10 @@ module ImGuiDemo
         ret = ImGui.list_box("ITEM: ListBox", pointerof(current.val), items, items.size)
       end
 
+      hovered_delay_none = ImGui.is_item_hovered
+      hovered_delay_short = ImGui.is_item_hovered(ImGuiHoveredFlags::DelayShort)
+      hovered_delay_normal = ImGui.is_item_hovered(ImGuiHoveredFlags::DelayNormal)
+
       ImGui.bullet_text(
         "Return value = %d\n" +
         "IsItemFocused() = %d\n" +
@@ -2037,6 +2034,8 @@ module ImGuiDemo
         ImGui.get_item_rect_min.x, ImGui.get_item_rect_min.y,
         ImGui.get_item_rect_max.x, ImGui.get_item_rect_max.y,
         ImGui.get_item_rect_size.x, ImGui.get_item_rect_size.y)
+      ImGui.bullet_text(
+        "w/ Hovering Delay: None = %d, Fast %d, Normal = %d", hovered_delay_none, hovered_delay_short, hovered_delay_normal)
 
       if item_disabled.val
         ImGui.end_disabled
@@ -2131,6 +2130,24 @@ module ImGuiDemo
       ImGui.checkbox("Disable entire section above", pointerof(disable_all.val))
       ImGui.same_line
       help_marker("Demonstrate using BeginDisabled()/EndDisabled() across this section.")
+    end
+
+    demo_marker("Widgets/Text Filter")
+    ImGui.tree_node("Text Filter") do
+      help_marker("Not a widget per-se, but ImGuiTextFilter is a helper to perform simple filtering on text strings.")
+      static filter = ImGuiTextFilter.new
+      ImGui.text("Filter usage:\n" +
+                 "  \"\"         display all lines\n" +
+                 "  \"xxx\"      display lines containing \"xxx\"\n" +
+                 "  \"xxx,yyy\"  display lines containing \"xxx\" or \"yyy\"\n" +
+                 "  \"-xxx\"     hide lines containing \"xxx\"")
+      filter.val.draw
+      lines = ["aaa1.c", "bbb1.c", "ccc1.c", "aaa2.cpp", "bbb2.cpp", "ccc2.cpp", "abc.h", "hello, world"]
+      lines.size.times do |i|
+        if filter.val.pass_filter(lines[i])
+          ImGui.bullet_text("%s", lines[i])
+        end
+      end
     end
   end
 
@@ -3348,7 +3365,7 @@ module ImGuiDemo
         end
 
         help_marker(
-          "Only using TableNextColumn(), which tends to be convenient for tables where every cells contains the same type of contents.\n" +
+          "Only using TableNextColumn(), which tends to be convenient for tables where every cell contains the same type of contents.\n" +
           "This is also more similar to the old NextColumn() function of the Columns API, and provided to facilitate the Columns->Tables API transition.")
         ImGui.table("table3", 3) do
           14.times do |item|
@@ -3399,7 +3416,7 @@ module ImGuiDemo
           ImGui.checkbox("Display headers", pointerof(display_headers.val))
           ImGui.checkbox_flags("ImGuiTableFlags_NoBordersInBody", pointerof(flags.val), ImGuiTableFlags::NoBordersInBody)
           ImGui.same_line
-          help_marker("Disable vertical borders in columns Body (borders will always appears in Headers")
+          help_marker("Disable vertical borders in columns Body (borders will always appear in Headers")
         end
 
         ImGui.table("table1", 3, flags.val) do
@@ -3531,7 +3548,7 @@ module ImGuiDemo
           ImGui.checkbox_flags("ImGuiTableFlags_NoBordersInBody", pointerof(flags.val), ImGuiTableFlags::NoBordersInBody)
           ImGui.checkbox_flags("ImGuiTableFlags_NoBordersInBodyUntilResize", pointerof(flags.val), ImGuiTableFlags::NoBordersInBodyUntilResize)
           ImGui.same_line
-          help_marker("Disable vertical borders in columns Body until hovered for resize (borders will always appears in Headers)")
+          help_marker("Disable vertical borders in columns Body until hovered for resize (borders will always appear in Headers)")
         end
 
         ImGui.table("table1", 3, flags.val) do
@@ -3575,7 +3592,7 @@ module ImGuiDemo
           "- any form of row selection\n" +
           "Because of this, activating BorderOuterV sets the default to PadOuterX. Using PadOuterX or NoPadOuterX you can override the default.\n\n" +
           "Actual padding values are using style.CellPadding.\n\n" +
-          "In this demo we don't show horizontal borders to emphasis how they don't affect default horizontal padding.")
+          "In this demo we don't show horizontal borders to emphasize how they don't affect default horizontal padding.")
 
         static flags1 = ImGuiTableFlags::BordersV
         static show_headers = false
@@ -3984,7 +4001,7 @@ module ImGuiDemo
       end
       demo_marker("Tables/Nested tables")
       ImGui.tree_node("Nested tables") do
-        help_marker("This demonstrate embedding a table into another table cell.")
+        help_marker("This demonstrates embedding a table into another table cell.")
 
         ImGui.table("table_nested1", 2, ImGuiTableFlags::Borders | ImGuiTableFlags::Resizable | ImGuiTableFlags::Reorderable | ImGuiTableFlags::Hideable) do
           ImGui.table_setup_column("A0")
@@ -4026,7 +4043,7 @@ module ImGuiDemo
       end
       demo_marker("Tables/Row height")
       ImGui.tree_node("Row height") do
-        help_marker("You can pass a 'min_row_height' to TableNextRow().\n\nRows are padded with 'style.CellPadding.y' on top and bottom, so effectively the minimum row height will always be >= 'style.CellPadding.y * 2.0f'.\n\nWe cannot honor a _maximum_ row height as that would requires a unique clipping rectangle per row.")
+        help_marker("You can pass a 'min_row_height' to TableNextRow().\n\nRows are padded with 'style.CellPadding.y' on top and bottom, so effectively the minimum row height will always be >= 'style.CellPadding.y * 2.0f'.\n\nWe cannot honor a _maximum_ row height as that would require a unique clipping rectangle per row.")
         ImGui.table("table_row_height", 1, ImGuiTableFlags::BordersOuter | ImGuiTableFlags::BordersInnerV) do
           10.times do |row|
             min_row_height = (text_base_height * 0.30f32 * row).to_i.to_f32
@@ -4456,10 +4473,10 @@ module ImGuiDemo
                 ImGui.checkbox_flags("ImGuiTableFlags_BordersInnerH", pointerof(flags.val), ImGuiTableFlags::BordersInnerH)
                 ImGui.checkbox_flags("ImGuiTableFlags_NoBordersInBody", pointerof(flags.val), ImGuiTableFlags::NoBordersInBody)
                 ImGui.same_line
-                help_marker("Disable vertical borders in columns Body (borders will always appears in Headers")
+                help_marker("Disable vertical borders in columns Body (borders will always appear in Headers")
                 ImGui.checkbox_flags("ImGuiTableFlags_NoBordersInBodyUntilResize", pointerof(flags.val), ImGuiTableFlags::NoBordersInBodyUntilResize)
                 ImGui.same_line
-                help_marker("Disable vertical borders in columns Body until hovered for resize (borders will always appears in Headers)")
+                help_marker("Disable vertical borders in columns Body until hovered for resize (borders will always appear in Headers)")
               end
 
               ImGui.tree_node_ex("Sizing:", ImGuiTreeNodeFlags::DefaultOpen) do
@@ -4520,7 +4537,7 @@ module ImGuiDemo
                 help_marker("If scrolling is disabled (ScrollX and ScrollY not set):\n" +
                             "- The table is output directly in the parent window.\n" +
                             "- OuterSize.x < 0.0f will right-align the table.\n" +
-                            "- OuterSize.x = 0.0f will narrow fit the table unless there are any Stretch column.\n" +
+                            "- OuterSize.x = 0.0f will narrow fit the table unless there are any Stretch columns.\n" +
                             "- OuterSize.y then becomes the minimum size for the table, which will extend vertically if there are more rows (unless NoHostExtendY is set).")
 
                 ImGui.drag_float("inner_width (when ScrollX active)", pointerof(inner_width_with_scroll.val), 1.0f32, 0.0f32, Float32::MAX)
@@ -4888,24 +4905,7 @@ module ImGuiDemo
   record KeyLayoutData,
     row : Int32, col : Int32, label : String, key : ImGuiKey
 
-  def self.show_demo_window_misc
-    demo_marker("Filtering")
-    if ImGui.collapsing_header("Filtering")
-      static filter = ImGuiTextFilter.new
-      ImGui.text("Filter usage:\n" +
-                 "  \"\"         display all lines\n" +
-                 "  \"xxx\"      display lines containing \"xxx\"\n" +
-                 "  \"xxx,yyy\"  display lines containing \"xxx\" or \"yyy\"\n" +
-                 "  \"-xxx\"     hide lines containing \"xxx\"")
-      filter.val.draw
-      lines = ["aaa1.c", "bbb1.c", "ccc1.c", "aaa2.cpp", "bbb2.cpp", "ccc2.cpp", "abc.h", "hello, world"]
-      lines.each do |line|
-        if filter.val.pass_filter(line)
-          ImGui.bullet_text("%s", line)
-        end
-      end
-    end
-
+  def self.show_demo_window_inputs
     demo_marker("Inputs, Navigation & Focus")
     if ImGui.collapsing_header("Inputs, Navigation & Focus")
       io = ImGui.get_io
@@ -4956,26 +4956,52 @@ module ImGuiDemo
         ImGui.text("Pen Pressure: %.1f", io.pen_pressure)
       end
 
+      demo_marker("Inputs, Navigation & Focus/Mouse Cursors")
+      ImGui.tree_node("Mouse Cursors") do
+        mouse_cursors_names = ["Arrow", "TextInput", "ResizeAll", "ResizeNS", "ResizeEW", "ResizeNESW", "ResizeNWSE", "Hand", "NotAllowed"]
+
+        current = ImGui.get_mouse_cursor
+        ImGui.text("Current mouse cursor = %d: %s", current, mouse_cursors_names[current.to_i])
+        ImGui.begin_disabled(true)
+        ImGui.checkbox_flags("io.BackendFlags: HasMouseCursors", pointerof(io.backend_flags), ImGuiBackendFlags::HasMouseCursors)
+        ImGui.end_disabled
+
+        ImGui.text("Hover to see mouse cursors:")
+        ImGui.same_line
+        help_marker(
+          "Your application can render a different mouse cursor based on what ImGui::GetMouseCursor() returns. " +
+          "If software cursor rendering (io.MouseDrawCursor) is set ImGui will draw the right cursor for you, " +
+          "otherwise your backend needs to handle it.")
+        ImGuiMouseCursor.each do |cur|
+          next if cur.none?
+          label = sprintf("Mouse cursor %d: %s", cur.to_i, cur)
+          ImGui.bullet
+          ImGui.selectable(label, false)
+          if ImGui.is_item_hovered
+            ImGui.set_mouse_cursor(cur)
+          end
+        end
+      end
+
       demo_marker("Inputs, Navigation & Focus/Keyboard, Gamepad & Navigation State")
       ImGui.tree_node("Keyboard, Gamepad & Navigation State") do
         is_legacy_native_dupe = ->(key : Int32) {
           return key < 512 && ImGui.get_io.key_map[key] != -1
         }
         key_first = 0
-        key_last = ImGuiKey.values.last.value
         ImGui.text("Keys down:")
-        (key_first..key_last).each do |key|
+        (key_first...ImGuiKey::COUNT.to_i).each do |key|
           if is_legacy_native_dupe.call(key)
             next
           end
           key = ImGuiKey.new(key)
           if ImGui.is_key_down(key)
             ImGui.same_line
-            ImGui.text("\"%s\" %d (%.02f secs)", ImGui.get_key_name(key), key, LibImGui.GetKeyData(key).value.down_duration)
+            ImGui.text("\"%s\" %d (%.02f)", ImGui.get_key_name(key), key, LibImGui.GetKeyData(key).value.down_duration)
           end
         end
         ImGui.text("Keys pressed:")
-        (key_first..key_last).each do |key|
+        (key_first...ImGuiKey::COUNT.to_i).each do |key|
           if is_legacy_native_dupe.call(key)
             next
           end
@@ -4986,7 +5012,7 @@ module ImGuiDemo
           end
         end
         ImGui.text("Keys released:")
-        (key_first..key_last).each do |key|
+        (key_first...ImGuiKey::COUNT.to_i).each do |key|
           if is_legacy_native_dupe.call(key)
             next
           end
@@ -5002,20 +5028,6 @@ module ImGuiDemo
           c = io.input_queue_characters[i]
           ImGui.same_line
           ImGui.text("'%c' (0x%04X)", (c > ' ' && c.ord <= 255) ? c : '?', c)
-        end
-        ImGui.text("NavInputs down:")
-        io.nav_inputs.size.times do |i|
-          if io.nav_inputs[i] > 0.0f32
-            ImGui.same_line
-            ImGui.text("[%d] %.2f (%.02f secs)", i, io.nav_inputs[i], io.nav_inputs_down_duration[i])
-          end
-        end
-        ImGui.text("NavInputs pressed:")
-        io.nav_inputs.size.times do |i|
-          if io.nav_inputs_down_duration[i] == 0.0f32
-            ImGui.same_line
-            ImGui.text("[%d]", i)
-          end
         end
 
         begin
@@ -5197,27 +5209,6 @@ module ImGuiDemo
         ImGui.text("  w/ default threshold: (%.1f, %.1f)", value_with_lock_threshold.x, value_with_lock_threshold.y)
         ImGui.text("  w/ zero threshold: (%.1f, %.1f)", value_raw.x, value_raw.y)
         ImGui.text("io.MouseDelta: (%.1f, %.1f)", mouse_delta.x, mouse_delta.y)
-      end
-
-      demo_marker("Inputs, Navigation & Focus/Mouse cursors")
-      ImGui.tree_node("Mouse cursors") do
-        current = ImGui.get_mouse_cursor
-        ImGui.text("Current mouse cursor = %d: %s", current.to_i, current.to_s)
-        ImGui.text("Hover to see mouse cursors:")
-        ImGui.same_line
-        help_marker(
-          "Your application can render a different mouse cursor based on what ImGui::GetMouseCursor() returns. " +
-          "If software cursor rendering (io.MouseDrawCursor) is set ImGui will draw the right cursor for you, " +
-          "otherwise your backend needs to handle it.")
-        ImGuiMouseCursor.each do |cur|
-          next if cur == ImGuiMouseCursor::None
-          label = sprintf("Mouse cursor %d: %s", cur.to_i, cur)
-          ImGui.bullet
-          ImGui.selectable(label, false)
-          if ImGui.is_item_hovered
-            ImGui.set_mouse_cursor(cur)
-          end
-        end
       end
     end
   end
@@ -5623,6 +5614,36 @@ module ImGuiDemo
     end
   end
 
+  def self.show_user_guide
+    io = ImGui.get_io
+    ImGui.bullet_text("Double-click on title bar to collapse window.")
+    ImGui.bullet_text(
+      "Click and drag on lower corner to resize window\n" +
+      "(double-click to auto fit window to its contents).")
+    ImGui.bullet_text("CTRL+Click on a slider or drag box to input value as text.")
+    ImGui.bullet_text("TAB/SHIFT+TAB to cycle through keyboard editable fields.")
+    ImGui.bullet_text("CTRL+Tab to select a window.")
+    if io.font_allow_user_scaling
+      ImGui.bullet_text("CTRL+Mouse Wheel to zoom window contents.")
+    end
+    ImGui.bullet_text("While inputing text:\n")
+    ImGui.indent
+    ImGui.bullet_text("CTRL+Left/Right to word jump.")
+    ImGui.bullet_text("CTRL+A or double-click to select all.")
+    ImGui.bullet_text("CTRL+X/C/V to use clipboard cut/copy/paste.")
+    ImGui.bullet_text("CTRL+Z,CTRL+Y to undo/redo.")
+    ImGui.bullet_text("ESCAPE to revert.")
+    ImGui.unindent
+    ImGui.bullet_text("With keyboard navigation enabled:")
+    ImGui.indent
+    ImGui.bullet_text("Arrow keys to navigate.")
+    ImGui.bullet_text("Space to activate a widget.")
+    ImGui.bullet_text("Return to input text into a widget.")
+    ImGui.bullet_text("Escape to deactivate a widget, close popup, exit child window.")
+    ImGui.bullet_text("Alt to jump to the menu layer of a window.")
+    ImGui.unindent
+  end
+
   def self.show_example_app_main_menu_bar
     ImGui.main_menu_bar do
       ImGui.menu("File") do
@@ -5688,7 +5709,7 @@ module ImGuiDemo
     demo_marker("Examples/Menu/Colors")
     ImGui.menu("Colors") do
       sz = ImGui.get_text_line_height
-      ImGuiCol.values.each do |col_i|
+      ImGuiCol.each do |col_i|
         name = ImGui.get_style_color_name(col_i)
         p = ImGui.get_cursor_screen_pos
         ImGui.get_window_draw_list.add_rect_filled(p, ImVec2.new(p.x + sz, p.y + sz), ImGui.get_color_u32(col_i))
@@ -5823,10 +5844,11 @@ module ImGuiDemo
           @scroll_to_bottom = false
         end
       end
+
       ImGui.separator
 
       reclaim_focus = false
-      input_text_flags = ImGuiInputTextFlags::EnterReturnsTrue | ImGuiInputTextFlags::CallbackCompletion | ImGuiInputTextFlags::CallbackHistory
+      input_text_flags = ImGuiInputTextFlags::EnterReturnsTrue | ImGuiInputTextFlags::EscapeClearsAll | ImGuiInputTextFlags::CallbackCompletion | ImGuiInputTextFlags::CallbackHistory
       if ImGui.input_text("Input", @input_buf, input_text_flags) { |data| text_edit_callback(data) }
         s = @input_buf.to_s.strip
         if !s.empty?
@@ -6005,6 +6027,7 @@ module ImGuiDemo
       @filter.draw("Filter", -100.0f32)
 
       ImGui.separator
+
       ImGui.child("scrolling", ImVec2.new(0, 0), false, ImGuiWindowFlags::HorizontalScrollbar) do
         if clear
           clear
@@ -6015,10 +6038,12 @@ module ImGuiDemo
 
         ImGui.with_style_var(ImGuiStyleVar::ItemSpacing, ImVec2.new(0, 0)) do
           buf = @buf.to_slice
+          buf_end = nil
           if @filter.is_active
             @line_offsets.size.times do |line_no|
-              line_end = (line_no + 1 < @line_offsets.size) ? @line_offsets[line_no + 1] - 1 : nil
-              line = buf[@line_offsets[line_no]...line_end]
+              line_start = @line_offsets[line_no]
+              line_end = (line_no + 1 < @line_offsets.size) ? (@line_offsets[line_no + 1] - 1) : buf_end
+              line = buf[line_start...line_end]
               if @filter.pass_filter(line)
                 ImGui.text_unformatted(line)
               end
@@ -6028,8 +6053,9 @@ module ImGuiDemo
             clipper.begin(@line_offsets.size)
             while clipper.step
               (clipper.display_start...clipper.display_end).each do |line_no|
-                line_end = (line_no + 1 < @line_offsets.size) ? @line_offsets[line_no + 1] - 1 : nil
-                line = buf[@line_offsets[line_no]...line_end]
+                line_start = @line_offsets[line_no]
+                line_end = (line_no + 1 < @line_offsets.size) ? @line_offsets[line_no + 1] - 1 : buf_end
+                line = buf[line_start...line_end]
                 ImGui.text_unformatted(line)
               end
             end
@@ -6254,100 +6280,129 @@ module ImGuiDemo
   end
 
   ImGui.pointer_wrapper def self.show_example_app_constrained_resize(p_open = Pointer(Bool).null)
+    aspect_ratio = 16.0f32 / 9.0f32
+    aspect_ratio_constraint = ->(data : ImGuiSizeCallbackData) {
+      data.desired_size.x = {data.current_size.x, data.current_size.y}.max
+      data.desired_size.y = (data.desired_size.x / aspect_ratio).to_i.to_f32
+    }
     square_constraint = ->(data : ImGuiSizeCallbackData) {
       size = {data.desired_size.x, data.desired_size.y}.max
       data.desired_size = ImVec2.new(size, size)
     }
-    step = 100
+    step = 100.0f32
     step_constraint = ->(data : ImGuiSizeCallbackData) {
       data.desired_size = ImVec2.new((data.desired_size.x / step + 0.5f32).to_i * step, (data.desired_size.y / step + 0.5f32).to_i * step)
     }
 
     test_desc = [
+      "Between 100x100 and 500x500",
+      "At least 100x100",
       "Resize vertical only",
       "Resize horizontal only",
-      "Width > 100, Height > 100",
-      "Width 400-500",
-      "Height 400-500",
+      "Width Between 400 and 500",
+      "Custom: Aspect Ratio 16:9",
       "Custom: Always Square",
       "Custom: Fixed Steps (100)",
     ]
 
     static auto_resize = false
-    static type = 0
+    static window_padding = true
+    static type = 5
     static display_lines = 10
+
     if type.val == 0
-      ImGui.set_next_window_size_constraints(ImVec2.new(-1, 0), ImVec2.new(-1, Float32::MAX))
+      ImGui.set_next_window_size_constraints(ImVec2.new(100, 100), ImVec2.new(500, 500))
     end
     if type.val == 1
-      ImGui.set_next_window_size_constraints(ImVec2.new(0, -1), ImVec2.new(Float32::MAX, -1))
-    end
-    if type.val == 2
       ImGui.set_next_window_size_constraints(ImVec2.new(100, 100), ImVec2.new(Float32::MAX, Float32::MAX))
     end
+    if type.val == 2
+      ImGui.set_next_window_size_constraints(ImVec2.new(-1, 0), ImVec2.new(-1, Float32::MAX))
+    end
     if type.val == 3
-      ImGui.set_next_window_size_constraints(ImVec2.new(400, -1), ImVec2.new(500, -1))
+      ImGui.set_next_window_size_constraints(ImVec2.new(0, -1), ImVec2.new(Float32::MAX, -1))
     end
     if type.val == 4
-      ImGui.set_next_window_size_constraints(ImVec2.new(-1, 400), ImVec2.new(-1, 500))
+      ImGui.set_next_window_size_constraints(ImVec2.new(400, -1), ImVec2.new(500, -1))
     end
     if type.val == 5
-      ImGui.set_next_window_size_constraints(ImVec2.new(0, 0), ImVec2.new(Float32::MAX, Float32::MAX), &square_constraint)
+      ImGui.set_next_window_size_constraints(ImVec2.new(0, 0), ImVec2.new(Float32::MAX, Float32::MAX), &aspect_ratio_constraint)
     end
     if type.val == 6
+      ImGui.set_next_window_size_constraints(ImVec2.new(0, 0), ImVec2.new(Float32::MAX, Float32::MAX), &square_constraint)
+    end
+    if type.val == 7
       ImGui.set_next_window_size_constraints(ImVec2.new(0, 0), ImVec2.new(Float32::MAX, Float32::MAX), &step_constraint)
     end
 
-    flags = auto_resize.val ? ImGuiWindowFlags::AlwaysAutoResize : ImGuiWindowFlags::None
-    if ImGui.begin("Example: Constrained Resize", p_open, flags)
+    if !window_padding.val
+      ImGui.push_style_var(ImGuiStyleVar::WindowPadding, ImVec2.new(0.0f32, 0.0f32))
+    end
+    window_flags = auto_resize.val ? ImGuiWindowFlags::AlwaysAutoResize : ImGuiWindowFlags::None
+    window_open = ImGui.begin("Example: Constrained Resize", p_open, window_flags)
+    if !window_padding.val
+      ImGui.pop_style_var
+    end
+    if window_open
       demo_marker("Examples/Constrained Resizing window")
-      if ImGui.button("200x200")
-        ImGui.set_window_size(ImVec2.new(200, 200))
-      end
-      ImGui.same_line
-      if ImGui.button("500x500")
-        ImGui.set_window_size(ImVec2.new(500, 500))
-      end
-      ImGui.same_line
-      if ImGui.button("800x200")
-        ImGui.set_window_size(ImVec2.new(800, 200))
-      end
-      ImGui.set_next_item_width(200)
-      ImGui.combo("Constraint", pointerof(type.val), test_desc)
-      ImGui.set_next_item_width(200)
-      ImGui.drag_int("Lines", pointerof(display_lines.val), 0.2f32, 1, 100)
-      ImGui.checkbox("Auto-resize", pointerof(auto_resize.val))
-      display_lines.val.times do |i|
-        ImGui.text("%*sHello, sailor! Making this line long enough for the example.", i * 4, "")
+      if ImGui.get_io.key_shift
+        avail_size = ImGui.get_content_region_avail
+        pos = ImGui.get_cursor_screen_pos
+        ImGui.color_button("viewport", ImVec4.new(0.5f32, 0.2f32, 0.5f32, 1.0f32), ImGuiColorEditFlags::NoTooltip | ImGuiColorEditFlags::NoDragDrop, avail_size)
+        ImGui.set_cursor_screen_pos(ImVec2.new(pos.x + 10, pos.y + 10))
+        ImGui.text("%.2f x %.2f", avail_size.x, avail_size.y)
+      else
+        ImGui.text("(Hold SHIFT to display a dummy viewport)")
+        if ImGui.button("Set 200x200")
+          ImGui.set_window_size(ImVec2.new(200, 200))
+        end
+        ImGui.same_line
+        if ImGui.button("Set 500x500")
+          ImGui.set_window_size(ImVec2.new(500, 500))
+        end
+        ImGui.same_line
+        if ImGui.button("Set 800x200")
+          ImGui.set_window_size(ImVec2.new(800, 200))
+        end
+        ImGui.set_next_item_width(ImGui.get_font_size * 20)
+        ImGui.combo("Constraint", pointerof(type.val), test_desc)
+        ImGui.set_next_item_width(ImGui.get_font_size * 20)
+        ImGui.drag_int("Lines", pointerof(display_lines.val), 0.2f32, 1, 100)
+        ImGui.checkbox("Auto-resize", pointerof(auto_resize.val))
+        ImGui.checkbox("Window padding", pointerof(window_padding.val))
+        display_lines.val.times do |i|
+          ImGui.text("%*sHello, sailor! Making this line long enough for the example.", i * 4, "")
+        end
       end
     end
     ImGui.end
   end
 
   ImGui.pointer_wrapper def self.show_example_app_simple_overlay(p_open = Pointer(Bool).null)
-    pad = 10.0f32
-    static corner = 0
+    static location = 0
     io = ImGui.get_io
     window_flags = ImGuiWindowFlags::NoDecoration | ImGuiWindowFlags::AlwaysAutoResize | ImGuiWindowFlags::NoSavedSettings | ImGuiWindowFlags::NoFocusOnAppearing | ImGuiWindowFlags::NoNav
-    if corner.val != -1
+    if location.val >= 0
       pad = 10.0f32
       viewport = ImGui.get_main_viewport
       work_pos = viewport.work_pos
       work_size = viewport.work_size
       window_pos = ImVec2.new
       window_pos_pivot = ImVec2.new
-      window_pos.x = (corner.val & 1) != 0 ? (work_pos.x + work_size.x - pad) : (work_pos.x + pad)
-      window_pos.y = (corner.val & 2) != 0 ? (work_pos.y + work_size.y - pad) : (work_pos.y + pad)
-      window_pos_pivot.x = (corner.val & 1) != 0 ? 1.0f32 : 0.0f32
-      window_pos_pivot.y = (corner.val & 2) != 0 ? 1.0f32 : 0.0f32
+      window_pos.x = (location.val & 1) != 0 ? (work_pos.x + work_size.x - pad) : (work_pos.x + pad)
+      window_pos.y = (location.val & 2) != 0 ? (work_pos.y + work_size.y - pad) : (work_pos.y + pad)
+      window_pos_pivot.x = (location.val & 1) != 0 ? 1.0f32 : 0.0f32
+      window_pos_pivot.y = (location.val & 2) != 0 ? 1.0f32 : 0.0f32
       ImGui.set_next_window_pos(window_pos, ImGuiCond::Always, window_pos_pivot)
+      window_flags |= ImGuiWindowFlags::NoMove
+    elsif location.val == -2
+      ImGui.set_next_window_pos(ImGui.get_main_viewport.get_center, ImGuiCond::Always, ImVec2.new(0.5f32, 0.5f32))
       window_flags |= ImGuiWindowFlags::NoMove
     end
     ImGui.set_next_window_bg_alpha(0.35f32)
     if ImGui.begin("Example: Simple overlay", p_open, window_flags)
       demo_marker("Examples/Simple Overlay")
       ImGui.text("Simple overlay\n" +
-                 "in the corner of the screen.\n" +
                  "(right-click to change position)")
       ImGui.separator
       if ImGui.is_mouse_pos_valid
@@ -6356,20 +6411,23 @@ module ImGuiDemo
         ImGui.text("Mouse Position: <invalid>")
       end
       ImGui.popup_context_window do
-        if ImGui.menu_item("Custom", "", corner.val == -1)
-          corner.val = -1
+        if ImGui.menu_item("Custom", nil, location.val == -1)
+          location.val = -1
         end
-        if ImGui.menu_item("Top-left", "", corner.val == 0)
-          corner.val = 0
+        if ImGui.menu_item("Center", nil, location.val == -2)
+          location.val = -2
         end
-        if ImGui.menu_item("Top-right", "", corner.val == 1)
-          corner.val = 1
+        if ImGui.menu_item("Top-left", nil, location.val == 0)
+          location.val = 0
         end
-        if ImGui.menu_item("Bottom-left", "", corner.val == 2)
-          corner.val = 2
+        if ImGui.menu_item("Top-right", nil, location.val == 1)
+          location.val = 1
         end
-        if ImGui.menu_item("Bottom-right", "", corner.val == 3)
-          corner.val = 3
+        if ImGui.menu_item("Bottom-left", nil, location.val == 2)
+          location.val = 2
+        end
+        if ImGui.menu_item("Bottom-right", nil, location.val == 3)
+          location.val = 3
         end
         if p_open && ImGui.menu_item("Close")
           p_open.value = false
@@ -6778,7 +6836,8 @@ module ImGuiDemo
             app.val.documents[doc_n].do_queue_close
           end
         end
-        if ImGui.menu_item("Exit", "Alt+F4")
+        if ImGui.menu_item("Exit", "Ctrl+F4") && p_open.value
+          p_open.value = false
         end
       end
     end
