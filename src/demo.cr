@@ -1,4 +1,4 @@
-# Based on https://github.com/ocornut/imgui/blob/v1.89.1/imgui_demo.cpp
+# Based on https://github.com/ocornut/imgui/blob/v1.89.2/imgui_demo.cpp
 
 require "./imgui"
 require "./util"
@@ -2978,9 +2978,13 @@ module ImGuiDemo
       help_marker("\"Context\" functions are simple helpers to associate a Popup to a given Item or Window identifier.")
       begin
         names = ["Label1", "Label2", "Label3", "Label4", "Label5"]
+        static selected = -1
         5.times do |n|
-          ImGui.selectable(names[n])
+          if ImGui.selectable(names[n], selected.val == n)
+            selected.val = n
+          end
           ImGui.popup_context_item do
+            selected.val = n
             ImGui.text("This a popup for \"%s\"!", names[n])
             if ImGui.button("Close")
               ImGui.close_current_popup
@@ -4347,15 +4351,20 @@ module ImGuiDemo
       demo_marker("Tables/Synced instances")
       ImGui.tree_node("Synced instances") do
         help_marker("Multiple tables with the same identifier will share their settings, width, visibility, order etc.")
+
+        static flags = ImGuiTableFlags::Resizable | ImGuiTableFlags::Reorderable | ImGuiTableFlags::Hideable | ImGuiTableFlags::Borders | ImGuiTableFlags::SizingFixedFit | ImGuiTableFlags::NoSavedSettings
+        ImGui.checkbox_flags("ImGuiTableFlags_ScrollY", pointerof(flags.val), ImGuiTableFlags::ScrollY)
+        ImGui.checkbox_flags("ImGuiTableFlags_SizingFixedFit", pointerof(flags.val), ImGuiTableFlags::SizingFixedFit)
         3.times do |n|
           buf = sprintf("Synced Table %d", n)
           open = ImGui.collapsing_header(buf, ImGuiTreeNodeFlags::DefaultOpen)
-          if open && ImGui.begin_table("Table", 3, ImGuiTableFlags::Resizable | ImGuiTableFlags::Reorderable | ImGuiTableFlags::Hideable | ImGuiTableFlags::Borders | ImGuiTableFlags::SizingFixedFit | ImGuiTableFlags::NoSavedSettings)
+          if open && ImGui.begin_table("Table", 3, flags.val, ImVec2.new(0.0f32, ImGui.get_text_line_height_with_spacing * 5))
             ImGui.table_setup_column("One")
             ImGui.table_setup_column("Two")
             ImGui.table_setup_column("Three")
             ImGui.table_headers_row
-            9.times do |cell|
+            cell_count = (n == 1) ? 27 : 9
+            cell_count.times do |cell|
               ImGui.table_next_column
               ImGui.text("this cell %d", cell)
             end
@@ -4906,121 +4915,44 @@ module ImGuiDemo
     row : Int32, col : Int32, label : String, key : ImGuiKey
 
   def self.show_demo_window_inputs
-    demo_marker("Inputs, Navigation & Focus")
-    if ImGui.collapsing_header("Inputs, Navigation & Focus")
+    demo_marker("Inputs & Focus")
+    if ImGui.collapsing_header("Inputs & Focus")
       io = ImGui.get_io
 
-      demo_marker("Inputs, Navigation & Focus/Output")
+      demo_marker("Inputs & Focus/Inputs")
       ImGui.set_next_item_open(true, ImGuiCond::Once)
-      ImGui.tree_node("Output") do
-        ImGui.text("io.WantCaptureMouse: %d", io.want_capture_mouse)
-        ImGui.text("io.WantCaptureMouseUnlessPopupClose: %d", io.want_capture_mouse_unless_popup_close)
-        ImGui.text("io.WantCaptureKeyboard: %d", io.want_capture_keyboard)
-        ImGui.text("io.WantTextInput: %d", io.want_text_input)
-        ImGui.text("io.WantSetMousePos: %d", io.want_set_mouse_pos)
-        ImGui.text("io.NavActive: %d, io.NavVisible: %d", io.nav_active, io.nav_visible)
-      end
-
-      demo_marker("Inputs, Navigation & Focus/Mouse State")
-      ImGui.tree_node("Mouse State") do
+      ImGui.tree_node("Inputs") do
+        help_marker(
+          "This is a simplified view. See more detailed input state:\n" +
+          "- in 'Tools->Metrics/Debugger->Inputs'.\n" +
+          "- in 'Tools->Debug Log->IO'.")
         if ImGui.is_mouse_pos_valid
           ImGui.text("Mouse pos: (%g, %g)", io.mouse_pos.x, io.mouse_pos.y)
         else
           ImGui.text("Mouse pos: <INVALID>")
         end
         ImGui.text("Mouse delta: (%g, %g)", io.mouse_delta.x, io.mouse_delta.y)
-
-        count = io.mouse_down.size
         ImGui.text("Mouse down:")
-        count.times do |i|
+        io.mouse_down.size.times do |i|
           if ImGui.is_mouse_down(ImGuiMouseButton.new(i))
             ImGui.same_line
             ImGui.text("b%d (%.02f secs)", i, io.mouse_down_duration[i])
           end
         end
-        ImGui.text("Mouse clicked:")
-        count.times do |i|
-          if ImGui.is_mouse_clicked(ImGuiMouseButton.new(i))
-            ImGui.same_line
-            ImGui.text("b%d (%d)", i, ImGui.get_mouse_clicked_count(ImGuiMouseButton.new(i)))
-          end
-        end
-        ImGui.text("Mouse released:")
-        count.times do |i|
-          if ImGui.is_mouse_released(ImGuiMouseButton.new(i))
-            ImGui.same_line
-            ImGui.text("b%d", i)
-          end
-        end
         ImGui.text("Mouse wheel: %.1f", io.mouse_wheel)
-        ImGui.text("Pen Pressure: %.1f", io.pen_pressure)
-      end
 
-      demo_marker("Inputs, Navigation & Focus/Mouse Cursors")
-      ImGui.tree_node("Mouse Cursors") do
-        mouse_cursors_names = ["Arrow", "TextInput", "ResizeAll", "ResizeNS", "ResizeEW", "ResizeNESW", "ResizeNWSE", "Hand", "NotAllowed"]
-
-        current = ImGui.get_mouse_cursor
-        ImGui.text("Current mouse cursor = %d: %s", current, mouse_cursors_names[current.to_i])
-        ImGui.begin_disabled(true)
-        ImGui.checkbox_flags("io.BackendFlags: HasMouseCursors", pointerof(io.backend_flags), ImGuiBackendFlags::HasMouseCursors)
-        ImGui.end_disabled
-
-        ImGui.text("Hover to see mouse cursors:")
-        ImGui.same_line
-        help_marker(
-          "Your application can render a different mouse cursor based on what ImGui::GetMouseCursor() returns. " +
-          "If software cursor rendering (io.MouseDrawCursor) is set ImGui will draw the right cursor for you, " +
-          "otherwise your backend needs to handle it.")
-        ImGuiMouseCursor.each do |cur|
-          next if cur.none?
-          label = sprintf("Mouse cursor %d: %s", cur.to_i, cur)
-          ImGui.bullet
-          ImGui.selectable(label, false)
-          if ImGui.is_item_hovered
-            ImGui.set_mouse_cursor(cur)
-          end
-        end
-      end
-
-      demo_marker("Inputs, Navigation & Focus/Keyboard, Gamepad & Navigation State")
-      ImGui.tree_node("Keyboard, Gamepad & Navigation State") do
         is_legacy_native_dupe = ->(key : Int32) {
           return key < 512 && ImGui.get_io.key_map[key] != -1
         }
-        key_first = 0
         ImGui.text("Keys down:")
-        (key_first...ImGuiKey::COUNT.to_i).each do |key|
-          if is_legacy_native_dupe.call(key)
-            next
-          end
+        (0...ImGuiKey::COUNT.to_i).each do |key|
+          next if is_legacy_native_dupe.call(key)
           key = ImGuiKey.new(key)
-          if ImGui.is_key_down(key)
-            ImGui.same_line
-            ImGui.text("\"%s\" %d (%.02f)", ImGui.get_key_name(key), key, LibImGui.GetKeyData(key).value.down_duration)
-          end
-        end
-        ImGui.text("Keys pressed:")
-        (key_first...ImGuiKey::COUNT.to_i).each do |key|
-          if is_legacy_native_dupe.call(key)
-            next
-          end
-          key = ImGuiKey.new(key)
-          if ImGui.is_key_pressed(key)
-            ImGui.same_line
-            ImGui.text("\"%s\" %d", ImGui.get_key_name(key), key)
-          end
-        end
-        ImGui.text("Keys released:")
-        (key_first...ImGuiKey::COUNT.to_i).each do |key|
-          if is_legacy_native_dupe.call(key)
-            next
-          end
-          key = ImGuiKey.new(key)
-          if ImGui.is_key_released(key)
-            ImGui.same_line
-            ImGui.text("\"%s\" %d", ImGui.get_key_name(key), key)
-          end
+          next if !ImGui.is_key_down(key)
+          ImGui.same_line
+          ImGui.text((key < ImGuiKey::Tab) ? "\"%s\"" : "\"%s\" %d", ImGui.get_key_name(key), key)
+          ImGui.same_line
+          ImGui.text("(%.02f)", LibImGui.GetKeyData(key).value.down_duration)
         end
         ImGui.text("Keys mods: %s%s%s%s", io.key_ctrl ? "CTRL " : "", io.key_shift ? "SHIFT " : "", io.key_alt ? "ALT " : "", io.key_super ? "SUPER " : "")
         ImGui.text("Chars queue:")
@@ -5029,51 +4961,11 @@ module ImGuiDemo
           ImGui.same_line
           ImGui.text("'%c' (0x%04X)", (c > ' ' && c.ord <= 255) ? c : '?', c)
         end
-
-        begin
-          key_size = ImVec2.new(35.0f32, 35.0f32)
-          key_rounding = 3.0f32
-          key_face_size = ImVec2.new(25.0f32, 25.0f32)
-          key_face_pos = ImVec2.new(5.0f32, 3.0f32)
-          key_face_rounding = 2.0f32
-          key_label_pos = ImVec2.new(7.0f32, 4.0f32)
-          key_step = ImVec2.new(key_size.x - 1.0f32, key_size.y - 1.0f32)
-          key_row_offset = 9.0f32
-
-          board_min = ImGui.get_cursor_screen_pos
-          board_max = ImVec2.new(board_min.x + 3 * key_step.x + 2 * key_row_offset + 10.0f32, board_min.y + 3 * key_step.y + 10.0f32)
-          start_pos = ImVec2.new(board_min.x + 5.0f32 - key_step.x, board_min.y)
-
-          keys_to_display = [
-            {0, 0, "", ImGuiKey::Tab}, {0, 1, "Q", ImGuiKey::Q}, {0, 2, "W", ImGuiKey::W}, {0, 3, "E", ImGuiKey::E}, {0, 4, "R", ImGuiKey::R}, {1, 0, "", ImGuiKey::CapsLock}, {1, 1, "A", ImGuiKey::A}, {1, 2, "S", ImGuiKey::S}, {1, 3, "D", ImGuiKey::D}, {1, 4, "F", ImGuiKey::F}, {2, 0, "", ImGuiKey::LeftShift}, {2, 1, "Z", ImGuiKey::Z}, {2, 2, "X", ImGuiKey::X}, {2, 3, "C", ImGuiKey::C}, {2, 4, "V", ImGuiKey::V},
-          ].map { |t| KeyLayoutData.new(*t) }
-
-          ImGui.dummy(ImVec2.new(board_max.x - board_min.x, board_max.y - board_min.y))
-          if ImGui.is_item_visible
-            draw_list = ImGui.get_window_draw_list
-            draw_list.push_clip_rect(board_min, board_max, true)
-            keys_to_display.size.times do |n|
-              key_data = keys_to_display[n]
-              key_min = ImVec2.new(start_pos.x + key_data.col * key_step.x + key_data.row * key_row_offset, start_pos.y + key_data.row * key_step.y)
-              key_max = ImVec2.new(key_min.x + key_size.x, key_min.y + key_size.y)
-              draw_list.add_rect_filled(key_min, key_max, ImGui.col32(204, 204, 204, 255), key_rounding)
-              draw_list.add_rect(key_min, key_max, ImGui.col32(24, 24, 24, 255), key_rounding)
-              face_min = ImVec2.new(key_min.x + key_face_pos.x, key_min.y + key_face_pos.y)
-              face_max = ImVec2.new(face_min.x + key_face_size.x, face_min.y + key_face_size.y)
-              draw_list.add_rect(face_min, face_max, ImGui.col32(193, 193, 193, 255), key_face_rounding, ImDrawFlags::None, 2.0f32)
-              draw_list.add_rect_filled(face_min, face_max, ImGui.col32(252, 252, 252, 255), key_face_rounding)
-              label_min = ImVec2.new(key_min.x + key_label_pos.x, key_min.y + key_label_pos.y)
-              draw_list.add_text(label_min, ImGui.col32(64, 64, 64, 255), key_data.label)
-              if ImGui.is_key_down(key_data.key)
-                draw_list.add_rect_filled(key_min, key_max, ImGui.col32(255, 0, 0, 128), key_rounding)
-              end
-            end
-            draw_list.pop_clip_rect
-          end
-        end
       end
 
-      ImGui.tree_node("Capture override") do
+      demo_marker("Inputs & Focus/Outputs")
+      ImGui.set_next_item_open(true, ImGuiCond::Once)
+      ImGui.tree_node("Outputs") do
         help_marker(
           "The value of io.WantCaptureMouse and io.WantCaptureKeyboard are normally set by Dear ImGui " +
           "to instruct your application of how to route inputs. Typically, when a value is true, it means " +
@@ -5081,32 +4973,63 @@ module ImGuiDemo
           "The most typical case is: when hovering a window, Dear ImGui set io.WantCaptureMouse to true, " +
           "and underlying application should ignore mouse inputs (in practice there are many and more subtle " +
           "rules leading to how those flags are set).")
-
         ImGui.text("io.WantCaptureMouse: %d", io.want_capture_mouse)
         ImGui.text("io.WantCaptureMouseUnlessPopupClose: %d", io.want_capture_mouse_unless_popup_close)
         ImGui.text("io.WantCaptureKeyboard: %d", io.want_capture_keyboard)
+        ImGui.text("io.WantTextInput: %d", io.want_text_input)
+        ImGui.text("io.WantSetMousePos: %d", io.want_set_mouse_pos)
+        ImGui.text("io.NavActive: %d, io.NavVisible: %d", io.nav_active, io.nav_visible)
 
-        help_marker(
-          "Hovering the colored canvas will override io.WantCaptureXXX fields.\n" +
-          "Notice how normally (when set to none), the value of io.WantCaptureKeyboard would be false when hovering and true when clicking.")
-        static capture_override_mouse = -1
-        static capture_override_keyboard = -1
-        capture_override_desc = ["None", "Set to false", "Set to true"]
-        ImGui.set_next_item_width(ImGui.get_font_size * 15)
-        ImGui.slider_int("SetNextFrameWantCaptureMouse()", pointerof(capture_override_mouse.val), -1, +1, capture_override_desc[capture_override_mouse.val + 1], ImGuiSliderFlags::AlwaysClamp)
-        ImGui.set_next_item_width(ImGui.get_font_size * 15)
-        ImGui.slider_int("SetNextFrameWantCaptureKeyboard()", pointerof(capture_override_keyboard.val), -1, +1, capture_override_desc[capture_override_keyboard.val + 1], ImGuiSliderFlags::AlwaysClamp)
+        demo_marker("Inputs & Focus/Outputs/WantCapture override")
+        ImGui.tree_node("WantCapture override") do
+          help_marker(
+            "Hovering the colored canvas will override io.WantCaptureXXX fields.\n" +
+            "Notice how normally (when set to none), the value of io.WantCaptureKeyboard would be false when hovering and true when clicking.")
+          static capture_override_mouse = -1
+          static capture_override_keyboard = -1
+          capture_override_desc = ["None", "Set to false", "Set to true"]
+          ImGui.set_next_item_width(ImGui.get_font_size * 15)
+          ImGui.slider_int("SetNextFrameWantCaptureMouse() on hover", pointerof(capture_override_mouse.val), -1, +1, capture_override_desc[capture_override_mouse.val + 1], ImGuiSliderFlags::AlwaysClamp)
+          ImGui.set_next_item_width(ImGui.get_font_size * 15)
+          ImGui.slider_int("SetNextFrameWantCaptureKeyboard() on hover", pointerof(capture_override_keyboard.val), -1, +1, capture_override_desc[capture_override_keyboard.val + 1], ImGuiSliderFlags::AlwaysClamp)
 
-        ImGui.color_button("##panel", ImVec4.new(0.7f32, 0.1f32, 0.7f32, 1.0f32), ImGuiColorEditFlags::NoTooltip | ImGuiColorEditFlags::NoDragDrop, ImVec2.new(256.0f32, 192.0f32))
-        if ImGui.is_item_hovered && capture_override_mouse.val != -1
-          ImGui.set_next_frame_want_capture_mouse(capture_override_mouse.val == 1)
-        end
-        if ImGui.is_item_hovered && capture_override_keyboard.val != -1
-          ImGui.set_next_frame_want_capture_keyboard(capture_override_keyboard.val == 1)
+          ImGui.color_button("##panel", ImVec4.new(0.7f32, 0.1f32, 0.7f32, 1.0f32), ImGuiColorEditFlags::NoTooltip | ImGuiColorEditFlags::NoDragDrop, ImVec2.new(128.0f32, 96.0f32))
+          if ImGui.is_item_hovered && capture_override_mouse.val != -1
+            ImGui.set_next_frame_want_capture_mouse(capture_override_mouse.val == 1)
+          end
+          if ImGui.is_item_hovered && capture_override_keyboard.val != -1
+            ImGui.set_next_frame_want_capture_keyboard(capture_override_keyboard.val == 1)
+          end
         end
       end
 
-      demo_marker("Inputs, Navigation & Focus/Tabbing")
+      demo_marker("Inputs & Focus/Mouse Cursors")
+      ImGui.tree_node("Mouse Cursors") do
+        mouse_cursors_names = ["Arrow", "TextInput", "ResizeAll", "ResizeNS", "ResizeEW", "ResizeNESW", "ResizeNWSE", "Hand", "NotAllowed"]
+
+        current = ImGui.get_mouse_cursor
+        ImGui.text("Current mouse cursor = %d: %s", current, mouse_cursors_names[current.value])
+        ImGui.disabled(true) do
+          ImGui.checkbox_flags("io.BackendFlags: HasMouseCursors", pointerof(io.backend_flags), ImGuiBackendFlags::HasMouseCursors)
+        end
+
+        ImGui.text("Hover to see mouse cursors:")
+        ImGui.same_line
+        help_marker(
+          "Your application can render a different mouse cursor based on what ImGui::GetMouseCursor() returns. " +
+          "If software cursor rendering (io.MouseDrawCursor) is set ImGui will draw the right cursor for you, " +
+          "otherwise your backend needs to handle it.")
+        mouse_cursors_names.each_index do |i|
+          label = sprintf("Mouse cursor %d: %s", i, mouse_cursors_names[i])
+          ImGui.bullet
+          ImGui.selectable(label, false)
+          if ImGui.is_item_hovered
+            ImGui.set_mouse_cursor(ImGuiMouseCursor.new(i))
+          end
+        end
+      end
+
+      demo_marker("Inputs & Focus/Tabbing")
       ImGui.tree_node("Tabbing") do
         ImGui.text("Use TAB/SHIFT+TAB to cycle through keyboard editable fields.")
         static buf = ImGui::TextBuffer.new("hello", 32)
@@ -5121,7 +5044,7 @@ module ImGuiDemo
         ImGui.input_text("5", buf.val)
       end
 
-      demo_marker("Inputs, Navigation & Focus/Focus from code")
+      demo_marker("Inputs & Focus/Focus from code")
       ImGui.tree_node("Focus from code") do
         focus_1 = ImGui.button("Focus on 1")
         ImGui.same_line
@@ -5186,7 +5109,7 @@ module ImGuiDemo
         ImGui.text_wrapped("NB: Cursor & selection are preserved when refocusing last used item in code.")
       end
 
-      demo_marker("Inputs, Navigation & Focus/Dragging")
+      demo_marker("Inputs & Focus/Dragging")
       ImGui.tree_node("Dragging") do
         ImGui.text_wrapped("You can use ImGui::GetMouseDragDelta(0) to query for the dragged amount on any widget.")
         3.times do |button|
@@ -6100,7 +6023,7 @@ module ImGuiDemo
       demo_marker("Examples/Simple layout")
       ImGui.menu_bar do
         ImGui.menu("File") do
-          if ImGui.menu_item("Close")
+          if ImGui.menu_item("Close", "Ctrl+W")
             p_open.value = false
           end
         end
