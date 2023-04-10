@@ -24,7 +24,6 @@ jobs:
         uses: oprypin/install-crystal@v1
         with:
           crystal: ${{matrix.crystal}}
-          shards: latest
       - name: Download source
         uses: actions/checkout@v2
         with:
