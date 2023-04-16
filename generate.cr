@@ -391,7 +391,7 @@ class COverload
         end
         default = self.defaults[arg.name]?.try do |default|
           default
-            .gsub(/\b([0-9.]+)f\b(?!")/, "\\1")
+            .gsub(/\b(?<![%.])([0-9.]+)f\b(?!")/, "\\1")
             .gsub(/\b(ImVec\d)\(/, "\\1.new(")
             .gsub("(ImU32)", "UInt32.new")
             .gsub(/\bNULL\b/, "nil")

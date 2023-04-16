@@ -197,6 +197,8 @@ File.each_line(filename) do |fline|
   line = line.gsub(/\bIM_COL32_WHITE\b/, "ImGui.col32(255, 255, 255)")
   line = line.gsub(/\bIMGUI_(VERSION|PAYLOAD_TYPE)/, "ImGui::\\1")
   line = line.gsub(/" *IM_NEWLINE\b/, "\\n\"")
+  line = line.gsub(/ *\bIM_PRI(d|u)64\b */, %(•"ll\\1"•))
+  line = line.gsub(/"•"|•/, "")
   line = line.gsub(/^sn?printf\((\w+), (".+?"), (.+)\);$/, "\\1 = sprintf(\\2, \\3)")
 
   line = line.gsub(/(?<!:)\b[A-Z]{3,}_[A-Z_]+\b/) do

@@ -1241,7 +1241,7 @@ module ImGui
     ) : v.as(Float32*), v_min, v_max, format, flags)
   end
   # [ImGui::SliderAngle()](https://github.com/ocornut/imgui/blob/v1.89.2/imgui.h#L561)
-  pointer_wrapper def self.slider_angle(label : String, v_rad : Float32*, v_degrees_min : Float32 = -360.0, v_degrees_max : Float32 = +360.0, format : String = "%.0 deg", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
+  pointer_wrapper def self.slider_angle(label : String, v_rad : Float32*, v_degrees_min : Float32 = -360.0, v_degrees_max : Float32 = +360.0, format : String = "%.0f deg", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
     LibImGui.SliderAngle(label, v_rad, v_degrees_min, v_degrees_max, format, flags)
   end
   # [ImGui::SliderInt()](https://github.com/ocornut/imgui/blob/v1.89.2/imgui.h#L562)

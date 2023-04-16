@@ -1689,12 +1689,12 @@ module ImGuiDemo
       ImGui.slider_scalar("slider u32 low", pointerof(u32_v.val), u32_zero, u32_fifty, "%u")
       ImGui.slider_scalar("slider u32 high", pointerof(u32_v.val), u32_hi_a, u32_hi_b, "%u")
       ImGui.slider_scalar("slider u32 full", pointerof(u32_v.val), u32_min, u32_max, "%u")
-      ImGui.slider_scalar("slider s64 low", pointerof(s64_v.val), s64_zero, s64_fifty, "%I64d")
-      ImGui.slider_scalar("slider s64 high", pointerof(s64_v.val), s64_hi_a, s64_hi_b, "%I64d")
-      ImGui.slider_scalar("slider s64 full", pointerof(s64_v.val), s64_min, s64_max, "%I64d")
-      ImGui.slider_scalar("slider u64 low", pointerof(u64_v.val), u64_zero, u64_fifty, "%I64u ms")
-      ImGui.slider_scalar("slider u64 high", pointerof(u64_v.val), u64_hi_a, u64_hi_b, "%I64u ms")
-      ImGui.slider_scalar("slider u64 full", pointerof(u64_v.val), u64_min, u64_max, "%I64u ms")
+      ImGui.slider_scalar("slider s64 low", pointerof(s64_v.val), s64_zero, s64_fifty, "%lld")
+      ImGui.slider_scalar("slider s64 high", pointerof(s64_v.val), s64_hi_a, s64_hi_b, "%lld")
+      ImGui.slider_scalar("slider s64 full", pointerof(s64_v.val), s64_min, s64_max, "%lld")
+      ImGui.slider_scalar("slider u64 low", pointerof(u64_v.val), u64_zero, u64_fifty, "%llu ms")
+      ImGui.slider_scalar("slider u64 high", pointerof(u64_v.val), u64_hi_a, u64_hi_b, "%llu ms")
+      ImGui.slider_scalar("slider u64 full", pointerof(u64_v.val), u64_min, u64_max, "%llu ms")
       ImGui.slider_scalar("slider float low", pointerof(f32_v.val), f32_zero, f32_one)
       ImGui.slider_scalar("slider float low log", pointerof(f32_v.val), f32_zero, f32_one, "%.10f", ImGuiSliderFlags::Logarithmic)
       ImGui.slider_scalar("slider float high", pointerof(f32_v.val), f32_lo_a, f32_hi_a, "%e")
@@ -1707,8 +1707,8 @@ module ImGuiDemo
       ImGui.slider_scalar("slider u8 reverse", pointerof(u8_v.val), u8_max, u8_min, "%u")
       ImGui.slider_scalar("slider s32 reverse", pointerof(s32_v.val), s32_fifty, s32_zero, "%d")
       ImGui.slider_scalar("slider u32 reverse", pointerof(u32_v.val), u32_fifty, u32_zero, "%u")
-      ImGui.slider_scalar("slider s64 reverse", pointerof(s64_v.val), s64_fifty, s64_zero, "%I64d")
-      ImGui.slider_scalar("slider u64 reverse", pointerof(u64_v.val), u64_fifty, u64_zero, "%I64u ms")
+      ImGui.slider_scalar("slider s64 reverse", pointerof(s64_v.val), s64_fifty, s64_zero, "%lld")
+      ImGui.slider_scalar("slider u64 reverse", pointerof(u64_v.val), u64_fifty, u64_zero, "%llu ms")
 
       demo_marker("Widgets/Data Types/Inputs")
       static inputs_step = true
@@ -3651,7 +3651,7 @@ module ImGuiDemo
           ImGui.checkbox_flags("ImGuiTableFlags_RowBg", pointerof(flags2.val), ImGuiTableFlags::RowBg)
           ImGui.checkbox_flags("ImGuiTableFlags_Resizable", pointerof(flags2.val), ImGuiTableFlags::Resizable)
           ImGui.checkbox("show_widget_frame_bg", pointerof(show_widget_frame_bg.val))
-          ImGui.slider_float2("CellPadding", pointerof(cell_padding.val.x), 0.0f32, 10.0f32, "%.0f")
+          ImGui.slider_float2("CellPadding", pointerof(cell_padding.val), 0.0f32, 10.0f32, "%.0f")
         end
 
         ImGui.with_style_var(ImGuiStyleVar::CellPadding, cell_padding.val) do
@@ -4294,7 +4294,7 @@ module ImGuiDemo
 
         help_marker("Demonstrate mixing table context menu (over header), item context button (over button) and custom per-colum context menu (over column body).")
         flags2 = ImGuiTableFlags::Resizable | ImGuiTableFlags::SizingFixedFit | ImGuiTableFlags::Reorderable | ImGuiTableFlags::Hideable | ImGuiTableFlags::Borders
-        ImGui.table("table_context_menu_2", columns_count, flags2) do
+        if ImGui.begin_table("table_context_menu_2", columns_count, flags2)
           ImGui.table_setup_column("One")
           ImGui.table_setup_column("Two")
           ImGui.table_setup_column("Three")
@@ -4341,6 +4341,7 @@ module ImGuiDemo
             end
           end
 
+          ImGui.end_table
           ImGui.text("Hovered column: %d", hovered_column)
         end
       end
@@ -4539,7 +4540,7 @@ module ImGuiDemo
                 ImGui.checkbox("show_headers", pointerof(show_headers.val))
                 ImGui.checkbox("show_wrapped_text", pointerof(show_wrapped_text.val))
 
-                ImGui.drag_float2("##OuterSize", pointerof(outer_size_value.val.x))
+                ImGui.drag_float2("##OuterSize", pointerof(outer_size_value.val))
                 ImGui.same_line(0.0f32, ImGui.get_style.item_inner_spacing.x)
                 ImGui.checkbox("outer_size", pointerof(outer_size_enabled.val))
                 ImGui.same_line
@@ -5051,7 +5052,7 @@ module ImGuiDemo
         focus_2 = ImGui.button("Focus on 2")
         ImGui.same_line
         focus_3 = ImGui.button("Focus on 3")
-        has_focus = 0
+        has_focus = nil
         static buf = ImGui::TextBuffer.new("click on a button to set focus", 128)
 
         if focus_1
@@ -5832,17 +5833,18 @@ module ImGuiDemo
           end
           word_start -= 1
         end
+        word = String.new(data.bytes[word_start...word_end])
 
         candidates = [] of String
         @commands.each do |cmd|
           n = (word_end - word_start).to_i
-          if cmd[0, n].upcase == cmd[word_start, n].upcase
+          if cmd[0, n].upcase == word[0, n].upcase
             candidates << cmd
           end
         end
 
         if candidates.size == 0
-          add_log("No match for \"%s\"!\n", String.new(data.bytes[word_start...word_end]))
+          add_log("No match for \"%s\"!\n", word)
         elsif candidates.size == 1
           data.delete_chars(word_start, (word_end - word_start))
           data.insert_chars(data.cursor_pos, candidates[0])
@@ -6205,8 +6207,9 @@ module ImGuiDemo
   ImGui.pointer_wrapper def self.show_example_app_constrained_resize(p_open = Pointer(Bool).null)
     aspect_ratio = 16.0f32 / 9.0f32
     aspect_ratio_constraint = ->(data : ImGuiSizeCallbackData) {
-      data.desired_size.x = {data.current_size.x, data.current_size.y}.max
-      data.desired_size.y = (data.desired_size.x / aspect_ratio).to_i.to_f32
+      size_x = {data.current_size.x, data.current_size.y}.max
+      size_y = (size_x / aspect_ratio).to_i.to_f32
+      data.desired_size = ImVec2.new(size_x, size_y)
     }
     square_constraint = ->(data : ImGuiSizeCallbackData) {
       size = {data.desired_size.x, data.desired_size.y}.max
@@ -6459,7 +6462,7 @@ module ImGuiDemo
           ImGui.checkbox("##curvessegmentoverride", pointerof(curve_segments_override.val))
           ImGui.same_line(0.0f32, ImGui.get_style.item_inner_spacing.x)
           curve_segments_override.val |= ImGui.slider_int("Curves segments override", pointerof(curve_segments_override_v.val), 3, 40)
-          ImGui.color_edit4("Color", pointerof(colf.val.x))
+          ImGui.color_edit4("Color", pointerof(colf.val))
 
           p = ImGui.get_cursor_screen_pos
           col = ImGui.color_convert_float4_to_u32(colf.val)
