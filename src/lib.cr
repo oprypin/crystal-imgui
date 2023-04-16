@@ -3,6 +3,7 @@ require "./types"
 
 @[Link("cimgui")]
 lib LibImGui
+  alias ImBitArrayPtr = UInt32*
   alias ImDrawCallback = (ImDrawList*, ImDrawCmd*) -> Void
   alias ImDrawIdx = LibC::UShort
   alias ImFileHandle = Void*
@@ -10,14 +11,15 @@ lib LibImGui
   alias ImGuiErrorLogCallback = (Void*, LibC::Char*) -> Void
   alias ImGuiID = LibC::UInt
   alias ImGuiInputTextCallback = (ImGuiInputTextCallbackData*) -> LibC::Int
+  alias ImGuiInputTextDeactivateData = Void
   alias ImGuiKeyChord = LibC::Int
   alias ImGuiKeyRoutingIndex = Int16
   alias ImGuiMemAllocFunc = (LibC::SizeT, Void*) -> Void*
   alias ImGuiMemFreeFunc = (Void*, Void*) -> Void
   alias ImGuiSizeCallback = (ImGuiSizeCallbackData*) -> Void
-  alias ImGuiTableColumnIdx = Int8
+  alias ImGuiTableColumnIdx = Int16
   alias ImGuiTableColumnsSettings = Void
-  alias ImGuiTableDrawChannelIdx = UInt8
+  alias ImGuiTableDrawChannelIdx = UInt16
   alias ImPoolIdx = LibC::Int
   alias ImTextureID = Void*
   alias ImWchar16 = LibC::UShort
@@ -109,8 +111,8 @@ lib LibImGui
   fun PushStyleVar_Float = igPushStyleVar_Float(idx : ImGui::ImGuiStyleVar, val : LibC::Float)
   fun PushStyleVar_Vec2 = igPushStyleVar_Vec2(idx : ImGui::ImGuiStyleVar, val : ImGui::ImVec2)
   fun PopStyleVar = igPopStyleVar(count : LibC::Int)
-  fun PushAllowKeyboardFocus = igPushAllowKeyboardFocus(allow_keyboard_focus : Bool)
-  fun PopAllowKeyboardFocus = igPopAllowKeyboardFocus
+  fun PushTabStop = igPushTabStop(tab_stop : Bool)
+  fun PopTabStop = igPopTabStop
   fun PushButtonRepeat = igPushButtonRepeat(repeat : Bool)
   fun PopButtonRepeat = igPopButtonRepeat
   fun PushItemWidth = igPushItemWidth(item_width : LibC::Float)
@@ -164,6 +166,7 @@ lib LibImGui
   fun TextWrapped = igTextWrapped(fmt : LibC::Char*, ...)
   fun LabelText = igLabelText(label : LibC::Char*, fmt : LibC::Char*, ...)
   fun BulletText = igBulletText(fmt : LibC::Char*, ...)
+  fun SeparatorText = igSeparatorText(label : LibC::Char*)
   fun Button = igButton(label : LibC::Char*, size : ImGui::ImVec2) : Bool
   fun SmallButton = igSmallButton(label : LibC::Char*) : Bool
   fun InvisibleButton = igInvisibleButton(str_id : LibC::Char*, size : ImGui::ImVec2, flags : ImGui::ImGuiButtonFlags) : Bool
@@ -265,7 +268,7 @@ lib LibImGui
   fun EndMenu = igEndMenu
   fun MenuItem_Bool = igMenuItem_Bool(label : LibC::Char*, shortcut : LibC::Char*, selected : Bool, enabled : Bool) : Bool
   fun MenuItem_BoolPtr = igMenuItem_BoolPtr(label : LibC::Char*, shortcut : LibC::Char*, p_selected : Bool*, enabled : Bool) : Bool
-  fun BeginTooltip = igBeginTooltip
+  fun BeginTooltip = igBeginTooltip : Bool
   fun EndTooltip = igEndTooltip
   fun SetTooltip = igSetTooltip(fmt : LibC::Char*, ...)
   fun BeginPopup = igBeginPopup(str_id : LibC::Char*, flags : ImGui::ImGuiWindowFlags) : Bool
@@ -444,6 +447,9 @@ lib LibImGui
     color_button_position : ImGui::ImGuiDir
     button_text_align : ImGui::ImVec2
     selectable_text_align : ImGui::ImVec2
+    separator_text_border_size : LibC::Float
+    separator_text_align : ImGui::ImVec2
+    separator_text_padding : ImGui::ImVec2
     display_window_padding : ImGui::ImVec2
     display_safe_area_padding : ImGui::ImVec2
     mouse_cursor_scale : LibC::Float
@@ -495,6 +501,8 @@ lib LibImGui
     config_windows_resize_from_edges : Bool
     config_windows_move_from_title_bar_only : Bool
     config_memory_compact_timer : LibC::Float
+    config_debug_begin_return_value_once : Bool
+    config_debug_begin_return_value_loop : Bool
     backend_platform_name : LibC::Char*
     backend_renderer_name : LibC::Char*
     backend_platform_user_data : Void*
@@ -522,10 +530,12 @@ lib LibImGui
     key_map : LibC::Int[652]
     keys_down : Bool[652]
     nav_inputs : LibC::Float[16]
+    ctx : ImGuiContext*
     mouse_pos : ImGui::ImVec2
     mouse_down : Bool[5]
     mouse_wheel : LibC::Float
     mouse_wheel_h : LibC::Float
+    mouse_source : ImGui::ImGuiMouseSource
     key_ctrl : Bool
     key_shift : Bool
     key_alt : Bool
@@ -543,6 +553,7 @@ lib LibImGui
     mouse_released : Bool[5]
     mouse_down_owned : Bool[5]
     mouse_down_owned_unless_popup_close : Bool[5]
+    mouse_wheel_request_axis_swap : Bool
     mouse_down_duration : LibC::Float[5]
     mouse_down_duration_prev : LibC::Float[5]
     mouse_drag_max_distance_sqr : LibC::Float[5]
@@ -559,7 +570,8 @@ lib LibImGui
   fun ImGuiIO_AddKeyAnalogEvent = ImGuiIO_AddKeyAnalogEvent(self : ImGuiIO*, key : ImGui::ImGuiKey, down : Bool, v : LibC::Float)
   fun ImGuiIO_AddMousePosEvent = ImGuiIO_AddMousePosEvent(self : ImGuiIO*, x : LibC::Float, y : LibC::Float)
   fun ImGuiIO_AddMouseButtonEvent = ImGuiIO_AddMouseButtonEvent(self : ImGuiIO*, button : LibC::Int, down : Bool)
-  fun ImGuiIO_AddMouseWheelEvent = ImGuiIO_AddMouseWheelEvent(self : ImGuiIO*, wh_x : LibC::Float, wh_y : LibC::Float)
+  fun ImGuiIO_AddMouseWheelEvent = ImGuiIO_AddMouseWheelEvent(self : ImGuiIO*, wheel_x : LibC::Float, wheel_y : LibC::Float)
+  fun ImGuiIO_AddMouseSourceEvent = ImGuiIO_AddMouseSourceEvent(self : ImGuiIO*, source : ImGui::ImGuiMouseSource)
   fun ImGuiIO_AddFocusEvent = ImGuiIO_AddFocusEvent(self : ImGuiIO*, focused : Bool)
   fun ImGuiIO_AddInputCharacter = ImGuiIO_AddInputCharacter(self : ImGuiIO*, c : LibC::UInt)
   fun ImGuiIO_AddInputCharacterUTF16 = ImGuiIO_AddInputCharacterUTF16(self : ImGuiIO*, c : ImWchar16)
@@ -571,6 +583,7 @@ lib LibImGui
   fun ImGuiIO_ImGuiIO = ImGuiIO_ImGuiIO : ImGuiIO*
 
   struct ImGuiInputTextCallbackData
+    ctx : ImGuiContext*
     event_flag : ImGui::ImGuiInputTextFlags
     flags : ImGui::ImGuiInputTextFlags
     user_data : Void*
@@ -938,7 +951,9 @@ lib LibImGui
     config_data_count : LibC::Short
     fallback_char : ImWchar
     ellipsis_char : ImWchar
-    dot_char : ImWchar
+    ellipsis_char_count : LibC::Short
+    ellipsis_width : LibC::Float
+    ellipsis_char_step : LibC::Float
     dirty_lookup_tables : Bool
     scale : LibC::Float
     ascent : LibC::Float
@@ -986,8 +1001,8 @@ lib LibImGui
 
   fun ImGuiPlatformImeData_ImGuiPlatformImeData = ImGuiPlatformImeData_ImGuiPlatformImeData : ImGuiPlatformImeData*
   fun GetKeyIndex = igGetKeyIndex(key : ImGui::ImGuiKey) : ImGui::ImGuiKey
-  fun ImHashData = igImHashData(data : Void*, data_size : LibC::SizeT, seed : UInt32) : ImGuiID
-  fun ImHashStr = igImHashStr(data : LibC::Char*, data_size : LibC::SizeT, seed : UInt32) : ImGuiID
+  fun ImHashData = igImHashData(data : Void*, data_size : LibC::SizeT, seed : ImGuiID) : ImGuiID
+  fun ImHashStr = igImHashStr(data : LibC::Char*, data_size : LibC::SizeT, seed : ImGuiID) : ImGuiID
   fun ImQsort = igImQsort(base : Void*, count : LibC::SizeT, size_of_element : LibC::SizeT, compare_func : (Void, Void) -> LibC::Int)
   fun ImAlphaBlendColors = igImAlphaBlendColors(col_a : UInt32, col_b : UInt32) : UInt32
   fun ImIsPowerOfTwo_Int = igImIsPowerOfTwo_Int(v : LibC::Int) : Bool
@@ -1107,6 +1122,8 @@ lib LibImGui
   fun ImRect_Floor = ImRect_Floor(self : ImRect*)
   fun ImRect_IsInverted = ImRect_IsInverted(self : ImRect*) : Bool
   fun ImRect_ToVec4 = ImRect_ToVec4(pOut : ImGui::ImVec4*, self : ImRect*)
+  fun ImBitArrayGetStorageSizeInBytes = igImBitArrayGetStorageSizeInBytes(bitcount : LibC::Int) : LibC::SizeT
+  fun ImBitArrayClearAllBits = igImBitArrayClearAllBits(arr : UInt32*, bitcount : LibC::Int)
   fun ImBitArrayTestBit = igImBitArrayTestBit(arr : UInt32*, n : LibC::Int) : Bool
   fun ImBitArrayClearBit = igImBitArrayClearBit(arr : UInt32*, n : LibC::Int)
   fun ImBitArraySetBit = igImBitArraySetBit(arr : UInt32*, n : LibC::Int)
@@ -1131,6 +1148,8 @@ lib LibImGui
   fun ImDrawDataBuilder_ClearFreeMemory = ImDrawDataBuilder_ClearFreeMemory(self : ImDrawDataBuilder*)
   fun ImDrawDataBuilder_GetDrawListCount = ImDrawDataBuilder_GetDrawListCount(self : ImDrawDataBuilder*) : LibC::Int
   fun ImDrawDataBuilder_FlattenIntoSingleLayer = ImDrawDataBuilder_FlattenIntoSingleLayer(self : ImDrawDataBuilder*)
+  type ImGuiDataVarInfo = Void*
+  fun ImGuiDataVarInfo_GetVarPtr = ImGuiDataVarInfo_GetVarPtr(self : ImGuiDataVarInfo*, parent : Void*) : Void*
   type ImGuiDataTypeTempStorage = Void*
   type ImGuiDataTypeInfo = Void*
   type ImGuiColorMod = Void*
@@ -1146,8 +1165,11 @@ lib LibImGui
   fun ImGuiMenuColumns_Update = ImGuiMenuColumns_Update(self : ImGuiMenuColumns*, spacing : LibC::Float, window_reappearing : Bool)
   fun ImGuiMenuColumns_DeclColumns = ImGuiMenuColumns_DeclColumns(self : ImGuiMenuColumns*, w_icon : LibC::Float, w_label : LibC::Float, w_shortcut : LibC::Float, w_mark : LibC::Float) : LibC::Float
   fun ImGuiMenuColumns_CalcNextTotalWidth = ImGuiMenuColumns_CalcNextTotalWidth(self : ImGuiMenuColumns*, update_offsets : Bool)
+  type ImGuiInputTextDeactivatedState = Void*
+  fun ImGuiInputTextDeactivatedState_ImGuiInputTextDeactivatedState = ImGuiInputTextDeactivatedState_ImGuiInputTextDeactivatedState : ImGuiInputTextDeactivatedState*
+  fun ImGuiInputTextDeactivatedState_ClearFreeMemory = ImGuiInputTextDeactivatedState_ClearFreeMemory(self : ImGuiInputTextDeactivatedState*)
   type ImGuiInputTextState = Void*
-  fun ImGuiInputTextState_ImGuiInputTextState = ImGuiInputTextState_ImGuiInputTextState(ctx : ImGuiContext*) : ImGuiInputTextState*
+  fun ImGuiInputTextState_ImGuiInputTextState = ImGuiInputTextState_ImGuiInputTextState : ImGuiInputTextState*
   fun ImGuiInputTextState_ClearText = ImGuiInputTextState_ClearText(self : ImGuiInputTextState*)
   fun ImGuiInputTextState_ClearFreeMemory = ImGuiInputTextState_ClearFreeMemory(self : ImGuiInputTextState*)
   fun ImGuiInputTextState_GetUndoAvailCount = ImGuiInputTextState_GetUndoAvailCount(self : ImGuiInputTextState*) : LibC::Int
@@ -1173,8 +1195,8 @@ lib LibImGui
   fun ImGuiLastItemData_ImGuiLastItemData = ImGuiLastItemData_ImGuiLastItemData : ImGuiLastItemData*
   type ImGuiStackSizes = Void*
   fun ImGuiStackSizes_ImGuiStackSizes = ImGuiStackSizes_ImGuiStackSizes : ImGuiStackSizes*
-  fun ImGuiStackSizes_SetToCurrentState = ImGuiStackSizes_SetToCurrentState(self : ImGuiStackSizes*)
-  fun ImGuiStackSizes_CompareWithCurrentState = ImGuiStackSizes_CompareWithCurrentState(self : ImGuiStackSizes*)
+  fun ImGuiStackSizes_SetToContextState = ImGuiStackSizes_SetToContextState(self : ImGuiStackSizes*, ctx : ImGuiContext*)
+  fun ImGuiStackSizes_CompareWithContextState = ImGuiStackSizes_CompareWithContextState(self : ImGuiStackSizes*, ctx : ImGuiContext*)
   type ImGuiWindowStackData = Void*
   type ImGuiShrinkWidthItem = Void*
   type ImGuiPtrOrIndex = Void*
@@ -1223,7 +1245,6 @@ lib LibImGui
   fun ImGuiSettingsHandler_ImGuiSettingsHandler = ImGuiSettingsHandler_ImGuiSettingsHandler : ImGuiSettingsHandler*
   type ImGuiLocEntry = Void*
   type ImGuiMetricsConfig = Void*
-  fun ImGuiMetricsConfig_ImGuiMetricsConfig = ImGuiMetricsConfig_ImGuiMetricsConfig : ImGuiMetricsConfig*
   type ImGuiStackLevelInfo = Void*
   fun ImGuiStackLevelInfo_ImGuiStackLevelInfo = ImGuiStackLevelInfo_ImGuiStackLevelInfo : ImGuiStackLevelInfo*
   type ImGuiStackTool = Void*
@@ -1249,8 +1270,6 @@ lib LibImGui
   fun ImGuiTabItem_ImGuiTabItem = ImGuiTabItem_ImGuiTabItem : ImGuiTabItem*
   type ImGuiTabBar = Void*
   fun ImGuiTabBar_ImGuiTabBar = ImGuiTabBar_ImGuiTabBar : ImGuiTabBar*
-  fun ImGuiTabBar_GetTabOrder = ImGuiTabBar_GetTabOrder(self : ImGuiTabBar*, tab : ImGuiTabItem*) : LibC::Int
-  fun ImGuiTabBar_GetTabName = ImGuiTabBar_GetTabName(self : ImGuiTabBar*, tab : ImGuiTabItem*) : LibC::Char*
   type ImGuiTableColumn = Void*
   fun ImGuiTableColumn_ImGuiTableColumn = ImGuiTableColumn_ImGuiTableColumn : ImGuiTableColumn*
   type ImGuiTableCellData = Void*
@@ -1276,6 +1295,7 @@ lib LibImGui
   fun IsWindowAbove = igIsWindowAbove(potential_above : ImGuiWindow*, potential_below : ImGuiWindow*) : Bool
   fun IsWindowNavFocusable = igIsWindowNavFocusable(window : ImGuiWindow*) : Bool
   fun SetWindowHitTestHole = igSetWindowHitTestHole(window : ImGuiWindow*, pos : ImGui::ImVec2, size : ImGui::ImVec2)
+  fun SetWindowHiddendAndSkipItemsForCurrentFrame = igSetWindowHiddendAndSkipItemsForCurrentFrame(window : ImGuiWindow*)
   fun WindowRectAbsToRel = igWindowRectAbsToRel(pOut : ImRect*, window : ImGuiWindow*, r : ImRect)
   fun WindowRectRelToAbs = igWindowRectRelToAbs(pOut : ImRect*, window : ImGuiWindow*, r : ImRect)
   fun FocusWindow = igFocusWindow(window : ImGuiWindow*)
@@ -1302,12 +1322,13 @@ lib LibImGui
   fun MarkIniSettingsDirty_Nil = igMarkIniSettingsDirty_Nil
   fun MarkIniSettingsDirty_WindowPtr = igMarkIniSettingsDirty_WindowPtr(window : ImGuiWindow*)
   fun ClearIniSettings = igClearIniSettings
-  fun CreateNewWindowSettings = igCreateNewWindowSettings(name : LibC::Char*) : ImGuiWindowSettings*
-  fun FindWindowSettings = igFindWindowSettings(id : ImGuiID) : ImGuiWindowSettings*
-  fun FindOrCreateWindowSettings = igFindOrCreateWindowSettings(name : LibC::Char*) : ImGuiWindowSettings*
   fun AddSettingsHandler = igAddSettingsHandler(handler : ImGuiSettingsHandler*)
   fun RemoveSettingsHandler = igRemoveSettingsHandler(type_name : LibC::Char*)
   fun FindSettingsHandler = igFindSettingsHandler(type_name : LibC::Char*) : ImGuiSettingsHandler*
+  fun CreateNewWindowSettings = igCreateNewWindowSettings(name : LibC::Char*) : ImGuiWindowSettings*
+  fun FindWindowSettingsByID = igFindWindowSettingsByID(id : ImGuiID) : ImGuiWindowSettings*
+  fun FindWindowSettingsByWindow = igFindWindowSettingsByWindow(window : ImGuiWindow*) : ImGuiWindowSettings*
+  fun ClearWindowSettings = igClearWindowSettings(name : LibC::Char*)
   fun LocalizeRegisterEntries = igLocalizeRegisterEntries(entries : ImGuiLocEntry*, count : LibC::Int)
   fun LocalizeGetMsg = igLocalizeGetMsg(key : ImGui::ImGuiLocKey) : LibC::Char*
   fun ScrollToItem = igScrollToItem(flags : ImGui::ImGuiScrollFlags)
@@ -1326,11 +1347,13 @@ lib LibImGui
   fun KeepAliveID = igKeepAliveID(id : ImGuiID)
   fun MarkItemEdited = igMarkItemEdited(id : ImGuiID)
   fun PushOverrideID = igPushOverrideID(id : ImGuiID)
-  fun GetIDWithSeed = igGetIDWithSeed(str_id_begin : LibC::Char*, str_id_end : LibC::Char*, seed : ImGuiID) : ImGuiID
+  fun GetIDWithSeed_Str = igGetIDWithSeed_Str(str_id_begin : LibC::Char*, str_id_end : LibC::Char*, seed : ImGuiID) : ImGuiID
+  fun GetIDWithSeed_Int = igGetIDWithSeed_Int(n : LibC::Int, seed : ImGuiID) : ImGuiID
   fun ItemSize_Vec2 = igItemSize_Vec2(size : ImGui::ImVec2, text_baseline_y : LibC::Float)
   fun ItemSize_Rect = igItemSize_Rect(bb : ImRect, text_baseline_y : LibC::Float)
   fun ItemAdd = igItemAdd(bb : ImRect, id : ImGuiID, nav_bb : ImRect*, extra_flags : ImGui::ImGuiItemFlags) : Bool
   fun ItemHoverable = igItemHoverable(bb : ImRect, id : ImGuiID) : Bool
+  fun IsWindowContentHoverable = igIsWindowContentHoverable(window : ImGuiWindow*, flags : ImGui::ImGuiHoveredFlags) : Bool
   fun IsClippedEx = igIsClippedEx(bb : ImRect, id : ImGuiID) : Bool
   fun SetLastItemData = igSetLastItemData(item_id : ImGuiID, in_flags : ImGui::ImGuiItemFlags, status_flags : ImGui::ImGuiItemStatusFlags, item_rect : ImRect)
   fun CalcItemSize = igCalcItemSize(pOut : ImGui::ImVec2*, size : ImGui::ImVec2, default_w : LibC::Float, default_h : LibC::Float)
@@ -1341,6 +1364,7 @@ lib LibImGui
   fun ShrinkWidths = igShrinkWidths(items : ImGuiShrinkWidthItem*, count : LibC::Int, width_excess : LibC::Float)
   fun PushItemFlag = igPushItemFlag(option : ImGui::ImGuiItemFlags, enabled : Bool)
   fun PopItemFlag = igPopItemFlag
+  fun GetStyleVarInfo = igGetStyleVarInfo(idx : ImGui::ImGuiStyleVar) : ImGuiDataVarInfo*
   fun LogBegin = igLogBegin(type : ImGui::ImGuiLogType, auto_open_depth : LibC::Int)
   fun LogToBuffer = igLogToBuffer(auto_open_depth : LibC::Int)
   fun LogRenderedText = igLogRenderedText(ref_pos : ImGui::ImVec2*, text : LibC::Char*, text_end : LibC::Char*)
@@ -1351,7 +1375,7 @@ lib LibImGui
   fun ClosePopupsOverWindow = igClosePopupsOverWindow(ref_window : ImGuiWindow*, restore_focus_to_window_under_popup : Bool)
   fun ClosePopupsExceptModals = igClosePopupsExceptModals
   fun BeginPopupEx = igBeginPopupEx(id : ImGuiID, extra_flags : ImGui::ImGuiWindowFlags) : Bool
-  fun BeginTooltipEx = igBeginTooltipEx(tooltip_flags : ImGui::ImGuiTooltipFlags, extra_window_flags : ImGui::ImGuiWindowFlags)
+  fun BeginTooltipEx = igBeginTooltipEx(tooltip_flags : ImGui::ImGuiTooltipFlags, extra_window_flags : ImGui::ImGuiWindowFlags) : Bool
   fun GetPopupAllowedExtentRect = igGetPopupAllowedExtentRect(pOut : ImRect*, window : ImGuiWindow*)
   fun GetTopMostPopupModal = igGetTopMostPopupModal : ImGuiWindow*
   fun GetTopMostAndVisiblePopupModal = igGetTopMostAndVisiblePopupModal : ImGuiWindow*
@@ -1383,8 +1407,9 @@ lib LibImGui
   fun IsMouseKey = igIsMouseKey(key : ImGui::ImGuiKey) : Bool
   fun IsAliasKey = igIsAliasKey(key : ImGui::ImGuiKey) : Bool
   fun ConvertShortcutMod = igConvertShortcutMod(key_chord : ImGuiKeyChord) : ImGuiKeyChord
-  fun ConvertSingleModFlagToKey = igConvertSingleModFlagToKey(key : ImGui::ImGuiKey) : ImGui::ImGuiKey
-  fun GetKeyData = igGetKeyData(key : ImGui::ImGuiKey) : ImGuiKeyData*
+  fun ConvertSingleModFlagToKey = igConvertSingleModFlagToKey(ctx : ImGuiContext*, key : ImGui::ImGuiKey) : ImGui::ImGuiKey
+  fun GetKeyData_ContextPtr = igGetKeyData_ContextPtr(ctx : ImGuiContext*, key : ImGui::ImGuiKey) : ImGuiKeyData*
+  fun GetKeyData_Key = igGetKeyData_Key(key : ImGui::ImGuiKey) : ImGuiKeyData*
   fun GetKeyChordName = igGetKeyChordName(key_chord : ImGuiKeyChord, out_buf : LibC::Char*, out_buf_size : LibC::Int)
   fun MouseButtonToKey = igMouseButtonToKey(button : ImGui::ImGuiMouseButton) : ImGui::ImGuiKey
   fun IsMouseDragPastThreshold = igIsMouseDragPastThreshold(button : ImGui::ImGuiMouseButton, lock_threshold : LibC::Float) : Bool
@@ -1396,9 +1421,10 @@ lib LibImGui
   fun IsActiveIdUsingNavDir = igIsActiveIdUsingNavDir(dir : ImGui::ImGuiDir) : Bool
   fun GetKeyOwner = igGetKeyOwner(key : ImGui::ImGuiKey) : ImGuiID
   fun SetKeyOwner = igSetKeyOwner(key : ImGui::ImGuiKey, owner_id : ImGuiID, flags : ImGui::ImGuiInputFlags)
+  fun SetKeyOwnersForKeyChord = igSetKeyOwnersForKeyChord(key : ImGuiKeyChord, owner_id : ImGuiID, flags : ImGui::ImGuiInputFlags)
   fun SetItemKeyOwner = igSetItemKeyOwner(key : ImGui::ImGuiKey, flags : ImGui::ImGuiInputFlags)
   fun TestKeyOwner = igTestKeyOwner(key : ImGui::ImGuiKey, owner_id : ImGuiID) : Bool
-  fun GetKeyOwnerData = igGetKeyOwnerData(key : ImGui::ImGuiKey) : ImGuiKeyOwnerData*
+  fun GetKeyOwnerData = igGetKeyOwnerData(ctx : ImGuiContext*, key : ImGui::ImGuiKey) : ImGuiKeyOwnerData*
   fun Shortcut = igShortcut(key_chord : ImGuiKeyChord, owner_id : ImGuiID, flags : ImGui::ImGuiInputFlags) : Bool
   fun SetShortcutRouting = igSetShortcutRouting(key_chord : ImGuiKeyChord, owner_id : ImGuiID, flags : ImGui::ImGuiInputFlags) : Bool
   fun TestShortcutRouting = igTestShortcutRouting(key_chord : ImGuiKeyChord, owner_id : ImGuiID) : Bool
@@ -1442,6 +1468,7 @@ lib LibImGui
   fun TableBeginContextMenuPopup = igTableBeginContextMenuPopup(table : ImGuiTable*) : Bool
   fun TableMergeDrawChannels = igTableMergeDrawChannels(table : ImGuiTable*)
   fun TableGetInstanceData = igTableGetInstanceData(table : ImGuiTable*, instance_no : LibC::Int) : ImGuiTableInstanceData*
+  fun TableGetInstanceID = igTableGetInstanceID(table : ImGuiTable*, instance_no : LibC::Int) : ImGuiID
   fun TableSortSpecsSanitize = igTableSortSpecsSanitize(table : ImGuiTable*)
   fun TableSortSpecsBuild = igTableSortSpecsBuild(table : ImGuiTable*)
   fun TableGetColumnNextSortDirection = igTableGetColumnNextSortDirection(column : ImGuiTableColumn*) : ImGui::ImGuiSortDirection
@@ -1467,10 +1494,16 @@ lib LibImGui
   fun TableSettingsAddSettingsHandler = igTableSettingsAddSettingsHandler
   fun TableSettingsCreate = igTableSettingsCreate(id : ImGuiID, columns_count : LibC::Int) : ImGuiTableSettings*
   fun TableSettingsFindByID = igTableSettingsFindByID(id : ImGuiID) : ImGuiTableSettings*
+  fun GetCurrentTabBar = igGetCurrentTabBar : ImGuiTabBar*
   fun BeginTabBarEx = igBeginTabBarEx(tab_bar : ImGuiTabBar*, bb : ImRect, flags : ImGui::ImGuiTabBarFlags) : Bool
   fun TabBarFindTabByID = igTabBarFindTabByID(tab_bar : ImGuiTabBar*, tab_id : ImGuiID) : ImGuiTabItem*
+  fun TabBarFindTabByOrder = igTabBarFindTabByOrder(tab_bar : ImGuiTabBar*, order : LibC::Int) : ImGuiTabItem*
+  fun TabBarGetCurrentTab = igTabBarGetCurrentTab(tab_bar : ImGuiTabBar*) : ImGuiTabItem*
+  fun TabBarGetTabOrder = igTabBarGetTabOrder(tab_bar : ImGuiTabBar*, tab : ImGuiTabItem*) : LibC::Int
+  fun TabBarGetTabName = igTabBarGetTabName(tab_bar : ImGuiTabBar*, tab : ImGuiTabItem*) : LibC::Char*
   fun TabBarRemoveTab = igTabBarRemoveTab(tab_bar : ImGuiTabBar*, tab_id : ImGuiID)
   fun TabBarCloseTab = igTabBarCloseTab(tab_bar : ImGuiTabBar*, tab : ImGuiTabItem*)
+  fun TabBarQueueFocus = igTabBarQueueFocus(tab_bar : ImGuiTabBar*, tab : ImGuiTabItem*)
   fun TabBarQueueReorder = igTabBarQueueReorder(tab_bar : ImGuiTabBar*, tab : ImGuiTabItem*, offset : LibC::Int)
   fun TabBarQueueReorderFromMousePos = igTabBarQueueReorderFromMousePos(tab_bar : ImGuiTabBar*, tab : ImGuiTabItem*, mouse_pos : ImGui::ImVec2)
   fun TabBarProcessReorder = igTabBarProcessReorder(tab_bar : ImGuiTabBar*) : Bool
@@ -1499,8 +1532,9 @@ lib LibImGui
   fun TextEx = igTextEx(text : LibC::Char*, text_end : LibC::Char*, flags : ImGui::ImGuiTextFlags)
   fun ButtonEx = igButtonEx(label : LibC::Char*, size_arg : ImGui::ImVec2, flags : ImGui::ImGuiButtonFlags) : Bool
   fun ArrowButtonEx = igArrowButtonEx(str_id : LibC::Char*, dir : ImGui::ImGuiDir, size_arg : ImGui::ImVec2, flags : ImGui::ImGuiButtonFlags) : Bool
-  fun ImageButtonEx = igImageButtonEx(id : ImGuiID, texture_id : ImTextureID, size : ImGui::ImVec2, uv0 : ImGui::ImVec2, uv1 : ImGui::ImVec2, bg_col : ImGui::ImVec4, tint_col : ImGui::ImVec4) : Bool
+  fun ImageButtonEx = igImageButtonEx(id : ImGuiID, texture_id : ImTextureID, size : ImGui::ImVec2, uv0 : ImGui::ImVec2, uv1 : ImGui::ImVec2, bg_col : ImGui::ImVec4, tint_col : ImGui::ImVec4, flags : ImGui::ImGuiButtonFlags) : Bool
   fun SeparatorEx = igSeparatorEx(flags : ImGui::ImGuiSeparatorFlags)
+  fun SeparatorTextEx = igSeparatorTextEx(id : ImGuiID, label : LibC::Char*, label_end : LibC::Char*, extra_width : LibC::Float)
   fun CloseButton = igCloseButton(id : ImGuiID, pos : ImGui::ImVec2) : Bool
   fun CollapseButton = igCollapseButton(id : ImGuiID, pos : ImGui::ImVec2) : Bool
   fun Scrollbar = igScrollbar(axis : ImGui::ImGuiAxis)
@@ -1524,6 +1558,7 @@ lib LibImGui
   fun DataTypeCompare = igDataTypeCompare(data_type : ImGui::ImGuiDataType, arg_1 : Void*, arg_2 : Void*) : LibC::Int
   fun DataTypeClamp = igDataTypeClamp(data_type : ImGui::ImGuiDataType, p_data : Void*, p_min : Void*, p_max : Void*) : Bool
   fun InputTextEx = igInputTextEx(label : LibC::Char*, hint : LibC::Char*, buf : LibC::Char*, buf_size : LibC::Int, size_arg : ImGui::ImVec2, flags : ImGui::ImGuiInputTextFlags, callback : ImGuiInputTextCallback, user_data : Void*) : Bool
+  fun InputTextDeactivateHook = igInputTextDeactivateHook(id : ImGuiID)
   fun TempInputText = igTempInputText(bb : ImRect, id : ImGuiID, label : LibC::Char*, buf : LibC::Char*, buf_size : LibC::Int, flags : ImGui::ImGuiInputTextFlags) : Bool
   fun TempInputScalar = igTempInputScalar(bb : ImRect, id : ImGuiID, label : LibC::Char*, data_type : ImGui::ImGuiDataType, p_data : Void*, format : LibC::Char*, p_clamp_min : Void*, p_clamp_max : Void*) : Bool
   fun TempInputIsActive = igTempInputIsActive(id : ImGuiID) : Bool
@@ -1531,7 +1566,7 @@ lib LibImGui
   fun ColorTooltip = igColorTooltip(text : LibC::Char*, col : LibC::Float*, flags : ImGui::ImGuiColorEditFlags)
   fun ColorEditOptionsPopup = igColorEditOptionsPopup(col : LibC::Float*, flags : ImGui::ImGuiColorEditFlags)
   fun ColorPickerOptionsPopup = igColorPickerOptionsPopup(ref_col : LibC::Float*, flags : ImGui::ImGuiColorEditFlags)
-  fun PlotEx = igPlotEx(plot_type : ImGui::ImGuiPlotType, label : LibC::Char*, values_getter : (Void*, LibC::Int) -> LibC::Float, data : Void*, values_count : LibC::Int, values_offset : LibC::Int, overlay_text : LibC::Char*, scale_min : LibC::Float, scale_max : LibC::Float, frame_size : ImGui::ImVec2) : LibC::Int
+  fun PlotEx = igPlotEx(plot_type : ImGui::ImGuiPlotType, label : LibC::Char*, values_getter : (Void*, LibC::Int) -> LibC::Float, data : Void*, values_count : LibC::Int, values_offset : LibC::Int, overlay_text : LibC::Char*, scale_min : LibC::Float, scale_max : LibC::Float, size_arg : ImGui::ImVec2) : LibC::Int
   fun ShadeVertsLinearColorGradientKeepAlpha = igShadeVertsLinearColorGradientKeepAlpha(draw_list : ImDrawList*, vert_start_idx : LibC::Int, vert_end_idx : LibC::Int, gradient_p0 : ImGui::ImVec2, gradient_p1 : ImGui::ImVec2, col0 : UInt32, col1 : UInt32)
   fun ShadeVertsLinearUV = igShadeVertsLinearUV(draw_list : ImDrawList*, vert_start_idx : LibC::Int, vert_end_idx : LibC::Int, a : ImGui::ImVec2, b : ImGui::ImVec2, uv_a : ImGui::ImVec2, uv_b : ImGui::ImVec2, clamp : Bool)
   fun GcCompactTransientMiscBuffers = igGcCompactTransientMiscBuffers

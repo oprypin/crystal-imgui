@@ -477,7 +477,7 @@ class COverload
       yield %(  {% end %}) if as_datatype
 
       return if inside_class
-      always_pop_names = %w[begin begin_child begin_child_frame begin_disabled begin_group begin_tooltip push_allow_keyboard_focus push_button_repeat push_clip_rect push_clip_rect_full_screen push_font push_id push_item_width push_style_color push_style_var push_texture_id push_text_wrap_pos tree_push]
+      always_pop_names = %w[begin begin_child begin_child_frame begin_disabled begin_group begin_tooltip push_allow_keyboard_focus push_button_repeat push_clip_rect push_clip_rect_full_screen push_font push_id push_item_width push_style_color push_style_var push_tab_stop push_texture_id push_text_wrap_pos tree_push]
       cond_pop_names = %w[begin_combo begin_drag_drop_source begin_drag_drop_target begin_list_box begin_main_menu_bar begin_menu begin_menu_bar begin_popup begin_popup_context_item begin_popup_context_void begin_popup_context_window begin_popup_modal begin_tab_bar begin_tab_item begin_table tree_node tree_node_ex]
 
       if (cond_pop = cond_pop_names.includes?(def_name)) || always_pop_names.includes?(def_name)
