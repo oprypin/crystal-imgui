@@ -1,4 +1,4 @@
-# Based on https://github.com/ocornut/imgui/blob/v1.89.2/imgui_demo.cpp
+# Based on https://github.com/ocornut/imgui/blob/v1.89.5/imgui_demo.cpp
 
 require "./imgui"
 require "./util"
@@ -8,12 +8,11 @@ module ImGuiDemo
 
   def self.help_marker(desc)
     ImGui.text_disabled("(?)")
-    if ImGui.is_item_hovered(ImGuiHoveredFlags::DelayShort)
-      ImGui.tooltip do
-        ImGui.with_text_wrap_pos(ImGui.get_font_size * 35.0f32) do
-          ImGui.text_unformatted(desc)
-        end
+    if ImGui.is_item_hovered(ImGuiHoveredFlags::DelayShort) && ImGui.begin_tooltip
+      ImGui.with_text_wrap_pos(ImGui.get_font_size * 35.0f32) do
+        ImGui.text_unformatted(desc)
       end
+      ImGui.end_tooltip
     end
   end
 
@@ -207,7 +206,7 @@ module ImGuiDemo
         ImGui.bullet_text("See the ShowDemoWindow() code in src/demo.cr. <- you are here!")
         ImGui.bullet_text("See comments in imgui.cpp.")
         ImGui.bullet_text("See example applications in the examples/ folder.")
-        ImGui.bullet_text("Read the FAQ at http://www.dearimgui.org/faq/")
+        ImGui.bullet_text("Read the FAQ at http://www.dearimgui.com/faq/")
         ImGui.bullet_text("Set 'io.ConfigFlags |= NavEnableKeyboard' for keyboard controls.")
         ImGui.bullet_text("Set 'io.ConfigFlags |= NavEnableGamepad' for gamepad controls.")
         ImGui.separator
@@ -221,6 +220,7 @@ module ImGuiDemo
         io = ImGui.get_io
 
         ImGui.tree_node("Configuration##2") do
+          ImGui.separator_text("General")
           ImGui.checkbox_flags("io.ConfigFlags: NavEnableKeyboard", pointerof(io.config_flags), ImGuiConfigFlags::NavEnableKeyboard)
           ImGui.same_line
           help_marker("Enable keyboard controls.")
@@ -246,6 +246,11 @@ module ImGuiDemo
           ImGui.checkbox("io.ConfigInputTrickleEventQueue", pointerof(io.config_input_trickle_event_queue))
           ImGui.same_line
           help_marker("Enable input queue trickling: some types of events submitted during the same frame (e.g. button down + up) will be spread over multiple frames, improving interactions with low framerates.")
+          ImGui.checkbox("io.MouseDrawCursor", pointerof(io.mouse_draw_cursor))
+          ImGui.same_line
+          help_marker("Instruct Dear ImGui to render a mouse cursor itself. Note that a mouse cursor rendered via your application GPU rendering path will feel more laggy than hardware cursor, but will be more in sync with your other visuals.\n\nSome desktop applications may use both kinds of cursors (e.g. enable software cursor only when resizing/dragging something).")
+
+          ImGui.separator_text("Widgets")
           ImGui.checkbox("io.ConfigInputTextCursorBlink", pointerof(io.config_input_text_cursor_blink))
           ImGui.same_line
           help_marker("Enable blinking cursor (optional as some users consider it to be distracting).")
@@ -259,11 +264,20 @@ module ImGuiDemo
           ImGui.same_line
           help_marker("Enable resizing of windows from their edges and from the lower-left corner.\nThis requires (io.BackendFlags & ImGuiBackendFlags_HasMouseCursors) because it needs mouse cursor feedback.")
           ImGui.checkbox("io.ConfigWindowsMoveFromTitleBarOnly", pointerof(io.config_windows_move_from_title_bar_only))
-          ImGui.checkbox("io.MouseDrawCursor", pointerof(io.mouse_draw_cursor))
-          ImGui.same_line
-          help_marker("Instruct Dear ImGui to render a mouse cursor itself. Note that a mouse cursor rendered via your application GPU rendering path will feel more laggy than hardware cursor, but will be more in sync with your other visuals.\n\nSome desktop applications may use both kinds of cursors (e.g. enable software cursor only when resizing/dragging something).")
+          ImGui.checkbox("io.ConfigMacOSXBehaviors", pointerof(io.config_mac_osx_behaviors))
           ImGui.text("Also see Style->Rendering for rendering options.")
-          ImGui.separator
+
+          ImGui.separator_text("Debug")
+          ImGui.disabled do
+            ImGui.checkbox("io.ConfigDebugBeginReturnValueOnce", pointerof(io.config_debug_begin_return_value_once))
+          end
+          ImGui.same_line
+          help_marker("First calls to Begin()/BeginChild() will return false.\n\nTHIS OPTION IS DISABLED because it needs to be set at application boot-time to make sense. Showing the disabled option is a way to make this feature easier to discover")
+          ImGui.checkbox("io.ConfigDebugBeginReturnValueLoop", pointerof(io.config_debug_begin_return_value_loop))
+          ImGui.same_line
+          help_marker("Some calls to Begin()/BeginChild() will return false.\n\nWill cycle through window depths then repeat. Windows should be flickering while running.")
+
+          ImGui.spacing
         end
 
         demo_marker("Configuration/Backend Flags")
@@ -272,18 +286,20 @@ module ImGuiDemo
             "Those flags are set by the backends (imgui_impl_xxx files) to specify their capabilities.\n" +
             "Here we expose them as read-only fields to avoid breaking interactions with your backend.")
 
-          ImGui.checkbox_flags("io.BackendFlags: HasGamepad", pointerof(io.backend_flags), ImGuiBackendFlags::HasGamepad)
-          ImGui.checkbox_flags("io.BackendFlags: HasMouseCursors", pointerof(io.backend_flags), ImGuiBackendFlags::HasMouseCursors)
-          ImGui.checkbox_flags("io.BackendFlags: HasSetMousePos", pointerof(io.backend_flags), ImGuiBackendFlags::HasSetMousePos)
-          ImGui.checkbox_flags("io.BackendFlags: RendererHasVtxOffset", pointerof(io.backend_flags), ImGuiBackendFlags::RendererHasVtxOffset)
-          ImGui.separator
+          ImGui.disabled do
+            ImGui.checkbox_flags("io.BackendFlags: HasGamepad", pointerof(io.backend_flags), ImGuiBackendFlags::HasGamepad)
+            ImGui.checkbox_flags("io.BackendFlags: HasMouseCursors", pointerof(io.backend_flags), ImGuiBackendFlags::HasMouseCursors)
+            ImGui.checkbox_flags("io.BackendFlags: HasSetMousePos", pointerof(io.backend_flags), ImGuiBackendFlags::HasSetMousePos)
+            ImGui.checkbox_flags("io.BackendFlags: RendererHasVtxOffset", pointerof(io.backend_flags), ImGuiBackendFlags::RendererHasVtxOffset)
+          end
+          ImGui.spacing
         end
 
         demo_marker("Configuration/Style")
         ImGui.tree_node("Style") do
           help_marker("The same contents can be accessed in 'Tools->Style Editor' or by calling the ShowStyleEditor() function.")
           show_style_editor
-          ImGui.separator
+          ImGui.spacing
         end
 
         demo_marker("Configuration/Capture, Logging")
@@ -366,6 +382,8 @@ module ImGuiDemo
 
     demo_marker("Widgets/Basic")
     ImGui.tree_node("Basic") do
+      ImGui.separator_text("General")
+
       demo_marker("Widgets/Basic/Button")
       static clicked = 0
       if ImGui.button("Button")
@@ -421,18 +439,41 @@ module ImGuiDemo
       ImGui.same_line
       ImGui.text("%d", counter.val)
 
-      ImGui.separator
-      ImGui.label_text("label", "Value")
-
       begin
-        demo_marker("Widgets/Basic/Combo")
-        items = ["AAAA", "BBBB", "CCCC", "DDDD", "EEEE", "FFFF", "GGGG", "HHHH", "IIIIIII", "JJJJ", "KKKKKKK"]
-        static item_current = 0
-        ImGui.combo("combo", pointerof(item_current.val), items)
+        demo_marker("Widgets/Basic/Tooltips")
+
+        ImGui.text("Tooltips:")
+
+        ImGui.same_line
+        ImGui.small_button("Button")
+        if ImGui.is_item_hovered
+          ImGui.set_tooltip("I am a tooltip")
+        end
+
+        ImGui.same_line
+        ImGui.small_button("Fancy")
+        if ImGui.is_item_hovered && ImGui.begin_tooltip
+          ImGui.text("I am a fancy tooltip")
+          static arr = [0.6f32, 0.1f32, 1.0f32, 0.5f32, 0.92f32, 0.1f32, 0.2f32]
+          ImGui.plot_lines("Curve", arr.val)
+          ImGui.text("Sin(time) = %f", Math.sin(ImGui.get_time))
+          ImGui.end_tooltip
+        end
+
+        ImGui.same_line
+        ImGui.small_button("Delayed")
+        if ImGui.is_item_hovered(ImGuiHoveredFlags::DelayNormal)
+          ImGui.set_tooltip("I am a tooltip with a delay.")
+        end
+
         ImGui.same_line
         help_marker(
-          "Using the simplified one-liner Combo API here.\nRefer to the \"Combo\" section below for an explanation of how to use the more flexible and general BeginCombo/EndCombo API.")
+          "Tooltip are created by using the IsItemHovered() function over any kind of item.")
       end
+
+      ImGui.label_text("label", "Value")
+
+      ImGui.separator_text("Inputs")
 
       begin
         demo_marker("Widgets/Basic/InputText")
@@ -476,6 +517,8 @@ module ImGuiDemo
         ImGui.input_float3("input float3", vec4a.val[...3])
       end
 
+      ImGui.separator_text("Drags")
+
       begin
         demo_marker("Widgets/Basic/DragInt, DragFloat")
         static i1 = 50
@@ -494,6 +537,8 @@ module ImGuiDemo
         ImGui.drag_float("drag float", pointerof(f1.val), 0.005f32)
         ImGui.drag_float("drag small float", pointerof(f2.val), 0.0001f32, 0.0f32, 0.0f32, "%.06f ns")
       end
+
+      ImGui.separator_text("Sliders")
 
       begin
         demo_marker("Widgets/Basic/SliderInt, SliderFloat")
@@ -518,6 +563,8 @@ module ImGuiDemo
         help_marker("Using the format string parameter to display a name instead of the underlying integer.")
       end
 
+      ImGui.separator_text("Selectors/Pickers")
+
       begin
         demo_marker("Widgets/Basic/ColorEdit3, ColorEdit4")
         static col1 = Slice[1.0f32, 0.0f32, 0.2f32]
@@ -534,6 +581,16 @@ module ImGuiDemo
       end
 
       begin
+        demo_marker("Widgets/Basic/Combo")
+        items = ["AAAA", "BBBB", "CCCC", "DDDD", "EEEE", "FFFF", "GGGG", "HHHH", "IIIIIII", "JJJJ", "KKKKKKK"]
+        static item_current = 0
+        ImGui.combo("combo", pointerof(item_current.val), items)
+        ImGui.same_line
+        help_marker(
+          "Using the simplified one-liner Combo API here.\nRefer to the \"Combo\" section below for an explanation of how to use the more flexible and general BeginCombo/EndCombo API.")
+      end
+
+      begin
         demo_marker("Widgets/Basic/ListBox")
         items = ["Apple", "Banana", "Cherry", "Kiwi", "Mango", "Orange", "Pineapple", "Strawberry", "Watermelon"]
         static item_current = 1
@@ -541,39 +598,6 @@ module ImGuiDemo
         ImGui.same_line
         help_marker(
           "Using the simplified one-liner ListBox API here.\nRefer to the \"List boxes\" section below for an explanation of how to use the more flexible and general BeginListBox/EndListBox API.")
-      end
-
-      begin
-        demo_marker("Widgets/Basic/Tooltips")
-        ImGui.align_text_to_frame_padding
-        ImGui.text("Tooltips:")
-
-        ImGui.same_line
-        ImGui.button("Button")
-        if ImGui.is_item_hovered
-          ImGui.set_tooltip("I am a tooltip")
-        end
-
-        ImGui.same_line
-        ImGui.button("Fancy")
-        if ImGui.is_item_hovered
-          ImGui.tooltip do
-            ImGui.text("I am a fancy tooltip")
-            static arr = [0.6f32, 0.1f32, 1.0f32, 0.5f32, 0.92f32, 0.1f32, 0.2f32]
-            ImGui.plot_lines("Curve", arr.val)
-            ImGui.text("Sin(time) = %f", Math.sin(ImGui.get_time))
-          end
-        end
-
-        ImGui.same_line
-        ImGui.button("Delayed")
-        if ImGui.is_item_hovered(ImGuiHoveredFlags::DelayNormal)
-          ImGui.set_tooltip("I am a tooltip with a delay.")
-        end
-
-        ImGui.same_line
-        help_marker(
-          "Tooltip are created by using the IsItemHovered() function over any kind of item.")
       end
     end
 
@@ -760,35 +784,36 @@ module ImGuiDemo
       my_tex_w = io.fonts.tex_width
       my_tex_h = io.fonts.tex_height
       begin
+        static use_text_color_for_tint = false
+        ImGui.checkbox("Use Text Color for Tint", pointerof(use_text_color_for_tint.val))
         ImGui.text("%.0fx%.0f", my_tex_w, my_tex_h)
         pos = ImGui.get_cursor_screen_pos
         uv_min = ImVec2.new(0.0f32, 0.0f32)
         uv_max = ImVec2.new(1.0f32, 1.0f32)
-        tint_col = ImVec4.new(1.0f32, 1.0f32, 1.0f32, 1.0f32)
-        border_col = ImVec4.new(1.0f32, 1.0f32, 1.0f32, 0.5f32)
+        tint_col = use_text_color_for_tint.val ? ImGui.get_style_color_vec4(ImGuiCol::Text) : ImVec4.new(1.0f32, 1.0f32, 1.0f32, 1.0f32)
+        border_col = ImGui.get_style_color_vec4(ImGuiCol::Border)
         ImGui.image(my_tex_id, ImVec2.new(my_tex_w, my_tex_h), uv_min, uv_max, tint_col, border_col)
-        if ImGui.is_item_hovered
-          ImGui.tooltip do
-            region_sz = 32.0f32
-            region_x = io.mouse_pos.x - pos.x - region_sz * 0.5f32
-            region_y = io.mouse_pos.y - pos.y - region_sz * 0.5f32
-            zoom = 4.0f32
-            if region_x < 0.0f32
-              region_x = 0.0f32
-            elsif region_x > my_tex_w - region_sz
-              region_x = my_tex_w - region_sz
-            end
-            if region_y < 0.0f32
-              region_y = 0.0f32
-            elsif region_y > my_tex_h - region_sz
-              region_y = my_tex_h - region_sz
-            end
-            ImGui.text("Min: (%.2f, %.2f)", region_x, region_y)
-            ImGui.text("Max: (%.2f, %.2f)", region_x + region_sz, region_y + region_sz)
-            uv0 = ImVec2.new((region_x) / my_tex_w, (region_y) / my_tex_h)
-            uv1 = ImVec2.new((region_x + region_sz) / my_tex_w, (region_y + region_sz) / my_tex_h)
-            ImGui.image(my_tex_id, ImVec2.new(region_sz * zoom, region_sz * zoom), uv0, uv1, tint_col, border_col)
+        if ImGui.is_item_hovered && ImGui.begin_tooltip
+          region_sz = 32.0f32
+          region_x = io.mouse_pos.x - pos.x - region_sz * 0.5f32
+          region_y = io.mouse_pos.y - pos.y - region_sz * 0.5f32
+          zoom = 4.0f32
+          if region_x < 0.0f32
+            region_x = 0.0f32
+          elsif region_x > my_tex_w - region_sz
+            region_x = my_tex_w - region_sz
           end
+          if region_y < 0.0f32
+            region_y = 0.0f32
+          elsif region_y > my_tex_h - region_sz
+            region_y = my_tex_h - region_sz
+          end
+          ImGui.text("Min: (%.2f, %.2f)", region_x, region_y)
+          ImGui.text("Max: (%.2f, %.2f)", region_x + region_sz, region_y + region_sz)
+          uv0 = ImVec2.new((region_x) / my_tex_w, (region_y) / my_tex_h)
+          uv1 = ImVec2.new((region_x + region_sz) / my_tex_w, (region_y + region_sz) / my_tex_h)
+          ImGui.image(my_tex_id, ImVec2.new(region_sz * zoom, region_sz * zoom), uv0, uv1, tint_col, border_col)
+          ImGui.end_tooltip
         end
       end
 
@@ -1304,7 +1329,7 @@ module ImGuiDemo
       }
       static func_type = 0
       static display_count = 70
-      ImGui.separator
+      ImGui.separator_text("Functions")
       ImGui.set_next_item_width(ImGui.get_font_size * 8)
       ImGui.combo("func", pointerof(func_type.val), "Sin\0Saw\0")
       ImGui.same_line
@@ -1347,6 +1372,7 @@ module ImGuiDemo
       static drag_and_drop = true
       static options_menu = true
       static hdr = false
+      ImGui.separator_text("Options")
       ImGui.checkbox("With Alpha Preview", pointerof(alpha_preview.val))
       ImGui.checkbox("With Half Alpha Preview", pointerof(alpha_half_preview.val))
       ImGui.checkbox("With Drag and Drop", pointerof(drag_and_drop.val))
@@ -1359,6 +1385,7 @@ module ImGuiDemo
       misc_flags = (hdr.val ? ImGuiColorEditFlags::HDR : ImGuiColorEditFlags::None) | (drag_and_drop.val ? ImGuiColorEditFlags::None : ImGuiColorEditFlags::NoDragDrop) | (alpha_half_preview.val ? ImGuiColorEditFlags::AlphaPreviewHalf : (alpha_preview.val ? ImGuiColorEditFlags::AlphaPreview : ImGuiColorEditFlags::None)) | (options_menu.val ? ImGuiColorEditFlags::None : ImGuiColorEditFlags::NoOptions)
 
       demo_marker("Widgets/Color/ColorEdit")
+      ImGui.separator_text("Inline color editor")
       ImGui.text("Color widget:")
       ImGui.same_line
       help_marker(
@@ -1447,7 +1474,7 @@ module ImGuiDemo
       ImGui.color_button("MyColor##3c", color.val, misc_flags | (no_border.val ? ImGuiColorEditFlags::NoBorder : ImGuiColorEditFlags::None), ImVec2.new(80, 80))
 
       demo_marker("Widgets/Color/ColorPicker")
-      ImGui.text("Color picker:")
+      ImGui.separator_text("Color picker")
       static alpha = true
       static alpha_bar = true
       static side_preview = true
@@ -1656,7 +1683,7 @@ module ImGuiDemo
       drag_speed = 0.2f32
       static drag_clamp = false
       demo_marker("Widgets/Data Types/Drags")
-      ImGui.text("Drags:")
+      ImGui.separator_text("Drags")
       ImGui.checkbox("Clamp integers to 0..50", pointerof(drag_clamp.val))
       ImGui.same_line
       help_marker(
@@ -1677,7 +1704,7 @@ module ImGuiDemo
       ImGui.drag_scalar("drag double log", pointerof(f64_v.val), 0.0005f32, f64_zero, f64_one, "0 < %.10f < 1", ImGuiSliderFlags::Logarithmic)
 
       demo_marker("Widgets/Data Types/Sliders")
-      ImGui.text("Sliders")
+      ImGui.separator_text("Sliders")
       ImGui.slider_scalar("slider s8 full", pointerof(s8_v.val), s8_min, s8_max, "%d")
       ImGui.slider_scalar("slider u8 full", pointerof(u8_v.val), u8_min, u8_max, "%u")
       ImGui.slider_scalar("slider s16 full", pointerof(s16_v.val), s16_min, s16_max, "%d")
@@ -1702,7 +1729,7 @@ module ImGuiDemo
       ImGui.slider_scalar("slider double low log", pointerof(f64_v.val), f64_zero, f64_one, "%.10f", ImGuiSliderFlags::Logarithmic)
       ImGui.slider_scalar("slider double high", pointerof(f64_v.val), f64_lo_a, f64_hi_a, "%e grams")
 
-      ImGui.text("Sliders (reverse)")
+      ImGui.separator_text("Sliders (reverse)")
       ImGui.slider_scalar("slider s8 reverse", pointerof(s8_v.val), s8_max, s8_min, "%d")
       ImGui.slider_scalar("slider u8 reverse", pointerof(u8_v.val), u8_max, u8_min, "%u")
       ImGui.slider_scalar("slider s32 reverse", pointerof(s32_v.val), s32_fifty, s32_zero, "%d")
@@ -1712,7 +1739,7 @@ module ImGuiDemo
 
       demo_marker("Widgets/Data Types/Inputs")
       static inputs_step = true
-      ImGui.text("Inputs")
+      ImGui.separator_text("Inputs")
       ImGui.checkbox("Show step buttons", pointerof(inputs_step.val))
       ImGui.input_scalar("input s8", pointerof(s8_v.val), inputs_step.val ? s8_one : nil, nil, "%d")
       ImGui.input_scalar("input u8", pointerof(u8_v.val), inputs_step.val ? u8_one : nil, nil, "%u")
@@ -1733,22 +1760,23 @@ module ImGuiDemo
       static vec4f = Slice[0.10f32, 0.20f32, 0.30f32, 0.44f32]
       static vec4i = Slice[1, 5, 100, 255]
 
+      ImGui.separator_text("2-wide")
       ImGui.input_float2("input float2", vec4f.val[...2])
       ImGui.drag_float2("drag float2", vec4f.val[...2], 0.01f32, 0.0f32, 1.0f32)
       ImGui.slider_float2("slider float2", vec4f.val[...2], 0.0f32, 1.0f32)
       ImGui.input_int2("input int2", vec4i.val[...2])
       ImGui.drag_int2("drag int2", vec4i.val[...2], 1, 0, 255)
       ImGui.slider_int2("slider int2", vec4i.val[...2], 0, 255)
-      ImGui.spacing
 
+      ImGui.separator_text("3-wide")
       ImGui.input_float3("input float3", vec4f.val[...3])
       ImGui.drag_float3("drag float3", vec4f.val[...3], 0.01f32, 0.0f32, 1.0f32)
       ImGui.slider_float3("slider float3", vec4f.val[...3], 0.0f32, 1.0f32)
       ImGui.input_int3("input int3", vec4i.val[...3])
       ImGui.drag_int3("drag int3", vec4i.val[...3], 1, 0, 255)
       ImGui.slider_int3("slider int3", vec4i.val[...3], 0, 255)
-      ImGui.spacing
 
+      ImGui.separator_text("4-wide")
       ImGui.input_float4("input float4", vec4f.val)
       ImGui.drag_float4("drag float4", vec4f.val, 0.01f32, 0.0f32, 1.0f32)
       ImGui.slider_float4("slider float4", vec4f.val, 0.0f32, 1.0f32)
@@ -2159,6 +2187,8 @@ module ImGuiDemo
 
     demo_marker("Layout/Child windows")
     ImGui.tree_node("Child windows") do
+      ImGui.separator_text("Child windows")
+
       help_marker("Use child windows to begin into a self-contained independent scrolling/clipping regions within a host window.")
       static disable_mouse_wheel = false
       static disable_menu = false
@@ -2206,7 +2236,7 @@ module ImGuiDemo
         end
       end
 
-      ImGui.separator
+      ImGui.separator_text("Misc/Advanced")
       begin
         static offset_x = 0
         ImGui.set_next_item_width(ImGui.get_font_size * 8)
@@ -2911,8 +2941,7 @@ module ImGuiDemo
       ImGui.same_line
       ImGui.text_unformatted(selected_fish.val == -1 ? "<None>" : names[selected_fish.val])
       ImGui.popup("my_select_popup") do
-        ImGui.text("Aquarium")
-        ImGui.separator
+        ImGui.separator_text("Aquarium")
         names.size.times do |i|
           if ImGui.selectable(names[i])
             selected_fish.val = i
@@ -3048,7 +3077,7 @@ module ImGuiDemo
       ImGui.set_next_window_pos(center, ImGuiCond::Appearing, ImVec2.new(0.5f32, 0.5f32))
 
       ImGui.popup_modal("Delete?", flags: ImGuiWindowFlags::AlwaysAutoResize) do
-        ImGui.text("All those beautiful files will be deleted.\nThis operation cannot be undone!\n\n")
+        ImGui.text("All those beautiful files will be deleted.\nThis operation cannot be undone!")
         ImGui.separator
 
         static dont_ask_me_next_time = false
@@ -3197,18 +3226,17 @@ module ImGuiDemo
     end
     ImGui.same_line
     ImGui.text_disabled("(?)")
-    if ImGui.is_item_hovered
-      ImGui.tooltip do
-        ImGui.with_text_wrap_pos(ImGui.get_font_size * 50.0f32) do
-          policies.size.times do |m|
-            ImGui.separator
-            ImGui.text("%s:", policies[m].name)
-            ImGui.separator
-            ImGui.set_cursor_pos_x(ImGui.get_cursor_pos_x + ImGui.get_style.indent_spacing * 0.5f32)
-            ImGui.text_unformatted(policies[m].tooltip)
-          end
+    if ImGui.is_item_hovered && ImGui.begin_tooltip
+      ImGui.with_text_wrap_pos(ImGui.get_font_size * 50.0f32) do
+        policies.size.times do |m|
+          ImGui.separator
+          ImGui.text("%s:", policies[m].name)
+          ImGui.separator
+          ImGui.set_cursor_pos_x(ImGui.get_cursor_pos_x + ImGui.get_style.indent_spacing * 0.5f32)
+          ImGui.text_unformatted(policies[m].tooltip)
         end
       end
+      ImGui.end_tooltip
     end
   end
 
@@ -4912,9 +4940,6 @@ module ImGuiDemo
     ImGui.tree_pop
   end
 
-  record KeyLayoutData,
-    row : Int32, col : Int32, label : String, key : ImGuiKey
-
   def self.show_demo_window_inputs
     demo_marker("Inputs & Focus")
     if ImGui.collapsing_header("Inputs & Focus")
@@ -4952,8 +4977,6 @@ module ImGuiDemo
           next if !ImGui.is_key_down(key)
           ImGui.same_line
           ImGui.text((key < ImGuiKey::Tab) ? "\"%s\"" : "\"%s\" %d", ImGui.get_key_name(key), key)
-          ImGui.same_line
-          ImGui.text("(%.02f)", LibImGui.GetKeyData(key).value.down_duration)
         end
         ImGui.text("Keys mods: %s%s%s%s", io.key_ctrl ? "CTRL " : "", io.key_shift ? "SHIFT " : "", io.key_alt ? "ALT " : "", io.key_super ? "SUPER " : "")
         ImGui.text("Chars queue:")
@@ -5037,7 +5060,7 @@ module ImGuiDemo
         ImGui.input_text("1", buf.val)
         ImGui.input_text("2", buf.val)
         ImGui.input_text("3", buf.val)
-        ImGui.with_allow_keyboard_focus(false) do
+        ImGui.with_tab_stop(false) do
           ImGui.input_text("4 (tab skip)", buf.val)
           ImGui.same_line
           help_marker("Item won't be cycled through when using TAB or Shift+Tab.")
@@ -5071,7 +5094,7 @@ module ImGuiDemo
           has_focus = 2
         end
 
-        ImGui.with_allow_keyboard_focus(false) do
+        ImGui.with_tab_stop(false) do
           if focus_3
             ImGui.set_keyboard_focus_here
           end
@@ -5336,7 +5359,7 @@ module ImGuiDemo
 
       ImGui.tab_bar("##tabs", ImGuiTabBarFlags::None) do
         ImGui.tab_item("Sizes") do
-          ImGui.text("Main")
+          ImGui.separator_text("Main")
           ImGui.slider_float2("WindowPadding", pointerof(style.window_padding), 0.0f32, 20.0f32, "%.0f")
           ImGui.slider_float2("FramePadding", pointerof(style.frame_padding), 0.0f32, 20.0f32, "%.0f")
           ImGui.slider_float2("CellPadding", pointerof(style.cell_padding), 0.0f32, 20.0f32, "%.0f")
@@ -5346,22 +5369,24 @@ module ImGuiDemo
           ImGui.slider_float("IndentSpacing", pointerof(style.indent_spacing), 0.0f32, 30.0f32, "%.0f")
           ImGui.slider_float("ScrollbarSize", pointerof(style.scrollbar_size), 1.0f32, 20.0f32, "%.0f")
           ImGui.slider_float("GrabMinSize", pointerof(style.grab_min_size), 1.0f32, 20.0f32, "%.0f")
-          ImGui.text("Borders")
+
+          ImGui.separator_text("Borders")
           ImGui.slider_float("WindowBorderSize", pointerof(style.window_border_size), 0.0f32, 1.0f32, "%.0f")
           ImGui.slider_float("ChildBorderSize", pointerof(style.child_border_size), 0.0f32, 1.0f32, "%.0f")
           ImGui.slider_float("PopupBorderSize", pointerof(style.popup_border_size), 0.0f32, 1.0f32, "%.0f")
           ImGui.slider_float("FrameBorderSize", pointerof(style.frame_border_size), 0.0f32, 1.0f32, "%.0f")
           ImGui.slider_float("TabBorderSize", pointerof(style.tab_border_size), 0.0f32, 1.0f32, "%.0f")
-          ImGui.text("Rounding")
+
+          ImGui.separator_text("Rounding")
           ImGui.slider_float("WindowRounding", pointerof(style.window_rounding), 0.0f32, 12.0f32, "%.0f")
           ImGui.slider_float("ChildRounding", pointerof(style.child_rounding), 0.0f32, 12.0f32, "%.0f")
           ImGui.slider_float("FrameRounding", pointerof(style.frame_rounding), 0.0f32, 12.0f32, "%.0f")
           ImGui.slider_float("PopupRounding", pointerof(style.popup_rounding), 0.0f32, 12.0f32, "%.0f")
           ImGui.slider_float("ScrollbarRounding", pointerof(style.scrollbar_rounding), 0.0f32, 12.0f32, "%.0f")
           ImGui.slider_float("GrabRounding", pointerof(style.grab_rounding), 0.0f32, 12.0f32, "%.0f")
-          ImGui.slider_float("LogSliderDeadzone", pointerof(style.log_slider_deadzone), 0.0f32, 12.0f32, "%.0f")
           ImGui.slider_float("TabRounding", pointerof(style.tab_rounding), 0.0f32, 12.0f32, "%.0f")
-          ImGui.text("Alignment")
+
+          ImGui.separator_text("Widgets")
           ImGui.slider_float2("WindowTitleAlign", pointerof(style.window_title_align), 0.0f32, 1.0f32, "%.2f")
           window_menu_button_position = style.window_menu_button_position.to_i + 1
           if ImGui.combo("WindowMenuButtonPosition", pointerof(window_menu_button_position), "None\0Left\0Right\0")
@@ -5377,10 +5402,15 @@ module ImGuiDemo
           ImGui.slider_float2("SelectableTextAlign", pointerof(style.selectable_text_align), 0.0f32, 1.0f32, "%.2f")
           ImGui.same_line
           help_marker("Alignment applies when a selectable is larger than its text content.")
-          ImGui.text("Safe Area Padding")
+          ImGui.slider_float("SeparatorTextBorderSize", pointerof(style.separator_text_border_size), 0.0f32, 10.0f32, "%.0f")
+          ImGui.slider_float2("SeparatorTextAlign", pointerof(style.separator_text_align), 0.0f32, 1.0f32, "%.2f")
+          ImGui.slider_float2("SeparatorTextPadding", pointerof(style.separator_text_padding), 0.0f32, 40.0f32, "%0.f")
+          ImGui.slider_float("LogSliderDeadzone", pointerof(style.log_slider_deadzone), 0.0f32, 12.0f32, "%.0f")
+
+          ImGui.separator_text("Misc")
+          ImGui.slider_float2("DisplaySafeAreaPadding", pointerof(style.display_safe_area_padding), 0.0f32, 30.0f32, "%.0f")
           ImGui.same_line
           help_marker("Adjust if you cannot see the edges of your screen (e.g. on a TV where scaling has not been configured).")
-          ImGui.slider_float2("DisplaySafeAreaPadding", pointerof(style.display_safe_area_padding), 0.0f32, 30.0f32, "%.0f")
         end
 
         ImGui.tab_item("Colors") do
@@ -5498,32 +5528,34 @@ module ImGuiDemo
             end
 
             ImGui.drag_float("Circle Tessellation Max Error", pointerof(style.circle_tessellation_max_error), 0.005f32, 0.10f32, 5.0f32, "%.2f", ImGuiSliderFlags::AlwaysClamp)
-            if ImGui.is_item_active
+            show_samples = ImGui.is_item_active
+            if show_samples
               ImGui.set_next_window_pos(ImGui.get_cursor_screen_pos)
-              ImGui.tooltip do
-                ImGui.text_unformatted("(R = radius, N = number of segments)")
-                ImGui.spacing
-                draw_list = ImGui.get_window_draw_list
-                min_widget_width = ImGui.calc_text_size("N: MMM\nR: MMM").x
-                8.times do |n|
-                  rad_min = 5.0f32
-                  rad_max = 70.0f32
-                  rad = rad_min + (rad_max - rad_min) * n / (8.0f32 - 1.0f32)
+            end
+            if show_samples && ImGui.begin_tooltip
+              ImGui.text_unformatted("(R = radius, N = number of segments)")
+              ImGui.spacing
+              draw_list = ImGui.get_window_draw_list
+              min_widget_width = ImGui.calc_text_size("N: MMM\nR: MMM").x
+              8.times do |n|
+                rad_min = 5.0f32
+                rad_max = 70.0f32
+                rad = rad_min + (rad_max - rad_min) * n / (8.0f32 - 1.0f32)
 
-                  ImGui.group do
-                    ImGui.text("R: %.f\nN: %d", rad, LibImGui.ImDrawList__CalcCircleAutoSegmentCount(draw_list, rad))
+                ImGui.group do
+                  ImGui.text("R: %.f\nN: %d", rad, LibImGui.ImDrawList__CalcCircleAutoSegmentCount(draw_list, rad))
 
-                    canvas_width = {min_widget_width, rad * 2.0f32}.max
-                    offset_x = (canvas_width * 0.5f32).floor
-                    offset_y = (rad_max).floor
+                  canvas_width = {min_widget_width, rad * 2.0f32}.max
+                  offset_x = (canvas_width * 0.5f32).floor
+                  offset_y = (rad_max).floor
 
-                    p1 = ImGui.get_cursor_screen_pos
-                    draw_list.add_circle(ImVec2.new(p1.x + offset_x, p1.y + offset_y), rad, ImGui.get_color_u32(ImGuiCol::Text))
-                    ImGui.dummy(ImVec2.new(canvas_width, rad_max * 2))
-                  end
-                  ImGui.same_line
+                  p1 = ImGui.get_cursor_screen_pos
+                  draw_list.add_circle(ImVec2.new(p1.x + offset_x, p1.y + offset_y), rad, ImGui.get_color_u32(ImGuiCol::Text))
+                  ImGui.dummy(ImVec2.new(canvas_width, rad_max * 2))
                 end
+                ImGui.same_line
               end
+              ImGui.end_tooltip
             end
             ImGui.same_line
             help_marker("When drawing circle primitives with \"num_segments == 0\" tesselation will be calculated automatically.")
@@ -5654,6 +5686,7 @@ module ImGuiDemo
     end
     if ImGui.menu_item("Checked", nil, true)
     end
+    ImGui.separator
     if ImGui.menu_item("Quit", "Alt+F4")
     end
   end
