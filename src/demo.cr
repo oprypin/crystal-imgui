@@ -1,4 +1,4 @@
-# Based on https://github.com/ocornut/imgui/blob/v1.89.7/imgui_demo.cpp
+# Based on https://github.com/ocornut/imgui/blob/v1.89.8/imgui_demo.cpp
 
 require "./imgui"
 require "./util"
@@ -959,17 +959,17 @@ module ImGuiDemo
     ImGui.tree_node("Selectables") do
       demo_marker("Widgets/Selectables/Basic")
       ImGui.tree_node("Basic") do
-        static selection = [false, true, false, false, false]
+        static selection = [false, true, false, false]
         ImGui.selectable("1. I am selectable", pointerof(selection.val[0]))
         ImGui.selectable("2. I am selectable", pointerof(selection.val[1]))
-        ImGui.text("(I am not selectable)")
-        ImGui.selectable("4. I am selectable", pointerof(selection.val[3]))
-        if ImGui.selectable("5. I am double clickable", selection.val[4], ImGuiSelectableFlags::AllowDoubleClick)
+        ImGui.selectable("3. I am selectable", pointerof(selection.val[2]))
+        if ImGui.selectable("4. I am double clickable", selection.val[3], ImGuiSelectableFlags::AllowDoubleClick)
           if ImGui.is_mouse_double_clicked(:Left)
-            selection.val[4] = !selection.val[4]
+            selection.val[3] = !selection.val[3]
           end
         end
       end
+
       demo_marker("Widgets/Selectables/Single Selection")
       ImGui.tree_node("Selection State: Single Selection") do
         static selected = -1
@@ -994,19 +994,23 @@ module ImGuiDemo
           end
         end
       end
-      demo_marker("Widgets/Selectables/Rendering more text into the same line")
-      ImGui.tree_node("Rendering more text into the same line") do
+      demo_marker("Widgets/Selectables/Rendering more items on the same line")
+      ImGui.tree_node("Rendering more items on the same line") do
         static selected = [false, false, false]
+        ImGui.set_next_item_allow_overlap
         ImGui.selectable("main.c", pointerof(selected.val[0]))
-        ImGui.same_line(300)
-        ImGui.text(" 2,345 bytes")
+        ImGui.same_line
+        ImGui.small_button("Link 1")
+        ImGui.set_next_item_allow_overlap
         ImGui.selectable("Hello.cpp", pointerof(selected.val[1]))
-        ImGui.same_line(300)
-        ImGui.text("12,345 bytes")
+        ImGui.same_line
+        ImGui.small_button("Link 2")
+        ImGui.set_next_item_allow_overlap
         ImGui.selectable("Hello.h", pointerof(selected.val[2]))
-        ImGui.same_line(300)
-        ImGui.text(" 2,345 bytes")
+        ImGui.same_line
+        ImGui.small_button("Link 3")
       end
+
       demo_marker("Widgets/Selectables/In columns")
       ImGui.tree_node("In columns") do
         static selected = Slice.new(16, false)
@@ -1032,6 +1036,7 @@ module ImGuiDemo
           end
         end
       end
+
       demo_marker("Widgets/Selectables/Grid")
       ImGui.tree_node("Grid") do
         static selected = [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]]
@@ -1159,6 +1164,7 @@ module ImGuiDemo
         ImGui.input_text("password (clear)", password.val)
       end
 
+      demo_marker("Widgets/Text Input/Completion, History, Edit Callbacks")
       ImGui.tree_node("Completion, History, Edit Callbacks") do
         static edit_count = 0
         my_callback = ->(data : ImGuiInputTextCallbackData) {
@@ -1212,6 +1218,16 @@ module ImGuiDemo
         static my_str = ImGui::TextBuffer.new
         ImGui.input_text_multiline("##MyStr", my_str.val, ImVec2.new(-Float32::MIN_POSITIVE, ImGui.get_text_line_height * 16), ImGuiInputTextFlags::CallbackResize)
         ImGui.text("Data: %p\nSize: %d\nCapacity: %d", my_str.val.to_unsafe, my_str.val.bytesize, my_str.val.capacity)
+      end
+
+      demo_marker("Widgets/Text Input/Miscellaneous")
+      ImGui.tree_node("Miscellaneous") do
+        static buf1 = ImGui::TextBuffer.new(16)
+        static flags = ImGuiInputTextFlags::EscapeClearsAll
+        ImGui.checkbox_flags("ImGuiInputTextFlags_EscapeClearsAll", pointerof(flags.val), ImGuiInputTextFlags::EscapeClearsAll)
+        ImGui.checkbox_flags("ImGuiInputTextFlags_ReadOnly", pointerof(flags.val), ImGuiInputTextFlags::ReadOnly)
+        ImGui.checkbox_flags("ImGuiInputTextFlags_NoUndoRedo", pointerof(flags.val), ImGuiInputTextFlags::NoUndoRedo)
+        ImGui.input_text("Hello", buf1.val, flags.val)
       end
     end
 
@@ -2975,6 +2991,32 @@ module ImGuiDemo
           draw_list.add_text(ImGui.get_font, ImGui.get_font_size, text_pos, ImGui.col32(255, 255, 255), text_str, 0.0f32, pointerof(clip_rect))
         end
       end
+    end
+
+    demo_marker("Layout/Overlap Mode")
+    ImGui.tree_node("Overlap Mode") do
+      static enable_allow_overlap = true
+
+      help_marker(
+        "Hit-testing is by default performed in item submission order, which generally is perceived as 'back-to-front'.\n\n" +
+        "By using SetNextItemAllowOverlap() you can notify that an item may be overlapped by another. Doing so alters the hovering logic: items using AllowOverlap mode requires an extra frame to accept hovered state.")
+      ImGui.checkbox("Enable AllowOverlap", pointerof(enable_allow_overlap.val))
+
+      button1_pos = ImGui.get_cursor_screen_pos
+      button2_pos = ImVec2.new(button1_pos.x + 50.0f32, button1_pos.y + 50.0f32)
+      if enable_allow_overlap.val
+        ImGui.set_next_item_allow_overlap
+      end
+      ImGui.button("Button 1", ImVec2.new(80, 80))
+      ImGui.set_cursor_screen_pos(button2_pos)
+      ImGui.button("Button 2", ImVec2.new(80, 80))
+
+      if enable_allow_overlap.val
+        ImGui.set_next_item_allow_overlap
+      end
+      ImGui.selectable("Some Selectable", false)
+      ImGui.same_line
+      ImGui.small_button("++")
     end
   end
 

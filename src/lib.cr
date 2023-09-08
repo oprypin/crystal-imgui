@@ -585,7 +585,7 @@ lib LibImGui
   fun ImGuiIO_AddInputCharactersUTF8 = ImGuiIO_AddInputCharactersUTF8(self : ImGuiIO*, str : LibC::Char*)
   fun ImGuiIO_SetKeyEventNativeData = ImGuiIO_SetKeyEventNativeData(self : ImGuiIO*, key : ImGui::ImGuiKey, native_keycode : LibC::Int, native_scancode : LibC::Int, native_legacy_index : LibC::Int)
   fun ImGuiIO_SetAppAcceptingEvents = ImGuiIO_SetAppAcceptingEvents(self : ImGuiIO*, accepting_events : Bool)
-  fun ImGuiIO_ClearInputCharacters = ImGuiIO_ClearInputCharacters(self : ImGuiIO*)
+  fun ImGuiIO_ClearEventsQueue = ImGuiIO_ClearEventsQueue(self : ImGuiIO*)
   fun ImGuiIO_ClearInputKeys = ImGuiIO_ClearInputKeys(self : ImGuiIO*)
   fun ImGuiIO_ImGuiIO = ImGuiIO_ImGuiIO : ImGuiIO*
 
@@ -833,14 +833,16 @@ lib LibImGui
     cmd_lists_count : LibC::Int
     total_idx_count : LibC::Int
     total_vtx_count : LibC::Int
-    cmd_lists : ImDrawList**
+    cmd_lists : ImVectorInternal
     display_pos : ImGui::ImVec2
     display_size : ImGui::ImVec2
     framebuffer_scale : ImGui::ImVec2
+    owner_viewport : ImGuiViewport*
   end
 
   fun ImDrawData_ImDrawData = ImDrawData_ImDrawData : ImDrawData*
   fun ImDrawData_Clear = ImDrawData_Clear(self : ImDrawData*)
+  fun ImDrawData_AddDrawList = ImDrawData_AddDrawList(self : ImDrawData*, draw_list : ImDrawList*)
   fun ImDrawData_DeIndexAllBuffers = ImDrawData_DeIndexAllBuffers(self : ImDrawData*)
   fun ImDrawData_ScaleClipRects = ImDrawData_ScaleClipRects(self : ImDrawData*, fb_scale : ImGui::ImVec2)
 
@@ -1150,10 +1152,7 @@ lib LibImGui
   fun ImDrawListSharedData_ImDrawListSharedData = ImDrawListSharedData_ImDrawListSharedData : ImDrawListSharedData*
   fun ImDrawListSharedData_SetCircleTessellationMaxError = ImDrawListSharedData_SetCircleTessellationMaxError(self : ImDrawListSharedData*, max_error : LibC::Float)
   type ImDrawDataBuilder = Void*
-  fun ImDrawDataBuilder_Clear = ImDrawDataBuilder_Clear(self : ImDrawDataBuilder*)
-  fun ImDrawDataBuilder_ClearFreeMemory = ImDrawDataBuilder_ClearFreeMemory(self : ImDrawDataBuilder*)
-  fun ImDrawDataBuilder_GetDrawListCount = ImDrawDataBuilder_GetDrawListCount(self : ImDrawDataBuilder*) : LibC::Int
-  fun ImDrawDataBuilder_FlattenIntoSingleLayer = ImDrawDataBuilder_FlattenIntoSingleLayer(self : ImDrawDataBuilder*)
+  fun ImDrawDataBuilder_ImDrawDataBuilder = ImDrawDataBuilder_ImDrawDataBuilder : ImDrawDataBuilder*
   type ImGuiDataVarInfo = Void*
   fun ImGuiDataVarInfo_GetVarPtr = ImGuiDataVarInfo_GetVarPtr(self : ImGuiDataVarInfo*, parent : Void*) : Void*
   type ImGuiDataTypeTempStorage = Void*
@@ -1315,6 +1314,7 @@ lib LibImGui
   fun FindBottomMostVisibleWindowWithinBeginStack = igFindBottomMostVisibleWindowWithinBeginStack(window : ImGuiWindow*) : ImGuiWindow*
   fun SetCurrentFont = igSetCurrentFont(font : ImFont*)
   fun GetDefaultFont = igGetDefaultFont : ImFont*
+  fun AddDrawListToDrawDataEx = igAddDrawListToDrawDataEx(draw_data : ImDrawData*, out_list : ImVectorInternal*, draw_list : ImDrawList*)
   fun Initialize = igInitialize
   fun Shutdown = igShutdown
   fun UpdateInputEvents = igUpdateInputEvents(trickle_fast_inputs : Bool)
@@ -1462,6 +1462,7 @@ lib LibImGui
   fun TableSetColumnWidth = igTableSetColumnWidth(column_n : LibC::Int, width : LibC::Float)
   fun TableSetColumnSortDirection = igTableSetColumnSortDirection(column_n : LibC::Int, sort_direction : ImGui::ImGuiSortDirection, append_to_sort_specs : Bool)
   fun TableGetHoveredColumn = igTableGetHoveredColumn : LibC::Int
+  fun TableGetHoveredRow = igTableGetHoveredRow : LibC::Int
   fun TableGetHeaderRowHeight = igTableGetHeaderRowHeight : LibC::Float
   fun TablePushBackgroundChannel = igTablePushBackgroundChannel
   fun TablePopBackgroundChannel = igTablePopBackgroundChannel
@@ -1595,7 +1596,7 @@ lib LibImGui
   fun ShowFontAtlas = igShowFontAtlas(atlas : ImFontAtlas*)
   fun DebugHookIdInfo = igDebugHookIdInfo(id : ImGuiID, data_type : ImGui::ImGuiDataType, data_id : Void*, data_id_end : Void*)
   fun DebugNodeColumns = igDebugNodeColumns(columns : ImGuiOldColumns*)
-  fun DebugNodeDrawList = igDebugNodeDrawList(window : ImGuiWindow*, draw_list : ImDrawList*, label : LibC::Char*)
+  fun DebugNodeDrawList = igDebugNodeDrawList(window : ImGuiWindow*, viewport : ImGuiViewportP*, draw_list : ImDrawList*, label : LibC::Char*)
   fun DebugNodeDrawCmdShowMeshAndBoundingBox = igDebugNodeDrawCmdShowMeshAndBoundingBox(out_draw_list : ImDrawList*, draw_list : ImDrawList*, draw_cmd : ImDrawCmd*, show_mesh : Bool, show_aabb : Bool)
   fun DebugNodeFont = igDebugNodeFont(font : ImFont*)
   fun DebugNodeFontGlyph = igDebugNodeFontGlyph(font : ImFont*, glyph : ImGui::ImFontGlyph*)
