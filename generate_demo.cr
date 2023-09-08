@@ -74,6 +74,7 @@ File.each_line(filename) do |fline|
   line = line.gsub(/^for \(.+? (\w+) = (0); \1 < ([^& ]+); \1\+\+\) \{$/, "\\3.times do |\\1|")
   line = line.gsub(/^for \(.+? (\w+) = (0); \1 < ([^&]+); \1\+\+\) \{$/, "(\\3).times do |\\1|")
   line = line.gsub(/^for \(.+? (\w+) = (.+); \1 < ([^&]+); \1\+\+\) \{$/, "(\\2...\\3).each do |\\1|")
+  line = line.gsub(/^for \(.+? (\w+) : (.+)\) \{$/, "\\2.each do |\\1|")
   line = line.gsub(/^for \(;;\) \{$/, "loop do")
 
   oldline = line
@@ -197,7 +198,7 @@ File.each_line(filename) do |fline|
   line = line.gsub(/\bIM_COL32_WHITE\b/, "ImGui.col32(255, 255, 255)")
   line = line.gsub(/\bIMGUI_(VERSION|PAYLOAD_TYPE)/, "ImGui::\\1")
   line = line.gsub(/" *IM_NEWLINE\b/, "\\n\"")
-  line = line.gsub(/ *\bIM_PRI(d|u)64\b */, %(•"ll\\1"•))
+  line = line.gsub(/ *\b(?:IM_)?PRI(d|u)64\b */, %(•"ll\\1"•))
   line = line.gsub(/"•"|•/, "")
   line = line.gsub(/^sn?printf\((\w+), (".+?"), (.+)\);$/, "\\1 = sprintf(\\2, \\3)")
 

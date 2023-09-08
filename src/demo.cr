@@ -1,4 +1,4 @@
-# Based on https://github.com/ocornut/imgui/blob/v1.89.8/imgui_demo.cpp
+# Based on https://github.com/ocornut/imgui/blob/fef33891579dda780028a10401e851ddb828e983/imgui_demo.cpp
 
 require "./imgui"
 require "./util"
@@ -20,21 +20,21 @@ module ImGuiDemo
   end
 
   ImGui.pointer_wrapper def self.show_demo_window(p_open = Pointer(Bool).null)
-    assert(ImGui.get_current_context != nil && "Missing dear imgui context. Refer to examples app!")
+    assert(ImGui.get_current_context != nil && "Missing Dear ImGui context. Refer to examples app!")
 
     static show_app_main_menu_bar = false
-    static show_app_documents = false
     static show_app_console = false
+    static show_app_custom_rendering = false
+    static show_app_documents = false
     static show_app_log = false
     static show_app_layout = false
     static show_app_property_editor = false
-    static show_app_long_text = false
+    static show_app_simple_overlay = false
     static show_app_auto_resize = false
     static show_app_constrained_resize = false
-    static show_app_simple_overlay = false
     static show_app_fullscreen = false
+    static show_app_long_text = false
     static show_app_window_titles = false
-    static show_app_custom_rendering = false
 
     if show_app_main_menu_bar.val
       show_example_app_main_menu_bar
@@ -45,6 +45,9 @@ module ImGuiDemo
     if show_app_console.val
       show_example_app_console(pointerof(show_app_console.val))
     end
+    if show_app_custom_rendering.val
+      show_example_app_custom_rendering(pointerof(show_app_custom_rendering.val))
+    end
     if show_app_log.val
       show_example_app_log(pointerof(show_app_log.val))
     end
@@ -54,8 +57,8 @@ module ImGuiDemo
     if show_app_property_editor.val
       show_example_app_property_editor(pointerof(show_app_property_editor.val))
     end
-    if show_app_long_text.val
-      show_example_app_long_text(pointerof(show_app_long_text.val))
+    if show_app_simple_overlay.val
+      show_example_app_simple_overlay(pointerof(show_app_simple_overlay.val))
     end
     if show_app_auto_resize.val
       show_example_app_auto_resize(pointerof(show_app_auto_resize.val))
@@ -63,41 +66,38 @@ module ImGuiDemo
     if show_app_constrained_resize.val
       show_example_app_constrained_resize(pointerof(show_app_constrained_resize.val))
     end
-    if show_app_simple_overlay.val
-      show_example_app_simple_overlay(pointerof(show_app_simple_overlay.val))
-    end
     if show_app_fullscreen.val
       show_example_app_fullscreen(pointerof(show_app_fullscreen.val))
+    end
+    if show_app_long_text.val
+      show_example_app_long_text(pointerof(show_app_long_text.val))
     end
     if show_app_window_titles.val
       show_example_app_window_titles(pointerof(show_app_window_titles.val))
     end
-    if show_app_custom_rendering.val
-      show_example_app_custom_rendering(pointerof(show_app_custom_rendering.val))
-    end
 
-    static show_app_metrics = false
-    static show_app_debug_log = false
-    static show_app_stack_tool = false
-    static show_app_about = false
-    static show_app_style_editor = false
+    static show_tool_metrics = false
+    static show_tool_debug_log = false
+    static show_tool_stack_tool = false
+    static show_tool_style_editor = false
+    static show_tool_about = false
 
-    if show_app_metrics.val
-      ImGui.show_metrics_window(pointerof(show_app_metrics.val))
+    if show_tool_metrics.val
+      ImGui.show_metrics_window(pointerof(show_tool_metrics.val))
     end
-    if show_app_debug_log.val
-      ImGui.show_debug_log_window(pointerof(show_app_debug_log.val))
+    if show_tool_debug_log.val
+      ImGui.show_debug_log_window(pointerof(show_tool_debug_log.val))
     end
-    if show_app_stack_tool.val
-      ImGui.show_stack_tool_window(pointerof(show_app_stack_tool.val))
+    if show_tool_stack_tool.val
+      ImGui.show_stack_tool_window(pointerof(show_tool_stack_tool.val))
     end
-    if show_app_about.val
-      show_about_window(pointerof(show_app_about.val))
-    end
-    if show_app_style_editor.val
-      ImGui.window("crystal-imgui Style Editor", pointerof(show_app_style_editor.val)) do
+    if show_tool_style_editor.val
+      ImGui.window("crystal-imgui Style Editor", pointerof(show_tool_style_editor.val)) do
         show_style_editor
       end
+    end
+    if show_tool_about.val
+      show_about_window(pointerof(show_tool_about.val))
     end
 
     static no_titlebar = false
@@ -165,28 +165,32 @@ module ImGuiDemo
         ImGui.menu("Examples") do
           demo_marker("Menu/Examples")
           ImGui.menu_item("Main menu bar", "", pointerof(show_app_main_menu_bar.val))
+
+          ImGui.separator_text("Mini apps")
           ImGui.menu_item("Console", "", pointerof(show_app_console.val))
-          ImGui.menu_item("Log", "", pointerof(show_app_log.val))
-          ImGui.menu_item("Simple layout", "", pointerof(show_app_layout.val))
-          ImGui.menu_item("Property editor", "", pointerof(show_app_property_editor.val))
-          ImGui.menu_item("Long text display", "", pointerof(show_app_long_text.val))
-          ImGui.menu_item("Auto-resizing window", "", pointerof(show_app_auto_resize.val))
-          ImGui.menu_item("Constrained-resizing window", "", pointerof(show_app_constrained_resize.val))
-          ImGui.menu_item("Simple overlay", "", pointerof(show_app_simple_overlay.val))
-          ImGui.menu_item("Fullscreen window", "", pointerof(show_app_fullscreen.val))
-          ImGui.menu_item("Manipulating window titles", "", pointerof(show_app_window_titles.val))
           ImGui.menu_item("Custom rendering", "", pointerof(show_app_custom_rendering.val))
           ImGui.menu_item("Documents", "", pointerof(show_app_documents.val))
+          ImGui.menu_item("Log", "", pointerof(show_app_log.val))
+          ImGui.menu_item("Property editor", "", pointerof(show_app_property_editor.val))
+          ImGui.menu_item("Simple layout", "", pointerof(show_app_layout.val))
+          ImGui.menu_item("Simple overlay", "", pointerof(show_app_simple_overlay.val))
+
+          ImGui.separator_text("Concepts")
+          ImGui.menu_item("Auto-resizing window", "", pointerof(show_app_auto_resize.val))
+          ImGui.menu_item("Constrained-resizing window", "", pointerof(show_app_constrained_resize.val))
+          ImGui.menu_item("Fullscreen window", "", pointerof(show_app_fullscreen.val))
+          ImGui.menu_item("Long text display", "", pointerof(show_app_long_text.val))
+          ImGui.menu_item("Manipulating window titles", "", pointerof(show_app_window_titles.val))
         end
 
         ImGui.menu("Tools") do
           demo_marker("Menu/Tools")
           has_debug_tools = true
-          ImGui.menu_item("Metrics/Debugger", "", pointerof(show_app_metrics.val), has_debug_tools)
-          ImGui.menu_item("Debug Log", "", pointerof(show_app_debug_log.val), has_debug_tools)
-          ImGui.menu_item("Stack Tool", "", pointerof(show_app_stack_tool.val), has_debug_tools)
-          ImGui.menu_item("Style Editor", "", pointerof(show_app_style_editor.val))
-          ImGui.menu_item("About Dear ImGui", "", pointerof(show_app_about.val))
+          ImGui.menu_item("Metrics/Debugger", "", pointerof(show_tool_metrics.val), has_debug_tools)
+          ImGui.menu_item("Debug Log", "", pointerof(show_tool_debug_log.val), has_debug_tools)
+          ImGui.menu_item("Stack Tool", "", pointerof(show_tool_stack_tool.val), has_debug_tools)
+          ImGui.menu_item("Style Editor", "", pointerof(show_tool_style_editor.val))
+          ImGui.menu_item("About Dear ImGui", "", pointerof(show_tool_about.val))
         end
       end
 
@@ -3258,6 +3262,14 @@ module ImGuiDemo
     property id, name, quantity
     class_property! s_current_sort_specs : ImGuiTableSortSpecs?
 
+    def self.sort_with_sort_specs(sort_specs, items)
+      MyItem.s_current_sort_specs = sort_specs
+      if items.size > 1
+        items.sort!
+      end
+      MyItem.s_current_sort_specs = nil
+    end
+
     def <=>(rhs)
       a = self
       b = rhs
@@ -4172,12 +4184,46 @@ module ImGuiDemo
       demo_marker("Tables/Row height")
       ImGui.tree_node("Row height") do
         help_marker("You can pass a 'min_row_height' to TableNextRow().\n\nRows are padded with 'style.CellPadding.y' on top and bottom, so effectively the minimum row height will always be >= 'style.CellPadding.y * 2.0f'.\n\nWe cannot honor a _maximum_ row height as that would require a unique clipping rectangle per row.")
-        ImGui.table("table_row_height", 1, ImGuiTableFlags::BordersOuter | ImGuiTableFlags::BordersInnerV) do
-          10.times do |row|
+        ImGui.table("table_row_height", 1, ImGuiTableFlags::Borders) do
+          8.times do |row|
             min_row_height = (text_base_height * 0.30f32 * row).to_i.to_f32
             ImGui.table_next_row(ImGuiTableRowFlags::None, min_row_height)
             ImGui.table_next_column
             ImGui.text("min_row_height = %.2f", min_row_height)
+          end
+        end
+
+        help_marker("Showcase using SameLine(0,0) to share Current Line Height between cells.\n\nPlease note that Tables Row Height is not the same thing as Current Line Height, as a table cell may contains multiple lines.")
+        ImGui.table("table_share_lineheight", 2, ImGuiTableFlags::Borders) do
+          ImGui.table_next_row
+          ImGui.table_next_column
+          ImGui.color_button("##1", ImVec4.new(0.13f32, 0.26f32, 0.40f32, 1.0f32), ImGuiColorEditFlags::None, ImVec2.new(40, 40))
+          ImGui.table_next_column
+          ImGui.text("Line 1")
+          ImGui.text("Line 2")
+
+          ImGui.table_next_row
+          ImGui.table_next_column
+          ImGui.color_button("##2", ImVec4.new(0.13f32, 0.26f32, 0.40f32, 1.0f32), ImGuiColorEditFlags::None, ImVec2.new(40, 40))
+          ImGui.table_next_column
+          ImGui.same_line(0.0f32, 0.0f32)
+          ImGui.text("Line 1, with SameLine(0,0)")
+          ImGui.text("Line 2")
+        end
+
+        help_marker("Showcase altering CellPadding.y between rows. Note that CellPadding.x is locked for the entire table.")
+        ImGui.table("table_changing_cellpadding_y", 1, ImGuiTableFlags::Borders) do
+          style = ImGui.get_style
+          8.times do |row|
+            if (row % 3) == 2
+              ImGui.push_style_var(ImGuiStyleVar::CellPadding, ImVec2.new(style.cell_padding.x, 20.0f32))
+            end
+            ImGui.table_next_row(ImGuiTableRowFlags::None)
+            ImGui.table_next_column
+            ImGui.text("CellPadding.y = %.2f", style.cell_padding.y)
+            if (row % 3) == 2
+              ImGui.pop_style_var
+            end
           end
         end
       end
@@ -4534,14 +4580,10 @@ module ImGuiDemo
           ImGui.table_setup_scroll_freeze(0, 1)
           ImGui.table_headers_row
 
-          if (sorts_specs = ImGui.table_get_sort_specs)
-            if sorts_specs.specs_dirty
-              MyItem.s_current_sort_specs = sorts_specs
-              if items.val.size > 1
-                items.val.sort!
-              end
-              MyItem.s_current_sort_specs = nil
-              sorts_specs.specs_dirty = false
+          if (sort_specs = ImGui.table_get_sort_specs)
+            if sort_specs.specs_dirty
+              MyItem.sort_with_sort_specs(sort_specs, items.val)
+              sort_specs.specs_dirty = false
             end
           end
 
@@ -4718,15 +4760,13 @@ module ImGuiDemo
           ImGui.table_setup_column("Hidden", ImGuiTableColumnFlags::DefaultHide | ImGuiTableColumnFlags::NoSort)
           ImGui.table_setup_scroll_freeze(freeze_cols.val, freeze_rows.val)
 
-          sorts_specs = ImGui.table_get_sort_specs
-          if sorts_specs && sorts_specs.specs_dirty
+          sort_specs = ImGui.table_get_sort_specs
+          if sort_specs && sort_specs.specs_dirty
             items_need_sort.val = true
           end
-          if sorts_specs && items_need_sort.val && items.val.size > 1
-            MyItem.s_current_sort_specs = sorts_specs
-            items.val.sort!
-            MyItem.s_current_sort_specs = nil
-            sorts_specs.specs_dirty = false
+          if sort_specs && items_need_sort.val && items.val.size > 1
+            MyItem.sort_with_sort_specs(sort_specs, items.val)
+            sort_specs.specs_dirty = false
           end
           items_need_sort.val = false
 
@@ -5364,8 +5404,7 @@ module ImGuiDemo
     io = ImGui.get_io
     font_current = ImGui.get_font
     ImGui.combo(label, font_current.get_debug_name) do
-      io.fonts.fonts.size.times do |n|
-        font = io.fonts.fonts[n]
+      io.fonts.fonts.each do |font|
         ImGui.with_id(font) do
           if ImGui.selectable(font.get_debug_name, font == font_current)
             io.font_default = font
@@ -6255,16 +6294,19 @@ module ImGuiDemo
       ImGui.end
       return
     end
-    demo_marker("Examples/Property Editor")
 
+    demo_marker("Examples/Property Editor")
     help_marker(
       "This example shows how you may implement a property editor using two columns.\n" +
-      "All objects/fields data are dummies here.\n" +
-      "Remember that in many simple cases, you can use ImGui::SameLine(xxx) to position\n" +
-      "your cursor horizontally instead of using the Columns() API.")
+      "All objects/fields data are dummies here.\n")
 
     ImGui.with_style_var(ImGuiStyleVar::FramePadding, ImVec2.new(2, 2)) do
-      ImGui.table("split", 2, ImGuiTableFlags::BordersOuter | ImGuiTableFlags::Resizable) do
+      ImGui.table("##split", 2, ImGuiTableFlags::BordersOuter | ImGuiTableFlags::Resizable | ImGuiTableFlags::ScrollY) do
+        ImGui.table_setup_scroll_freeze(0, 1)
+        ImGui.table_setup_column("Object")
+        ImGui.table_setup_column("Contents")
+        ImGui.table_headers_row
+
         4.times do |obj_i|
           show_placeholder_object("Object", obj_i)
         end
@@ -6776,6 +6818,34 @@ module ImGuiDemo
           ImGui.get_foreground_draw_list.add_circle(window_center, window_size.y * 0.6f32, ImGui.col32(0, 255, 0, 200), 0, 10f32)
         end
       end
+
+      ImGui.tab_item("Draw Channels") do
+        draw_list = ImGui.get_window_draw_list
+        begin
+          ImGui.text("Blue shape is drawn first: appears in back")
+          ImGui.text("Red shape is drawn after: appears in front")
+          p0 = ImGui.get_cursor_screen_pos
+          draw_list.add_rect_filled(ImVec2.new(p0.x, p0.y), ImVec2.new(p0.x + 50, p0.y + 50), ImGui.col32(0, 0, 255, 255))
+          draw_list.add_rect_filled(ImVec2.new(p0.x + 25, p0.y + 25), ImVec2.new(p0.x + 75, p0.y + 75), ImGui.col32(255, 0, 0, 255))
+          ImGui.dummy(ImVec2.new(75, 75))
+        end
+        ImGui.separator
+        begin
+          ImGui.text("Blue shape is drawn first, into channel 1: appears in front")
+          ImGui.text("Red shape is drawn after, into channel 0: appears in back")
+          p1 = ImGui.get_cursor_screen_pos
+
+          draw_list.channels_split(2)
+          draw_list.channels_set_current(1)
+          draw_list.add_rect_filled(ImVec2.new(p1.x, p1.y), ImVec2.new(p1.x + 50, p1.y + 50), ImGui.col32(0, 0, 255, 255))
+          draw_list.channels_set_current(0)
+          draw_list.add_rect_filled(ImVec2.new(p1.x + 25, p1.y + 25), ImVec2.new(p1.x + 75, p1.y + 75), ImGui.col32(255, 0, 0, 255))
+
+          draw_list.channels_merge
+          ImGui.dummy(ImVec2.new(75, 75))
+          ImGui.text("After reordering, contents of channel 0 appears below channel 1.")
+        end
+      end
     end
 
     ImGui.end
@@ -6861,8 +6931,7 @@ module ImGuiDemo
   end
 
   def self.notify_of_documents_closed_elsewhere(app)
-    app.documents.size.times do |doc_n|
-      doc = app.documents[doc_n]
+    app.documents.each do |doc|
       if !doc.open && doc.open_prev
         ImGui.set_tab_item_closed(doc.name)
       end
@@ -6885,23 +6954,20 @@ module ImGuiDemo
     ImGui.menu_bar do
       ImGui.menu("File") do
         open_count = 0
-        app.val.documents.size.times do |doc_n|
-          open_count += app.val.documents[doc_n].open ? 1 : 0
+        app.val.documents.each do |doc|
+          open_count += doc.open ? 1 : 0
         end
 
         ImGui.menu("Open", open_count < app.val.documents.size) do
-          app.val.documents.size.times do |doc_n|
-            doc = app.val.documents[doc_n]
-            if !doc.open
-              if ImGui.menu_item(doc.name)
-                doc.do_open
-              end
+          app.val.documents.each do |doc|
+            if !doc.open && ImGui.menu_item(doc.name)
+              doc.do_open
             end
           end
         end
-        if ImGui.menu_item("Close All Documents", nil, false, open_count > 0)
-          app.val.documents.size.times do |doc_n|
-            app.val.documents[doc_n].do_queue_close
+        if ImGui.menu_item("Close All Documents", "", false, open_count > 0)
+          app.val.documents.each do |doc|
+            doc.do_queue_close
           end
         end
         if ImGui.menu_item("Exit", "Ctrl+F4") && p_open.value
@@ -6932,8 +6998,7 @@ module ImGuiDemo
           notify_of_documents_closed_elsewhere(app.val)
         end
 
-        app.val.documents.size.times do |doc_n|
-          doc = app.val.documents[doc_n]
+        app.val.documents.each do |doc|
           if !doc.open
             next
           end
@@ -6957,8 +7022,7 @@ module ImGuiDemo
 
     static close_queue = [] of MyDocument
     if close_queue.val.empty?
-      app.val.documents.size.times do |doc_n|
-        doc = app.val.documents[doc_n]
+      app.val.documents.each do |doc|
         if doc.want_close
           doc.want_close = false
           close_queue.val << doc

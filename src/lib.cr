@@ -520,6 +520,7 @@ lib LibImGui
     clipboard_user_data : Void*
     set_platform_ime_data_fn : (ImGuiViewport*, ImGuiPlatformImeData*) -> Void
     _unused_padding : Void*
+    platform_locale_decimal_point : ImWchar
     want_capture_mouse : Bool
     want_capture_keyboard : Bool
     want_text_input : Bool
@@ -705,7 +706,8 @@ lib LibImGui
   fun ImGuiListClipper_Begin = ImGuiListClipper_Begin(self : ImGui::ImGuiListClipper*, items_count : LibC::Int, items_height : LibC::Float)
   fun ImGuiListClipper_End = ImGuiListClipper_End(self : ImGui::ImGuiListClipper*)
   fun ImGuiListClipper_Step = ImGuiListClipper_Step(self : ImGui::ImGuiListClipper*) : Bool
-  fun ImGuiListClipper_IncludeRangeByIndices = ImGuiListClipper_IncludeRangeByIndices(self : ImGui::ImGuiListClipper*, item_begin : LibC::Int, item_end : LibC::Int)
+  fun ImGuiListClipper_IncludeItemByIndex = ImGuiListClipper_IncludeItemByIndex(self : ImGui::ImGuiListClipper*, item_index : LibC::Int)
+  fun ImGuiListClipper_IncludeItemsByIndex = ImGuiListClipper_IncludeItemsByIndex(self : ImGui::ImGuiListClipper*, item_begin : LibC::Int, item_end : LibC::Int)
   fun ImColor_ImColor_Nil = ImColor_ImColor_Nil : ImGui::ImColor*
   fun ImColor_ImColor_Float = ImColor_ImColor_Float(r : LibC::Float, g : LibC::Float, b : LibC::Float, a : LibC::Float) : ImGui::ImColor*
   fun ImColor_ImColor_Vec4 = ImColor_ImColor_Vec4(col : ImGui::ImVec4) : ImGui::ImColor*
@@ -1198,6 +1200,7 @@ lib LibImGui
   fun ImGuiNextItemData_ClearFlags = ImGuiNextItemData_ClearFlags(self : ImGuiNextItemData*)
   type ImGuiLastItemData = Void*
   fun ImGuiLastItemData_ImGuiLastItemData = ImGuiLastItemData_ImGuiLastItemData : ImGuiLastItemData*
+  type ImGuiNavTreeNodeData = Void*
   type ImGuiStackSizes = Void*
   fun ImGuiStackSizes_ImGuiStackSizes = ImGuiStackSizes_ImGuiStackSizes : ImGuiStackSizes*
   fun ImGuiStackSizes_SetToContextState = ImGuiStackSizes_SetToContextState(self : ImGuiStackSizes*, ctx : ImGuiContext*)
@@ -1401,6 +1404,7 @@ lib LibImGui
   fun NavMoveRequestSubmit = igNavMoveRequestSubmit(move_dir : ImGui::ImGuiDir, clip_dir : ImGui::ImGuiDir, move_flags : ImGui::ImGuiNavMoveFlags, scroll_flags : ImGui::ImGuiScrollFlags)
   fun NavMoveRequestForward = igNavMoveRequestForward(move_dir : ImGui::ImGuiDir, clip_dir : ImGui::ImGuiDir, move_flags : ImGui::ImGuiNavMoveFlags, scroll_flags : ImGui::ImGuiScrollFlags)
   fun NavMoveRequestResolveWithLastItem = igNavMoveRequestResolveWithLastItem(result : ImGuiNavItemData*)
+  fun NavMoveRequestResolveWithPastTreeNode = igNavMoveRequestResolveWithPastTreeNode(result : ImGuiNavItemData*, tree_node_data : ImGuiNavTreeNodeData*)
   fun NavMoveRequestCancel = igNavMoveRequestCancel
   fun NavMoveRequestApplyResult = igNavMoveRequestApplyResult
   fun NavMoveRequestTryWrapping = igNavMoveRequestTryWrapping(window : ImGuiWindow*, move_flags : ImGui::ImGuiNavMoveFlags)
@@ -1588,10 +1592,12 @@ lib LibImGui
   fun ErrorCheckEndFrameRecover = igErrorCheckEndFrameRecover(log_callback : ImGuiErrorLogCallback, user_data : Void*)
   fun ErrorCheckEndWindowRecover = igErrorCheckEndWindowRecover(log_callback : ImGuiErrorLogCallback, user_data : Void*)
   fun ErrorCheckUsingSetCursorPosToExtendParentBoundaries = igErrorCheckUsingSetCursorPosToExtendParentBoundaries
+  fun DebugDrawCursorPos = igDebugDrawCursorPos(col : UInt32)
+  fun DebugDrawLineExtents = igDebugDrawLineExtents(col : UInt32)
+  fun DebugDrawItemRect = igDebugDrawItemRect(col : UInt32)
   fun DebugLocateItem = igDebugLocateItem(target_id : ImGuiID)
   fun DebugLocateItemOnHover = igDebugLocateItemOnHover(target_id : ImGuiID)
   fun DebugLocateItemResolveWithLastItem = igDebugLocateItemResolveWithLastItem
-  fun DebugDrawItemRect = igDebugDrawItemRect(col : UInt32)
   fun DebugStartItemPicker = igDebugStartItemPicker
   fun ShowFontAtlas = igShowFontAtlas(atlas : ImFontAtlas*)
   fun DebugHookIdInfo = igDebugHookIdInfo(id : ImGuiID, data_type : ImGui::ImGuiDataType, data_id : Void*, data_id_end : Void*)
