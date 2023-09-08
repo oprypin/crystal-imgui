@@ -271,6 +271,8 @@ lib LibImGui
   fun BeginTooltip = igBeginTooltip : Bool
   fun EndTooltip = igEndTooltip
   fun SetTooltip = igSetTooltip(fmt : LibC::Char*, ...)
+  fun BeginItemTooltip = igBeginItemTooltip : Bool
+  fun SetItemTooltip = igSetItemTooltip(fmt : LibC::Char*, ...)
   fun BeginPopup = igBeginPopup(str_id : LibC::Char*, flags : ImGui::ImGuiWindowFlags) : Bool
   fun BeginPopupModal = igBeginPopupModal(name : LibC::Char*, p_open : Bool*, flags : ImGui::ImGuiWindowFlags) : Bool
   fun EndPopup = igEndPopup
@@ -334,6 +336,7 @@ lib LibImGui
   fun PopClipRect = igPopClipRect
   fun SetItemDefaultFocus = igSetItemDefaultFocus
   fun SetKeyboardFocusHere = igSetKeyboardFocusHere(offset : LibC::Int)
+  fun SetNextItemAllowOverlap = igSetNextItemAllowOverlap
   fun IsItemHovered = igIsItemHovered(flags : ImGui::ImGuiHoveredFlags) : Bool
   fun IsItemActive = igIsItemActive : Bool
   fun IsItemFocused = igIsItemFocused : Bool
@@ -351,7 +354,6 @@ lib LibImGui
   fun GetItemRectMin = igGetItemRectMin(pOut : ImGui::ImVec2*)
   fun GetItemRectMax = igGetItemRectMax(pOut : ImGui::ImVec2*)
   fun GetItemRectSize = igGetItemRectSize(pOut : ImGui::ImVec2*)
-  fun SetItemAllowOverlap = igSetItemAllowOverlap
   fun GetMainViewport = igGetMainViewport : ImGuiViewport*
   fun GetBackgroundDrawList_Nil = igGetBackgroundDrawList_Nil : ImDrawList*
   fun GetBackgroundDrawList_ViewportPtr = igGetBackgroundDrawList_ViewportPtr(viewport : ImGuiViewport*) : ImDrawList*
@@ -459,6 +461,11 @@ lib LibImGui
     curve_tessellation_tol : LibC::Float
     circle_tessellation_max_error : LibC::Float
     colors : ImGui::ImVec4[53]
+    hover_stationary_delay : LibC::Float
+    hover_delay_short : LibC::Float
+    hover_delay_normal : LibC::Float
+    hover_flags_for_tooltip_mouse : ImGui::ImGuiHoveredFlags
+    hover_flags_for_tooltip_nav : ImGui::ImGuiHoveredFlags
   end
 
   fun ImGuiStyle_ImGuiStyle = ImGuiStyle_ImGuiStyle : ImGuiStyle*
@@ -479,13 +486,6 @@ lib LibImGui
     ini_saving_rate : LibC::Float
     ini_filename : LibC::Char*
     log_filename : LibC::Char*
-    mouse_double_click_time : LibC::Float
-    mouse_double_click_max_dist : LibC::Float
-    mouse_drag_threshold : LibC::Float
-    key_repeat_delay : LibC::Float
-    key_repeat_rate : LibC::Float
-    hover_delay_normal : LibC::Float
-    hover_delay_short : LibC::Float
     user_data : Void*
     fonts : ImFontAtlas*
     font_global_scale : LibC::Float
@@ -501,9 +501,15 @@ lib LibImGui
     config_windows_resize_from_edges : Bool
     config_windows_move_from_title_bar_only : Bool
     config_memory_compact_timer : LibC::Float
+    mouse_double_click_time : LibC::Float
+    mouse_double_click_max_dist : LibC::Float
+    mouse_drag_threshold : LibC::Float
+    key_repeat_delay : LibC::Float
+    key_repeat_rate : LibC::Float
     config_debug_begin_return_value_once : Bool
     config_debug_begin_return_value_loop : Bool
     config_debug_ignore_focus_loss : Bool
+    config_debug_ini_settings : Bool
     backend_platform_name : LibC::Char*
     backend_renderer_name : LibC::Char*
     backend_platform_user_data : Void*
@@ -1353,7 +1359,7 @@ lib LibImGui
   fun ItemSize_Vec2 = igItemSize_Vec2(size : ImGui::ImVec2, text_baseline_y : LibC::Float)
   fun ItemSize_Rect = igItemSize_Rect(bb : ImRect, text_baseline_y : LibC::Float)
   fun ItemAdd = igItemAdd(bb : ImRect, id : ImGuiID, nav_bb : ImRect*, extra_flags : ImGui::ImGuiItemFlags) : Bool
-  fun ItemHoverable = igItemHoverable(bb : ImRect, id : ImGuiID) : Bool
+  fun ItemHoverable = igItemHoverable(bb : ImRect, id : ImGuiID, item_flags : ImGui::ImGuiItemFlags) : Bool
   fun IsWindowContentHoverable = igIsWindowContentHoverable(window : ImGuiWindow*, flags : ImGui::ImGuiHoveredFlags) : Bool
   fun IsClippedEx = igIsClippedEx(bb : ImRect, id : ImGuiID) : Bool
   fun SetLastItemData = igSetLastItemData(item_id : ImGuiID, in_flags : ImGui::ImGuiItemFlags, status_flags : ImGui::ImGuiItemStatusFlags, item_rect : ImRect)
@@ -1400,9 +1406,10 @@ lib LibImGui
   fun NavMoveRequestTryWrapping = igNavMoveRequestTryWrapping(window : ImGuiWindow*, move_flags : ImGui::ImGuiNavMoveFlags)
   fun NavClearPreferredPosForAxis = igNavClearPreferredPosForAxis(axis : ImGui::ImGuiAxis)
   fun NavUpdateCurrentWindowIsScrollPushableX = igNavUpdateCurrentWindowIsScrollPushableX
-  fun ActivateItem = igActivateItem(id : ImGuiID)
   fun SetNavWindow = igSetNavWindow(window : ImGuiWindow*)
   fun SetNavID = igSetNavID(id : ImGuiID, nav_layer : ImGui::ImGuiNavLayer, focus_scope_id : ImGuiID, rect_rel : ImRect)
+  fun FocusItem = igFocusItem
+  fun ActivateItemByID = igActivateItemByID(id : ImGuiID)
   fun IsNamedKey = igIsNamedKey(key : ImGui::ImGuiKey) : Bool
   fun IsNamedKeyOrModKey = igIsNamedKeyOrModKey(key : ImGui::ImGuiKey) : Bool
   fun IsLegacyKey = igIsLegacyKey(key : ImGui::ImGuiKey) : Bool

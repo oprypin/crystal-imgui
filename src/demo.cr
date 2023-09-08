@@ -1,4 +1,4 @@
-# Based on https://github.com/ocornut/imgui/blob/v1.89.6/imgui_demo.cpp
+# Based on https://github.com/ocornut/imgui/blob/v1.89.7/imgui_demo.cpp
 
 require "./imgui"
 require "./util"
@@ -8,7 +8,7 @@ module ImGuiDemo
 
   def self.help_marker(desc)
     ImGui.text_disabled("(?)")
-    if ImGui.is_item_hovered(ImGuiHoveredFlags::DelayShort) && ImGui.begin_tooltip
+    if ImGui.begin_item_tooltip
       ImGui.with_text_wrap_pos(ImGui.get_font_size * 35.0f32) do
         ImGui.text_unformatted(desc)
       end
@@ -277,6 +277,9 @@ module ImGuiDemo
           ImGui.checkbox("io.ConfigDebugIgnoreFocusLoss", pointerof(io.config_debug_ignore_focus_loss))
           ImGui.same_line
           help_marker("Option to deactivate io.AddFocusEvent(false) handling. May facilitate interactions with a debugger when focus loss leads to clearing inputs data.")
+          ImGui.checkbox("io.ConfigDebugIniSettings", pointerof(io.config_debug_ini_settings))
+          ImGui.same_line
+          help_marker("Option to save .ini data with extra comments (particularly helpful for Docking, but makes saving slower).")
 
           ImGui.spacing
         end
@@ -440,37 +443,8 @@ module ImGuiDemo
       ImGui.same_line
       ImGui.text("%d", counter.val)
 
-      begin
-        demo_marker("Widgets/Basic/Tooltips")
-
-        ImGui.text("Tooltips:")
-
-        ImGui.same_line
-        ImGui.small_button("Basic")
-        if ImGui.is_item_hovered
-          ImGui.set_tooltip("I am a tooltip")
-        end
-
-        ImGui.same_line
-        ImGui.small_button("Fancy")
-        if ImGui.is_item_hovered && ImGui.begin_tooltip
-          ImGui.text("I am a fancy tooltip")
-          static arr = [0.6f32, 0.1f32, 1.0f32, 0.5f32, 0.92f32, 0.1f32, 0.2f32]
-          ImGui.plot_lines("Curve", arr.val)
-          ImGui.text("Sin(time) = %f", Math.sin(ImGui.get_time))
-          ImGui.end_tooltip
-        end
-
-        ImGui.same_line
-        ImGui.small_button("Delayed")
-        if ImGui.is_item_hovered(ImGuiHoveredFlags::DelayNormal)
-          ImGui.set_tooltip("I am a tooltip with a delay.")
-        end
-
-        ImGui.same_line
-        help_marker(
-          "Tooltip are created by using the IsItemHovered() function over any kind of item.")
-      end
+      ImGui.button("Tooltip")
+      ImGui.set_item_tooltip("I am a tooltip")
 
       ImGui.label_text("label", "Value")
 
@@ -599,6 +573,70 @@ module ImGuiDemo
         ImGui.same_line
         help_marker(
           "Using the simplified one-liner ListBox API here.\nRefer to the \"List boxes\" section below for an explanation of how to use the more flexible and general BeginListBox/EndListBox API.")
+      end
+    end
+
+    demo_marker("Widgets/Tooltips")
+    ImGui.tree_node("Tooltips") do
+      ImGui.separator_text("General")
+      help_marker(
+        "Tooltip are typically created by using a IsItemHovered() + SetTooltip() sequence.\n\n" +
+        "We provide a helper SetItemTooltip() function to perform the two with standards flags.")
+
+      sz = ImVec2.new(-Float32::MIN_POSITIVE, 0.0f32)
+
+      ImGui.button("Basic", sz)
+      ImGui.set_item_tooltip("I am a tooltip")
+
+      ImGui.button("Fancy", sz)
+      if ImGui.begin_item_tooltip
+        ImGui.text("I am a fancy tooltip")
+        static arr = [0.6f32, 0.1f32, 1.0f32, 0.5f32, 0.92f32, 0.1f32, 0.2f32]
+        ImGui.plot_lines("Curve", arr.val)
+        ImGui.text("Sin(time) = %f", Math.sin(ImGui.get_time))
+        ImGui.end_tooltip
+      end
+
+      ImGui.separator_text("Always On")
+
+      static always_on = 0
+      ImGui.radio_button("Off", pointerof(always_on.val), 0)
+      ImGui.same_line
+      ImGui.radio_button("Always On (Simple)", pointerof(always_on.val), 1)
+      ImGui.same_line
+      ImGui.radio_button("Always On (Advanced)", pointerof(always_on.val), 2)
+      if always_on.val == 1
+        ImGui.set_tooltip("I am following you around.")
+      elsif always_on.val == 2 && ImGui.begin_tooltip
+        ImGui.progress_bar(Math.sin(ImGui.get_time).to_f32 * 0.5f32 + 0.5f32, ImVec2.new(ImGui.get_font_size * 25, 0.0f32))
+        ImGui.end_tooltip
+      end
+
+      ImGui.separator_text("Custom")
+
+      ImGui.button("Manual", sz)
+      if ImGui.is_item_hovered(ImGuiHoveredFlags::ForTooltip)
+        ImGui.set_tooltip("I am a manually emitted tooltip")
+      end
+
+      ImGui.button("DelayNone", sz)
+      if ImGui.is_item_hovered(ImGuiHoveredFlags::DelayNone)
+        ImGui.set_tooltip("I am a tooltip with no delay.")
+      end
+
+      ImGui.button("DelayShort", sz)
+      if ImGui.is_item_hovered(ImGuiHoveredFlags::DelayShort | ImGuiHoveredFlags::NoSharedDelay)
+        ImGui.set_tooltip("I am a tooltip with a short delay (%0.2f sec).", ImGui.get_style.hover_delay_short)
+      end
+
+      ImGui.button("DelayLong", sz)
+      if ImGui.is_item_hovered(ImGuiHoveredFlags::DelayNormal | ImGuiHoveredFlags::NoSharedDelay)
+        ImGui.set_tooltip("I am a tooltip with a long delay (%0.2f sec)", ImGui.get_style.hover_delay_normal)
+      end
+
+      ImGui.button("Stationary", sz)
+      if ImGui.is_item_hovered(ImGuiHoveredFlags::Stationary)
+        ImGui.set_tooltip("I am a tooltip requiring mouse to be stationary before activating.")
       end
     end
 
@@ -794,7 +832,7 @@ module ImGuiDemo
         tint_col = use_text_color_for_tint.val ? ImGui.get_style_color_vec4(ImGuiCol::Text) : ImVec4.new(1.0f32, 1.0f32, 1.0f32, 1.0f32)
         border_col = ImGui.get_style_color_vec4(ImGuiCol::Border)
         ImGui.image(my_tex_id, ImVec2.new(my_tex_w, my_tex_h), uv_min, uv_max, tint_col, border_col)
-        if ImGui.is_item_hovered && ImGui.begin_tooltip
+        if ImGui.begin_item_tooltip
           region_sz = 32.0f32
           region_x = io.mouse_pos.x - pos.x - region_sz * 0.5f32
           region_y = io.mouse_pos.y - pos.y - region_sz * 0.5f32
@@ -2030,8 +2068,10 @@ module ImGuiDemo
       end
 
       hovered_delay_none = ImGui.is_item_hovered
+      hovered_delay_stationary = ImGui.is_item_hovered(ImGuiHoveredFlags::Stationary)
       hovered_delay_short = ImGui.is_item_hovered(ImGuiHoveredFlags::DelayShort)
       hovered_delay_normal = ImGui.is_item_hovered(ImGuiHoveredFlags::DelayNormal)
+      hovered_delay_tooltip = ImGui.is_item_hovered(ImGuiHoveredFlags::ForTooltip)
 
       ImGui.bullet_text(
         "Return value = %d\n" +
@@ -2039,7 +2079,8 @@ module ImGuiDemo
         "IsItemHovered() = %d\n" +
         "IsItemHovered(_AllowWhenBlockedByPopup) = %d\n" +
         "IsItemHovered(_AllowWhenBlockedByActiveItem) = %d\n" +
-        "IsItemHovered(_AllowWhenOverlapped) = %d\n" +
+        "IsItemHovered(_AllowWhenOverlappedByItem) = %d\n" +
+        "IsItemHovered(_AllowWhenOverlappedByWindow) = %d\n" +
         "IsItemHovered(_AllowWhenDisabled) = %d\n" +
         "IsItemHovered(_RectOnly) = %d\n" +
         "IsItemActive() = %d\n" +
@@ -2058,7 +2099,8 @@ module ImGuiDemo
         ImGui.is_item_hovered,
         ImGui.is_item_hovered(ImGuiHoveredFlags::AllowWhenBlockedByPopup),
         ImGui.is_item_hovered(ImGuiHoveredFlags::AllowWhenBlockedByActiveItem),
-        ImGui.is_item_hovered(ImGuiHoveredFlags::AllowWhenOverlapped),
+        ImGui.is_item_hovered(ImGuiHoveredFlags::AllowWhenOverlappedByItem),
+        ImGui.is_item_hovered(ImGuiHoveredFlags::AllowWhenOverlappedByWindow),
         ImGui.is_item_hovered(ImGuiHoveredFlags::AllowWhenDisabled),
         ImGui.is_item_hovered(ImGuiHoveredFlags::RectOnly),
         ImGui.is_item_active,
@@ -2073,7 +2115,13 @@ module ImGuiDemo
         ImGui.get_item_rect_max.x, ImGui.get_item_rect_max.y,
         ImGui.get_item_rect_size.x, ImGui.get_item_rect_size.y)
       ImGui.bullet_text(
-        "w/ Hovering Delay: None = %d, Fast %d, Normal = %d", hovered_delay_none, hovered_delay_short, hovered_delay_normal)
+        "with Hovering Delay or Stationary test:\n" +
+        "IsItemHovered() = = %d\n" +
+        "IsItemHovered(_Stationary) = %d\n" +
+        "IsItemHovered(_DelayShort) = %d\n" +
+        "IsItemHovered(_DelayNormal) = %d\n" +
+        "IsItemHovered(_Tooltip) = %d",
+        hovered_delay_none, hovered_delay_stationary, hovered_delay_short, hovered_delay_normal, hovered_delay_tooltip)
 
       if item_disabled.val
         ImGui.end_disabled
@@ -2122,7 +2170,8 @@ module ImGuiDemo
         "IsWindowHovered(_RootWindow) = %d\n" +
         "IsWindowHovered(_RootWindow|_NoPopupHierarchy) = %d\n" +
         "IsWindowHovered(_ChildWindows|_AllowWhenBlockedByPopup) = %d\n" +
-        "IsWindowHovered(_AnyWindow) = %d\n",
+        "IsWindowHovered(_AnyWindow) = %d\n" +
+        "IsWindowHovered(_Stationary) = %d\n",
         ImGui.is_window_hovered,
         ImGui.is_window_hovered(ImGuiHoveredFlags::AllowWhenBlockedByPopup),
         ImGui.is_window_hovered(ImGuiHoveredFlags::AllowWhenBlockedByActiveItem),
@@ -2133,7 +2182,8 @@ module ImGuiDemo
         ImGui.is_window_hovered(ImGuiHoveredFlags::RootWindow),
         ImGui.is_window_hovered(ImGuiHoveredFlags::RootWindow | ImGuiHoveredFlags::NoPopupHierarchy),
         ImGui.is_window_hovered(ImGuiHoveredFlags::ChildWindows | ImGuiHoveredFlags::AllowWhenBlockedByPopup),
-        ImGui.is_window_hovered(ImGuiHoveredFlags::AnyWindow))
+        ImGui.is_window_hovered(ImGuiHoveredFlags::AnyWindow),
+        ImGui.is_window_hovered(ImGuiHoveredFlags::Stationary))
 
       ImGui.child("child", ImVec2.new(0, 50), true) do
         ImGui.text("This is another child window for testing the _ChildWindows flag.")
@@ -2462,9 +2512,7 @@ module ImGuiDemo
             ImGui.same_line
             ImGui.button("EEE")
           end
-          if ImGui.is_item_hovered
-            ImGui.set_tooltip("First group hovered")
-          end
+          ImGui.set_item_tooltip("First group hovered")
         end
 
         size = ImGui.get_item_rect_size
@@ -2972,9 +3020,7 @@ module ImGuiDemo
 
         ImGui.separator
         ImGui.text("Tooltip here")
-        if ImGui.is_item_hovered
-          ImGui.set_tooltip("I am a tooltip over a popup")
-        end
+        ImGui.set_item_tooltip("I am a tooltip over a popup")
 
         if ImGui.button("Stacked Popup")
           ImGui.open_popup("another popup")
@@ -3029,9 +3075,7 @@ module ImGuiDemo
               ImGui.close_current_popup
             end
           end
-          if ImGui.is_item_hovered
-            ImGui.set_tooltip("Right-click to open popup")
-          end
+          ImGui.set_item_tooltip("Right-click to open popup")
         end
       end
 
@@ -3236,7 +3280,7 @@ module ImGuiDemo
     end
     ImGui.same_line
     ImGui.text_disabled("(?)")
-    if ImGui.is_item_hovered && ImGui.begin_tooltip
+    if ImGui.begin_item_tooltip
       ImGui.with_text_wrap_pos(ImGui.get_font_size * 50.0f32) do
         policies.size.times do |m|
           ImGui.separator
@@ -4672,7 +4716,7 @@ module ImGuiDemo
                   elsif contents_type.val == ContentsType3::FillButton
                     ImGui.button(label, ImVec2.new(-Float32::MIN_POSITIVE, 0.0f32))
                   elsif contents_type.val == ContentsType3::Selectable || contents_type.val == ContentsType3::SelectableSpanRow
-                    selectable_flags = (contents_type.val == ContentsType3::SelectableSpanRow) ? ImGuiSelectableFlags::SpanAllColumns | ImGuiSelectableFlags::AllowItemOverlap : ImGuiSelectableFlags::None
+                    selectable_flags = (contents_type.val == ContentsType3::SelectableSpanRow) ? ImGuiSelectableFlags::SpanAllColumns | ImGuiSelectableFlags::AllowOverlap : ImGuiSelectableFlags::None
                     if ImGui.selectable(label, item_is_selected, selectable_flags, ImVec2.new(0, row_min_height.val))
                       if ImGui.get_io.key_ctrl
                         if item_is_selected
@@ -5176,10 +5220,11 @@ module ImGuiDemo
       return
     end
     demo_marker("Tools/About Dear ImGui")
-    ImGui.text("Dear ImGui %s", ImGui.get_version)
+    ImGui.text("Dear ImGui %s (%d)", ImGui::VERSION, ImGui::VERSION_NUM)
     ImGui.separator
     ImGui.text("By Omar Cornut and all Dear ImGui contributors.")
     ImGui.text("Dear ImGui is licensed under the MIT License, see LICENSE for more information.")
+    ImGui.text("If your company uses this, please consider sponsoring the project!")
 
     static show_config_info = false
     ImGui.checkbox("Config/Build Information", pointerof(show_config_info.val))
@@ -5414,8 +5459,20 @@ module ImGuiDemo
           help_marker("Alignment applies when a selectable is larger than its text content.")
           ImGui.slider_float("SeparatorTextBorderSize", pointerof(style.separator_text_border_size), 0.0f32, 10.0f32, "%.0f")
           ImGui.slider_float2("SeparatorTextAlign", pointerof(style.separator_text_align), 0.0f32, 1.0f32, "%.2f")
-          ImGui.slider_float2("SeparatorTextPadding", pointerof(style.separator_text_padding), 0.0f32, 40.0f32, "%0.f")
+          ImGui.slider_float2("SeparatorTextPadding", pointerof(style.separator_text_padding), 0.0f32, 40.0f32, "%.0f")
           ImGui.slider_float("LogSliderDeadzone", pointerof(style.log_slider_deadzone), 0.0f32, 12.0f32, "%.0f")
+
+          ImGui.separator_text("Tooltips")
+          {% for n in 0..1 %}
+            ImGui.tree_node_ex({{n == 0 ? "HoverFlagsForTooltipMouse" : "HoverFlagsForTooltipNav"}}) do
+              {% p = (n == 0) ? "pointerof(style.hover_flags_for_tooltip_mouse)".id : "pointerof(style.hover_flags_for_tooltip_nav)".id %}
+              ImGui.checkbox_flags("ImGuiHoveredFlags_DelayNone", {{p}}, ImGuiHoveredFlags::DelayNone)
+              ImGui.checkbox_flags("ImGuiHoveredFlags_DelayShort", {{p}}, ImGuiHoveredFlags::DelayShort)
+              ImGui.checkbox_flags("ImGuiHoveredFlags_DelayNormal", {{p}}, ImGuiHoveredFlags::DelayNormal)
+              ImGui.checkbox_flags("ImGuiHoveredFlags_Stationary", {{p}}, ImGuiHoveredFlags::Stationary)
+              ImGui.checkbox_flags("ImGuiHoveredFlags_NoSharedDelay", {{p}}, ImGuiHoveredFlags::NoSharedDelay)
+            end
+          {% end %}
 
           ImGui.separator_text("Misc")
           ImGui.slider_float2("DisplaySafeAreaPadding", pointerof(style.display_safe_area_padding), 0.0f32, 30.0f32, "%.0f")
@@ -6887,13 +6944,14 @@ module ImGuiDemo
         ImGui.popup_modal("Save?", flags: ImGuiWindowFlags::AlwaysAutoResize) do
           ImGui.text("Save change to the following items?")
           item_height = ImGui.get_text_line_height_with_spacing
-          ImGui.child_frame(ImGui.get_id("frame"), ImVec2.new(-Float32::MIN_POSITIVE, 6.25f32 * item_height)) do
+          if ImGui.begin_child_frame(ImGui.get_id("frame"), ImVec2.new(-Float32::MIN_POSITIVE, 6.25f32 * item_height))
             close_queue.val.size.times do |n|
               if close_queue.val[n].dirty
                 ImGui.text("%s", close_queue.val[n].name)
               end
             end
           end
+          ImGui.end_child_frame
 
           button_size = ImVec2.new(ImGui.get_font_size * 7.0f32, 0.0f32)
           if ImGui.button("Yes", button_size)
