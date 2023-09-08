@@ -503,6 +503,7 @@ lib LibImGui
     config_memory_compact_timer : LibC::Float
     config_debug_begin_return_value_once : Bool
     config_debug_begin_return_value_loop : Bool
+    config_debug_ignore_focus_loss : Bool
     backend_platform_name : LibC::Char*
     backend_renderer_name : LibC::Char*
     backend_platform_user_data : Void*
@@ -698,7 +699,7 @@ lib LibImGui
   fun ImGuiListClipper_Begin = ImGuiListClipper_Begin(self : ImGui::ImGuiListClipper*, items_count : LibC::Int, items_height : LibC::Float)
   fun ImGuiListClipper_End = ImGuiListClipper_End(self : ImGui::ImGuiListClipper*)
   fun ImGuiListClipper_Step = ImGuiListClipper_Step(self : ImGui::ImGuiListClipper*) : Bool
-  fun ImGuiListClipper_ForceDisplayRangeByIndices = ImGuiListClipper_ForceDisplayRangeByIndices(self : ImGui::ImGuiListClipper*, item_min : LibC::Int, item_max : LibC::Int)
+  fun ImGuiListClipper_IncludeRangeByIndices = ImGuiListClipper_IncludeRangeByIndices(self : ImGui::ImGuiListClipper*, item_begin : LibC::Int, item_end : LibC::Int)
   fun ImColor_ImColor_Nil = ImColor_ImColor_Nil : ImGui::ImColor*
   fun ImColor_ImColor_Float = ImColor_ImColor_Float(r : LibC::Float, g : LibC::Float, b : LibC::Float, a : LibC::Float) : ImGui::ImColor*
   fun ImColor_ImColor_Vec4 = ImColor_ImColor_Vec4(col : ImGui::ImVec4) : ImGui::ImColor*
@@ -1085,7 +1086,6 @@ lib LibImGui
   fun ImTriangleClosestPoint = igImTriangleClosestPoint(pOut : ImGui::ImVec2*, a : ImGui::ImVec2, b : ImGui::ImVec2, c : ImGui::ImVec2, p : ImGui::ImVec2)
   fun ImTriangleBarycentricCoords = igImTriangleBarycentricCoords(a : ImGui::ImVec2, b : ImGui::ImVec2, c : ImGui::ImVec2, p : ImGui::ImVec2, out_u : LibC::Float*, out_v : LibC::Float*, out_w : LibC::Float*)
   fun ImTriangleArea = igImTriangleArea(a : ImGui::ImVec2, b : ImGui::ImVec2, c : ImGui::ImVec2) : LibC::Float
-  fun ImGetDirQuadrantFromDelta = igImGetDirQuadrantFromDelta(dx : LibC::Float, dy : LibC::Float) : ImGui::ImGuiDir
   type ImVec1 = Void*
   fun ImVec1_ImVec1_Nil = ImVec1_ImVec1_Nil : ImVec1*
   fun ImVec1_ImVec1_Float = ImVec1_ImVec1_Float(_x : LibC::Float) : ImVec1*
@@ -1298,8 +1298,9 @@ lib LibImGui
   fun SetWindowHiddendAndSkipItemsForCurrentFrame = igSetWindowHiddendAndSkipItemsForCurrentFrame(window : ImGuiWindow*)
   fun WindowRectAbsToRel = igWindowRectAbsToRel(pOut : ImRect*, window : ImGuiWindow*, r : ImRect)
   fun WindowRectRelToAbs = igWindowRectRelToAbs(pOut : ImRect*, window : ImGuiWindow*, r : ImRect)
-  fun FocusWindow = igFocusWindow(window : ImGuiWindow*)
-  fun FocusTopMostWindowUnderOne = igFocusTopMostWindowUnderOne(under_this_window : ImGuiWindow*, ignore_window : ImGuiWindow*)
+  fun WindowPosRelToAbs = igWindowPosRelToAbs(pOut : ImGui::ImVec2*, window : ImGuiWindow*, p : ImGui::ImVec2)
+  fun FocusWindow = igFocusWindow(window : ImGuiWindow*, flags : ImGui::ImGuiFocusRequestFlags)
+  fun FocusTopMostWindowUnderOne = igFocusTopMostWindowUnderOne(under_this_window : ImGuiWindow*, ignore_window : ImGuiWindow*, filter_viewport : ImGuiViewport*, flags : ImGui::ImGuiFocusRequestFlags)
   fun BringWindowToFocusFront = igBringWindowToFocusFront(window : ImGuiWindow*)
   fun BringWindowToDisplayFront = igBringWindowToDisplayFront(window : ImGuiWindow*)
   fun BringWindowToDisplayBack = igBringWindowToDisplayBack(window : ImGuiWindow*)
@@ -1379,6 +1380,7 @@ lib LibImGui
   fun GetPopupAllowedExtentRect = igGetPopupAllowedExtentRect(pOut : ImRect*, window : ImGuiWindow*)
   fun GetTopMostPopupModal = igGetTopMostPopupModal : ImGuiWindow*
   fun GetTopMostAndVisiblePopupModal = igGetTopMostAndVisiblePopupModal : ImGuiWindow*
+  fun FindBlockingModal = igFindBlockingModal(window : ImGuiWindow*) : ImGuiWindow*
   fun FindBestWindowPosForPopup = igFindBestWindowPosForPopup(pOut : ImGui::ImVec2*, window : ImGuiWindow*)
   fun FindBestWindowPosForPopupEx = igFindBestWindowPosForPopupEx(pOut : ImGui::ImVec2*, ref_pos : ImGui::ImVec2, size : ImGui::ImVec2, last_dir : ImGui::ImGuiDir*, r_outer : ImRect, r_avoid : ImRect, policy : ImGui::ImGuiPopupPositionPolicy)
   fun BeginViewportSideBar = igBeginViewportSideBar(name : LibC::Char*, viewport : ImGuiViewport*, dir : ImGui::ImGuiDir, size : LibC::Float, window_flags : ImGui::ImGuiWindowFlags) : Bool
@@ -1396,6 +1398,8 @@ lib LibImGui
   fun NavMoveRequestCancel = igNavMoveRequestCancel
   fun NavMoveRequestApplyResult = igNavMoveRequestApplyResult
   fun NavMoveRequestTryWrapping = igNavMoveRequestTryWrapping(window : ImGuiWindow*, move_flags : ImGui::ImGuiNavMoveFlags)
+  fun NavClearPreferredPosForAxis = igNavClearPreferredPosForAxis(axis : ImGui::ImGuiAxis)
+  fun NavUpdateCurrentWindowIsScrollPushableX = igNavUpdateCurrentWindowIsScrollPushableX
   fun ActivateItem = igActivateItem(id : ImGuiID)
   fun SetNavWindow = igSetNavWindow(window : ImGuiWindow*)
   fun SetNavID = igSetNavID(id : ImGuiID, nav_layer : ImGui::ImGuiNavLayer, focus_scope_id : ImGuiID, rect_rel : ImRect)
@@ -1533,7 +1537,7 @@ lib LibImGui
   fun ButtonEx = igButtonEx(label : LibC::Char*, size_arg : ImGui::ImVec2, flags : ImGui::ImGuiButtonFlags) : Bool
   fun ArrowButtonEx = igArrowButtonEx(str_id : LibC::Char*, dir : ImGui::ImGuiDir, size_arg : ImGui::ImVec2, flags : ImGui::ImGuiButtonFlags) : Bool
   fun ImageButtonEx = igImageButtonEx(id : ImGuiID, texture_id : ImTextureID, size : ImGui::ImVec2, uv0 : ImGui::ImVec2, uv1 : ImGui::ImVec2, bg_col : ImGui::ImVec4, tint_col : ImGui::ImVec4, flags : ImGui::ImGuiButtonFlags) : Bool
-  fun SeparatorEx = igSeparatorEx(flags : ImGui::ImGuiSeparatorFlags)
+  fun SeparatorEx = igSeparatorEx(flags : ImGui::ImGuiSeparatorFlags, thickness : LibC::Float)
   fun SeparatorTextEx = igSeparatorTextEx(id : ImGuiID, label : LibC::Char*, label_end : LibC::Char*, extra_width : LibC::Float)
   fun CloseButton = igCloseButton(id : ImGuiID, pos : ImGui::ImVec2) : Bool
   fun CollapseButton = igCollapseButton(id : ImGuiID, pos : ImGui::ImVec2) : Bool

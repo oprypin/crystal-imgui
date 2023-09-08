@@ -1,4 +1,4 @@
-# Based on https://github.com/ocornut/imgui/blob/v1.89.5/imgui_demo.cpp
+# Based on https://github.com/ocornut/imgui/blob/v1.89.6/imgui_demo.cpp
 
 require "./imgui"
 require "./util"
@@ -195,23 +195,21 @@ module ImGuiDemo
 
       demo_marker("Help")
       if ImGui.collapsing_header("Help")
-        ImGui.text("ABOUT THIS DEMO:")
+        ImGui.separator_text("ABOUT THIS DEMO:")
         ImGui.bullet_text("Sections below are demonstrating many aspects of the library.")
         ImGui.bullet_text("The \"Examples\" menu above leads to more demo contents.")
         ImGui.bullet_text("The \"Tools\" menu above gives access to: About Box, Style Editor,\n" +
                           "and Metrics/Debugger (general purpose Dear ImGui debugging tool).")
-        ImGui.separator
 
-        ImGui.text("PROGRAMMER GUIDE:")
+        ImGui.separator_text("PROGRAMMER GUIDE:")
         ImGui.bullet_text("See the ShowDemoWindow() code in src/demo.cr. <- you are here!")
         ImGui.bullet_text("See comments in imgui.cpp.")
         ImGui.bullet_text("See example applications in the examples/ folder.")
         ImGui.bullet_text("Read the FAQ at http://www.dearimgui.com/faq/")
         ImGui.bullet_text("Set 'io.ConfigFlags |= NavEnableKeyboard' for keyboard controls.")
         ImGui.bullet_text("Set 'io.ConfigFlags |= NavEnableGamepad' for gamepad controls.")
-        ImGui.separator
 
-        ImGui.text("USER GUIDE:")
+        ImGui.separator_text("USER GUIDE:")
         show_user_guide
       end
 
@@ -276,6 +274,9 @@ module ImGuiDemo
           ImGui.checkbox("io.ConfigDebugBeginReturnValueLoop", pointerof(io.config_debug_begin_return_value_loop))
           ImGui.same_line
           help_marker("Some calls to Begin()/BeginChild() will return false.\n\nWill cycle through window depths then repeat. Windows should be flickering while running.")
+          ImGui.checkbox("io.ConfigDebugIgnoreFocusLoss", pointerof(io.config_debug_ignore_focus_loss))
+          ImGui.same_line
+          help_marker("Option to deactivate io.AddFocusEvent(false) handling. May facilitate interactions with a debugger when focus loss leads to clearing inputs data.")
 
           ImGui.spacing
         end
@@ -445,7 +446,7 @@ module ImGuiDemo
         ImGui.text("Tooltips:")
 
         ImGui.same_line
-        ImGui.small_button("Button")
+        ImGui.small_button("Basic")
         if ImGui.is_item_hovered
           ImGui.set_tooltip("I am a tooltip")
         end
@@ -1081,18 +1082,27 @@ module ImGuiDemo
 
       demo_marker("Widgets/Text Input/Filtered Text Input")
       ImGui.tree_node("Filtered Text Input") do
-        static buf1 = ImGui::TextBuffer.new(64)
+        static buf1 = ImGui::TextBuffer.new(32)
         ImGui.input_text("default", buf1.val)
-        static buf2 = ImGui::TextBuffer.new(64)
+        static buf2 = ImGui::TextBuffer.new(32)
         ImGui.input_text("decimal", buf2.val, ImGuiInputTextFlags::CharsDecimal)
-        static buf3 = ImGui::TextBuffer.new(64)
+        static buf3 = ImGui::TextBuffer.new(32)
         ImGui.input_text("hexadecimal", buf3.val, ImGuiInputTextFlags::CharsHexadecimal | ImGuiInputTextFlags::CharsUppercase)
-        static buf4 = ImGui::TextBuffer.new(64)
+        static buf4 = ImGui::TextBuffer.new(32)
         ImGui.input_text("uppercase", buf4.val, ImGuiInputTextFlags::CharsUppercase)
-        static buf5 = ImGui::TextBuffer.new(64)
+        static buf5 = ImGui::TextBuffer.new(32)
         ImGui.input_text("no blank", buf5.val, ImGuiInputTextFlags::CharsNoBlank)
-        static buf6 = ImGui::TextBuffer.new(64)
-        ImGui.input_text("\"imgui\" letters", buf6.val, ImGuiInputTextFlags::CallbackCharFilter) do |data|
+        static buf6 = ImGui::TextBuffer.new(32)
+        ImGui.input_text("casing swap", buf6.val, ImGuiInputTextFlags::CallbackCharFilter) do |data|
+          if data.event_char >= 'a' && data.event_char <= 'z'
+            data.event_char += 'A' - 'a'
+          elsif data.event_char >= 'A' && data.event_char <= 'Z'
+            data.event_char += 'a' - 'A'
+          end
+          0
+        end
+        static buf7 = ImGui::TextBuffer.new(32)
+        ImGui.input_text("\"imgui\"", buf7.val, ImGuiInputTextFlags::CallbackCharFilter) do |data|
           if data.event_char.ord < 256 && "imgui".includes?(data.event_char)
             0
           else
