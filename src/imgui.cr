@@ -46,7 +46,7 @@ module ImGui
 
       {% verbatim do %}
       {% for arg in args %}{% if arg.is_a?(PointerOf) %}
-        if (typeof(%result) == Bool ? %result : {{arg.exp}} != %val{arg})
+        if {{arg.exp}} != %val{arg}
           {% if arg.exp.id.ends_with?("?") %}{{arg.exp.id[0...-1]}}{% else %}{{arg.exp}}{% end %} = %val{arg}
         end
       {% end %}{% end %}
