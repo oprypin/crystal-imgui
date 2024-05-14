@@ -181,7 +181,7 @@ lib LibImGui
   fun RadioButton_IntPtr = igRadioButton_IntPtr(label : LibC::Char*, v : LibC::Int*, v_button : LibC::Int) : Bool
   fun ProgressBar = igProgressBar(fraction : LibC::Float, size_arg : ImGui::ImVec2, overlay : LibC::Char*)
   fun Bullet = igBullet
-  fun Image = igImage(user_texture_id : ImTextureID, size : ImGui::ImVec2, uv0 : ImGui::ImVec2, uv1 : ImGui::ImVec2, tint_col : ImGui::ImVec4, border_col : ImGui::ImVec4)
+  fun Image = igImage(user_texture_id : ImTextureID, image_size : ImGui::ImVec2, uv0 : ImGui::ImVec2, uv1 : ImGui::ImVec2, tint_col : ImGui::ImVec4, border_col : ImGui::ImVec4)
   fun ImageButton = igImageButton(str_id : LibC::Char*, user_texture_id : ImTextureID, image_size : ImGui::ImVec2, uv0 : ImGui::ImVec2, uv1 : ImGui::ImVec2, bg_col : ImGui::ImVec4, tint_col : ImGui::ImVec4) : Bool
   fun BeginCombo = igBeginCombo(label : LibC::Char*, preview_value : LibC::Char*, flags : ImGui::ImGuiComboFlags) : Bool
   fun EndCombo = igEndCombo
@@ -413,11 +413,29 @@ lib LibImGui
   fun SaveIniSettingsToDisk = igSaveIniSettingsToDisk(ini_filename : LibC::Char*)
   fun SaveIniSettingsToMemory = igSaveIniSettingsToMemory(out_ini_size : LibC::SizeT*) : LibC::Char*
   fun DebugTextEncoding = igDebugTextEncoding(text : LibC::Char*)
+  fun DebugFlashStyleColor = igDebugFlashStyleColor(idx : ImGui::ImGuiCol)
   fun DebugCheckVersionAndDataLayout = igDebugCheckVersionAndDataLayout(version_str : LibC::Char*, sz_io : LibC::SizeT, sz_style : LibC::SizeT, sz_vec2 : LibC::SizeT, sz_vec4 : LibC::SizeT, sz_drawvert : LibC::SizeT, sz_drawidx : LibC::SizeT) : Bool
   fun SetAllocatorFunctions = igSetAllocatorFunctions(alloc_func : ImGuiMemAllocFunc, free_func : ImGuiMemFreeFunc, user_data : Void*)
   fun GetAllocatorFunctions = igGetAllocatorFunctions(p_alloc_func : ImGuiMemAllocFunc*, p_free_func : ImGuiMemFreeFunc*, p_user_data : Void**)
   fun MemAlloc = igMemAlloc(size : LibC::SizeT) : Void*
   fun MemFree = igMemFree(ptr : Void*)
+
+  struct ImGuiTableSortSpecs
+    specs : ImGuiTableColumnSortSpecs*
+    specs_count : LibC::Int
+    specs_dirty : Bool
+  end
+
+  fun ImGuiTableSortSpecs_ImGuiTableSortSpecs = ImGuiTableSortSpecs_ImGuiTableSortSpecs : ImGuiTableSortSpecs*
+
+  struct ImGuiTableColumnSortSpecs
+    column_user_id : ImGuiID
+    column_index : Int16
+    sort_order : Int16
+    sort_direction : ImGui::ImGuiSortDirection
+  end
+
+  fun ImGuiTableColumnSortSpecs_ImGuiTableColumnSortSpecs = ImGuiTableColumnSortSpecs_ImGuiTableColumnSortSpecs : ImGuiTableColumnSortSpecs*
 
   struct ImGuiStyle
     alpha : LibC::Float
@@ -511,6 +529,7 @@ lib LibImGui
     mouse_drag_threshold : LibC::Float
     key_repeat_delay : LibC::Float
     key_repeat_rate : LibC::Float
+    config_debug_is_debugger_present : Bool
     config_debug_begin_return_value_once : Bool
     config_debug_begin_return_value_loop : Bool
     config_debug_ignore_focus_loss : Bool
@@ -637,23 +656,6 @@ lib LibImGui
   fun ImGuiPayload_IsDataType = ImGuiPayload_IsDataType(self : ImGuiPayload*, type : LibC::Char*) : Bool
   fun ImGuiPayload_IsPreview = ImGuiPayload_IsPreview(self : ImGuiPayload*) : Bool
   fun ImGuiPayload_IsDelivery = ImGuiPayload_IsDelivery(self : ImGuiPayload*) : Bool
-
-  struct ImGuiTableColumnSortSpecs
-    column_user_id : ImGuiID
-    column_index : Int16
-    sort_order : Int16
-    sort_direction : ImGui::ImGuiSortDirection
-  end
-
-  fun ImGuiTableColumnSortSpecs_ImGuiTableColumnSortSpecs = ImGuiTableColumnSortSpecs_ImGuiTableColumnSortSpecs : ImGuiTableColumnSortSpecs*
-
-  struct ImGuiTableSortSpecs
-    specs : ImGuiTableColumnSortSpecs*
-    specs_count : LibC::Int
-    specs_dirty : Bool
-  end
-
-  fun ImGuiTableSortSpecs_ImGuiTableSortSpecs = ImGuiTableSortSpecs_ImGuiTableSortSpecs : ImGuiTableSortSpecs*
   fun ImGuiOnceUponAFrame_ImGuiOnceUponAFrame = ImGuiOnceUponAFrame_ImGuiOnceUponAFrame : ImGui::ImGuiOnceUponAFrame*
 
   struct ImGuiTextFilter
@@ -1317,7 +1319,7 @@ lib LibImGui
   fun IsWindowAbove = igIsWindowAbove(potential_above : ImGuiWindow*, potential_below : ImGuiWindow*) : Bool
   fun IsWindowNavFocusable = igIsWindowNavFocusable(window : ImGuiWindow*) : Bool
   fun SetWindowHitTestHole = igSetWindowHitTestHole(window : ImGuiWindow*, pos : ImGui::ImVec2, size : ImGui::ImVec2)
-  fun SetWindowHiddendAndSkipItemsForCurrentFrame = igSetWindowHiddendAndSkipItemsForCurrentFrame(window : ImGuiWindow*)
+  fun SetWindowHiddenAndSkipItemsForCurrentFrame = igSetWindowHiddenAndSkipItemsForCurrentFrame(window : ImGuiWindow*)
   fun WindowRectAbsToRel = igWindowRectAbsToRel(pOut : ImRect*, window : ImGuiWindow*, r : ImRect)
   fun WindowRectRelToAbs = igWindowRectRelToAbs(pOut : ImRect*, window : ImGuiWindow*, r : ImRect)
   fun WindowPosRelToAbs = igWindowPosRelToAbs(pOut : ImGui::ImVec2*, window : ImGuiWindow*, p : ImGui::ImVec2)
@@ -1441,7 +1443,7 @@ lib LibImGui
   fun ConvertSingleModFlagToKey = igConvertSingleModFlagToKey(ctx : ImGuiContext*, key : ImGui::ImGuiKey) : ImGui::ImGuiKey
   fun GetKeyData_ContextPtr = igGetKeyData_ContextPtr(ctx : ImGuiContext*, key : ImGui::ImGuiKey) : ImGuiKeyData*
   fun GetKeyData_Key = igGetKeyData_Key(key : ImGui::ImGuiKey) : ImGuiKeyData*
-  fun GetKeyChordName = igGetKeyChordName(key_chord : ImGuiKeyChord, out_buf : LibC::Char*, out_buf_size : LibC::Int)
+  fun GetKeyChordName = igGetKeyChordName(key_chord : ImGuiKeyChord, out_buf : LibC::Char*, out_buf_size : LibC::Int) : LibC::Char*
   fun MouseButtonToKey = igMouseButtonToKey(button : ImGui::ImGuiMouseButton) : ImGui::ImGuiKey
   fun IsMouseDragPastThreshold = igIsMouseDragPastThreshold(button : ImGui::ImGuiMouseButton, lock_threshold : LibC::Float) : Bool
   fun GetKeyMagnitude2d = igGetKeyMagnitude2d(pOut : ImGui::ImVec2*, key_left : ImGui::ImGuiKey, key_right : ImGui::ImGuiKey, key_up : ImGui::ImGuiKey, key_down : ImGui::ImGuiKey)
@@ -1468,7 +1470,7 @@ lib LibImGui
   fun BeginDragDropTargetCustom = igBeginDragDropTargetCustom(bb : ImRect, id : ImGuiID) : Bool
   fun ClearDragDrop = igClearDragDrop
   fun IsDragDropPayloadBeingAccepted = igIsDragDropPayloadBeingAccepted : Bool
-  fun RenderDragDropTargetRect = igRenderDragDropTargetRect(bb : ImRect)
+  fun RenderDragDropTargetRect = igRenderDragDropTargetRect(bb : ImRect, item_clip_rect : ImRect)
   fun GetTypingSelectRequest = igGetTypingSelectRequest(flags : ImGui::ImGuiTypingSelectFlags) : ImGuiTypingSelectRequest*
   fun TypingSelectFindMatch = igTypingSelectFindMatch(req : ImGuiTypingSelectRequest*, items_count : LibC::Int, get_item_name_func : (Void*, LibC::Int) -> LibC::Char*, user_data : Void*, nav_item_idx : LibC::Int) : LibC::Int
   fun TypingSelectFindNextSingleCharMatch = igTypingSelectFindNextSingleCharMatch(req : ImGuiTypingSelectRequest*, items_count : LibC::Int, get_item_name_func : (Void*, LibC::Int) -> LibC::Char*, user_data : Void*, nav_item_idx : LibC::Int) : LibC::Int
@@ -1624,6 +1626,9 @@ lib LibImGui
   fun DebugLocateItem = igDebugLocateItem(target_id : ImGuiID)
   fun DebugLocateItemOnHover = igDebugLocateItemOnHover(target_id : ImGuiID)
   fun DebugLocateItemResolveWithLastItem = igDebugLocateItemResolveWithLastItem
+  fun DebugBreakClearData = igDebugBreakClearData
+  fun DebugBreakButton = igDebugBreakButton(label : LibC::Char*, description_of_location : LibC::Char*) : Bool
+  fun DebugBreakButtonTooltip = igDebugBreakButtonTooltip(keyboard_only : Bool, description_of_location : LibC::Char*)
   fun DebugStartItemPicker = igDebugStartItemPicker
   fun ShowFontAtlas = igShowFontAtlas(atlas : ImFontAtlas*)
   fun DebugHookIdInfo = igDebugHookIdInfo(id : ImGuiID, data_type : ImGui::ImGuiDataType, data_id : Void*, data_id_end : Void*)

@@ -1,6 +1,6 @@
 module ImGui
-  VERSION               = "1.90.0"
-  VERSION_NUM           = 19000
+  VERSION               = "1.90.1"
+  VERSION_NUM           = 19010
   PAYLOAD_TYPE_COLOR_3F = "_COL3F"
   PAYLOAD_TYPE_COLOR_4F = "_COL4F"
 
@@ -216,98 +216,9 @@ module ImGui
     NoReorder                    = 1 << 5
     Leading                      = 1 << 6
     Trailing                     = 1 << 7
+    NoAssumedClosure             = 1 << 8
   end
   alias TopLevel::ImGuiTabItemFlags = ImGui::ImGuiTabItemFlags
-
-  @[Flags]
-  enum ImGuiTableFlags
-    None                       = 0
-    Resizable                  = 1 << 0
-    Reorderable                = 1 << 1
-    Hideable                   = 1 << 2
-    Sortable                   = 1 << 3
-    NoSavedSettings            = 1 << 4
-    ContextMenuInBody          = 1 << 5
-    RowBg                      = 1 << 6
-    BordersInnerH              = 1 << 7
-    BordersOuterH              = 1 << 8
-    BordersInnerV              = 1 << 9
-    BordersOuterV              = 1 << 10
-    BordersH                   = BordersInnerH | BordersOuterH
-    BordersV                   = BordersInnerV | BordersOuterV
-    BordersInner               = BordersInnerV | BordersInnerH
-    BordersOuter               = BordersOuterV | BordersOuterH
-    Borders                    = BordersInner | BordersOuter
-    NoBordersInBody            = 1 << 11
-    NoBordersInBodyUntilResize = 1 << 12
-    SizingFixedFit             = 1 << 13
-    SizingFixedSame            = 2 << 13
-    SizingStretchProp          = 3 << 13
-    SizingStretchSame          = 4 << 13
-    NoHostExtendX              = 1 << 16
-    NoHostExtendY              = 1 << 17
-    NoKeepColumnsVisible       = 1 << 18
-    PreciseWidths              = 1 << 19
-    NoClip                     = 1 << 20
-    PadOuterX                  = 1 << 21
-    NoPadOuterX                = 1 << 22
-    NoPadInnerX                = 1 << 23
-    ScrollX                    = 1 << 24
-    ScrollY                    = 1 << 25
-    SortMulti                  = 1 << 26
-    SortTristate               = 1 << 27
-    HighlightHoveredColumn     = 1 << 28
-    SizingMask_                = SizingFixedFit | SizingFixedSame | SizingStretchProp | SizingStretchSame
-  end
-  alias TopLevel::ImGuiTableFlags = ImGui::ImGuiTableFlags
-
-  @[Flags]
-  enum ImGuiTableColumnFlags
-    None                 = 0
-    Disabled             = 1 << 0
-    DefaultHide          = 1 << 1
-    DefaultSort          = 1 << 2
-    WidthStretch         = 1 << 3
-    WidthFixed           = 1 << 4
-    NoResize             = 1 << 5
-    NoReorder            = 1 << 6
-    NoHide               = 1 << 7
-    NoClip               = 1 << 8
-    NoSort               = 1 << 9
-    NoSortAscending      = 1 << 10
-    NoSortDescending     = 1 << 11
-    NoHeaderLabel        = 1 << 12
-    NoHeaderWidth        = 1 << 13
-    PreferSortAscending  = 1 << 14
-    PreferSortDescending = 1 << 15
-    IndentEnable         = 1 << 16
-    IndentDisable        = 1 << 17
-    AngledHeader         = 1 << 18
-    IsEnabled            = 1 << 24
-    IsVisible            = 1 << 25
-    IsSorted             = 1 << 26
-    IsHovered            = 1 << 27
-    WidthMask_           = WidthStretch | WidthFixed
-    IndentMask_          = IndentEnable | IndentDisable
-    StatusMask_          = IsEnabled | IsVisible | IsSorted | IsHovered
-    NoDirectResize_      = 1 << 30
-  end
-  alias TopLevel::ImGuiTableColumnFlags = ImGui::ImGuiTableColumnFlags
-
-  @[Flags]
-  enum ImGuiTableRowFlags
-    None    = 0
-    Headers = 1 << 0
-  end
-  alias TopLevel::ImGuiTableRowFlags = ImGui::ImGuiTableRowFlags
-
-  enum ImGuiTableBgTarget
-    None   = 0
-    RowBg0 = 1
-    RowBg1 = 2
-    CellBg = 3
-  end
-  alias TopLevel::ImGuiTableBgTarget = ImGui::ImGuiTableBgTarget
 
   @[Flags]
   enum ImGuiFocusedFlags
@@ -765,6 +676,96 @@ module ImGui
   end
   alias TopLevel::ImGuiCond = ImGui::ImGuiCond
 
+  @[Flags]
+  enum ImGuiTableFlags
+    None                       = 0
+    Resizable                  = 1 << 0
+    Reorderable                = 1 << 1
+    Hideable                   = 1 << 2
+    Sortable                   = 1 << 3
+    NoSavedSettings            = 1 << 4
+    ContextMenuInBody          = 1 << 5
+    RowBg                      = 1 << 6
+    BordersInnerH              = 1 << 7
+    BordersOuterH              = 1 << 8
+    BordersInnerV              = 1 << 9
+    BordersOuterV              = 1 << 10
+    BordersH                   = BordersInnerH | BordersOuterH
+    BordersV                   = BordersInnerV | BordersOuterV
+    BordersInner               = BordersInnerV | BordersInnerH
+    BordersOuter               = BordersOuterV | BordersOuterH
+    Borders                    = BordersInner | BordersOuter
+    NoBordersInBody            = 1 << 11
+    NoBordersInBodyUntilResize = 1 << 12
+    SizingFixedFit             = 1 << 13
+    SizingFixedSame            = 2 << 13
+    SizingStretchProp          = 3 << 13
+    SizingStretchSame          = 4 << 13
+    NoHostExtendX              = 1 << 16
+    NoHostExtendY              = 1 << 17
+    NoKeepColumnsVisible       = 1 << 18
+    PreciseWidths              = 1 << 19
+    NoClip                     = 1 << 20
+    PadOuterX                  = 1 << 21
+    NoPadOuterX                = 1 << 22
+    NoPadInnerX                = 1 << 23
+    ScrollX                    = 1 << 24
+    ScrollY                    = 1 << 25
+    SortMulti                  = 1 << 26
+    SortTristate               = 1 << 27
+    HighlightHoveredColumn     = 1 << 28
+    SizingMask_                = SizingFixedFit | SizingFixedSame | SizingStretchProp | SizingStretchSame
+  end
+  alias TopLevel::ImGuiTableFlags = ImGui::ImGuiTableFlags
+
+  @[Flags]
+  enum ImGuiTableColumnFlags
+    None                 = 0
+    Disabled             = 1 << 0
+    DefaultHide          = 1 << 1
+    DefaultSort          = 1 << 2
+    WidthStretch         = 1 << 3
+    WidthFixed           = 1 << 4
+    NoResize             = 1 << 5
+    NoReorder            = 1 << 6
+    NoHide               = 1 << 7
+    NoClip               = 1 << 8
+    NoSort               = 1 << 9
+    NoSortAscending      = 1 << 10
+    NoSortDescending     = 1 << 11
+    NoHeaderLabel        = 1 << 12
+    NoHeaderWidth        = 1 << 13
+    PreferSortAscending  = 1 << 14
+    PreferSortDescending = 1 << 15
+    IndentEnable         = 1 << 16
+    IndentDisable        = 1 << 17
+    AngledHeader         = 1 << 18
+    IsEnabled            = 1 << 24
+    IsVisible            = 1 << 25
+    IsSorted             = 1 << 26
+    IsHovered            = 1 << 27
+    WidthMask_           = WidthStretch | WidthFixed
+    IndentMask_          = IndentEnable | IndentDisable
+    StatusMask_          = IsEnabled | IsVisible | IsSorted | IsHovered
+    NoDirectResize_      = 1 << 30
+  end
+  alias TopLevel::ImGuiTableColumnFlags = ImGui::ImGuiTableColumnFlags
+
+  @[Flags]
+  enum ImGuiTableRowFlags
+    None    = 0
+    Headers = 1 << 0
+  end
+  alias TopLevel::ImGuiTableRowFlags = ImGui::ImGuiTableRowFlags
+
+  enum ImGuiTableBgTarget
+    None   = 0
+    RowBg0 = 1
+    RowBg1 = 2
+    CellBg = 3
+  end
+  alias TopLevel::ImGuiTableBgTarget = ImGui::ImGuiTableBgTarget
+
   @[Extern]
   struct ImVector
   end
@@ -948,8 +949,8 @@ module ImGui
     HasDeactivated   = 1 << 5
     Deactivated      = 1 << 6
     HoveredWindow    = 1 << 7
-    FocusedByTabbing = 1 << 8
-    Visible          = 1 << 9
+    Visible          = 1 << 8
+    HasClipRect      = 1 << 9
   end
 
   # :nodoc:
@@ -1064,30 +1065,37 @@ module ImGui
   # :nodoc:
   @[Flags]
   enum ImGuiInputFlags
-    None                       = 0
-    Repeat                     = 1 << 0
-    RepeatRateDefault          = 1 << 1
-    RepeatRateNavMove          = 1 << 2
-    RepeatRateNavTweak         = 1 << 3
-    RepeatRateMask_            = RepeatRateDefault | RepeatRateNavMove | RepeatRateNavTweak
-    CondHovered                = 1 << 4
-    CondActive                 = 1 << 5
-    CondDefault_               = CondHovered | CondActive
-    CondMask_                  = CondHovered | CondActive
-    LockThisFrame              = 1 << 6
-    LockUntilRelease           = 1 << 7
-    RouteFocused               = 1 << 8
-    RouteGlobalLow             = 1 << 9
-    RouteGlobal                = 1 << 10
-    RouteGlobalHigh            = 1 << 11
-    RouteMask_                 = RouteFocused | RouteGlobal | RouteGlobalLow | RouteGlobalHigh
-    RouteAlways                = 1 << 12
-    RouteUnlessBgFocused       = 1 << 13
-    RouteExtraMask_            = RouteAlways | RouteUnlessBgFocused
-    SupportedByIsKeyPressed    = Repeat | RepeatRateMask_
-    SupportedByShortcut        = Repeat | RepeatRateMask_ | RouteMask_ | RouteExtraMask_
-    SupportedBySetKeyOwner     = LockThisFrame | LockUntilRelease
-    SupportedBySetItemKeyOwner = SupportedBySetKeyOwner | CondMask_
+    None                             = 0
+    Repeat                           = 1 << 0
+    RepeatRateDefault                = 1 << 1
+    RepeatRateNavMove                = 1 << 2
+    RepeatRateNavTweak               = 1 << 3
+    RepeatUntilRelease               = 1 << 4
+    RepeatUntilKeyModsChange         = 1 << 5
+    RepeatUntilKeyModsChangeFromNone = 1 << 6
+    RepeatUntilOtherKeyPress         = 1 << 7
+    CondHovered                      = 1 << 8
+    CondActive                       = 1 << 9
+    CondDefault_                     = CondHovered | CondActive
+    CondMask_                        = CondHovered | CondActive
+    LockThisFrame                    = 1 << 10
+    LockUntilRelease                 = 1 << 11
+    RouteFocused                     = 1 << 12
+    RouteGlobalLow                   = 1 << 13
+    RouteGlobal                      = 1 << 14
+    RouteGlobalHigh                  = 1 << 15
+    RouteMask_                       = RouteFocused | RouteGlobal | RouteGlobalLow | RouteGlobalHigh
+    RouteAlways                      = 1 << 16
+    RouteUnlessBgFocused             = 1 << 17
+    RouteExtraMask_                  = RouteAlways | RouteUnlessBgFocused
+    RepeatRateMask_                  = RepeatRateDefault | RepeatRateNavMove | RepeatRateNavTweak
+    RepeatUntilMask_                 = RepeatUntilRelease | RepeatUntilKeyModsChange | RepeatUntilKeyModsChangeFromNone | RepeatUntilOtherKeyPress
+    RepeatMask_                      = Repeat | RepeatRateMask_ | RepeatUntilMask_
+    SupportedByIsKeyPressed          = RepeatMask_
+    SupportedByIsMouseClicked        = Repeat
+    SupportedByShortcut              = RepeatMask_ | RouteMask_ | RouteExtraMask_
+    SupportedBySetKeyOwner           = LockThisFrame | LockUntilRelease
+    SupportedBySetItemKeyOwner       = SupportedBySetKeyOwner | CondMask_
   end
 
   # :nodoc:
@@ -1097,6 +1105,7 @@ module ImGui
     PreferInput        = 1 << 0
     PreferTweak        = 1 << 1
     TryToPreserveState = 1 << 2
+    FromTabbing        = 1 << 3
   end
 
   # :nodoc:
@@ -1195,8 +1204,8 @@ module ImGui
     EventSelection     = 1 << 5
     EventIO            = 1 << 6
     EventMask_         = EventActiveId | EventFocus | EventPopup | EventNav | EventClipper | EventSelection | EventIO
-    OutputToTTY        = 1 << 10
-    OutputToTestEngine = 1 << 11
+    OutputToTTY        = 1 << 20
+    OutputToTestEngine = 1 << 21
   end
 
   # :nodoc:

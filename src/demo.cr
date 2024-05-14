@@ -1,4 +1,4 @@
-# Based on https://github.com/ocornut/imgui/blob/v1.90/imgui_demo.cpp
+# Based on https://github.com/ocornut/imgui/blob/v1.90.1/imgui_demo.cpp
 
 require "./imgui"
 require "./util"
@@ -270,11 +270,14 @@ module ImGuiDemo
           ImGui.text("Also see Style->Rendering for rendering options.")
 
           ImGui.separator_text("Debug")
+          ImGui.checkbox("io.ConfigDebugIsDebuggerPresent", pointerof(io.config_debug_is_debugger_present))
+          ImGui.same_line
+          help_marker("Enable various tools calling IM_DEBUG_BREAK().\n\nRequires a debugger being attached, otherwise IM_DEBUG_BREAK() options will appear to crash your application.")
           ImGui.disabled do
             ImGui.checkbox("io.ConfigDebugBeginReturnValueOnce", pointerof(io.config_debug_begin_return_value_once))
           end
           ImGui.same_line
-          help_marker("First calls to Begin()/BeginChild() will return false.\n\nTHIS OPTION IS DISABLED because it needs to be set at application boot-time to make sense. Showing the disabled option is a way to make this feature easier to discover")
+          help_marker("First calls to Begin()/BeginChild() will return false.\n\nTHIS OPTION IS DISABLED because it needs to be set at application boot-time to make sense. Showing the disabled option is a way to make this feature easier to discover.")
           ImGui.checkbox("io.ConfigDebugBeginReturnValueLoop", pointerof(io.config_debug_begin_return_value_loop))
           ImGui.same_line
           help_marker("Some calls to Begin()/BeginChild() will return false.\n\nWill cycle through window depths then repeat. Windows should be flickering while running.")
@@ -566,7 +569,8 @@ module ImGuiDemo
         ImGui.combo("combo", pointerof(item_current.val), items)
         ImGui.same_line
         help_marker(
-          "Using the simplified one-liner Combo API here.\nRefer to the \"Combo\" section below for an explanation of how to use the more flexible and general BeginCombo/EndCombo API.")
+          "Using the simplified one-liner Combo API here.\n" +
+          "Refer to the \"Combo\" section below for an explanation of how to use the more flexible and general BeginCombo/EndCombo API.")
       end
 
       begin
@@ -576,7 +580,8 @@ module ImGuiDemo
         ImGui.list_box("listbox", pointerof(item_current.val), items, 4)
         ImGui.same_line
         help_marker(
-          "Using the simplified one-liner ListBox API here.\nRefer to the \"List boxes\" section below for an explanation of how to use the more flexible and general BeginListBox/EndListBox API.")
+          "Using the simplified one-liner ListBox API here.\n" +
+          "Refer to the \"List boxes\" section below for an explanation of how to use the more flexible and general BeginListBox/EndListBox API.")
       end
     end
 
@@ -929,7 +934,9 @@ module ImGuiDemo
 
       items = ["AAAA", "BBBB", "CCCC", "DDDD", "EEEE", "FFFF", "GGGG", "HHHH", "IIII", "JJJJ", "KKKK", "LLLLLLL", "MMMM", "OOOOOOO"]
       static item_current_idx = 0
+
       combo_preview_value = items[item_current_idx.val]
+
       ImGui.combo("combo 1", combo_preview_value, flags.val) do
         items.size.times do |n|
           is_selected = (item_current_idx.val == n)
@@ -1155,6 +1162,8 @@ module ImGuiDemo
         help_marker("You can use the ImGuiInputTextFlags_CallbackResize facility if you need to wire InputTextMultiline() to a dynamic string type. See misc/cpp/imgui_stdlib.h for an example. (This is not demonstrated in src/demo.cr because we don't want to include <string> in here)")
         ImGui.checkbox_flags("ImGuiInputTextFlags_ReadOnly", pointerof(flags.val), ImGuiInputTextFlags::ReadOnly)
         ImGui.checkbox_flags("ImGuiInputTextFlags_AllowTabInput", pointerof(flags.val), ImGuiInputTextFlags::AllowTabInput)
+        ImGui.same_line
+        help_marker("When _AllowTabInput is set, passing through the widget with Tabbing doesn't automatically activate it, in order to also cycling through subsequent widgets.")
         ImGui.checkbox_flags("ImGuiInputTextFlags_CtrlEnterForNewLine", pointerof(flags.val), ImGuiInputTextFlags::CtrlEnterForNewLine)
         ImGui.input_text_multiline("##source", text.val, ImVec2.new(-Float32::MIN_POSITIVE, ImGui.get_text_line_height * 16), flags.val)
       end
@@ -1230,17 +1239,22 @@ module ImGuiDemo
         static buf1 = ImGui::TextBuffer.new(64)
         ImGui.input_text("Completion", buf1.val, ImGuiInputTextFlags::CallbackCompletion, &my_callback)
         ImGui.same_line
-        help_marker("Here we append \"..\" each time Tab is pressed. See 'Examples>Console' for a more meaningful demonstration of using this callback.")
+        help_marker(
+          "Here we append \"..\" each time Tab is pressed. " +
+          "See 'Examples>Console' for a more meaningful demonstration of using this callback.")
 
         static buf2 = ImGui::TextBuffer.new(64)
         ImGui.input_text("History", buf2.val, ImGuiInputTextFlags::CallbackHistory, &my_callback)
         ImGui.same_line
-        help_marker("Here we replace and select text each time Up/Down are pressed. See 'Examples>Console' for a more meaningful demonstration of using this callback.")
+        help_marker(
+          "Here we replace and select text each time Up/Down are pressed. " +
+          "See 'Examples>Console' for a more meaningful demonstration of using this callback.")
 
         static buf3 = ImGui::TextBuffer.new(64)
         ImGui.input_text("Edit", buf3.val, ImGuiInputTextFlags::CallbackEdit, &my_callback)
         ImGui.same_line
-        help_marker("Here we toggle the casing of the first character on every edit + count edits.")
+        help_marker(
+          "Here we toggle the casing of the first character on every edit + count edits.")
         ImGui.same_line
         ImGui.text("(%d)", edit_count.val)
       end
@@ -2971,7 +2985,9 @@ module ImGuiDemo
           demo_marker("Layout/Scrolling/Horizontal contents size demo window")
           ImGui.push_style_var(ImGuiStyleVar::ItemSpacing, ImVec2.new(2, 0))
           ImGui.push_style_var(ImGuiStyleVar::FramePadding, ImVec2.new(2, 0))
-          help_marker("Test of different widgets react and impact the work rectangle growing when horizontal scrolling is enabled.\n\nUse 'Metrics->Tools->Show windows rectangles' to visualize rectangles.")
+          help_marker(
+            "Test how different widgets react and impact the work rectangle growing when horizontal scrolling is enabled.\n\n" +
+            "Use 'Metrics->Tools->Show windows rectangles' to visualize rectangles.")
           ImGui.checkbox("H-scrollbar", pointerof(show_h_scrollbar.val))
           ImGui.checkbox("Button", pointerof(show_button.val))
           ImGui.checkbox("Tree nodes", pointerof(show_tree_nodes.val))
@@ -3105,7 +3121,8 @@ module ImGuiDemo
 
       help_marker(
         "Hit-testing is by default performed in item submission order, which generally is perceived as 'back-to-front'.\n\n" +
-        "By using SetNextItemAllowOverlap() you can notify that an item may be overlapped by another. Doing so alters the hovering logic: items using AllowOverlap mode requires an extra frame to accept hovered state.")
+        "By using SetNextItemAllowOverlap() you can notify that an item may be overlapped by another. " +
+        "Doing so alters the hovering logic: items using AllowOverlap mode requires an extra frame to accept hovered state.")
       ImGui.checkbox("Enable AllowOverlap", pointerof(enable_allow_overlap.val))
 
       button1_pos = ImGui.get_cursor_screen_pos
@@ -3610,8 +3627,9 @@ module ImGuiDemo
         end
 
         help_marker(
-          "Only using TableNextColumn(), which tends to be convenient for tables where every cell contains the same type of contents.\n" +
-          "This is also more similar to the old NextColumn() function of the Columns API, and provided to facilitate the Columns->Tables API transition.")
+          "Only using TableNextColumn(), which tends to be convenient for tables where every cell contains " +
+          "the same type of contents.\n This is also more similar to the old NextColumn() function of the " +
+          "Columns API, and provided to facilitate the Columns->Tables API transition.")
         ImGui.table("table3", 3) do
           14.times do |item|
             ImGui.table_next_column
@@ -3697,7 +3715,9 @@ module ImGuiDemo
           ImGui.checkbox_flags("ImGuiTableFlags_Resizable", pointerof(flags.val), ImGuiTableFlags::Resizable)
           ImGui.checkbox_flags("ImGuiTableFlags_BordersV", pointerof(flags.val), ImGuiTableFlags::BordersV)
           ImGui.same_line
-          help_marker("Using the _Resizable flag automatically enables the _BordersInnerV flag as well, this is why the resize borders are still showing when unchecking this.")
+          help_marker(
+            "Using the _Resizable flag automatically enables the _BordersInnerV flag as well, " +
+            "this is why the resize borders are still showing when unchecking this.")
         end
 
         ImGui.table("table1", 3, flags.val) do
@@ -3836,7 +3856,8 @@ module ImGuiDemo
           "e.g.:\n" +
           "- BorderOuterV\n" +
           "- any form of row selection\n" +
-          "Because of this, activating BorderOuterV sets the default to PadOuterX. Using PadOuterX or NoPadOuterX you can override the default.\n\n" +
+          "Because of this, activating BorderOuterV sets the default to PadOuterX. " +
+          "Using PadOuterX or NoPadOuterX you can override the default.\n\n" +
           "Actual padding values are using style.CellPadding.\n\n" +
           "In this demo we don't show horizontal borders to emphasize how they don't affect default horizontal padding.")
 
@@ -3967,7 +3988,9 @@ module ImGuiDemo
         ImGui.spacing
         ImGui.text_unformatted("Advanced")
         ImGui.same_line
-        help_marker("This section allows you to interact and see the effect of various sizing policies depending on whether Scroll is enabled and the contents of your columns.")
+        help_marker(
+          "This section allows you to interact and see the effect of various sizing policies " +
+          "depending on whether Scroll is enabled and the contents of your columns.")
 
         static flags = ImGuiTableFlags::ScrollY | ImGuiTableFlags::Borders | ImGuiTableFlags::RowBg | ImGuiTableFlags::Resizable
         static contents_type = ContentsType2::ShowWidth
@@ -3980,7 +4003,9 @@ module ImGuiDemo
               ImGui.combo("Contents", pointerof(contents_type.val), "Show width\0Short Text\0Long Text\0Button\0Fill Button\0InputText\0")
               if contents_type.val == ContentsType2::FillButton
                 ImGui.same_line
-                help_marker("Be mindful that using right-alignment (e.g. size.x = -FLT_MIN) creates a feedback loop where contents width can feed into auto-column width can feed into contents width.")
+                help_marker(
+                  "Be mindful that using right-alignment (e.g. size.x = -FLT_MIN) creates a feedback loop " +
+                  "where contents width can feed into auto-column width can feed into contents width.")
               end
               ImGui.drag_int("Columns", pointerof(column_count.val), 0.1f32, 1, 64, "%d", ImGuiSliderFlags::AlwaysClamp)
               ImGui.checkbox_flags("ImGuiTableFlags_Resizable", pointerof(flags.val), ImGuiTableFlags::Resizable)
@@ -4028,7 +4053,9 @@ module ImGuiDemo
       end
       demo_marker("Tables/Vertical scrolling, with clipping")
       ImGui.tree_node("Vertical scrolling, with clipping") do
-        help_marker("Here we activate ScrollY, which will create a child window container to allow hosting scrollable contents.\n\nWe also demonstrate using ImGuiListClipper to virtualize the submission of many items.")
+        help_marker(
+          "Here we activate ScrollY, which will create a child window container to allow hosting scrollable contents.\n\n" +
+          "We also demonstrate using ImGuiListClipper to virtualize the submission of many items.")
         static flags = ImGuiTableFlags::ScrollY | ImGuiTableFlags::RowBg | ImGuiTableFlags::BordersOuter | ImGuiTableFlags::BordersV | ImGuiTableFlags::Resizable | ImGuiTableFlags::Reorderable | ImGuiTableFlags::Hideable
 
         with_style_compact do
@@ -4065,8 +4092,9 @@ module ImGuiDemo
         help_marker(
           "When ScrollX is enabled, the default sizing policy becomes ImGuiTableFlags_SizingFixedFit, " +
           "as automatically stretching columns doesn't make much sense with horizontal scrolling.\n\n" +
-          "Also note that as of the current version, you will almost always want to enable ScrollY along with ScrollX," +
-          "because the container window won't automatically extend vertically to fix contents (this may be improved in future versions).")
+          "Also note that as of the current version, you will almost always want to enable ScrollY along with ScrollX, " +
+          "because the container window won't automatically extend vertically to fix contents " +
+          "(this may be improved in future versions).")
         static flags = ImGuiTableFlags::ScrollX | ImGuiTableFlags::ScrollY | ImGuiTableFlags::RowBg | ImGuiTableFlags::BordersOuter | ImGuiTableFlags::BordersV | ImGuiTableFlags::Resizable | ImGuiTableFlags::Reorderable | ImGuiTableFlags::Hideable
         static freeze_cols = 1
         static freeze_rows = 1
@@ -4113,7 +4141,8 @@ module ImGuiDemo
         help_marker(
           "Showcase using Stretch columns + ScrollX together: " +
           "this is rather unusual and only makes sense when specifying an 'inner_width' for the table!\n" +
-          "Without an explicit value, inner_width is == outer_size.x and therefore using Stretch columns + ScrollX together doesn't make sense.")
+          "Without an explicit value, inner_width is == outer_size.x and therefore using Stretch columns " +
+          "along with ScrollX doesn't make sense.")
         static flags2 = ImGuiTableFlags::SizingStretchSame | ImGuiTableFlags::ScrollX | ImGuiTableFlags::ScrollY | ImGuiTableFlags::BordersOuter | ImGuiTableFlags::RowBg | ImGuiTableFlags::ContextMenuInBody
         static inner_width = 1000.0f32
         with_style_compact do
@@ -4220,7 +4249,9 @@ module ImGuiDemo
           end
         end
 
-        help_marker("Using TableSetupColumn() to setup explicit width.\n\nUnless _NoKeepColumnsVisible is set, fixed columns with set width may still be shrunk down if there's not enough space in the host.")
+        help_marker(
+          "Using TableSetupColumn() to setup explicit width.\n\nUnless _NoKeepColumnsVisible is set, " +
+          "fixed columns with set width may still be shrunk down if there's not enough space in the host.")
 
         static flags2 = ImGuiTableFlags::None
         with_style_compact do
@@ -4294,7 +4325,10 @@ module ImGuiDemo
       end
       demo_marker("Tables/Row height")
       ImGui.tree_node("Row height") do
-        help_marker("You can pass a 'min_row_height' to TableNextRow().\n\nRows are padded with 'style.CellPadding.y' on top and bottom, so effectively the minimum row height will always be >= 'style.CellPadding.y * 2.0f'.\n\nWe cannot honor a _maximum_ row height as that would require a unique clipping rectangle per row.")
+        help_marker(
+          "You can pass a 'min_row_height' to TableNextRow().\n\nRows are padded with 'style.CellPadding.y' on top and bottom, " +
+          "so effectively the minimum row height will always be >= 'style.CellPadding.y * 2.0f'.\n\n" +
+          "We cannot honor a _maximum_ row height as that would require a unique clipping rectangle per row.")
         ImGui.table("table_row_height", 1, ImGuiTableFlags::Borders) do
           8.times do |row|
             min_row_height = (text_base_height * 0.30f32 * row).to_i.to_f32
@@ -4304,7 +4338,10 @@ module ImGuiDemo
           end
         end
 
-        help_marker("Showcase using SameLine(0,0) to share Current Line Height between cells.\n\nPlease note that Tables Row Height is not the same thing as Current Line Height, as a table cell may contains multiple lines.")
+        help_marker(
+          "Showcase using SameLine(0,0) to share Current Line Height between cells.\n\n" +
+          "Please note that Tables Row Height is not the same thing as Current Line Height, " +
+          "as a table cell may contains multiple lines.")
         ImGui.table("table_share_lineheight", 2, ImGuiTableFlags::Borders) do
           ImGui.table_next_row
           ImGui.table_next_column
@@ -4481,7 +4518,8 @@ module ImGuiDemo
       ImGui.tree_node("Item width") do
         help_marker(
           "Showcase using PushItemWidth() and how it is preserved on a per-column basis.\n\n" +
-          "Note that on auto-resizing non-resizable fixed columns, querying the content width for e.g. right-alignment doesn't make sense.")
+          "Note that on auto-resizing non-resizable fixed columns, querying the content width for " +
+          "e.g. right-alignment doesn't make sense.")
         ImGui.table("table_item_width", 3, ImGuiTableFlags::Borders) do
           ImGui.table_setup_column("small")
           ImGui.table_setup_column("half")
@@ -4602,7 +4640,9 @@ module ImGuiDemo
       end
       demo_marker("Tables/Context menus")
       ImGui.tree_node("Context menus") do
-        help_marker("By default, right-clicking over a TableHeadersRow()/TableHeader() line will open the default context-menu.\nUsing ImGuiTableFlags_ContextMenuInBody we also allow right-clicking over columns body.")
+        help_marker(
+          "By default, right-clicking over a TableHeadersRow()/TableHeader() line will open the default context-menu.\n" +
+          "Using ImGuiTableFlags_ContextMenuInBody we also allow right-clicking over columns body.")
         static flags1 = ImGuiTableFlags::Resizable | ImGuiTableFlags::Reorderable | ImGuiTableFlags::Hideable | ImGuiTableFlags::Borders | ImGuiTableFlags::ContextMenuInBody
 
         with_style_compact do
@@ -4626,7 +4666,9 @@ module ImGuiDemo
           end
         end
 
-        help_marker("Demonstrate mixing table context menu (over header), item context button (over button) and custom per-colum context menu (over column body).")
+        help_marker(
+          "Demonstrate mixing table context menu (over header), item context button (over button) " +
+          "and custom per-colunm context menu (over column body).")
         flags2 = ImGuiTableFlags::Resizable | ImGuiTableFlags::SizingFixedFit | ImGuiTableFlags::Reorderable | ImGuiTableFlags::Hideable | ImGuiTableFlags::Borders
         if ImGui.begin_table("table_context_menu_2", columns_count, flags2)
           ImGui.table_setup_column("One")
@@ -5316,7 +5358,8 @@ module ImGuiDemo
         ImGui.tree_node("WantCapture override") do
           help_marker(
             "Hovering the colored canvas will override io.WantCaptureXXX fields.\n" +
-            "Notice how normally (when set to none), the value of io.WantCaptureKeyboard would be false when hovering and true when clicking.")
+            "Notice how normally (when set to none), the value of io.WantCaptureKeyboard would be false when hovering " +
+            "and true when clicking.")
           static capture_override_mouse = -1
           static capture_override_keyboard = -1
           capture_override_desc = ["None", "Set to false", "Set to true"]
@@ -5795,6 +5838,11 @@ module ImGuiDemo
                   next
                 end
                 ImGui.with_id(i) do
+                  if ImGui.button("?")
+                    ImGui.debug_flash_style_color(col_i)
+                  end
+                  ImGui.set_item_tooltip("Flash given color to identify places where it is used.")
+                  ImGui.same_line
                   ImGui.color_edit4("##color", pointerof(style.colors[i]), ImGuiColorEditFlags::AlphaBar | alpha_flags.val)
                   if style.colors[i] != ref.colors[i]
                     ImGui.same_line(0.0f32, style.item_inner_spacing.x)

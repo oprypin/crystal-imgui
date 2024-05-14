@@ -727,8 +727,8 @@ module ImGui
     LibImGui.Bullet
   end
 
-  def self.image(user_texture_id : ImTextureID, size : ImVec2, uv0 : ImVec2 = ImVec2.new(0, 0), uv1 : ImVec2 = ImVec2.new(1, 1), tint_col : ImVec4 = ImVec4.new(1, 1, 1, 1), border_col : ImVec4 = ImVec4.new(0, 0, 0, 0)) : Void
-    LibImGui.Image(user_texture_id, size, uv0, uv1, tint_col, border_col)
+  def self.image(user_texture_id : ImTextureID, image_size : ImVec2, uv0 : ImVec2 = ImVec2.new(0, 0), uv1 : ImVec2 = ImVec2.new(1, 1), tint_col : ImVec4 = ImVec4.new(1, 1, 1, 1), border_col : ImVec4 = ImVec4.new(0, 0, 0, 0)) : Void
+    LibImGui.Image(user_texture_id, image_size, uv0, uv1, tint_col, border_col)
   end
 
   def self.image_button(str_id : String, user_texture_id : ImTextureID, image_size : ImVec2, uv0 : ImVec2 = ImVec2.new(0, 0), uv1 : ImVec2 = ImVec2.new(1, 1), bg_col : ImVec4 = ImVec4.new(0, 0, 0, 0), tint_col : ImVec4 = ImVec4.new(1, 1, 1, 1)) : Bool
@@ -1817,6 +1817,10 @@ module ImGui
     LibImGui.DebugTextEncoding(text)
   end
 
+  def self.debug_flash_style_color(idx : ImGuiCol) : Void
+    LibImGui.DebugFlashStyleColor(idx)
+  end
+
   def self.debug_check_version_and_data_layout(version_str : String, sz_io : LibC::SizeT, sz_style : LibC::SizeT, sz_vec2 : LibC::SizeT, sz_vec4 : LibC::SizeT, sz_drawvert : LibC::SizeT, sz_drawidx : LibC::SizeT) : Bool
     LibImGui.DebugCheckVersionAndDataLayout(version_str, sz_io, sz_style, sz_vec2, sz_vec4, sz_drawvert, sz_drawidx)
   end
@@ -1836,6 +1840,84 @@ module ImGui
   def self.mem_free(ptr : Void*) : Void
     LibImGui.MemFree(ptr)
   end
+
+  struct ImGuiTableSortSpecs
+    include ClassType(LibImGui::ImGuiTableSortSpecs)
+
+    def specs : Slice(ImGuiTableColumnSortSpecs)
+      Slice.new(@this.value.specs_count.to_i) { |i| ImGuiTableColumnSortSpecs.new(@this.value.specs + i) }
+    end
+
+    def specs=(specs : Slice(ImGuiTableColumnSortSpecs))
+      @this.value.specs, @this.value.specs_count = specs.to_unsafe, specs.bytesize
+    end
+
+    def specs_count : Int32
+      @this.value.specs_count
+    end
+
+    def specs_count=(specs_count : Int32)
+      @this.value.specs_count = specs_count
+    end
+
+    def specs_dirty : Bool
+      @this.value.specs_dirty
+    end
+
+    def specs_dirty=(specs_dirty : Bool)
+      @this.value.specs_dirty = specs_dirty
+    end
+
+    def self.new : ImGuiTableSortSpecs?
+      result = LibImGui.ImGuiTableSortSpecs_ImGuiTableSortSpecs
+      result ? ImGuiTableSortSpecs.new(result) : nil
+    end
+  end
+
+  alias TopLevel::ImGuiTableSortSpecs = ImGui::ImGuiTableSortSpecs
+
+  struct ImGuiTableColumnSortSpecs
+    include ClassType(LibImGui::ImGuiTableColumnSortSpecs)
+
+    def column_user_id : ImGuiID
+      @this.value.column_user_id
+    end
+
+    def column_user_id=(column_user_id : ImGuiID)
+      @this.value.column_user_id = column_user_id
+    end
+
+    def column_index : Int16
+      @this.value.column_index
+    end
+
+    def column_index=(column_index : Int16)
+      @this.value.column_index = column_index
+    end
+
+    def sort_order : Int16
+      @this.value.sort_order
+    end
+
+    def sort_order=(sort_order : Int16)
+      @this.value.sort_order = sort_order
+    end
+
+    def sort_direction : ImGuiSortDirection
+      @this.value.sort_direction
+    end
+
+    def sort_direction=(sort_direction : ImGuiSortDirection)
+      @this.value.sort_direction = sort_direction
+    end
+
+    def self.new : ImGuiTableColumnSortSpecs
+      result = LibImGui.ImGuiTableColumnSortSpecs_ImGuiTableColumnSortSpecs
+      ImGuiTableColumnSortSpecs.new(result)
+    end
+  end
+
+  alias TopLevel::ImGuiTableColumnSortSpecs = ImGui::ImGuiTableColumnSortSpecs
 
   struct ImVector
     include StructType
@@ -2519,6 +2601,14 @@ module ImGui
 
     def key_repeat_rate=(key_repeat_rate : Float32)
       @this.value.key_repeat_rate = key_repeat_rate
+    end
+
+    def config_debug_is_debugger_present : Bool
+      @this.value.config_debug_is_debugger_present
+    end
+
+    def config_debug_is_debugger_present=(config_debug_is_debugger_present : Bool)
+      @this.value.config_debug_is_debugger_present = config_debug_is_debugger_present
     end
 
     def config_debug_begin_return_value_once : Bool
@@ -3337,84 +3427,6 @@ module ImGui
   end
 
   alias TopLevel::ImGuiPayload = ImGui::ImGuiPayload
-
-  struct ImGuiTableColumnSortSpecs
-    include ClassType(LibImGui::ImGuiTableColumnSortSpecs)
-
-    def column_user_id : ImGuiID
-      @this.value.column_user_id
-    end
-
-    def column_user_id=(column_user_id : ImGuiID)
-      @this.value.column_user_id = column_user_id
-    end
-
-    def column_index : Int16
-      @this.value.column_index
-    end
-
-    def column_index=(column_index : Int16)
-      @this.value.column_index = column_index
-    end
-
-    def sort_order : Int16
-      @this.value.sort_order
-    end
-
-    def sort_order=(sort_order : Int16)
-      @this.value.sort_order = sort_order
-    end
-
-    def sort_direction : ImGuiSortDirection
-      @this.value.sort_direction
-    end
-
-    def sort_direction=(sort_direction : ImGuiSortDirection)
-      @this.value.sort_direction = sort_direction
-    end
-
-    def self.new : ImGuiTableColumnSortSpecs
-      result = LibImGui.ImGuiTableColumnSortSpecs_ImGuiTableColumnSortSpecs
-      ImGuiTableColumnSortSpecs.new(result)
-    end
-  end
-
-  alias TopLevel::ImGuiTableColumnSortSpecs = ImGui::ImGuiTableColumnSortSpecs
-
-  struct ImGuiTableSortSpecs
-    include ClassType(LibImGui::ImGuiTableSortSpecs)
-
-    def specs : Slice(ImGuiTableColumnSortSpecs)
-      Slice.new(@this.value.specs_count.to_i) { |i| ImGuiTableColumnSortSpecs.new(@this.value.specs + i) }
-    end
-
-    def specs=(specs : Slice(ImGuiTableColumnSortSpecs))
-      @this.value.specs, @this.value.specs_count = specs.to_unsafe, specs.bytesize
-    end
-
-    def specs_count : Int32
-      @this.value.specs_count
-    end
-
-    def specs_count=(specs_count : Int32)
-      @this.value.specs_count = specs_count
-    end
-
-    def specs_dirty : Bool
-      @this.value.specs_dirty
-    end
-
-    def specs_dirty=(specs_dirty : Bool)
-      @this.value.specs_dirty = specs_dirty
-    end
-
-    def self.new : ImGuiTableSortSpecs?
-      result = LibImGui.ImGuiTableSortSpecs_ImGuiTableSortSpecs
-      result ? ImGuiTableSortSpecs.new(result) : nil
-    end
-  end
-
-  alias TopLevel::ImGuiTableSortSpecs = ImGui::ImGuiTableSortSpecs
 
   struct ImGuiOnceUponAFrame
     include StructType
