@@ -1,4 +1,4 @@
-# Based on https://github.com/ocornut/imgui/blob/v1.90.3/imgui_demo.cpp
+# Based on https://github.com/ocornut/imgui/blob/v1.90.4/imgui_demo.cpp
 
 require "./imgui"
 require "./util"
@@ -190,6 +190,14 @@ module ImGuiDemo
           ImGui.menu_item("Debug Log", "", pointerof(show_tool_debug_log.val), has_debug_tools)
           ImGui.menu_item("ID Stack Tool", "", pointerof(show_tool_id_stack_tool.val), has_debug_tools)
           ImGui.menu_item("Style Editor", "", pointerof(show_tool_style_editor.val))
+          is_debugger_present = ImGui.get_io.config_debug_is_debugger_present
+          if ImGui.menu_item("Item Picker", "", false, has_debug_tools && is_debugger_present)
+            ImGui.debug_start_item_picker
+          end
+          if !is_debugger_present
+            ImGui.set_item_tooltip("Requires io.ConfigDebugIsDebuggerPresent=true to be set.\n\nWe otherwise disable the menu option to avoid casual users crashing the application.\n\nYou can however always access the Item Picker in Metrics->Tools.")
+          end
+          ImGui.separator
           ImGui.menu_item("About Dear ImGui", "", pointerof(show_tool_about.val))
         end
       end
@@ -4596,22 +4604,25 @@ module ImGuiDemo
         rows_count = 12
 
         static table_flags = ImGuiTableFlags::SizingFixedFit | ImGuiTableFlags::ScrollX | ImGuiTableFlags::ScrollY | ImGuiTableFlags::BordersOuter | ImGuiTableFlags::BordersInnerH | ImGuiTableFlags::Hideable | ImGuiTableFlags::Resizable | ImGuiTableFlags::Reorderable | ImGuiTableFlags::HighlightHoveredColumn
+        static column_flags = ImGuiTableColumnFlags::AngledHeader | ImGuiTableColumnFlags::WidthFixed
         static bools = [false] * (columns_count * rows_count)
         static frozen_cols = 1
         static frozen_rows = 2
         ImGui.checkbox_flags("_ScrollX", pointerof(table_flags.val), ImGuiTableFlags::ScrollX)
         ImGui.checkbox_flags("_ScrollY", pointerof(table_flags.val), ImGuiTableFlags::ScrollY)
+        ImGui.checkbox_flags("_Resizable", pointerof(table_flags.val), ImGuiTableFlags::Resizable)
         ImGui.checkbox_flags("_NoBordersInBody", pointerof(table_flags.val), ImGuiTableFlags::NoBordersInBody)
         ImGui.checkbox_flags("_HighlightHoveredColumn", pointerof(table_flags.val), ImGuiTableFlags::HighlightHoveredColumn)
         ImGui.set_next_item_width(ImGui.get_font_size * 8)
         ImGui.slider_int("Frozen columns", pointerof(frozen_cols.val), 0, 2)
         ImGui.set_next_item_width(ImGui.get_font_size * 8)
         ImGui.slider_int("Frozen rows", pointerof(frozen_rows.val), 0, 2)
+        ImGui.checkbox_flags("Disable header contributing to column width", pointerof(column_flags.val), ImGuiTableColumnFlags::NoHeaderWidth)
 
         ImGui.table("table_angled_headers", columns_count, table_flags.val, ImVec2.new(0.0f32, text_base_height * 12)) do
           ImGui.table_setup_column(column_names[0], ImGuiTableColumnFlags::NoHide | ImGuiTableColumnFlags::NoReorder)
           (1...columns_count).each do |n|
-            ImGui.table_setup_column(column_names[n], ImGuiTableColumnFlags::AngledHeader | ImGuiTableColumnFlags::WidthFixed)
+            ImGui.table_setup_column(column_names[n], column_flags.val)
           end
           ImGui.table_setup_scroll_freeze(frozen_cols.val, frozen_rows.val)
 
@@ -6883,6 +6894,9 @@ module ImGuiDemo
           rounding = sz.val / 5.0f32
           circle_segments = circle_segments_override.val ? circle_segments_override_v.val : 0
           curve_segments = curve_segments_override.val ? curve_segments_override_v.val : 0
+          cp3 = [ImVec2.new(0.0f32, sz.val * 0.6f32), ImVec2.new(sz.val * 0.5f32, -sz.val * 0.4f32), ImVec2.new(sz.val, sz.val)]
+          cp4 = [ImVec2.new(0.0f32, 0.0f32), ImVec2.new(sz.val * 1.3f32, sz.val * 0.3f32), ImVec2.new(sz.val - sz.val * 1.3f32, sz.val - sz.val * 0.3f32), ImVec2.new(sz.val, sz.val)]
+
           x = p.x + 4.0f32
           y = p.y + 4.0f32
           2.times do |n|
@@ -6909,16 +6923,19 @@ module ImGuiDemo
             draw_list.add_line(ImVec2.new(x, y), ImVec2.new(x + sz.val, y + sz.val), col, th)
             x += sz.val + spacing
 
-            cp3 = [ImVec2.new(x, y + sz.val * 0.6f32), ImVec2.new(x + sz.val * 0.5f32, y - sz.val * 0.4f32), ImVec2.new(x + sz.val, y + sz.val)]
-            draw_list.add_bezier_quadratic(cp3[0], cp3[1], cp3[2], col, th, curve_segments)
+            draw_list.path_arc_to(ImVec2.new(x + sz.val * 0.5f32, y + sz.val * 0.5f32), sz.val * 0.5f32, 3.141592f32, 3.141592f32 * -0.5f32)
+            draw_list.path_stroke(col, ImDrawFlags::None, th)
             x += sz.val + spacing
 
-            cp4 = [ImVec2.new(x, y), ImVec2.new(x + sz.val * 1.3f32, y + sz.val * 0.3f32), ImVec2.new(x + sz.val - sz.val * 1.3f32, y + sz.val - sz.val * 0.3f32), ImVec2.new(x + sz.val, y + sz.val)]
-            draw_list.add_bezier_cubic(cp4[0], cp4[1], cp4[2], cp4[3], col, th, curve_segments)
+            draw_list.add_bezier_quadratic(ImVec2.new(x + cp3[0].x, y + cp3[0].y), ImVec2.new(x + cp3[1].x, y + cp3[1].y), ImVec2.new(x + cp3[2].x, y + cp3[2].y), col, th, curve_segments)
+            x += sz.val + spacing
+
+            draw_list.add_bezier_cubic(ImVec2.new(x + cp4[0].x, y + cp4[0].y), ImVec2.new(x + cp4[1].x, y + cp4[1].y), ImVec2.new(x + cp4[2].x, y + cp4[2].y), ImVec2.new(x + cp4[3].x, y + cp4[3].y), col, th, curve_segments)
 
             x = p.x + 4
             y += sz.val + spacing
           end
+
           draw_list.add_ngon_filled(ImVec2.new(x + sz.val * 0.5f32, y + sz.val * 0.5f32), sz.val * 0.5f32, col, ngon_sides.val)
           x += sz.val + spacing
           draw_list.add_circle_filled(ImVec2.new(x + sz.val * 0.5f32, y + sz.val * 0.5f32), sz.val * 0.5f32, col, circle_segments)
@@ -6940,9 +6957,19 @@ module ImGuiDemo
           x += spacing * 2.0f32
           draw_list.add_rect_filled(ImVec2.new(x, y), ImVec2.new(x + 1, y + 1), col)
           x += sz.val
+
+          draw_list.path_arc_to(ImVec2.new(x + sz.val * 0.5f32, y + sz.val * 0.5f32), sz.val * 0.5f32, 3.141592f32 * -0.5f32, 3.141592f32)
+          draw_list.path_fill_convex(col)
+          x += sz.val + spacing
+
+          draw_list.path_line_to(ImVec2.new(x + cp3[0].x, y + cp3[0].y))
+          draw_list.path_bezier_quadratic_curve_to(ImVec2.new(x + cp3[1].x, y + cp3[1].y), ImVec2.new(x + cp3[2].x, y + cp3[2].y), curve_segments)
+          draw_list.path_fill_convex(col)
+          x += sz.val + spacing
+
           draw_list.add_rect_filled_multi_color(ImVec2.new(x, y), ImVec2.new(x + sz.val, y + sz.val), ImGui.col32(0, 0, 0, 255), ImGui.col32(255, 0, 0, 255), ImGui.col32(255, 255, 0, 255), ImGui.col32(0, 255, 0, 255))
 
-          ImGui.dummy(ImVec2.new((sz.val + spacing) * 11.2f32, (sz.val + spacing) * 3.0f32))
+          ImGui.dummy(ImVec2.new((sz.val + spacing) * 12.2f32, (sz.val + spacing) * 3.0f32))
         end
       end
 

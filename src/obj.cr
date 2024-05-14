@@ -484,8 +484,8 @@ module ImGui
     LibImGui.GetColorU32_Vec4(col)
   end
 
-  def self.get_color_u32(col : UInt32) : UInt32
-    LibImGui.GetColorU32_U32(col)
+  def self.get_color_u32(col : UInt32, alpha_mul : Float32 = 1.0) : UInt32
+    LibImGui.GetColorU32_U32(col, alpha_mul)
   end
 
   def self.get_style_color_vec4(idx : ImGuiCol) : ImVec4
@@ -1819,6 +1819,10 @@ module ImGui
 
   def self.debug_flash_style_color(idx : ImGuiCol) : Void
     LibImGui.DebugFlashStyleColor(idx)
+  end
+
+  def self.debug_start_item_picker : Void
+    LibImGui.DebugStartItemPicker
   end
 
   def self.debug_check_version_and_data_layout(version_str : String, sz_io : LibC::SizeT, sz_style : LibC::SizeT, sz_vec2 : LibC::SizeT, sz_vec4 : LibC::SizeT, sz_drawvert : LibC::SizeT, sz_drawidx : LibC::SizeT) : Bool

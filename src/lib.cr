@@ -127,7 +127,7 @@ lib LibImGui
   fun GetFontTexUvWhitePixel = igGetFontTexUvWhitePixel(pOut : ImGui::ImVec2*)
   fun GetColorU32_Col = igGetColorU32_Col(idx : ImGui::ImGuiCol, alpha_mul : LibC::Float) : UInt32
   fun GetColorU32_Vec4 = igGetColorU32_Vec4(col : ImGui::ImVec4) : UInt32
-  fun GetColorU32_U32 = igGetColorU32_U32(col : UInt32) : UInt32
+  fun GetColorU32_U32 = igGetColorU32_U32(col : UInt32, alpha_mul : LibC::Float) : UInt32
   fun GetStyleColorVec4 = igGetStyleColorVec4(idx : ImGui::ImGuiCol) : ImGui::ImVec4*
   fun GetCursorScreenPos = igGetCursorScreenPos(pOut : ImGui::ImVec2*)
   fun SetCursorScreenPos = igSetCursorScreenPos(pos : ImGui::ImVec2)
@@ -414,6 +414,7 @@ lib LibImGui
   fun SaveIniSettingsToMemory = igSaveIniSettingsToMemory(out_ini_size : LibC::SizeT*) : LibC::Char*
   fun DebugTextEncoding = igDebugTextEncoding(text : LibC::Char*)
   fun DebugFlashStyleColor = igDebugFlashStyleColor(idx : ImGui::ImGuiCol)
+  fun DebugStartItemPicker = igDebugStartItemPicker
   fun DebugCheckVersionAndDataLayout = igDebugCheckVersionAndDataLayout(version_str : LibC::Char*, sz_io : LibC::SizeT, sz_style : LibC::SizeT, sz_vec2 : LibC::SizeT, sz_vec4 : LibC::SizeT, sz_drawvert : LibC::SizeT, sz_drawidx : LibC::SizeT) : Bool
   fun SetAllocatorFunctions = igSetAllocatorFunctions(alloc_func : ImGuiMemAllocFunc, free_func : ImGuiMemFreeFunc, user_data : Void*)
   fun GetAllocatorFunctions = igGetAllocatorFunctions(p_alloc_func : ImGuiMemAllocFunc*, p_free_func : ImGuiMemFreeFunc*, p_user_data : Void**)
@@ -1503,7 +1504,7 @@ lib LibImGui
   fun TableGetHeaderAngledMaxLabelWidth = igTableGetHeaderAngledMaxLabelWidth : LibC::Float
   fun TablePushBackgroundChannel = igTablePushBackgroundChannel
   fun TablePopBackgroundChannel = igTablePopBackgroundChannel
-  fun TableAngledHeadersRowEx = igTableAngledHeadersRowEx(angle : LibC::Float, label_width : LibC::Float)
+  fun TableAngledHeadersRowEx = igTableAngledHeadersRowEx(angle : LibC::Float, max_label_width : LibC::Float)
   fun GetCurrentTable = igGetCurrentTable : ImGuiTable*
   fun TableFindByID = igTableFindByID(id : ImGuiID) : ImGuiTable*
   fun BeginTableEx = igBeginTableEx(name : LibC::Char*, id : ImGuiID, columns_count : LibC::Int, flags : ImGui::ImGuiTableFlags, outer_size : ImGui::ImVec2, inner_width : LibC::Float) : Bool
@@ -1638,7 +1639,6 @@ lib LibImGui
   fun DebugBreakClearData = igDebugBreakClearData
   fun DebugBreakButton = igDebugBreakButton(label : LibC::Char*, description_of_location : LibC::Char*) : Bool
   fun DebugBreakButtonTooltip = igDebugBreakButtonTooltip(keyboard_only : Bool, description_of_location : LibC::Char*)
-  fun DebugStartItemPicker = igDebugStartItemPicker
   fun ShowFontAtlas = igShowFontAtlas(atlas : ImFontAtlas*)
   fun DebugHookIdInfo = igDebugHookIdInfo(id : ImGuiID, data_type : ImGui::ImGuiDataType, data_id : Void*, data_id_end : Void*)
   fun DebugNodeColumns = igDebugNodeColumns(columns : ImGuiOldColumns*)
