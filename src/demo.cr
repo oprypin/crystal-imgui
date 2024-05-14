@@ -1,4 +1,4 @@
-# Based on https://github.com/ocornut/imgui/blob/v1.90.5/imgui_demo.cpp
+# Based on https://github.com/ocornut/imgui/blob/v1.90.6/imgui_demo.cpp
 
 require "./imgui"
 require "./util"
@@ -678,10 +678,12 @@ module ImGuiDemo
             ImGui.set_next_item_open(true, ImGuiCond::Once)
           end
 
-          ImGui.tree_node(i, "Child %d", i) do
-            ImGui.text("blah blah")
-            ImGui.same_line
-            if ImGui.small_button("button")
+          ImGui.with_id(i) do
+            ImGui.tree_node("", "Child %d", i) do
+              ImGui.text("blah blah")
+              ImGui.same_line
+              if ImGui.small_button("button")
+              end
             end
           end
         end
@@ -701,9 +703,16 @@ module ImGuiDemo
         ImGui.same_line
         help_marker("Extend hit area to all available width instead of allowing more items to be laid out after the node.")
         ImGui.checkbox_flags("ImGuiTreeNodeFlags_SpanFullWidth", pointerof(base_flags.val), ImGuiTreeNodeFlags::SpanFullWidth)
+        ImGui.checkbox_flags("ImGuiTreeNodeFlags_SpanTextWidth", pointerof(base_flags.val), ImGuiTreeNodeFlags::SpanTextWidth)
+        ImGui.same_line
+        help_marker("Reduce hit area to the text label and a bit of margin.")
         ImGui.checkbox_flags("ImGuiTreeNodeFlags_SpanAllColumns", pointerof(base_flags.val), ImGuiTreeNodeFlags::SpanAllColumns)
         ImGui.same_line
         help_marker("For use in Tables only.")
+        ImGui.checkbox_flags("ImGuiTreeNodeFlags_AllowOverlap", pointerof(base_flags.val), ImGuiTreeNodeFlags::AllowOverlap)
+        ImGui.checkbox_flags("ImGuiTreeNodeFlags_Framed", pointerof(base_flags.val), ImGuiTreeNodeFlags::Framed)
+        ImGui.same_line
+        help_marker("Draw frame with background (e.g. for CollapsingHeader)")
         ImGui.checkbox("Align label with current X position", pointerof(align_label_with_current_x_position.val))
         ImGui.checkbox("Test tree node as drag source", pointerof(test_drag_and_drop.val))
         ImGui.text("Hello!")
@@ -728,6 +737,11 @@ module ImGuiDemo
               ImGui.set_drag_drop_payload("_TREENODE", Pointer(Void).null, 0)
               ImGui.text("This is a drag and drop source")
               ImGui.end_drag_drop_source
+            end
+            if i == 2
+              ImGui.same_line
+              if ImGui.small_button("button")
+              end
             end
             if node_open
               ImGui.bullet_text("Blah blah\nBlah Blah")
@@ -1416,7 +1430,6 @@ module ImGuiDemo
       static animate = true
       ImGui.checkbox("Animate", pointerof(animate.val))
 
-      demo_marker("Widgets/Plotting/PlotLines, PlotHistogram")
       static arr = [0.6f32, 0.1f32, 1.0f32, 0.5f32, 0.92f32, 0.1f32, 0.2f32]
       ImGui.plot_lines("Frame Times", arr.val)
       ImGui.plot_histogram("Histogram", arr.val, 0, nil, 0.0f32, 1.0f32, ImVec2.new(0, 80.0f32))
@@ -1462,20 +1475,20 @@ module ImGuiDemo
       ImGui.plot_lines("Lines", display_count.val, 0, nil, -1.0f32, 1.0f32, ImVec2.new(0, 80), &func)
       ImGui.plot_histogram("Histogram", display_count.val, 0, nil, -1.0f32, 1.0f32, ImVec2.new(0, 80), &func)
       ImGui.separator
+    end
 
-      demo_marker("Widgets/Plotting/ProgressBar")
+    demo_marker("Widgets/Progress Bars")
+    ImGui.tree_node("Progress Bars") do
       static progress = 0.0f32
       static progress_dir = 1.0f32
-      if animate.val
-        progress.val += progress_dir.val * 0.4f32 * ImGui.get_io.delta_time
-        if progress.val >= +1.1f32
-          progress.val = +1.1f32
-          progress_dir.val *= -1.0f32
-        end
-        if progress.val <= -0.1f32
-          progress.val = -0.1f32
-          progress_dir.val *= -1.0f32
-        end
+      progress.val += progress_dir.val * 0.4f32 * ImGui.get_io.delta_time
+      if progress.val >= +1.1f32
+        progress.val = +1.1f32
+        progress_dir.val *= -1.0f32
+      end
+      if progress.val <= -0.1f32
+        progress.val = -0.1f32
+        progress_dir.val *= -1.0f32
       end
 
       ImGui.progress_bar(progress.val, ImVec2.new(0.0f32, 0.0f32))
@@ -1485,6 +1498,10 @@ module ImGuiDemo
       progress_saturated = progress.val.clamp(0.0f32, 1.0f32)
       buf = sprintf("%d/%d", (progress_saturated * 1753).to_i, 1753)
       ImGui.progress_bar(progress.val, ImVec2.new(0f32, 0f32), buf)
+
+      ImGui.progress_bar(-1.0f32 * ImGui.get_time, ImVec2.new(0.0f32, 0.0f32), "Searching..")
+      ImGui.same_line(0.0f32, ImGui.get_style.item_inner_spacing.x)
+      ImGui.text("Indeterminate")
     end
 
     demo_marker("Widgets/Color")
@@ -4494,6 +4511,7 @@ module ImGuiDemo
         static flags = ImGuiTableFlags::BordersV | ImGuiTableFlags::BordersOuterH | ImGuiTableFlags::Resizable | ImGuiTableFlags::RowBg | ImGuiTableFlags::NoBordersInBody
 
         ImGui.checkbox_flags("ImGuiTreeNodeFlags_SpanFullWidth", pointerof(MyTreeNode.tree_node_flags), ImGuiTreeNodeFlags::SpanFullWidth)
+        ImGui.checkbox_flags("ImGuiTreeNodeFlags_SpanTextWidth", pointerof(MyTreeNode.tree_node_flags), ImGuiTreeNodeFlags::SpanTextWidth)
         ImGui.checkbox_flags("ImGuiTreeNodeFlags_SpanAllColumns", pointerof(MyTreeNode.tree_node_flags), ImGuiTreeNodeFlags::SpanAllColumns)
 
         help_marker("See \"Columns flags.val\" section to configure how indentation is applied to individual columns.")
@@ -4618,6 +4636,15 @@ module ImGuiDemo
         ImGui.set_next_item_width(ImGui.get_font_size * 8)
         ImGui.slider_int("Frozen rows", pointerof(frozen_rows.val), 0, 2)
         ImGui.checkbox_flags("Disable header contributing to column width", pointerof(column_flags.val), ImGuiTableColumnFlags::NoHeaderWidth)
+
+        ImGui.tree_node("Style settings") do
+          ImGui.same_line
+          help_marker("Giving access to some ImGuiStyle value in this demo for convenience.")
+          ImGui.set_next_item_width(ImGui.get_font_size * 8)
+          ImGui.slider_angle("style.TableAngledHeadersAngle", pointerof(ImGui.get_style.table_angled_headers_angle), -50.0f32, +50.0f32)
+          ImGui.set_next_item_width(ImGui.get_font_size * 8)
+          ImGui.slider_float2("style.TableAngledHeadersTextAlign", pointerof(ImGui.get_style.table_angled_headers_text_align), 0.0f32, 1.0f32, "%.2f")
+        end
 
         ImGui.table("table_angled_headers", columns_count, table_flags.val, ImVec2.new(0.0f32, text_base_height * 12)) do
           ImGui.table_setup_column(column_names[0], ImGuiTableColumnFlags::NoHide | ImGuiTableColumnFlags::NoReorder)
@@ -5752,6 +5779,7 @@ module ImGuiDemo
           ImGui.separator_text("Tables")
           ImGui.slider_float2("CellPadding", pointerof(style.cell_padding), 0.0f32, 20.0f32, "%.0f")
           ImGui.slider_angle("TableAngledHeadersAngle", pointerof(style.table_angled_headers_angle), -50.0f32, +50.0f32)
+          ImGui.slider_float2("TableAngledHeadersTextAlign", pointerof(style.table_angled_headers_text_align), 0.0f32, 1.0f32, "%.2f")
 
           ImGui.separator_text("Widgets")
           ImGui.slider_float2("WindowTitleAlign", pointerof(style.window_title_align), 0.0f32, 1.0f32, "%.2f")

@@ -470,6 +470,7 @@ lib LibImGui
     tab_min_width_for_close_button : LibC::Float
     tab_bar_border_size : LibC::Float
     table_angled_headers_angle : LibC::Float
+    table_angled_headers_text_align : ImGui::ImVec2
     color_button_position : ImGui::ImGuiDir
     button_text_align : ImGui::ImVec2
     selectable_text_align : ImGui::ImVec2
@@ -758,15 +759,15 @@ lib LibImGui
     flags : ImGui::ImDrawListFlags
     _vtx_current_idx : LibC::UInt
     _data : ImDrawListSharedData*
-    _owner_name : LibC::Char*
     _vtx_write_ptr : ImGui::ImDrawVert*
     _idx_write_ptr : ImDrawIdx*
-    _clip_rect_stack : ImVectorInternal
-    _texture_id_stack : ImVectorInternal
     _path : ImVectorInternal
     _cmd_header : ImDrawCmdHeader
     _splitter : ImDrawListSplitter
+    _clip_rect_stack : ImVectorInternal
+    _texture_id_stack : ImVectorInternal
     _fringe_scale : LibC::Float
+    _owner_name : LibC::Char*
   end
 
   fun ImDrawList_ImDrawList = ImDrawList_ImDrawList(shared_data : ImDrawListSharedData*) : ImDrawList*
@@ -1059,6 +1060,7 @@ lib LibImGui
   fun ImTextCountUtf8BytesFromChar = igImTextCountUtf8BytesFromChar(in_text : LibC::Char*, in_text_end : LibC::Char*) : LibC::Int
   fun ImTextCountUtf8BytesFromStr = igImTextCountUtf8BytesFromStr(in_text : ImWchar*, in_text_end : ImWchar*) : LibC::Int
   fun ImTextFindPreviousUtf8Codepoint = igImTextFindPreviousUtf8Codepoint(in_text_start : LibC::Char*, in_text_curr : LibC::Char*) : LibC::Char*
+  fun ImTextCountLines = igImTextCountLines(in_text : LibC::Char*, in_text_end : LibC::Char*) : LibC::Int
   fun ImFileOpen = igImFileOpen(filename : LibC::Char*, mode : LibC::Char*) : ImFileHandle
   fun ImFileClose = igImFileClose(file : ImFileHandle) : Bool
   fun ImFileGetSize = igImFileGetSize(file : ImFileHandle) : UInt64
@@ -1304,6 +1306,7 @@ lib LibImGui
   type ImGuiTableColumn = Void*
   fun ImGuiTableColumn_ImGuiTableColumn = ImGuiTableColumn_ImGuiTableColumn : ImGuiTableColumn*
   type ImGuiTableCellData = Void*
+  type ImGuiTableHeaderData = Void*
   type ImGuiTableInstanceData = Void*
   fun ImGuiTableInstanceData_ImGuiTableInstanceData = ImGuiTableInstanceData_ImGuiTableInstanceData : ImGuiTableInstanceData*
   type ImGuiTable = Void*
@@ -1320,6 +1323,7 @@ lib LibImGui
   fun FindWindowByID = igFindWindowByID(id : ImGuiID) : ImGuiWindow*
   fun FindWindowByName = igFindWindowByName(name : LibC::Char*) : ImGuiWindow*
   fun UpdateWindowParentAndRootLinks = igUpdateWindowParentAndRootLinks(window : ImGuiWindow*, flags : ImGui::ImGuiWindowFlags, parent_window : ImGuiWindow*)
+  fun UpdateWindowSkipRefresh = igUpdateWindowSkipRefresh(window : ImGuiWindow*)
   fun CalcWindowNextAutoFitSize = igCalcWindowNextAutoFitSize(pOut : ImGui::ImVec2*, window : ImGuiWindow*)
   fun IsWindowChildOf = igIsWindowChildOf(window : ImGuiWindow*, potential_parent : ImGuiWindow*, popup_hierarchy : Bool) : Bool
   fun IsWindowWithinBeginStackOf = igIsWindowWithinBeginStackOf(window : ImGuiWindow*, potential_parent : ImGuiWindow*) : Bool
@@ -1339,6 +1343,7 @@ lib LibImGui
   fun BringWindowToDisplayBehind = igBringWindowToDisplayBehind(window : ImGuiWindow*, above_window : ImGuiWindow*)
   fun FindWindowDisplayIndex = igFindWindowDisplayIndex(window : ImGuiWindow*) : LibC::Int
   fun FindBottomMostVisibleWindowWithinBeginStack = igFindBottomMostVisibleWindowWithinBeginStack(window : ImGuiWindow*) : ImGuiWindow*
+  fun SetNextWindowRefreshPolicy = igSetNextWindowRefreshPolicy(flags : ImGui::ImGuiWindowRefreshFlags)
   fun SetCurrentFont = igSetCurrentFont(font : ImFont*)
   fun GetDefaultFont = igGetDefaultFont : ImFont*
   fun AddDrawListToDrawDataEx = igAddDrawListToDrawDataEx(draw_data : ImDrawData*, out_list : ImVectorInternal*, draw_list : ImDrawList*)
@@ -1506,7 +1511,7 @@ lib LibImGui
   fun TableGetHeaderAngledMaxLabelWidth = igTableGetHeaderAngledMaxLabelWidth : LibC::Float
   fun TablePushBackgroundChannel = igTablePushBackgroundChannel
   fun TablePopBackgroundChannel = igTablePopBackgroundChannel
-  fun TableAngledHeadersRowEx = igTableAngledHeadersRowEx(angle : LibC::Float, max_label_width : LibC::Float)
+  fun TableAngledHeadersRowEx = igTableAngledHeadersRowEx(row_id : ImGuiID, angle : LibC::Float, max_label_width : LibC::Float, data : ImGuiTableHeaderData*, data_count : LibC::Int)
   fun GetCurrentTable = igGetCurrentTable : ImGuiTable*
   fun TableFindByID = igTableFindByID(id : ImGuiID) : ImGuiTable*
   fun BeginTableEx = igBeginTableEx(name : LibC::Char*, id : ImGuiID, columns_count : LibC::Int, flags : ImGui::ImGuiTableFlags, outer_size : ImGui::ImVec2, inner_width : LibC::Float) : Bool

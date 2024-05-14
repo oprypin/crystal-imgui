@@ -2178,6 +2178,14 @@ module ImGui
       @this.value.table_angled_headers_angle = table_angled_headers_angle
     end
 
+    def table_angled_headers_text_align : ImVec2
+      @this.value.table_angled_headers_text_align
+    end
+
+    def table_angled_headers_text_align=(table_angled_headers_text_align : ImVec2)
+      @this.value.table_angled_headers_text_align = table_angled_headers_text_align
+    end
+
     def color_button_position : ImGuiDir
       @this.value.color_button_position
     end

@@ -1,6 +1,6 @@
 module ImGui
-  VERSION               = "1.90.5"
-  VERSION_NUM           = 19050
+  VERSION               = "1.90.6"
+  VERSION_NUM           = 19060
   PAYLOAD_TYPE_COLOR_3F = "_COL3F"
   PAYLOAD_TYPE_COLOR_4F = "_COL4F"
 
@@ -141,8 +141,9 @@ module ImGui
     FramePadding         = 1 << 10
     SpanAvailWidth       = 1 << 11
     SpanFullWidth        = 1 << 12
-    SpanAllColumns       = 1 << 13
-    NavLeftJumpsBackHere = 1 << 14
+    SpanTextWidth        = 1 << 13
+    SpanAllColumns       = 1 << 14
+    NavLeftJumpsBackHere = 1 << 15
     CollapsingHeader     = Framed | NoTreePushOnOpen | NoAutoOpenOnLog
   end
   alias TopLevel::ImGuiTreeNodeFlags = ImGui::ImGuiTreeNodeFlags
@@ -552,37 +553,38 @@ module ImGui
   alias TopLevel::ImGuiCol = ImGui::ImGuiCol
 
   enum ImGuiStyleVar
-    Alpha                   =  0
-    DisabledAlpha           =  1
-    WindowPadding           =  2
-    WindowRounding          =  3
-    WindowBorderSize        =  4
-    WindowMinSize           =  5
-    WindowTitleAlign        =  6
-    ChildRounding           =  7
-    ChildBorderSize         =  8
-    PopupRounding           =  9
-    PopupBorderSize         = 10
-    FramePadding            = 11
-    FrameRounding           = 12
-    FrameBorderSize         = 13
-    ItemSpacing             = 14
-    ItemInnerSpacing        = 15
-    IndentSpacing           = 16
-    CellPadding             = 17
-    ScrollbarSize           = 18
-    ScrollbarRounding       = 19
-    GrabMinSize             = 20
-    GrabRounding            = 21
-    TabRounding             = 22
-    TabBorderSize           = 23
-    TabBarBorderSize        = 24
-    TableAngledHeadersAngle = 25
-    ButtonTextAlign         = 26
-    SelectableTextAlign     = 27
-    SeparatorTextBorderSize = 28
-    SeparatorTextAlign      = 29
-    SeparatorTextPadding    = 30
+    Alpha                       =  0
+    DisabledAlpha               =  1
+    WindowPadding               =  2
+    WindowRounding              =  3
+    WindowBorderSize            =  4
+    WindowMinSize               =  5
+    WindowTitleAlign            =  6
+    ChildRounding               =  7
+    ChildBorderSize             =  8
+    PopupRounding               =  9
+    PopupBorderSize             = 10
+    FramePadding                = 11
+    FrameRounding               = 12
+    FrameBorderSize             = 13
+    ItemSpacing                 = 14
+    ItemInnerSpacing            = 15
+    IndentSpacing               = 16
+    CellPadding                 = 17
+    ScrollbarSize               = 18
+    ScrollbarRounding           = 19
+    GrabMinSize                 = 20
+    GrabRounding                = 21
+    TabRounding                 = 22
+    TabBorderSize               = 23
+    TabBarBorderSize            = 24
+    TableAngledHeadersAngle     = 25
+    TableAngledHeadersTextAlign = 26
+    ButtonTextAlign             = 27
+    SelectableTextAlign         = 28
+    SeparatorTextBorderSize     = 29
+    SeparatorTextAlign          = 30
+    SeparatorTextPadding        = 31
   end
   alias TopLevel::ImGuiStyleVar = ImGui::ImGuiStyleVar
 
@@ -1017,6 +1019,15 @@ module ImGui
 
   # :nodoc:
   @[Flags]
+  enum ImGuiWindowRefreshFlags
+    None              = 0
+    TryToAvoidRefresh = 1 << 0
+    RefreshOnHover    = 1 << 1
+    RefreshOnFocus    = 1 << 2
+  end
+
+  # :nodoc:
+  @[Flags]
   enum ImGuiNextWindowDataFlags
     None              = 0
     HasPos            = 1 << 0
@@ -1028,6 +1039,7 @@ module ImGui
     HasBgAlpha        = 1 << 6
     HasScroll         = 1 << 7
     HasChildFlags     = 1 << 8
+    HasRefreshPolicy  = 1 << 9
   end
 
   # :nodoc:
