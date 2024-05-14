@@ -41,7 +41,7 @@ module ImGui
 
       # Wrapping the type into parentheses "breaks" detection of macro calls, so we can call the method shadowed by the macro.
       \%result = (\{{@type.name}}).{{f.name}}{% verbatim do %}(
-        {% for arg, i in args %}{% if arg.is_a?(PointerOf) %}pointerof(%val{arg}){% else %}{{arg}}{% end %}, {% end %}{{**kwargs}}
+        {% for arg, i in args %}{% if arg.is_a?(PointerOf) %}pointerof(%val{arg}){% else %}{{arg}}{% end %}, {% end %}{{kwargs.double_splat}}
       ) {{block}}{% end %}
 
       {% verbatim do %}
@@ -216,7 +216,7 @@ module ImGui
   private NULL_CALLBACK = ->(d : ImGuiInputTextCallbackData) { 0 }
 
   private macro make_input_text(name, *args)
-    def self.{{name.id}}({{*args}}, &block : ImGuiInputTextCallbackData -> Int32) : Bool
+    def self.{{name.id}}({{args.splat}}, &block : ImGuiInputTextCallbackData -> Int32) : Bool
       block = nil if block == NULL_CALLBACK
       user_data = {buf, block}
       LibImGui.{{name.id.camelcase}}(
@@ -240,8 +240,8 @@ module ImGui
       )
     end
 
-    def self.{{name.id}}({{*args}}) : Bool
-      {{name.id}}({{*args.map(&.var)}}, &NULL_CALLBACK)
+    def self.{{name.id}}({{args.splat}}) : Bool
+      {{name.id}}({{args.map(&.var).splat}}, &NULL_CALLBACK)
     end
   end
 
@@ -262,7 +262,7 @@ module ImGui
   end
 
   private macro make_plot(name, *args)
-    def self.{{name.id}}({{*args}}, &block : Int32 -> Float32) : Void
+    def self.{{name.id}}({{args.splat}}, &block : Int32 -> Float32) : Void
       LibImGui.{{name.id.camelcase}}_FnFloatPtr(
         {% for arg, i in args %}
           {% if i == 1 %}
@@ -284,7 +284,7 @@ module ImGui
   end
 
   private macro make_list_box(name, *args)
-    pointer_wrapper def self.{{name.id}}({{*args}}, &block : Int32 -> (Slice(UInt8) | String)?) : Bool
+    pointer_wrapper def self.{{name.id}}({{args.splat}}, &block : Int32 -> (Slice(UInt8) | String)?) : Bool
       typeof(current_item.value.to_i32)
       current_item = current_item.as(Int32*)
       LibImGui.{{name.id.camelcase}}_FnBoolPtr(
