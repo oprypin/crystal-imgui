@@ -1,6 +1,6 @@
 module ImGui
-  VERSION               = "1.90.2"
-  VERSION_NUM           = 19020
+  VERSION               = "1.90.3"
+  VERSION_NUM           = 19030
   PAYLOAD_TYPE_COLOR_3F = "_COL3F"
   PAYLOAD_TYPE_COLOR_4F = "_COL4F"
 
