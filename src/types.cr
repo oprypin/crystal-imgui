@@ -1,6 +1,6 @@
 module ImGui
-  VERSION               = "1.90.1"
-  VERSION_NUM           = 19010
+  VERSION               = "1.90.2"
+  VERSION_NUM           = 19020
   PAYLOAD_TYPE_COLOR_3F = "_COL3F"
   PAYLOAD_TYPE_COLOR_4F = "_COL4F"
 
@@ -155,10 +155,11 @@ module ImGui
     MouseButtonMiddle       =    2
     MouseButtonMask_        = 0x1F
     MouseButtonDefault_     =    1
-    NoOpenOverExistingPopup = 1 << 5
-    NoOpenOverItems         = 1 << 6
-    AnyPopupId              = 1 << 7
-    AnyPopupLevel           = 1 << 8
+    NoReopen                = 1 << 5
+    NoOpenOverExistingPopup = 1 << 7
+    NoOpenOverItems         = 1 << 8
+    AnyPopupId              = 1 << 10
+    AnyPopupLevel           = 1 << 11
     AnyPopup                = AnyPopupId | AnyPopupLevel
   end
   alias TopLevel::ImGuiPopupFlags = ImGui::ImGuiPopupFlags
@@ -1013,13 +1014,6 @@ module ImGui
   end
 
   # :nodoc:
-  enum ImGuiPopupPositionPolicy
-    Default  = 0
-    ComboBox = 1
-    Tooltip  = 2
-  end
-
-  # :nodoc:
   @[Flags]
   enum ImGuiNextWindowDataFlags
     None              = 0
@@ -1037,9 +1031,17 @@ module ImGui
   # :nodoc:
   @[Flags]
   enum ImGuiNextItemDataFlags
-    None     = 0
-    HasWidth = 1 << 0
-    HasOpen  = 1 << 1
+    None        = 0
+    HasWidth    = 1 << 0
+    HasOpen     = 1 << 1
+    HasShortcut = 1 << 2
+  end
+
+  # :nodoc:
+  enum ImGuiPopupPositionPolicy
+    Default  = 0
+    ComboBox = 1
+    Tooltip  = 2
   end
 
   # :nodoc:
@@ -1077,23 +1079,22 @@ module ImGui
     CondHovered                      = 1 << 8
     CondActive                       = 1 << 9
     CondDefault_                     = CondHovered | CondActive
-    CondMask_                        = CondHovered | CondActive
     LockThisFrame                    = 1 << 10
     LockUntilRelease                 = 1 << 11
     RouteFocused                     = 1 << 12
     RouteGlobalLow                   = 1 << 13
     RouteGlobal                      = 1 << 14
     RouteGlobalHigh                  = 1 << 15
-    RouteMask_                       = RouteFocused | RouteGlobal | RouteGlobalLow | RouteGlobalHigh
     RouteAlways                      = 1 << 16
     RouteUnlessBgFocused             = 1 << 17
-    RouteExtraMask_                  = RouteAlways | RouteUnlessBgFocused
     RepeatRateMask_                  = RepeatRateDefault | RepeatRateNavMove | RepeatRateNavTweak
     RepeatUntilMask_                 = RepeatUntilRelease | RepeatUntilKeyModsChange | RepeatUntilKeyModsChangeFromNone | RepeatUntilOtherKeyPress
     RepeatMask_                      = Repeat | RepeatRateMask_ | RepeatUntilMask_
+    CondMask_                        = CondHovered | CondActive
+    RouteMask_                       = RouteFocused | RouteGlobal | RouteGlobalLow | RouteGlobalHigh
     SupportedByIsKeyPressed          = RepeatMask_
     SupportedByIsMouseClicked        = Repeat
-    SupportedByShortcut              = RepeatMask_ | RouteMask_ | RouteExtraMask_
+    SupportedByShortcut              = RepeatMask_ | RouteMask_ | RouteAlways | RouteUnlessBgFocused
     SupportedBySetKeyOwner           = LockThisFrame | LockUntilRelease
     SupportedBySetItemKeyOwner       = SupportedBySetKeyOwner | CondMask_
   end
@@ -1106,6 +1107,7 @@ module ImGui
     PreferTweak        = 1 << 1
     TryToPreserveState = 1 << 2
     FromTabbing        = 1 << 3
+    FromShortcut       = 1 << 4
   end
 
   # :nodoc:
@@ -1126,11 +1128,10 @@ module ImGui
   # :nodoc:
   @[Flags]
   enum ImGuiNavHighlightFlags
-    None        = 0
-    TypeDefault = 1 << 0
-    TypeThin    = 1 << 1
-    AlwaysDraw  = 1 << 2
-    NoRounding  = 1 << 3
+    None       = 0
+    Compact    = 1 << 1
+    AlwaysDraw = 1 << 2
+    NoRounding = 1 << 3
   end
 
   # :nodoc:
@@ -1203,7 +1204,8 @@ module ImGui
     EventClipper       = 1 << 4
     EventSelection     = 1 << 5
     EventIO            = 1 << 6
-    EventMask_         = EventActiveId | EventFocus | EventPopup | EventNav | EventClipper | EventSelection | EventIO
+    EventInputRouting  = 1 << 7
+    EventMask_         = EventActiveId | EventFocus | EventPopup | EventNav | EventClipper | EventSelection | EventIO | EventInputRouting
     OutputToTTY        = 1 << 20
     OutputToTestEngine = 1 << 21
   end

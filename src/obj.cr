@@ -5006,6 +5006,14 @@ module ImGui
   struct ImGuiViewport
     include ClassType(LibImGui::ImGuiViewport)
 
+    def id : ImGuiID
+      @this.value.id
+    end
+
+    def id=(id : ImGuiID)
+      @this.value.id = id
+    end
+
     def flags : ImGuiViewportFlags
       @this.value.flags
     end
