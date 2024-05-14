@@ -287,16 +287,15 @@ module ImGui
     pointer_wrapper def self.{{name.id}}({{args.splat}}, &block : Int32 -> (Slice(UInt8) | String)?) : Bool
       typeof(current_item.value.to_i32)
       current_item = current_item.as(Int32*)
-      LibImGui.{{name.id.camelcase}}_FnBoolPtr(
+      LibImGui.{{name.id.camelcase}}_FnStrPtr(
         {% for arg, i in args %}
           {% if i == 2 %}
-            ->(data, idx, out_text) {
+            ->(data, idx) {
               val = data.as(typeof(block)*).value.call(idx)
               if val
-                out_text.value = val.to_unsafe
-                true
+                val.to_unsafe
               else
-                false
+                Pointer(UInt8).null
               end
             }, pointerof(block),
             {% end %}

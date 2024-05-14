@@ -1,4 +1,4 @@
-# Based on https://github.com/ocornut/imgui/blob/fef33891579dda780028a10401e851ddb828e983/imgui_demo.cpp
+# Based on https://github.com/ocornut/imgui/blob/v1.90/imgui_demo.cpp
 
 require "./imgui"
 require "./util"
@@ -78,7 +78,7 @@ module ImGuiDemo
 
     static show_tool_metrics = false
     static show_tool_debug_log = false
-    static show_tool_stack_tool = false
+    static show_tool_id_stack_tool = false
     static show_tool_style_editor = false
     static show_tool_about = false
 
@@ -88,8 +88,8 @@ module ImGuiDemo
     if show_tool_debug_log.val
       ImGui.show_debug_log_window(pointerof(show_tool_debug_log.val))
     end
-    if show_tool_stack_tool.val
-      ImGui.show_stack_tool_window(pointerof(show_tool_stack_tool.val))
+    if show_tool_id_stack_tool.val
+      ImGui.show_id_stack_tool_window(pointerof(show_tool_id_stack_tool.val))
     end
     if show_tool_style_editor.val
       ImGui.window("crystal-imgui Style Editor", pointerof(show_tool_style_editor.val)) do
@@ -148,7 +148,7 @@ module ImGuiDemo
     end
 
     main_viewport = ImGui.get_main_viewport
-    ImGui.set_next_window_pos(ImVec2.new(main_viewport.work_pos.x + 20, main_viewport.work_pos.y + 20), ImGuiCond::FirstUseEver)
+    ImGui.set_next_window_pos(ImVec2.new(20, main_viewport.work_pos.y + 20), ImGuiCond::FirstUseEver)
     ImGui.set_next_window_size(ImVec2.new(550, 680), ImGuiCond::FirstUseEver)
 
     if !ImGui.begin("crystal-imgui Demo", p_open, window_flags)
@@ -188,7 +188,7 @@ module ImGuiDemo
           has_debug_tools = true
           ImGui.menu_item("Metrics/Debugger", "", pointerof(show_tool_metrics.val), has_debug_tools)
           ImGui.menu_item("Debug Log", "", pointerof(show_tool_debug_log.val), has_debug_tools)
-          ImGui.menu_item("Stack Tool", "", pointerof(show_tool_stack_tool.val), has_debug_tools)
+          ImGui.menu_item("ID Stack Tool", "", pointerof(show_tool_id_stack_tool.val), has_debug_tools)
           ImGui.menu_item("Style Editor", "", pointerof(show_tool_style_editor.val))
           ImGui.menu_item("About Dear ImGui", "", pointerof(show_tool_about.val))
         end
@@ -209,7 +209,7 @@ module ImGuiDemo
         ImGui.bullet_text("See the ShowDemoWindow() code in src/demo.cr. <- you are here!")
         ImGui.bullet_text("See comments in imgui.cpp.")
         ImGui.bullet_text("See example applications in the examples/ folder.")
-        ImGui.bullet_text("Read the FAQ at http://www.dearimgui.com/faq/")
+        ImGui.bullet_text("Read the FAQ at https://www.dearimgui.com/faq/")
         ImGui.bullet_text("Set 'io.ConfigFlags |= NavEnableKeyboard' for keyboard controls.")
         ImGui.bullet_text("Set 'io.ConfigFlags |= NavEnableGamepad' for gamepad controls.")
 
@@ -618,9 +618,14 @@ module ImGuiDemo
 
       ImGui.separator_text("Custom")
 
+      help_marker(
+        "Passing ImGuiHoveredFlags_ForTooltip to IsItemHovered() is the preferred way to standardize" +
+        "tooltip activation details across your application. You may however decide to use custom" +
+        "flags for a specific tooltip instance.")
+
       ImGui.button("Manual", sz)
       if ImGui.is_item_hovered(ImGuiHoveredFlags::ForTooltip)
-        ImGui.set_tooltip("I am a manually emitted tooltip")
+        ImGui.set_tooltip("I am a manually emitted tooltip.")
       end
 
       ImGui.button("DelayNone", sz)
@@ -635,18 +640,25 @@ module ImGuiDemo
 
       ImGui.button("DelayLong", sz)
       if ImGui.is_item_hovered(ImGuiHoveredFlags::DelayNormal | ImGuiHoveredFlags::NoSharedDelay)
-        ImGui.set_tooltip("I am a tooltip with a long delay (%0.2f sec)", ImGui.get_style.hover_delay_normal)
+        ImGui.set_tooltip("I am a tooltip with a long delay (%0.2f sec).", ImGui.get_style.hover_delay_normal)
       end
 
       ImGui.button("Stationary", sz)
       if ImGui.is_item_hovered(ImGuiHoveredFlags::Stationary)
         ImGui.set_tooltip("I am a tooltip requiring mouse to be stationary before activating.")
       end
+
+      ImGui.disabled do
+        ImGui.button("Disabled item", sz)
+      end
+      if ImGui.is_item_hovered(ImGuiHoveredFlags::ForTooltip)
+        ImGui.set_tooltip("I am a a tooltip for a disabled item.")
+      end
     end
 
-    demo_marker("Widgets/Trees")
-    ImGui.tree_node("Trees") do
-      demo_marker("Widgets/Trees/Basic trees")
+    demo_marker("Widgets/Tree Nodes")
+    ImGui.tree_node("Tree Nodes") do
+      demo_marker("Widgets/Tree Nodes/Basic trees")
       ImGui.tree_node("Basic trees") do
         5.times do |i|
           if i == 0
@@ -662,7 +674,7 @@ module ImGuiDemo
         end
       end
 
-      demo_marker("Widgets/Trees/Advanced, with Selectable nodes")
+      demo_marker("Widgets/Tree Nodes/Advanced, with Selectable nodes")
       ImGui.tree_node("Advanced, with Selectable nodes") do
         help_marker(
           "This is a more typical looking tree with selectable nodes.\n" +
@@ -676,6 +688,9 @@ module ImGuiDemo
         ImGui.same_line
         help_marker("Extend hit area to all available width instead of allowing more items to be laid out after the node.")
         ImGui.checkbox_flags("ImGuiTreeNodeFlags_SpanFullWidth", pointerof(base_flags.val), ImGuiTreeNodeFlags::SpanFullWidth)
+        ImGui.checkbox_flags("ImGuiTreeNodeFlags_SpanAllColumns", pointerof(base_flags.val), ImGuiTreeNodeFlags::SpanAllColumns)
+        ImGui.same_line
+        help_marker("For use in Tables only.")
         ImGui.checkbox("Align label with current X position", pointerof(align_label_with_current_x_position.val))
         ImGui.checkbox("Test tree node as drag source", pointerof(test_drag_and_drop.val))
         ImGui.text("Hello!")
@@ -896,7 +911,20 @@ module ImGuiDemo
         flags.val &= ~ImGuiComboFlags::NoPreview
       end
       if ImGui.checkbox_flags("ImGuiComboFlags_NoPreview", pointerof(flags.val), ImGuiComboFlags::NoPreview)
-        flags.val &= ~ImGuiComboFlags::NoArrowButton
+        flags.val &= ~(ImGuiComboFlags::NoArrowButton | ImGuiComboFlags::WidthFitPreview)
+      end
+      if ImGui.checkbox_flags("ImGuiComboFlags_WidthFitPreview", pointerof(flags.val), ImGuiComboFlags::WidthFitPreview)
+        flags.val &= ~ImGuiComboFlags::NoPreview
+      end
+
+      if ImGui.checkbox_flags("ImGuiComboFlags_HeightSmall", pointerof(flags.val), ImGuiComboFlags::HeightSmall)
+        flags.val &= ~(ImGuiComboFlags::HeightMask_ & ~ImGuiComboFlags::HeightSmall)
+      end
+      if ImGui.checkbox_flags("ImGuiComboFlags_HeightRegular", pointerof(flags.val), ImGuiComboFlags::HeightRegular)
+        flags.val &= ~(ImGuiComboFlags::HeightMask_ & ~ImGuiComboFlags::HeightRegular)
+      end
+      if ImGui.checkbox_flags("ImGuiComboFlags_HeightLargest", pointerof(flags.val), ImGuiComboFlags::HeightLargest)
+        flags.val &= ~(ImGuiComboFlags::HeightMask_ & ~ImGuiComboFlags::HeightLargest)
       end
 
       items = ["AAAA", "BBBB", "CCCC", "DDDD", "EEEE", "FFFF", "GGGG", "HHHH", "IIII", "JJJJ", "KKKK", "LLLLLLL", "MMMM", "OOOOOOO"]
@@ -915,11 +943,15 @@ module ImGuiDemo
         end
       end
 
+      ImGui.spacing
+      ImGui.separator_text("One-liner variants")
+      help_marker("Flags above don't apply to this section.")
+
       static item_current_2 = 0
       ImGui.combo("combo 2 (one-liner)", pointerof(item_current_2.val), "aaaa\0bbbb\0cccc\0dddd\0eeee\0\0")
 
       static item_current_3 = -1
-      ImGui.combo("combo 3 (array)", pointerof(item_current_3.val), items, items.size)
+      ImGui.combo("combo 3 (array)", pointerof(item_current_3.val), items)
 
       static item_current_4 = 0
       ImGui.combo("combo 4 (function)", pointerof(item_current_4.val), items.size) do |idx|
@@ -2007,6 +2039,27 @@ module ImGuiDemo
           end
         end
       end
+
+      demo_marker("Widgets/Drag and Drop/Tooltip at target location")
+      ImGui.tree_node("Tooltip at target location") do
+        2.times do |n|
+          ImGui.button(n ? "drop here##1" : "drop here##0")
+          ImGui.drag_drop_target do
+            drop_target_flags = ImGuiDragDropFlags::AcceptBeforeDelivery | ImGuiDragDropFlags::AcceptNoPreviewTooltip
+            if payload = ImGui.accept_drag_drop_payload(ImGui::PAYLOAD_TYPE_COLOR_4F, drop_target_flags)
+              ImGui.set_mouse_cursor(ImGuiMouseCursor::NotAllowed)
+              ImGui.tooltip do
+                ImGui.text("Cannot drop here!")
+              end
+            end
+          end
+
+          col4 = ImVec4.new(1.0f32, 0.0f32, 0.2f32, 1.0f32)
+          if n == 0
+            ImGui.color_button("drag me", col4)
+          end
+        end
+      end
     end
 
     demo_marker("Widgets/Querying Item Status (Edited,Active,Hovered etc.)")
@@ -2158,7 +2211,7 @@ module ImGuiDemo
       static embed_all_inside_a_child_window = false
       ImGui.checkbox("Embed everything inside a child window for testing _RootWindow flag.", pointerof(embed_all_inside_a_child_window.val))
       if embed_all_inside_a_child_window.val
-        ImGui.begin_child("outer_child", ImVec2.new(0, ImGui.get_font_size * 20.0f32), true)
+        ImGui.begin_child("outer_child", ImVec2.new(0, ImGui.get_font_size * 20.0f32), ImGuiChildFlags::Border)
       end
 
       ImGui.bullet_text(
@@ -2205,7 +2258,7 @@ module ImGuiDemo
         ImGui.is_window_hovered(ImGuiHoveredFlags::AnyWindow),
         ImGui.is_window_hovered(ImGuiHoveredFlags::Stationary))
 
-      ImGui.child("child", ImVec2.new(0, 50), true) do
+      ImGui.child("child", ImVec2.new(0, 50), ImGuiChildFlags::Border) do
         ImGui.text("This is another child window for testing the _ChildWindows flag.")
       end
       if embed_all_inside_a_child_window.val
@@ -2280,7 +2333,7 @@ module ImGuiDemo
         if disable_mouse_wheel.val
           window_flags |= ImGuiWindowFlags::NoScrollWithMouse
         end
-        ImGui.child("ChildL", ImVec2.new(ImGui.get_content_region_avail.x * 0.5f32, 260), false, window_flags) do
+        ImGui.child("ChildL", ImVec2.new(ImGui.get_content_region_avail.x * 0.5f32, 260), ImGuiChildFlags::None, window_flags) do
           100.times do |i|
             ImGui.text("%04d: scrollable region", i)
           end
@@ -2298,7 +2351,7 @@ module ImGuiDemo
           window_flags |= ImGuiWindowFlags::MenuBar
         end
         ImGui.with_style_var(ImGuiStyleVar::ChildRounding, 5.0f32) do
-          ImGui.child("ChildR", ImVec2.new(0, 260), true, window_flags) do
+          ImGui.child("ChildR", ImVec2.new(0, 260), ImGuiChildFlags::Border, window_flags) do
             if !disable_menu.val && ImGui.begin_menu_bar
               ImGui.menu("Menu") do
                 show_example_menu_file
@@ -2316,23 +2369,72 @@ module ImGuiDemo
         end
       end
 
+      ImGui.separator_text("Manual-resize")
+      begin
+        help_marker("Drag bottom border to resize. Double-click bottom border to auto-fit to vertical contents.")
+        ImGui.with_style_color(ImGuiCol::ChildBg, ImGui.get_style_color_vec4(ImGuiCol::FrameBg)) do
+          if ImGui.begin_child("ResizableChild", ImVec2.new(-Float32::MIN_POSITIVE, ImGui.get_text_line_height_with_spacing * 8), ImGuiChildFlags::Border | ImGuiChildFlags::ResizeY)
+            10.times do |n|
+              ImGui.text("Line %04d", n)
+            end
+          end
+        end
+        ImGui.end_child
+      end
+
+      ImGui.separator_text("Auto-resize with constraints")
+      begin
+        static draw_lines = 3
+        static max_height_in_lines = 10
+        ImGui.set_next_item_width(ImGui.get_font_size * 8)
+        ImGui.drag_int("Lines Count", pointerof(draw_lines.val), 0.2f32)
+        ImGui.set_next_item_width(ImGui.get_font_size * 8)
+        ImGui.drag_int("Max Height (in Lines)", pointerof(max_height_in_lines.val), 0.2f32)
+
+        ImGui.set_next_window_size_constraints(ImVec2.new(0.0f32, ImGui.get_text_line_height_with_spacing * 1), ImVec2.new(Float32::MAX, ImGui.get_text_line_height_with_spacing * max_height_in_lines.val))
+        if ImGui.begin_child("ConstrainedChild", ImVec2.new(-Float32::MIN_POSITIVE, 0.0f32), ImGuiChildFlags::Border | ImGuiChildFlags::AutoResizeY)
+          draw_lines.val.times do |n|
+            ImGui.text("Line %04d", n)
+          end
+        end
+        ImGui.end_child
+      end
+
       ImGui.separator_text("Misc/Advanced")
       begin
         static offset_x = 0
+        static override_bg_color = true
+        static child_flags = ImGuiChildFlags::Border | ImGuiChildFlags::ResizeX | ImGuiChildFlags::ResizeY
         ImGui.set_next_item_width(ImGui.get_font_size * 8)
         ImGui.drag_int("Offset X", pointerof(offset_x.val), 1.0f32, -1000, 1000)
+        ImGui.checkbox("Override ChildBg color", pointerof(override_bg_color.val))
+        ImGui.checkbox_flags("ImGuiChildFlags_Border", pointerof(child_flags.val), ImGuiChildFlags::Border)
+        ImGui.checkbox_flags("ImGuiChildFlags_AlwaysUseWindowPadding", pointerof(child_flags.val), ImGuiChildFlags::AlwaysUseWindowPadding)
+        ImGui.checkbox_flags("ImGuiChildFlags_ResizeX", pointerof(child_flags.val), ImGuiChildFlags::ResizeX)
+        ImGui.checkbox_flags("ImGuiChildFlags_ResizeY", pointerof(child_flags.val), ImGuiChildFlags::ResizeY)
+        ImGui.checkbox_flags("ImGuiChildFlags_FrameStyle", pointerof(child_flags.val), ImGuiChildFlags::FrameStyle)
+        ImGui.same_line
+        help_marker("Style the child window like a framed item: use FrameBg, FrameRounding, FrameBorderSize, FramePadding instead of ChildBg, ChildRounding, ChildBorderSize, WindowPadding.")
+        if child_flags.val.includes?(:FrameStyle)
+          override_bg_color.val = false
+        end
 
         ImGui.set_cursor_pos_x(ImGui.get_cursor_pos_x + offset_x.val)
-        ImGui.push_style_color(ImGuiCol::ChildBg, ImGui.col32(255, 0, 0, 100))
-        ImGui.child("Red", ImVec2.new(200, 100), true, ImGuiWindowFlags::None) do
-          50.times do |n|
-            ImGui.text("Some test %d", n)
-          end
+        if override_bg_color.val
+          ImGui.push_style_color(ImGuiCol::ChildBg, ImGui.col32(255, 0, 0, 100))
         end
+        ImGui.begin_child("Red", ImVec2.new(200, 100), child_flags.val, ImGuiWindowFlags::None)
+        if override_bg_color.val
+          ImGui.pop_style_color
+        end
+
+        50.times do |n|
+          ImGui.text("Some test %d", n)
+        end
+        ImGui.end_child
         child_is_hovered = ImGui.is_item_hovered
         child_rect_min = ImGui.get_item_rect_min
         child_rect_max = ImGui.get_item_rect_max
-        ImGui.pop_style_color
         ImGui.text("Hovered: %d", child_is_hovered)
         ImGui.text("Rect of child window is: (%.0f,%.0f) (%.0f,%.0f)", child_rect_min.x, child_rect_min.y, child_rect_max.x, child_rect_max.y)
       end
@@ -2725,7 +2827,7 @@ module ImGuiDemo
 
             child_flags = enable_extra_decorations.val ? ImGuiWindowFlags::MenuBar : ImGuiWindowFlags::None
             child_id = ImGui.get_id(i)
-            child_is_visible = ImGui.begin_child(child_id, ImVec2.new(child_w, 200.0f32), true, child_flags)
+            child_is_visible = ImGui.begin_child(child_id, ImVec2.new(child_w, 200.0f32), ImGuiChildFlags::Border, child_flags)
             ImGui.menu_bar do
               ImGui.text_unformatted("abc")
             end
@@ -2765,7 +2867,7 @@ module ImGuiDemo
           child_height = ImGui.get_text_line_height + style.scrollbar_size + style.window_padding.y * 2.0f32
           child_flags = ImGuiWindowFlags::HorizontalScrollbar | (enable_extra_decorations.val ? ImGuiWindowFlags::AlwaysVerticalScrollbar : ImGuiWindowFlags::None)
           child_id = ImGui.get_id(i)
-          child_is_visible = ImGui.begin_child(child_id, ImVec2.new(-100, child_height), true, child_flags)
+          child_is_visible = ImGui.begin_child(child_id, ImVec2.new(-100, child_height), ImGuiChildFlags::Border, child_flags)
           if scroll_to_off
             ImGui.set_scroll_x(scroll_to_off_px.val)
           end
@@ -2805,7 +2907,7 @@ module ImGuiDemo
       ImGui.push_style_var(ImGuiStyleVar::FramePadding, ImVec2.new(2.0f32, 1.0f32))
       scrolling_child_size = ImVec2.new(0, ImGui.get_frame_height_with_spacing * 7 + 30)
       scroll_x = scroll_max_x = 0f32
-      ImGui.child("scrolling", scrolling_child_size, true, ImGuiWindowFlags::HorizontalScrollbar) do
+      ImGui.child("scrolling", scrolling_child_size, ImGuiChildFlags::Border, ImGuiWindowFlags::HorizontalScrollbar) do
         lines.val.times do |line|
           num_buttons = 10 + ((line.odd?) ? line * 9 : line * 3)
           num_buttons.times do |n|
@@ -2933,7 +3035,7 @@ module ImGuiDemo
             ImGui.end_tab_bar
           end
           if show_child.val
-            ImGui.child("child", ImVec2.new(0, 0), true) do
+            ImGui.child("child", ImVec2.new(0, 0), ImGuiChildFlags::Border) do
             end
           end
         end
@@ -3377,6 +3479,7 @@ module ImGuiDemo
     ImGui.checkbox_flags("_IndentDisable", p_flags, ImGuiTableColumnFlags::IndentDisable)
     ImGui.same_line
     help_marker("Default for column >0")
+    ImGui.checkbox_flags("_AngledHeader", p_flags, ImGuiTableColumnFlags::AngledHeader)
   end
 
   def self.show_table_columns_status_flags(flags)
@@ -3419,6 +3522,8 @@ module ImGuiDemo
     )
     end
 
+    class_property tree_node_flags = ImGuiTreeNodeFlags::SpanAllColumns
+
     getter name, type, size, child_idx, child_count
 
     def self.display_node(node, all_nodes)
@@ -3426,7 +3531,7 @@ module ImGuiDemo
       ImGui.table_next_column
       is_folder = (node.child_count > 0)
       if is_folder
-        open = ImGui.tree_node_ex(node.name, ImGuiTreeNodeFlags::SpanFullWidth)
+        open = ImGui.tree_node_ex(node.name, MyTreeNode.tree_node_flags | ImGuiTreeNodeFlags::SpanFullWidth)
         ImGui.table_next_column
         ImGui.text_disabled("--")
         ImGui.table_next_column
@@ -3438,7 +3543,7 @@ module ImGuiDemo
           ImGui.tree_pop
         end
       else
-        ImGui.tree_node_ex(node.name, ImGuiTreeNodeFlags::Leaf | ImGuiTreeNodeFlags::Bullet | ImGuiTreeNodeFlags::NoTreePushOnOpen | ImGuiTreeNodeFlags::SpanFullWidth)
+        ImGui.tree_node_ex(node.name, MyTreeNode.tree_node_flags | ImGuiTreeNodeFlags::Leaf | ImGuiTreeNodeFlags::Bullet | ImGuiTreeNodeFlags::NoTreePushOnOpen | ImGuiTreeNodeFlags::SpanFullWidth)
         ImGui.table_next_column
         ImGui.text("%d", node.size)
         ImGui.table_next_column
@@ -3459,11 +3564,11 @@ module ImGuiDemo
     static disable_indent = false
     ImGui.with_id("Tables") do
       open_action = -1
-      if ImGui.button("Open all")
+      if ImGui.button("Expand all")
         open_action = 1
       end
       ImGui.same_line
-      if ImGui.button("Close all")
+      if ImGui.button("Collapse all")
         open_action = 0
       end
       ImGui.same_line
@@ -3689,6 +3794,7 @@ module ImGuiDemo
           ImGui.checkbox_flags("ImGuiTableFlags_NoBordersInBodyUntilResize", pointerof(flags.val), ImGuiTableFlags::NoBordersInBodyUntilResize)
           ImGui.same_line
           help_marker("Disable vertical borders in columns Body until hovered for resize (borders will always appear in Headers)")
+          ImGui.checkbox_flags("ImGuiTableFlags_HighlightHoveredColumn", pointerof(flags.val), ImGuiTableFlags::HighlightHoveredColumn)
         end
 
         ImGui.table("table1", 3, flags.val) do
@@ -4059,8 +4165,13 @@ module ImGuiDemo
         flags = ImGuiTableFlags::SizingFixedFit | ImGuiTableFlags::ScrollX | ImGuiTableFlags::ScrollY | ImGuiTableFlags::RowBg | ImGuiTableFlags::BordersOuter | ImGuiTableFlags::BordersV | ImGuiTableFlags::Resizable | ImGuiTableFlags::Reorderable | ImGuiTableFlags::Hideable | ImGuiTableFlags::Sortable
         outer_size = ImVec2.new(0.0f32, text_base_height * 9)
         ImGui.table("table_columns_flags", column_count, flags, outer_size) do
+          has_angled_header = false
           column_count.times do |column|
+            has_angled_header ||= (column_flags.val[column].includes?(:AngledHeader))
             ImGui.table_setup_column(column_names[column], column_flags.val[column])
+          end
+          if has_angled_header
+            ImGui.table_angled_headers_row
           end
           ImGui.table_headers_row
           column_count.times do |column|
@@ -4337,6 +4448,10 @@ module ImGuiDemo
       ImGui.tree_node("Tree view") do
         static flags = ImGuiTableFlags::BordersV | ImGuiTableFlags::BordersOuterH | ImGuiTableFlags::Resizable | ImGuiTableFlags::RowBg | ImGuiTableFlags::NoBordersInBody
 
+        ImGui.checkbox_flags("ImGuiTreeNodeFlags_SpanFullWidth", pointerof(MyTreeNode.tree_node_flags), ImGuiTreeNodeFlags::SpanFullWidth)
+        ImGui.checkbox_flags("ImGuiTreeNodeFlags_SpanAllColumns", pointerof(MyTreeNode.tree_node_flags), ImGuiTreeNodeFlags::SpanAllColumns)
+
+        help_marker("See \"Columns flags.val\" section to configure how indentation is applied to individual columns.")
         ImGui.table("3ways", 3, flags.val) do
           ImGui.table_setup_column("Name", ImGuiTableColumnFlags::NoHide)
           ImGui.table_setup_column("Size", ImGuiTableColumnFlags::WidthFixed, text_base_width * 12.0f32)
@@ -4436,6 +4551,55 @@ module ImGuiDemo
       if open_action != -1
         ImGui.set_next_item_open(open_action != 0)
       end
+      demo_marker("Tables/Angled headers")
+      ImGui.tree_node("Angled headers") do
+        column_names = ["Track", "cabasa", "ride", "smash", "tom-hi", "tom-mid", "tom-low", "hihat-o", "hihat-c", "snare-s", "snare-c", "clap", "rim", "kick"]
+        columns_count = column_names.size
+        rows_count = 12
+
+        static table_flags = ImGuiTableFlags::SizingFixedFit | ImGuiTableFlags::ScrollX | ImGuiTableFlags::ScrollY | ImGuiTableFlags::BordersOuter | ImGuiTableFlags::BordersInnerH | ImGuiTableFlags::Hideable | ImGuiTableFlags::Resizable | ImGuiTableFlags::Reorderable | ImGuiTableFlags::HighlightHoveredColumn
+        static bools = [false] * (columns_count * rows_count)
+        static frozen_cols = 1
+        static frozen_rows = 2
+        ImGui.checkbox_flags("_ScrollX", pointerof(table_flags.val), ImGuiTableFlags::ScrollX)
+        ImGui.checkbox_flags("_ScrollY", pointerof(table_flags.val), ImGuiTableFlags::ScrollY)
+        ImGui.checkbox_flags("_NoBordersInBody", pointerof(table_flags.val), ImGuiTableFlags::NoBordersInBody)
+        ImGui.checkbox_flags("_HighlightHoveredColumn", pointerof(table_flags.val), ImGuiTableFlags::HighlightHoveredColumn)
+        ImGui.set_next_item_width(ImGui.get_font_size * 8)
+        ImGui.slider_int("Frozen columns", pointerof(frozen_cols.val), 0, 2)
+        ImGui.set_next_item_width(ImGui.get_font_size * 8)
+        ImGui.slider_int("Frozen rows", pointerof(frozen_rows.val), 0, 2)
+
+        ImGui.table("table_angled_headers", columns_count, table_flags.val, ImVec2.new(0.0f32, text_base_height * 12)) do
+          ImGui.table_setup_column(column_names[0], ImGuiTableColumnFlags::NoHide | ImGuiTableColumnFlags::NoReorder)
+          (1...columns_count).each do |n|
+            ImGui.table_setup_column(column_names[n], ImGuiTableColumnFlags::AngledHeader | ImGuiTableColumnFlags::WidthFixed)
+          end
+          ImGui.table_setup_scroll_freeze(frozen_cols.val, frozen_rows.val)
+
+          ImGui.table_angled_headers_row
+          ImGui.table_headers_row
+          rows_count.times do |row|
+            ImGui.with_id(row) do
+              ImGui.table_next_row
+              ImGui.table_set_column_index(0)
+              ImGui.align_text_to_frame_padding
+              ImGui.text("Track %d", row)
+              (1...columns_count).each do |column|
+                if ImGui.table_set_column_index(column)
+                  ImGui.with_id(column) do
+                    ImGui.checkbox("", pointerof(bools.val[row * columns_count + column]))
+                  end
+                end
+              end
+            end
+          end
+        end
+      end
+
+      if open_action != -1
+        ImGui.set_next_item_open(open_action != 0)
+      end
       demo_marker("Tables/Context menus")
       ImGui.tree_node("Context menus") do
         help_marker("By default, right-clicking over a TableHeadersRow()/TableHeader() line will open the default context-menu.\nUsing ImGuiTableFlags_ContextMenuInBody we also allow right-clicking over columns body.")
@@ -4526,6 +4690,7 @@ module ImGuiDemo
         static flags = ImGuiTableFlags::Resizable | ImGuiTableFlags::Reorderable | ImGuiTableFlags::Hideable | ImGuiTableFlags::Borders | ImGuiTableFlags::SizingFixedFit | ImGuiTableFlags::NoSavedSettings
         ImGui.checkbox_flags("ImGuiTableFlags_ScrollY", pointerof(flags.val), ImGuiTableFlags::ScrollY)
         ImGui.checkbox_flags("ImGuiTableFlags_SizingFixedFit", pointerof(flags.val), ImGuiTableFlags::SizingFixedFit)
+        ImGui.checkbox_flags("ImGuiTableFlags_HighlightHoveredColumn", pointerof(flags.val), ImGuiTableFlags::HighlightHoveredColumn)
         3.times do |n|
           buf = sprintf("Synced Table %d", n)
           open = ImGui.collapsing_header(buf, ImGuiTreeNodeFlags::DefaultOpen)
@@ -4614,6 +4779,7 @@ module ImGuiDemo
       demo_marker("Tables/Advanced")
       ImGui.tree_node("Advanced") do
         static flags = ImGuiTableFlags::Resizable | ImGuiTableFlags::Reorderable | ImGuiTableFlags::Hideable | ImGuiTableFlags::Sortable | ImGuiTableFlags::SortMulti | ImGuiTableFlags::RowBg | ImGuiTableFlags::Borders | ImGuiTableFlags::NoBordersInBody | ImGuiTableFlags::ScrollX | ImGuiTableFlags::ScrollY | ImGuiTableFlags::SizingFixedFit
+        static columns_base_flags = ImGuiTableColumnFlags::None
 
         static contents_type = ContentsType3::SelectableSpanRow
         contents_type_names = ["Text", "Button", "SmallButton", "FillButton", "Selectable", "Selectable (span row)"]
@@ -4702,8 +4868,15 @@ module ImGuiDemo
                 help_marker("When sorting is enabled: allow no sorting, disable default sorting. TableGetSortSpecs() may return specs where (SpecsCount == 0).")
               end
 
-              ImGui.tree_node_ex("Other:", ImGuiTreeNodeFlags::DefaultOpen) do
+              ImGui.tree_node_ex("Headers:", ImGuiTreeNodeFlags::DefaultOpen) do
                 ImGui.checkbox("show_headers", pointerof(show_headers.val))
+                ImGui.checkbox_flags("ImGuiTableFlags_HighlightHoveredColumn", pointerof(flags.val), ImGuiTableFlags::HighlightHoveredColumn)
+                ImGui.checkbox_flags("ImGuiTableColumnFlags_AngledHeader", pointerof(columns_base_flags.val), ImGuiTableColumnFlags::AngledHeader)
+                ImGui.same_line
+                help_marker("Enable AngledHeader on all columns. Best enabled on selected narrow columns (see \"Angled headers\" section of the demo).")
+              end
+
+              ImGui.tree_node_ex("Other:", ImGuiTreeNodeFlags::DefaultOpen) do
                 ImGui.checkbox("show_wrapped_text", pointerof(show_wrapped_text.val))
 
                 ImGui.drag_float2("##OuterSize", pointerof(outer_size_value.val))
@@ -4752,12 +4925,12 @@ module ImGuiDemo
 
         inner_width_to_use = (flags.val.includes?(:ScrollX)) ? inner_width_with_scroll.val : 0.0f32
         ImGui.table("table_advanced", 6, flags.val, outer_size_enabled.val ? outer_size_value.val : ImVec2.new(0, 0), inner_width_to_use) do
-          ImGui.table_setup_column("ID", ImGuiTableColumnFlags::DefaultSort | ImGuiTableColumnFlags::WidthFixed | ImGuiTableColumnFlags::NoHide, 0.0f32, MyItemColumnID::ID.to_u32)
-          ImGui.table_setup_column("Name", ImGuiTableColumnFlags::WidthFixed, 0.0f32, MyItemColumnID::Name.to_u32)
-          ImGui.table_setup_column("Action", ImGuiTableColumnFlags::NoSort | ImGuiTableColumnFlags::WidthFixed, 0.0f32, MyItemColumnID::Action.to_u32)
-          ImGui.table_setup_column("Quantity", ImGuiTableColumnFlags::PreferSortDescending, 0.0f32, MyItemColumnID::Quantity.to_u32)
-          ImGui.table_setup_column("Description", (flags.val.includes?(:NoHostExtendX)) ? ImGuiTableColumnFlags::None : ImGuiTableColumnFlags::WidthStretch, 0.0f32, MyItemColumnID::Description.to_u32)
-          ImGui.table_setup_column("Hidden", ImGuiTableColumnFlags::DefaultHide | ImGuiTableColumnFlags::NoSort)
+          ImGui.table_setup_column("ID", columns_base_flags.val | ImGuiTableColumnFlags::DefaultSort | ImGuiTableColumnFlags::WidthFixed | ImGuiTableColumnFlags::NoHide, 0.0f32, MyItemColumnID::ID.to_u32)
+          ImGui.table_setup_column("Name", columns_base_flags.val | ImGuiTableColumnFlags::WidthFixed, 0.0f32, MyItemColumnID::Name.to_u32)
+          ImGui.table_setup_column("Action", columns_base_flags.val | ImGuiTableColumnFlags::NoSort | ImGuiTableColumnFlags::WidthFixed, 0.0f32, MyItemColumnID::Action.to_u32)
+          ImGui.table_setup_column("Quantity", columns_base_flags.val | ImGuiTableColumnFlags::PreferSortDescending, 0.0f32, MyItemColumnID::Quantity.to_u32)
+          ImGui.table_setup_column("Description", columns_base_flags.val | (flags.val.includes?(:NoHostExtendX) ? ImGuiTableColumnFlags::None : ImGuiTableColumnFlags::WidthStretch), 0.0f32, MyItemColumnID::Description.to_u32)
+          ImGui.table_setup_column("Hidden", columns_base_flags.val | ImGuiTableColumnFlags::DefaultHide | ImGuiTableColumnFlags::NoSort)
           ImGui.table_setup_scroll_freeze(freeze_cols.val, freeze_rows.val)
 
           sort_specs = ImGui.table_get_sort_specs
@@ -4772,6 +4945,9 @@ module ImGuiDemo
 
           sorts_specs_using_quantity = (ImGui.table_get_column_flags(3).includes?(:IsSorted))
 
+          if show_headers.val && (columns_base_flags.val.includes?(:AngledHeader))
+            ImGui.table_angled_headers_row
+          end
           if show_headers.val
             ImGui.table_headers_row
           end
@@ -5025,7 +5201,7 @@ module ImGuiDemo
     ImGui.tree_node("Horizontal Scrolling") do
       ImGui.set_next_window_content_size(ImVec2.new(1500.0f32, 0.0f32))
       child_size = ImVec2.new(0, ImGui.get_font_size * 20.0f32)
-      ImGui.child("##ScrollingRegion", child_size, false, ImGuiWindowFlags::HorizontalScrollbar) do
+      ImGui.child("##ScrollingRegion", child_size, ImGuiChildFlags::None, ImGuiWindowFlags::HorizontalScrollbar) do
         ImGui.columns(10)
 
         items_count = 2000
@@ -5103,12 +5279,8 @@ module ImGuiDemo
         end
         ImGui.text("Mouse wheel: %.1f", io.mouse_wheel)
 
-        is_legacy_native_dupe = ->(key : Int32) {
-          return key < 512 && ImGui.get_io.key_map[key] != -1
-        }
         ImGui.text("Keys down:")
         (0...ImGuiKey::COUNT.to_i).each do |key|
-          next if is_legacy_native_dupe.call(key)
           key = ImGuiKey.new(key)
           next if !ImGui.is_key_down(key)
           ImGui.same_line
@@ -5316,7 +5488,7 @@ module ImGuiDemo
 
       copy_to_clipboard = ImGui.button("Copy to clipboard")
       child_size = ImVec2.new(0, ImGui.get_text_line_height_with_spacing * 18)
-      ImGui.child_frame(ImGui.get_id("cfg_infos"), child_size, ImGuiWindowFlags::NoMove) do
+      ImGui.child(ImGui.get_id("cfg_infos"), child_size, ImGuiChildFlags::FrameStyle) do
         if copy_to_clipboard
           ImGui.log_to_clipboard
           ImGui.log_text("```\n")
@@ -5498,7 +5670,6 @@ module ImGuiDemo
           ImGui.separator_text("Main")
           ImGui.slider_float2("WindowPadding", pointerof(style.window_padding), 0.0f32, 20.0f32, "%.0f")
           ImGui.slider_float2("FramePadding", pointerof(style.frame_padding), 0.0f32, 20.0f32, "%.0f")
-          ImGui.slider_float2("CellPadding", pointerof(style.cell_padding), 0.0f32, 20.0f32, "%.0f")
           ImGui.slider_float2("ItemSpacing", pointerof(style.item_spacing), 0.0f32, 20.0f32, "%.0f")
           ImGui.slider_float2("ItemInnerSpacing", pointerof(style.item_inner_spacing), 0.0f32, 20.0f32, "%.0f")
           ImGui.slider_float2("TouchExtraPadding", pointerof(style.touch_extra_padding), 0.0f32, 10.0f32, "%.0f")
@@ -5512,6 +5683,7 @@ module ImGuiDemo
           ImGui.slider_float("PopupBorderSize", pointerof(style.popup_border_size), 0.0f32, 1.0f32, "%.0f")
           ImGui.slider_float("FrameBorderSize", pointerof(style.frame_border_size), 0.0f32, 1.0f32, "%.0f")
           ImGui.slider_float("TabBorderSize", pointerof(style.tab_border_size), 0.0f32, 1.0f32, "%.0f")
+          ImGui.slider_float("TabBarBorderSize", pointerof(style.tab_bar_border_size), 0.0f32, 2.0f32, "%.0f")
 
           ImGui.separator_text("Rounding")
           ImGui.slider_float("WindowRounding", pointerof(style.window_rounding), 0.0f32, 12.0f32, "%.0f")
@@ -5521,6 +5693,10 @@ module ImGuiDemo
           ImGui.slider_float("ScrollbarRounding", pointerof(style.scrollbar_rounding), 0.0f32, 12.0f32, "%.0f")
           ImGui.slider_float("GrabRounding", pointerof(style.grab_rounding), 0.0f32, 12.0f32, "%.0f")
           ImGui.slider_float("TabRounding", pointerof(style.tab_rounding), 0.0f32, 12.0f32, "%.0f")
+
+          ImGui.separator_text("Tables")
+          ImGui.slider_float2("CellPadding", pointerof(style.cell_padding), 0.0f32, 20.0f32, "%.0f")
+          ImGui.slider_angle("TableAngledHeadersAngle", pointerof(style.table_angled_headers_angle), -50.0f32, +50.0f32)
 
           ImGui.separator_text("Widgets")
           ImGui.slider_float2("WindowTitleAlign", pointerof(style.window_title_align), 0.0f32, 1.0f32, "%.2f")
@@ -5609,8 +5785,9 @@ module ImGuiDemo
             "Left-click on color square to open color picker,\n" +
             "Right-click to open edit options menu.")
 
-          ImGui.child("##colors", ImVec2.new(0, 0), true, ImGuiWindowFlags::AlwaysVerticalScrollbar | ImGuiWindowFlags::AlwaysHorizontalScrollbar | ImGuiWindowFlags::NavFlattened) do
-            ImGui.with_item_width(-160) do
+          ImGui.set_next_window_size_constraints(ImVec2.new(0.0f32, ImGui.get_text_line_height_with_spacing * 10), ImVec2.new(Float32::MAX, Float32::MAX))
+          ImGui.child("##colors", ImVec2.new(0, 0), ImGuiChildFlags::Border, ImGuiWindowFlags::AlwaysVerticalScrollbar | ImGuiWindowFlags::AlwaysHorizontalScrollbar | ImGuiWindowFlags::NavFlattened) do
+            ImGui.with_item_width(ImGui.get_font_size * -12) do
               ImGuiCol.each do |col_i|
                 i = col_i.to_i
                 name = ImGui.get_style_color_name(col_i)
@@ -5798,7 +5975,7 @@ module ImGuiDemo
     ImGui.menu("Options") do
       static enabled = true
       ImGui.menu_item("Enabled", "", pointerof(enabled.val))
-      ImGui.child("child", ImVec2.new(0, 60), true) do
+      ImGui.child("child", ImVec2.new(0, 60), ImGuiChildFlags::Border) do
         10.times do |i|
           ImGui.text("Scrolling Text %d", i)
         end
@@ -5910,7 +6087,7 @@ module ImGuiDemo
       ImGui.separator
 
       footer_height_to_reserve = ImGui.get_style.item_spacing.y + ImGui.get_frame_height_with_spacing
-      ImGui.child("ScrollingRegion", ImVec2.new(0, -footer_height_to_reserve), false, ImGuiWindowFlags::HorizontalScrollbar) do
+      ImGui.child("ScrollingRegion", ImVec2.new(0, -footer_height_to_reserve), ImGuiChildFlags::None, ImGuiWindowFlags::HorizontalScrollbar) do
         ImGui.popup_context_window do
           if ImGui.selectable("Clear")
             clear_log
@@ -6134,7 +6311,7 @@ module ImGuiDemo
 
       ImGui.separator
 
-      ImGui.child("scrolling", ImVec2.new(0, 0), false, ImGuiWindowFlags::HorizontalScrollbar) do
+      ImGui.child("scrolling", ImVec2.new(0, 0), ImGuiChildFlags::None, ImGuiWindowFlags::HorizontalScrollbar) do
         if clear
           clear
         end
@@ -6214,7 +6391,7 @@ module ImGuiDemo
 
       static selected = 0
       begin
-        ImGui.child("left pane", ImVec2.new(150, 0), true) do
+        ImGui.child("left pane", ImVec2.new(150, 0), ImGuiChildFlags::Border | ImGuiChildFlags::ResizeX) do
           100.times do |i|
             label = sprintf("MyObject %d", i)
             if ImGui.selectable(label, selected.val == i)
@@ -6391,7 +6568,7 @@ module ImGuiDemo
   ImGui.pointer_wrapper def self.show_example_app_constrained_resize(p_open = Pointer(Bool).null)
     aspect_ratio = 16.0f32 / 9.0f32
     aspect_ratio_constraint = ->(data : ImGuiSizeCallbackData) {
-      size_x = {data.current_size.x, data.current_size.y}.max
+      size_x = data.current_size.x
       size_y = (size_x / aspect_ratio).to_i.to_f32
       data.desired_size = ImVec2.new(size_x, size_y)
     }
@@ -6417,7 +6594,7 @@ module ImGuiDemo
 
     static auto_resize = false
     static window_padding = true
-    static type = 5
+    static type = 6
     static display_lines = 10
 
     if type.val == 0
@@ -6436,12 +6613,15 @@ module ImGuiDemo
       ImGui.set_next_window_size_constraints(ImVec2.new(400, -1), ImVec2.new(500, -1))
     end
     if type.val == 5
-      ImGui.set_next_window_size_constraints(ImVec2.new(0, 0), ImVec2.new(Float32::MAX, Float32::MAX), &aspect_ratio_constraint)
+      ImGui.set_next_window_size_constraints(ImVec2.new(-1, 500), ImVec2.new(-1, Float32::MAX))
     end
     if type.val == 6
-      ImGui.set_next_window_size_constraints(ImVec2.new(0, 0), ImVec2.new(Float32::MAX, Float32::MAX), &square_constraint)
+      ImGui.set_next_window_size_constraints(ImVec2.new(0, 0), ImVec2.new(Float32::MAX, Float32::MAX), &aspect_ratio_constraint)
     end
     if type.val == 7
+      ImGui.set_next_window_size_constraints(ImVec2.new(0, 0), ImVec2.new(Float32::MAX, Float32::MAX), &square_constraint)
+    end
+    if type.val == 8
       ImGui.set_next_window_size_constraints(ImVec2.new(0, 0), ImVec2.new(Float32::MAX, Float32::MAX), &step_constraint)
     end
 
@@ -6663,6 +6843,8 @@ module ImGuiDemo
             x += sz.val + spacing
             draw_list.add_circle(ImVec2.new(x + sz.val * 0.5f32, y + sz.val * 0.5f32), sz.val * 0.5f32, col, circle_segments, th)
             x += sz.val + spacing
+            draw_list.add_ellipse(ImVec2.new(x + sz.val * 0.5f32, y + sz.val * 0.5f32), sz.val * 0.5f32, sz.val * 0.3f32, col, -0.3f32, circle_segments, th)
+            x += sz.val + spacing
             draw_list.add_rect(ImVec2.new(x, y), ImVec2.new(x + sz.val, y + sz.val), col, 0.0f32, ImDrawFlags::None, th)
             x += sz.val + spacing
             draw_list.add_rect(ImVec2.new(x, y), ImVec2.new(x + sz.val, y + sz.val), col, rounding, ImDrawFlags::None, th)
@@ -6693,6 +6875,8 @@ module ImGuiDemo
           x += sz.val + spacing
           draw_list.add_circle_filled(ImVec2.new(x + sz.val * 0.5f32, y + sz.val * 0.5f32), sz.val * 0.5f32, col, circle_segments)
           x += sz.val + spacing
+          draw_list.add_ellipse_filled(ImVec2.new(x + sz.val * 0.5f32, y + sz.val * 0.5f32), sz.val * 0.5f32, sz.val * 0.3f32, col, -0.3f32, circle_segments)
+          x += sz.val + spacing
           draw_list.add_rect_filled(ImVec2.new(x, y), ImVec2.new(x + sz.val, y + sz.val), col)
           x += sz.val + spacing
           draw_list.add_rect_filled(ImVec2.new(x, y), ImVec2.new(x + sz.val, y + sz.val), col, 10.0f32)
@@ -6710,7 +6894,7 @@ module ImGuiDemo
           x += sz.val
           draw_list.add_rect_filled_multi_color(ImVec2.new(x, y), ImVec2.new(x + sz.val, y + sz.val), ImGui.col32(0, 0, 0, 255), ImGui.col32(255, 0, 0, 255), ImGui.col32(255, 255, 0, 255), ImGui.col32(0, 255, 0, 255))
 
-          ImGui.dummy(ImVec2.new((sz.val + spacing) * 10.2f32, (sz.val + spacing) * 3.0f32))
+          ImGui.dummy(ImVec2.new((sz.val + spacing) * 11.2f32, (sz.val + spacing) * 3.0f32))
         end
       end
 
@@ -7050,14 +7234,14 @@ module ImGuiDemo
         ImGui.popup_modal("Save?", flags: ImGuiWindowFlags::AlwaysAutoResize) do
           ImGui.text("Save change to the following items?")
           item_height = ImGui.get_text_line_height_with_spacing
-          if ImGui.begin_child_frame(ImGui.get_id("frame"), ImVec2.new(-Float32::MIN_POSITIVE, 6.25f32 * item_height))
+          if ImGui.begin_child(ImGui.get_id("frame"), ImVec2.new(-Float32::MIN_POSITIVE, 6.25f32 * item_height), ImGuiChildFlags::FrameStyle)
             close_queue.val.size.times do |n|
               if close_queue.val[n].dirty
                 ImGui.text("%s", close_queue.val[n].name)
               end
             end
           end
-          ImGui.end_child_frame
+          ImGui.end_child
 
           button_size = ImVec2.new(ImGui.get_font_size * 7.0f32, 0.0f32)
           if ImGui.button("Yes", button_size)

@@ -83,8 +83,8 @@ module ImGui
   pointer_wrapper def self.show_debug_log_window(p_open : Bool* = Pointer(Bool).null) : Void
     LibImGui.ShowDebugLogWindow(p_open)
   end
-  pointer_wrapper def self.show_stack_tool_window(p_open : Bool* = Pointer(Bool).null) : Void
-    LibImGui.ShowStackToolWindow(p_open)
+  pointer_wrapper def self.show_id_stack_tool_window(p_open : Bool* = Pointer(Bool).null) : Void
+    LibImGui.ShowIDStackToolWindow(p_open)
   end
   pointer_wrapper def self.show_about_window(p_open : Bool* = Pointer(Bool).null) : Void
     LibImGui.ShowAboutWindow(p_open)
@@ -136,23 +136,23 @@ module ImGui
     LibImGui.End
   end
 
-  def self.begin_child(str_id : String, size : ImVec2 = ImVec2.new(0, 0), border : Bool = false, flags : ImGuiWindowFlags = ImGuiWindowFlags.new(0)) : Bool
-    LibImGui.BeginChild_Str(str_id, size, border, flags)
+  def self.begin_child(str_id : String, size : ImVec2 = ImVec2.new(0, 0), child_flags : ImGuiChildFlags = ImGuiChildFlags.new(0), window_flags : ImGuiWindowFlags = ImGuiWindowFlags.new(0)) : Bool
+    LibImGui.BeginChild_Str(str_id, size, child_flags, window_flags)
   end
 
   # Calls `begin_child`, conditionally yields to the block, then calls `end_child`.
-  def self.child(str_id : String, size : ImVec2 = ImVec2.new(0, 0), border : Bool = false, flags : ImGuiWindowFlags = ImGuiWindowFlags.new(0)) : Nil
-    yield if self.begin_child(str_id, size, border, flags)
+  def self.child(str_id : String, size : ImVec2 = ImVec2.new(0, 0), child_flags : ImGuiChildFlags = ImGuiChildFlags.new(0), window_flags : ImGuiWindowFlags = ImGuiWindowFlags.new(0)) : Nil
+    yield if self.begin_child(str_id, size, child_flags, window_flags)
     self.end_child
   end
 
-  def self.begin_child(id : ImGuiID, size : ImVec2 = ImVec2.new(0, 0), border : Bool = false, flags : ImGuiWindowFlags = ImGuiWindowFlags.new(0)) : Bool
-    LibImGui.BeginChild_ID(id, size, border, flags)
+  def self.begin_child(id : ImGuiID, size : ImVec2 = ImVec2.new(0, 0), child_flags : ImGuiChildFlags = ImGuiChildFlags.new(0), window_flags : ImGuiWindowFlags = ImGuiWindowFlags.new(0)) : Bool
+    LibImGui.BeginChild_ID(id, size, child_flags, window_flags)
   end
 
   # Calls `begin_child`, conditionally yields to the block, then calls `end_child`.
-  def self.child(id : ImGuiID, size : ImVec2 = ImVec2.new(0, 0), border : Bool = false, flags : ImGuiWindowFlags = ImGuiWindowFlags.new(0)) : Nil
-    yield if self.begin_child(id, size, border, flags)
+  def self.child(id : ImGuiID, size : ImVec2 = ImVec2.new(0, 0), child_flags : ImGuiChildFlags = ImGuiChildFlags.new(0), window_flags : ImGuiWindowFlags = ImGuiWindowFlags.new(0)) : Nil
+    yield if self.begin_child(id, size, child_flags, window_flags)
     self.end_child
   end
 
@@ -493,6 +493,45 @@ module ImGui
     result.value
   end
 
+  def self.get_cursor_screen_pos : ImGui::ImVec2
+    LibImGui.GetCursorScreenPos(out p_out)
+    p_out
+  end
+
+  def self.set_cursor_screen_pos(pos : ImVec2) : Void
+    LibImGui.SetCursorScreenPos(pos)
+  end
+
+  def self.get_cursor_pos : ImGui::ImVec2
+    LibImGui.GetCursorPos(out p_out)
+    p_out
+  end
+
+  def self.get_cursor_pos_x : Float32
+    LibImGui.GetCursorPosX
+  end
+
+  def self.get_cursor_pos_y : Float32
+    LibImGui.GetCursorPosY
+  end
+
+  def self.set_cursor_pos(local_pos : ImVec2) : Void
+    LibImGui.SetCursorPos(local_pos)
+  end
+
+  def self.set_cursor_pos_x(local_x : Float32) : Void
+    LibImGui.SetCursorPosX(local_x)
+  end
+
+  def self.set_cursor_pos_y(local_y : Float32) : Void
+    LibImGui.SetCursorPosY(local_y)
+  end
+
+  def self.get_cursor_start_pos : ImGui::ImVec2
+    LibImGui.GetCursorStartPos(out p_out)
+    p_out
+  end
+
   def self.separator : Void
     LibImGui.Separator
   end
@@ -534,45 +573,6 @@ module ImGui
 
   def self.end_group : Void
     LibImGui.EndGroup
-  end
-
-  def self.get_cursor_pos : ImGui::ImVec2
-    LibImGui.GetCursorPos(out p_out)
-    p_out
-  end
-
-  def self.get_cursor_pos_x : Float32
-    LibImGui.GetCursorPosX
-  end
-
-  def self.get_cursor_pos_y : Float32
-    LibImGui.GetCursorPosY
-  end
-
-  def self.set_cursor_pos(local_pos : ImVec2) : Void
-    LibImGui.SetCursorPos(local_pos)
-  end
-
-  def self.set_cursor_pos_x(local_x : Float32) : Void
-    LibImGui.SetCursorPosX(local_x)
-  end
-
-  def self.set_cursor_pos_y(local_y : Float32) : Void
-    LibImGui.SetCursorPosY(local_y)
-  end
-
-  def self.get_cursor_start_pos : ImGui::ImVec2
-    LibImGui.GetCursorStartPos(out p_out)
-    p_out
-  end
-
-  def self.get_cursor_screen_pos : ImGui::ImVec2
-    LibImGui.GetCursorScreenPos(out p_out)
-    p_out
-  end
-
-  def self.set_cursor_screen_pos(pos : ImVec2) : Void
-    LibImGui.SetCursorScreenPos(pos)
   end
 
   def self.align_text_to_frame_padding : Void
@@ -731,8 +731,8 @@ module ImGui
     LibImGui.Image(user_texture_id, size, uv0, uv1, tint_col, border_col)
   end
 
-  def self.image_button(str_id : String, user_texture_id : ImTextureID, size : ImVec2, uv0 : ImVec2 = ImVec2.new(0, 0), uv1 : ImVec2 = ImVec2.new(1, 1), bg_col : ImVec4 = ImVec4.new(0, 0, 0, 0), tint_col : ImVec4 = ImVec4.new(1, 1, 1, 1)) : Bool
-    LibImGui.ImageButton(str_id, user_texture_id, size, uv0, uv1, bg_col, tint_col)
+  def self.image_button(str_id : String, user_texture_id : ImTextureID, image_size : ImVec2, uv0 : ImVec2 = ImVec2.new(0, 0), uv1 : ImVec2 = ImVec2.new(1, 1), bg_col : ImVec4 = ImVec4.new(0, 0, 0, 0), tint_col : ImVec4 = ImVec4.new(1, 1, 1, 1)) : Bool
+    LibImGui.ImageButton(str_id, user_texture_id, image_size, uv0, uv1, bg_col, tint_col)
   end
 
   def self.begin_combo(label : String, preview_value : String, flags : ImGuiComboFlags = ImGuiComboFlags.new(0)) : Bool
@@ -756,8 +756,8 @@ module ImGui
   pointer_wrapper def self.combo(label : String, current_item : Int32* | Pointer, items_separated_by_zeros : String, popup_max_height_in_items : Int32 = -1) : Bool
     LibImGui.Combo_Str(label, (typeof(current_item.value.to_i32); current_item.as(Int32*)), items_separated_by_zeros, popup_max_height_in_items)
   end
-  pointer_wrapper def self.combo(label : String, current_item : Int32* | Pointer, items_getter : (Void*, Int32, LibC::Char**) -> Bool, data : Void*, items_count : Int32, popup_max_height_in_items : Int32 = -1) : Bool
-    LibImGui.Combo_FnBoolPtr(label, (typeof(current_item.value.to_i32); current_item.as(Int32*)), items_getter, data, items_count, popup_max_height_in_items)
+  pointer_wrapper def self.combo(label : String, current_item : Int32* | Pointer, getter : (Void*, Int32) -> String, user_data : Void*, items_count : Int32, popup_max_height_in_items : Int32 = -1) : Bool
+    LibImGui.Combo_FnStrPtr(label, (typeof(current_item.value.to_i32); current_item.as(Int32*)), getter, user_data, items_count, popup_max_height_in_items)
   end
   pointer_wrapper def self.drag_float(label : String, v : Float32*, v_speed : Float32 = 1.0, v_min : Float32 = 0.0, v_max : Float32 = 0.0, format : String = "%.3f", flags : ImGuiSliderFlags = ImGuiSliderFlags.new(0)) : Bool
     LibImGui.DragFloat(label, v, v_speed, v_min, v_max, format, flags)
@@ -1094,8 +1094,8 @@ module ImGui
   pointer_wrapper def self.list_box(label : String, current_item : Int32* | Pointer, items : Indexable(LibC::Char*), height_in_items : Int32 = -1) : Bool
     LibImGui.ListBox_Str_arr(label, (typeof(current_item.value.to_i32); current_item.as(Int32*)), items, items.size, height_in_items)
   end
-  pointer_wrapper def self.list_box(label : String, current_item : Int32* | Pointer, items_getter : (Void*, Int32, LibC::Char**) -> Bool, data : Void*, items_count : Int32, height_in_items : Int32 = -1) : Bool
-    LibImGui.ListBox_FnBoolPtr(label, (typeof(current_item.value.to_i32); current_item.as(Int32*)), items_getter, data, items_count, height_in_items)
+  pointer_wrapper def self.list_box(label : String, current_item : Int32* | Pointer, getter : (Void*, Int32) -> String, user_data : Void*, items_count : Int32, height_in_items : Int32 = -1) : Bool
+    LibImGui.ListBox_FnStrPtr(label, (typeof(current_item.value.to_i32); current_item.as(Int32*)), getter, user_data, items_count, height_in_items)
   end
 
   def self.plot_lines(label : String, values : Indexable(Float32), values_offset : Int32 = 0, overlay_text : String? = nil, scale_min : Float32 = Float32::MAX, scale_max : Float32 = Float32::MAX, graph_size : ImVec2 = ImVec2.new(0, 0), stride : Int32 = sizeof(Float32)) : Void
@@ -1321,12 +1321,16 @@ module ImGui
     LibImGui.TableSetupScrollFreeze(cols, rows)
   end
 
+  def self.table_header(label : String) : Void
+    LibImGui.TableHeader(label)
+  end
+
   def self.table_headers_row : Void
     LibImGui.TableHeadersRow
   end
 
-  def self.table_header(label : String) : Void
-    LibImGui.TableHeader(label)
+  def self.table_angled_headers_row : Void
+    LibImGui.TableAngledHeadersRow
   end
 
   def self.table_get_sort_specs : ImGuiTableSortSpecs?
@@ -1663,20 +1667,6 @@ module ImGui
     result.value
   end
 
-  def self.begin_child_frame(id : ImGuiID, size : ImVec2, flags : ImGuiWindowFlags = ImGuiWindowFlags.new(0)) : Bool
-    LibImGui.BeginChildFrame(id, size, flags)
-  end
-
-  # Calls `begin_child_frame`, conditionally yields to the block, then calls `end_child_frame`.
-  def self.child_frame(id : ImGuiID, size : ImVec2, flags : ImGuiWindowFlags = ImGuiWindowFlags.new(0)) : Nil
-    yield if self.begin_child_frame(id, size, flags)
-    self.end_child_frame
-  end
-
-  def self.end_child_frame : Void
-    LibImGui.EndChildFrame
-  end
-
   def self.calc_text_size(text : Bytes | String, hide_text_after_double_hash : Bool = false, wrap_width : Float32 = -1.0) : ImGui::ImVec2
     LibImGui.CalcTextSize(out p_out, text, (text.to_unsafe + text.bytesize), hide_text_after_double_hash, wrap_width)
     p_out
@@ -1713,6 +1703,10 @@ module ImGui
     LibImGui.IsKeyReleased_Nil(key)
   end
 
+  def self.is_key_chord_pressed(key_chord : ImGuiKeyChord) : Bool
+    LibImGui.IsKeyChordPressed_Nil(key_chord)
+  end
+
   def self.get_key_pressed_amount(key : ImGuiKey, repeat_delay : Float32, rate : Float32) : Int32
     LibImGui.GetKeyPressedAmount(key, repeat_delay, rate)
   end
@@ -1739,7 +1733,7 @@ module ImGui
   end
 
   def self.is_mouse_double_clicked(button : ImGuiMouseButton) : Bool
-    LibImGui.IsMouseDoubleClicked(button)
+    LibImGui.IsMouseDoubleClicked_Nil(button)
   end
 
   def self.get_mouse_clicked_count(button : ImGuiMouseButton) : Int32
@@ -2080,6 +2074,22 @@ module ImGui
 
     def tab_min_width_for_close_button=(tab_min_width_for_close_button : Float32)
       @this.value.tab_min_width_for_close_button = tab_min_width_for_close_button
+    end
+
+    def tab_bar_border_size : Float32
+      @this.value.tab_bar_border_size
+    end
+
+    def tab_bar_border_size=(tab_bar_border_size : Float32)
+      @this.value.tab_bar_border_size = tab_bar_border_size
+    end
+
+    def table_angled_headers_angle : Float32
+      @this.value.table_angled_headers_angle
+    end
+
+    def table_angled_headers_angle=(table_angled_headers_angle : Float32)
+      @this.value.table_angled_headers_angle = table_angled_headers_angle
     end
 
     def color_button_position : ImGuiDir
@@ -2719,44 +2729,12 @@ module ImGui
       @this.value.metrics_active_windows = metrics_active_windows
     end
 
-    def metrics_active_allocations : Int32
-      @this.value.metrics_active_allocations
-    end
-
-    def metrics_active_allocations=(metrics_active_allocations : Int32)
-      @this.value.metrics_active_allocations = metrics_active_allocations
-    end
-
     def mouse_delta : ImVec2
       @this.value.mouse_delta
     end
 
     def mouse_delta=(mouse_delta : ImVec2)
       @this.value.mouse_delta = mouse_delta
-    end
-
-    def key_map : Slice(Int32)
-      @this.value.key_map.to_slice
-    end
-
-    def key_map=(key_map : Slice(Int32))
-      @this.value.key_map = key_map
-    end
-
-    def keys_down : Slice(Bool)
-      @this.value.keys_down.to_slice
-    end
-
-    def keys_down=(keys_down : Slice(Bool))
-      @this.value.keys_down = keys_down
-    end
-
-    def nav_inputs : Slice(Float32)
-      @this.value.nav_inputs.to_slice
-    end
-
-    def nav_inputs=(nav_inputs : Slice(Float32))
-      @this.value.nav_inputs = nav_inputs
     end
 
     def ctx : ImGuiContext?
@@ -3567,12 +3545,12 @@ module ImGui
       LibImGui.ImGuiStorage_GetVoidPtrRef(self, key, default_val)
     end
 
-    def set_all_int(val : Int32) : Void
-      LibImGui.ImGuiStorage_SetAllInt(self, val)
-    end
-
     def build_sort_by_key : Void
       LibImGui.ImGuiStorage_BuildSortByKey(self)
+    end
+
+    def set_all_int(val : Int32) : Void
+      LibImGui.ImGuiStorage_SetAllInt(self, val)
     end
   end
 
@@ -3904,6 +3882,14 @@ module ImGui
       LibImGui.ImDrawList_AddNgonFilled(self, center, radius, col, num_segments)
     end
 
+    def add_ellipse(center : ImVec2, radius_x : Float32, radius_y : Float32, col : UInt32, rot : Float32 = 0.0, num_segments : Int32 = 0, thickness : Float32 = 1.0) : Void
+      LibImGui.ImDrawList_AddEllipse(self, center, radius_x, radius_y, col, rot, num_segments, thickness)
+    end
+
+    def add_ellipse_filled(center : ImVec2, radius_x : Float32, radius_y : Float32, col : UInt32, rot : Float32 = 0.0, num_segments : Int32 = 0) : Void
+      LibImGui.ImDrawList_AddEllipseFilled(self, center, radius_x, radius_y, col, rot, num_segments)
+    end
+
     def add_text(pos : ImVec2, col : UInt32, text : Bytes | String) : Void
       LibImGui.ImDrawList_AddText_Vec2(self, pos, col, text, (text.to_unsafe + text.bytesize))
     end
@@ -3966,6 +3952,10 @@ module ImGui
 
     def path_arc_to_fast(center : ImVec2, radius : Float32, a_min_of_12 : Int32, a_max_of_12 : Int32) : Void
       LibImGui.ImDrawList_PathArcToFast(self, center, radius, a_min_of_12, a_max_of_12)
+    end
+
+    def path_elliptical_arc_to(center : ImVec2, radius_x : Float32, radius_y : Float32, rot : Float32, a_min : Float32, a_max : Float32, num_segments : Int32 = 0) : Void
+      LibImGui.ImDrawList_PathEllipticalArcTo(self, center, radius_x, radius_y, rot, a_min, a_max, num_segments)
     end
 
     def path_bezier_cubic_curve_to(p2 : ImVec2, p3 : ImVec2, p4 : ImVec2, num_segments : Int32 = 0) : Void
@@ -4269,6 +4259,14 @@ module ImGui
 
     def rasterizer_multiply=(rasterizer_multiply : Float32)
       @this.value.rasterizer_multiply = rasterizer_multiply
+    end
+
+    def rasterizer_density : Float32
+      @this.value.rasterizer_density
+    end
+
+    def rasterizer_density=(rasterizer_density : Float32)
+      @this.value.rasterizer_density = rasterizer_density
     end
 
     def ellipsis_char : ImWchar
@@ -4635,13 +4633,13 @@ module ImGui
       ImFont.new(result)
     end
 
-    def add_font_from_memory_ttf(font_data : Void*, font_size : Int32, size_pixels : Float32, font_cfg : ImFontConfig? = nil, glyph_ranges : ImWchar* = Pointer(ImWchar).null) : ImFont
-      result = LibImGui.ImFontAtlas_AddFontFromMemoryTTF(self, font_data, font_size, size_pixels, font_cfg, glyph_ranges)
+    def add_font_from_memory_ttf(font_data : Void*, font_data_size : Int32, size_pixels : Float32, font_cfg : ImFontConfig? = nil, glyph_ranges : ImWchar* = Pointer(ImWchar).null) : ImFont
+      result = LibImGui.ImFontAtlas_AddFontFromMemoryTTF(self, font_data, font_data_size, size_pixels, font_cfg, glyph_ranges)
       ImFont.new(result)
     end
 
-    def add_font_from_memory_compressed_ttf(compressed_font_data : Void*, compressed_font_size : Int32, size_pixels : Float32, font_cfg : ImFontConfig? = nil, glyph_ranges : ImWchar* = Pointer(ImWchar).null) : ImFont
-      result = LibImGui.ImFontAtlas_AddFontFromMemoryCompressedTTF(self, compressed_font_data, compressed_font_size, size_pixels, font_cfg, glyph_ranges)
+    def add_font_from_memory_compressed_ttf(compressed_font_data : Void*, compressed_font_data_size : Int32, size_pixels : Float32, font_cfg : ImFontConfig? = nil, glyph_ranges : ImWchar* = Pointer(ImWchar).null) : ImFont
+      result = LibImGui.ImFontAtlas_AddFontFromMemoryCompressedTTF(self, compressed_font_data, compressed_font_data_size, size_pixels, font_cfg, glyph_ranges)
       ImFont.new(result)
     end
 

@@ -1,6 +1,6 @@
 module ImGui
-  VERSION               = "1.89.9"
-  VERSION_NUM           = 18990
+  VERSION               = "1.90.0"
+  VERSION_NUM           = 19000
   PAYLOAD_TYPE_COLOR_3F = "_COL3F"
   PAYLOAD_TYPE_COLOR_4F = "_COL4F"
 
@@ -16,6 +16,7 @@ module ImGui
   alias ImGuiKeyRoutingIndex = LibImGui::ImGuiKeyRoutingIndex
   alias ImGuiMemAllocFunc = LibImGui::ImGuiMemAllocFunc
   alias ImGuiMemFreeFunc = LibImGui::ImGuiMemFreeFunc
+  alias ImGuiSelectionUserData = LibImGui::ImGuiSelectionUserData
   alias ImGuiSizeCallback = LibImGui::ImGuiSizeCallback
   alias ImGuiTableColumnIdx = LibImGui::ImGuiTableColumnIdx
   alias ImGuiTableDrawChannelIdx = LibImGui::ImGuiTableDrawChannelIdx
@@ -68,10 +69,9 @@ module ImGui
     NoBringToFrontOnFocus     = 1 << 13
     AlwaysVerticalScrollbar   = 1 << 14
     AlwaysHorizontalScrollbar = 1 << 15
-    AlwaysUseWindowPadding    = 1 << 16
-    NoNavInputs               = 1 << 18
-    NoNavFocus                = 1 << 19
-    UnsavedDocument           = 1 << 20
+    NoNavInputs               = 1 << 16
+    NoNavFocus                = 1 << 17
+    UnsavedDocument           = 1 << 18
     NoNav                     = NoNavInputs | NoNavFocus
     NoDecoration              = NoTitleBar | NoResize | NoScrollbar | NoCollapse
     NoInputs                  = NoMouseInputs | NoNavInputs | NoNavFocus
@@ -83,6 +83,20 @@ module ImGui
     ChildMenu                 = 1 << 28
   end
   alias TopLevel::ImGuiWindowFlags = ImGui::ImGuiWindowFlags
+
+  @[Flags]
+  enum ImGuiChildFlags
+    None                   = 0
+    Border                 = 1 << 0
+    AlwaysUseWindowPadding = 1 << 1
+    ResizeX                = 1 << 2
+    ResizeY                = 1 << 3
+    AutoResizeX            = 1 << 4
+    AutoResizeY            = 1 << 5
+    AlwaysAutoResize       = 1 << 6
+    FrameStyle             = 1 << 7
+  end
+  alias TopLevel::ImGuiChildFlags = ImGui::ImGuiChildFlags
 
   @[Flags]
   enum ImGuiInputTextFlags
@@ -127,7 +141,8 @@ module ImGui
     FramePadding         = 1 << 10
     SpanAvailWidth       = 1 << 11
     SpanFullWidth        = 1 << 12
-    NavLeftJumpsBackHere = 1 << 13
+    SpanAllColumns       = 1 << 13
+    NavLeftJumpsBackHere = 1 << 14
     CollapsingHeader     = Framed | NoTreePushOnOpen | NoAutoOpenOnLog
   end
   alias TopLevel::ImGuiTreeNodeFlags = ImGui::ImGuiTreeNodeFlags
@@ -161,15 +176,16 @@ module ImGui
 
   @[Flags]
   enum ImGuiComboFlags
-    None           = 0
-    PopupAlignLeft = 1 << 0
-    HeightSmall    = 1 << 1
-    HeightRegular  = 1 << 2
-    HeightLarge    = 1 << 3
-    HeightLargest  = 1 << 4
-    NoArrowButton  = 1 << 5
-    NoPreview      = 1 << 6
-    HeightMask_    = HeightSmall | HeightRegular | HeightLarge | HeightLargest
+    None            = 0
+    PopupAlignLeft  = 1 << 0
+    HeightSmall     = 1 << 1
+    HeightRegular   = 1 << 2
+    HeightLarge     = 1 << 3
+    HeightLargest   = 1 << 4
+    NoArrowButton   = 1 << 5
+    NoPreview       = 1 << 6
+    WidthFitPreview = 1 << 7
+    HeightMask_     = HeightSmall | HeightRegular | HeightLarge | HeightLargest
   end
   alias TopLevel::ImGuiComboFlags = ImGui::ImGuiComboFlags
 
@@ -240,6 +256,7 @@ module ImGui
     ScrollY                    = 1 << 25
     SortMulti                  = 1 << 26
     SortTristate               = 1 << 27
+    HighlightHoveredColumn     = 1 << 28
     SizingMask_                = SizingFixedFit | SizingFixedSame | SizingStretchProp | SizingStretchSame
   end
   alias TopLevel::ImGuiTableFlags = ImGui::ImGuiTableFlags
@@ -265,6 +282,7 @@ module ImGui
     PreferSortDescending = 1 << 15
     IndentEnable         = 1 << 16
     IndentDisable        = 1 << 17
+    AngledHeader         = 1 << 18
     IsEnabled            = 1 << 24
     IsVisible            = 1 << 25
     IsSorted             = 1 << 26
@@ -447,75 +465,89 @@ module ImGui
     F10                 = 581
     F11                 = 582
     F12                 = 583
-    Apostrophe          = 584
-    Comma               = 585
-    Minus               = 586
-    Period              = 587
-    Slash               = 588
-    Semicolon           = 589
-    Equal               = 590
-    LeftBracket         = 591
-    Backslash           = 592
-    RightBracket        = 593
-    GraveAccent         = 594
-    CapsLock            = 595
-    ScrollLock          = 596
-    NumLock             = 597
-    PrintScreen         = 598
-    Pause               = 599
-    Keypad0             = 600
-    Keypad1             = 601
-    Keypad2             = 602
-    Keypad3             = 603
-    Keypad4             = 604
-    Keypad5             = 605
-    Keypad6             = 606
-    Keypad7             = 607
-    Keypad8             = 608
-    Keypad9             = 609
-    KeypadDecimal       = 610
-    KeypadDivide        = 611
-    KeypadMultiply      = 612
-    KeypadSubtract      = 613
-    KeypadAdd           = 614
-    KeypadEnter         = 615
-    KeypadEqual         = 616
-    GamepadStart        = 617
-    GamepadBack         = 618
-    GamepadFaceLeft     = 619
-    GamepadFaceRight    = 620
-    GamepadFaceUp       = 621
-    GamepadFaceDown     = 622
-    GamepadDpadLeft     = 623
-    GamepadDpadRight    = 624
-    GamepadDpadUp       = 625
-    GamepadDpadDown     = 626
-    GamepadL1           = 627
-    GamepadR1           = 628
-    GamepadL2           = 629
-    GamepadR2           = 630
-    GamepadL3           = 631
-    GamepadR3           = 632
-    GamepadLStickLeft   = 633
-    GamepadLStickRight  = 634
-    GamepadLStickUp     = 635
-    GamepadLStickDown   = 636
-    GamepadRStickLeft   = 637
-    GamepadRStickRight  = 638
-    GamepadRStickUp     = 639
-    GamepadRStickDown   = 640
-    MouseLeft           = 641
-    MouseRight          = 642
-    MouseMiddle         = 643
-    MouseX1             = 644
-    MouseX2             = 645
-    MouseWheelX         = 646
-    MouseWheelY         = 647
-    ReservedForModCtrl  = 648
-    ReservedForModShift = 649
-    ReservedForModAlt   = 650
-    ReservedForModSuper = 651
-    COUNT               = 652
+    F13                 = 584
+    F14                 = 585
+    F15                 = 586
+    F16                 = 587
+    F17                 = 588
+    F18                 = 589
+    F19                 = 590
+    F20                 = 591
+    F21                 = 592
+    F22                 = 593
+    F23                 = 594
+    F24                 = 595
+    Apostrophe          = 596
+    Comma               = 597
+    Minus               = 598
+    Period              = 599
+    Slash               = 600
+    Semicolon           = 601
+    Equal               = 602
+    LeftBracket         = 603
+    Backslash           = 604
+    RightBracket        = 605
+    GraveAccent         = 606
+    CapsLock            = 607
+    ScrollLock          = 608
+    NumLock             = 609
+    PrintScreen         = 610
+    Pause               = 611
+    Keypad0             = 612
+    Keypad1             = 613
+    Keypad2             = 614
+    Keypad3             = 615
+    Keypad4             = 616
+    Keypad5             = 617
+    Keypad6             = 618
+    Keypad7             = 619
+    Keypad8             = 620
+    Keypad9             = 621
+    KeypadDecimal       = 622
+    KeypadDivide        = 623
+    KeypadMultiply      = 624
+    KeypadSubtract      = 625
+    KeypadAdd           = 626
+    KeypadEnter         = 627
+    KeypadEqual         = 628
+    AppBack             = 629
+    AppForward          = 630
+    GamepadStart        = 631
+    GamepadBack         = 632
+    GamepadFaceLeft     = 633
+    GamepadFaceRight    = 634
+    GamepadFaceUp       = 635
+    GamepadFaceDown     = 636
+    GamepadDpadLeft     = 637
+    GamepadDpadRight    = 638
+    GamepadDpadUp       = 639
+    GamepadDpadDown     = 640
+    GamepadL1           = 641
+    GamepadR1           = 642
+    GamepadL2           = 643
+    GamepadR2           = 644
+    GamepadL3           = 645
+    GamepadR3           = 646
+    GamepadLStickLeft   = 647
+    GamepadLStickRight  = 648
+    GamepadLStickUp     = 649
+    GamepadLStickDown   = 650
+    GamepadRStickLeft   = 651
+    GamepadRStickRight  = 652
+    GamepadRStickUp     = 653
+    GamepadRStickDown   = 654
+    MouseLeft           = 655
+    MouseRight          = 656
+    MouseMiddle         = 657
+    MouseX1             = 658
+    MouseX2             = 659
+    MouseWheelX         = 660
+    MouseWheelY         = 661
+    ReservedForModCtrl  = 662
+    ReservedForModShift = 663
+    ReservedForModAlt   = 664
+    ReservedForModSuper = 665
+    COUNT               = 666
     Mod_None            =   0
     Mod_Ctrl            = 1 << 12
     Mod_Shift           = 1 << 13
@@ -525,26 +557,6 @@ module ImGui
     Mod_Mask_           = 0xF800
   end
   alias TopLevel::ImGuiKey = ImGui::ImGuiKey
-
-  enum ImGuiNavInput
-    Activate    =  0
-    Cancel      =  1
-    Input       =  2
-    Menu        =  3
-    DpadLeft    =  4
-    DpadRight   =  5
-    DpadUp      =  6
-    DpadDown    =  7
-    LStickLeft  =  8
-    LStickRight =  9
-    LStickUp    = 10
-    LStickDown  = 11
-    FocusPrev   = 12
-    FocusNext   = 13
-    TweakSlow   = 14
-    TweakFast   = 15
-  end
-  alias TopLevel::ImGuiNavInput = ImGui::ImGuiNavInput
 
   @[Flags]
   enum ImGuiConfigFlags
@@ -651,11 +663,12 @@ module ImGui
     GrabMinSize             = 20
     GrabRounding            = 21
     TabRounding             = 22
-    ButtonTextAlign         = 23
-    SelectableTextAlign     = 24
-    SeparatorTextBorderSize = 25
-    SeparatorTextAlign      = 26
-    SeparatorTextPadding    = 27
+    TabBarBorderSize        = 23
+    ButtonTextAlign         = 24
+    SelectableTextAlign     = 25
+    SeparatorTextBorderSize = 26
+    SeparatorTextAlign      = 27
+    SeparatorTextPadding    = 28
   end
   alias TopLevel::ImGuiStyleVar = ImGui::ImGuiStyleVar
 
@@ -920,6 +933,7 @@ module ImGui
     NoWindowHoverableCheck   = 1 << 8
     AllowOverlap             = 1 << 9
     Inputable                = 1 << 10
+    HasSelectionUserData     = 1 << 11
   end
 
   # :nodoc:
@@ -1016,6 +1030,7 @@ module ImGui
     HasFocus          = 1 << 5
     HasBgAlpha        = 1 << 6
     HasScroll         = 1 << 7
+    HasChildFlags     = 1 << 8
   end
 
   # :nodoc:
@@ -1139,6 +1154,14 @@ module ImGui
 
   # :nodoc:
   @[Flags]
+  enum ImGuiTypingSelectFlags
+    None                = 0
+    AllowBackspace      = 1 << 0
+    AllowSingleCharMode = 1 << 1
+  end
+
+  # :nodoc:
+  @[Flags]
   enum ImGuiOldColumnFlags
     None                   = 0
     NoBorder               = 1 << 0
@@ -1163,16 +1186,17 @@ module ImGui
   # :nodoc:
   @[Flags]
   enum ImGuiDebugLogFlags
-    None           = 0
-    EventActiveId  = 1 << 0
-    EventFocus     = 1 << 1
-    EventPopup     = 1 << 2
-    EventNav       = 1 << 3
-    EventClipper   = 1 << 4
-    EventSelection = 1 << 5
-    EventIO        = 1 << 6
-    EventMask_     = EventActiveId | EventFocus | EventPopup | EventNav | EventClipper | EventSelection | EventIO
-    OutputToTTY    = 1 << 10
+    None               = 0
+    EventActiveId      = 1 << 0
+    EventFocus         = 1 << 1
+    EventPopup         = 1 << 2
+    EventNav           = 1 << 3
+    EventClipper       = 1 << 4
+    EventSelection     = 1 << 5
+    EventIO            = 1 << 6
+    EventMask_         = EventActiveId | EventFocus | EventPopup | EventNav | EventClipper | EventSelection | EventIO
+    OutputToTTY        = 1 << 10
+    OutputToTestEngine = 1 << 11
   end
 
   # :nodoc:
