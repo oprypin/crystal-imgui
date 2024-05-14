@@ -184,12 +184,15 @@ class CFunctionType < CType
     @type = CType.new(type)
     @args = args.split(",").map do |arg|
       type, _, name = arg.gsub(" *", "* ").rpartition(" ")
+      if type == ""
+        type = name
+      end
       CArg.new(CType.new(type), name)
     end
   end
 
   def name(ctx : Context = Context::Lib) : String
-    args = self.args.map { |arg| arg.type.name(ctx) }
+    args = self.args.map { |arg| arg.type.name(ctx) }.select { |t| t != "..." }
     "(#{args.join(", ")}) -> #{self.type.name(ctx)}"
   end
 
