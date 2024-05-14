@@ -1,4 +1,4 @@
-# Based on https://github.com/ocornut/imgui/blob/v1.90.4/imgui_demo.cpp
+# Based on https://github.com/ocornut/imgui/blob/v1.90.5/imgui_demo.cpp
 
 require "./imgui"
 require "./util"
@@ -990,6 +990,8 @@ module ImGuiDemo
           end
         end
       end
+      ImGui.same_line
+      help_marker("Here we are sharing selection state between both boxes.")
 
       ImGui.text("Full-width:")
       ImGui.list_box("##listbox 2", ImVec2.new(-Float32::MIN_POSITIVE, 5 * ImGui.get_text_line_height_with_spacing)) do
@@ -2070,9 +2072,7 @@ module ImGuiDemo
             drop_target_flags = ImGuiDragDropFlags::AcceptBeforeDelivery | ImGuiDragDropFlags::AcceptNoPreviewTooltip
             if payload = ImGui.accept_drag_drop_payload(ImGui::PAYLOAD_TYPE_COLOR_4F, drop_target_flags)
               ImGui.set_mouse_cursor(ImGuiMouseCursor::NotAllowed)
-              ImGui.tooltip do
-                ImGui.text("Cannot drop here!")
-              end
+              ImGui.set_tooltip("Cannot drop here!")
             end
           end
 
@@ -4741,6 +4741,7 @@ module ImGuiDemo
         help_marker("Multiple tables with the same identifier will share their settings, width, visibility, order etc.")
 
         static flags = ImGuiTableFlags::Resizable | ImGuiTableFlags::Reorderable | ImGuiTableFlags::Hideable | ImGuiTableFlags::Borders | ImGuiTableFlags::SizingFixedFit | ImGuiTableFlags::NoSavedSettings
+        ImGui.checkbox_flags("ImGuiTableFlags_Resizable", pointerof(flags.val), ImGuiTableFlags::Resizable)
         ImGui.checkbox_flags("ImGuiTableFlags_ScrollY", pointerof(flags.val), ImGuiTableFlags::ScrollY)
         ImGui.checkbox_flags("ImGuiTableFlags_SizingFixedFit", pointerof(flags.val), ImGuiTableFlags::SizingFixedFit)
         ImGui.checkbox_flags("ImGuiTableFlags_HighlightHoveredColumn", pointerof(flags.val), ImGuiTableFlags::HighlightHoveredColumn)
@@ -5532,7 +5533,7 @@ module ImGuiDemo
     ImGui.separator
     ImGui.text("By Omar Cornut and all Dear ImGui contributors.")
     ImGui.text("Dear ImGui is licensed under the MIT License, see LICENSE for more information.")
-    ImGui.text("If your company uses this, please consider sponsoring the project!")
+    ImGui.text("If your company uses this, please consider funding the project.")
 
     static show_config_info = false
     ImGui.checkbox("Config/Build Information", pointerof(show_config_info.val))
@@ -6672,7 +6673,7 @@ module ImGuiDemo
       ImGui.set_next_window_size_constraints(ImVec2.new(400, -1), ImVec2.new(500, -1))
     end
     if type.val == 5
-      ImGui.set_next_window_size_constraints(ImVec2.new(-1, 500), ImVec2.new(-1, Float32::MAX))
+      ImGui.set_next_window_size_constraints(ImVec2.new(-1, 400), ImVec2.new(-1, Float32::MAX))
     end
     if type.val == 6
       ImGui.set_next_window_size_constraints(ImVec2.new(0, 0), ImVec2.new(Float32::MAX, Float32::MAX), &aspect_ratio_constraint)
@@ -6836,6 +6837,13 @@ module ImGuiDemo
     end
   end
 
+  def self.path_concave_shape(draw_list, x, y, sz)
+    pos_norms = [{0.0f32, 0.0f32}, {0.3f32, 0.0f32}, {0.3f32, 0.7f32}, {0.7f32, 0.7f32}, {0.7f32, 0.0f32}, {1.0f32, 0.0f32}, {1.0f32, 1.0f32}, {0.0f32, 1.0f32}]
+    pos_norms.each do |p|
+      draw_list.path_line_to(ImVec2.new(x + 0.5f32 + (sz * p[0]).to_i, y + 0.5f32 + (sz * p[1]).to_i))
+    end
+  end
+
   ImGui.pointer_wrapper def self.show_example_app_custom_rendering(p_open = Pointer(Bool).null)
     if !ImGui.begin("Example: Custom rendering", p_open)
       ImGui.end
@@ -6905,7 +6913,7 @@ module ImGuiDemo
             x += sz.val + spacing
             draw_list.add_circle(ImVec2.new(x + sz.val * 0.5f32, y + sz.val * 0.5f32), sz.val * 0.5f32, col, circle_segments, th)
             x += sz.val + spacing
-            draw_list.add_ellipse(ImVec2.new(x + sz.val * 0.5f32, y + sz.val * 0.5f32), sz.val * 0.5f32, sz.val * 0.3f32, col, -0.3f32, circle_segments, th)
+            draw_list.add_ellipse(ImVec2.new(x + sz.val * 0.5f32, y + sz.val * 0.5f32), ImVec2.new(sz.val * 0.5f32, sz.val * 0.3f32), col, -0.3f32, circle_segments, th)
             x += sz.val + spacing
             draw_list.add_rect(ImVec2.new(x, y), ImVec2.new(x + sz.val, y + sz.val), col, 0.0f32, ImDrawFlags::None, th)
             x += sz.val + spacing
@@ -6914,6 +6922,10 @@ module ImGuiDemo
             draw_list.add_rect(ImVec2.new(x, y), ImVec2.new(x + sz.val, y + sz.val), col, rounding, corners_tl_br, th)
             x += sz.val + spacing
             draw_list.add_triangle(ImVec2.new(x + sz.val * 0.5f32, y), ImVec2.new(x + sz.val, y + sz.val - 0.5f32), ImVec2.new(x, y + sz.val - 0.5f32), col, th)
+            x += sz.val + spacing
+
+            path_concave_shape(draw_list, x, y, sz.val)
+            draw_list.path_stroke(col, ImDrawFlags::Closed, th)
             x += sz.val + spacing
 
             draw_list.add_line(ImVec2.new(x, y), ImVec2.new(x + sz.val, y), col, th)
@@ -6940,7 +6952,7 @@ module ImGuiDemo
           x += sz.val + spacing
           draw_list.add_circle_filled(ImVec2.new(x + sz.val * 0.5f32, y + sz.val * 0.5f32), sz.val * 0.5f32, col, circle_segments)
           x += sz.val + spacing
-          draw_list.add_ellipse_filled(ImVec2.new(x + sz.val * 0.5f32, y + sz.val * 0.5f32), sz.val * 0.5f32, sz.val * 0.3f32, col, -0.3f32, circle_segments)
+          draw_list.add_ellipse_filled(ImVec2.new(x + sz.val * 0.5f32, y + sz.val * 0.5f32), ImVec2.new(sz.val * 0.5f32, sz.val * 0.3f32), col, -0.3f32, circle_segments)
           x += sz.val + spacing
           draw_list.add_rect_filled(ImVec2.new(x, y), ImVec2.new(x + sz.val, y + sz.val), col)
           x += sz.val + spacing
@@ -6951,6 +6963,9 @@ module ImGuiDemo
           draw_list.add_triangle_filled(ImVec2.new(x + sz.val * 0.5f32, y), ImVec2.new(x + sz.val, y + sz.val - 0.5f32), ImVec2.new(x, y + sz.val - 0.5f32), col)
           x += sz.val + spacing
 
+          path_concave_shape(draw_list, x, y, sz.val)
+          draw_list.path_fill_concave(col)
+          x += sz.val + spacing
           draw_list.add_rect_filled(ImVec2.new(x, y), ImVec2.new(x + sz.val, y + thickness.val), col)
           x += sz.val + spacing
           draw_list.add_rect_filled(ImVec2.new(x, y), ImVec2.new(x + thickness.val, y + sz.val), col)
@@ -6968,8 +6983,9 @@ module ImGuiDemo
           x += sz.val + spacing
 
           draw_list.add_rect_filled_multi_color(ImVec2.new(x, y), ImVec2.new(x + sz.val, y + sz.val), ImGui.col32(0, 0, 0, 255), ImGui.col32(255, 0, 0, 255), ImGui.col32(255, 255, 0, 255), ImGui.col32(0, 255, 0, 255))
+          x += sz.val + spacing
 
-          ImGui.dummy(ImVec2.new((sz.val + spacing) * 12.2f32, (sz.val + spacing) * 3.0f32))
+          ImGui.dummy(ImVec2.new((sz.val + spacing) * 13.2f32, (sz.val + spacing) * 3.0f32))
         end
       end
 

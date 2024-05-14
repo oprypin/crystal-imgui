@@ -3898,12 +3898,12 @@ module ImGui
       LibImGui.ImDrawList_AddNgonFilled(self, center, radius, col, num_segments)
     end
 
-    def add_ellipse(center : ImVec2, radius_x : Float32, radius_y : Float32, col : UInt32, rot : Float32 = 0.0, num_segments : Int32 = 0, thickness : Float32 = 1.0) : Void
-      LibImGui.ImDrawList_AddEllipse(self, center, radius_x, radius_y, col, rot, num_segments, thickness)
+    def add_ellipse(center : ImVec2, radius : ImVec2, col : UInt32, rot : Float32 = 0.0, num_segments : Int32 = 0, thickness : Float32 = 1.0) : Void
+      LibImGui.ImDrawList_AddEllipse(self, center, radius, col, rot, num_segments, thickness)
     end
 
-    def add_ellipse_filled(center : ImVec2, radius_x : Float32, radius_y : Float32, col : UInt32, rot : Float32 = 0.0, num_segments : Int32 = 0) : Void
-      LibImGui.ImDrawList_AddEllipseFilled(self, center, radius_x, radius_y, col, rot, num_segments)
+    def add_ellipse_filled(center : ImVec2, radius : ImVec2, col : UInt32, rot : Float32 = 0.0, num_segments : Int32 = 0) : Void
+      LibImGui.ImDrawList_AddEllipseFilled(self, center, radius, col, rot, num_segments)
     end
 
     def add_text(pos : ImVec2, col : UInt32, text : Bytes | String) : Void
@@ -3914,6 +3914,14 @@ module ImGui
       LibImGui.ImDrawList_AddText_FontPtr(self, font, font_size, pos, col, text, (text.to_unsafe + text.bytesize), wrap_width, cpu_fine_clip_rect)
     end
 
+    def add_bezier_cubic(p1 : ImVec2, p2 : ImVec2, p3 : ImVec2, p4 : ImVec2, col : UInt32, thickness : Float32, num_segments : Int32 = 0) : Void
+      LibImGui.ImDrawList_AddBezierCubic(self, p1, p2, p3, p4, col, thickness, num_segments)
+    end
+
+    def add_bezier_quadratic(p1 : ImVec2, p2 : ImVec2, p3 : ImVec2, col : UInt32, thickness : Float32, num_segments : Int32 = 0) : Void
+      LibImGui.ImDrawList_AddBezierQuadratic(self, p1, p2, p3, col, thickness, num_segments)
+    end
+
     def add_polyline(points : ImVec2*, num_points : Int32, col : UInt32, flags : ImDrawFlags, thickness : Float32) : Void
       LibImGui.ImDrawList_AddPolyline(self, points, num_points, col, flags, thickness)
     end
@@ -3922,12 +3930,8 @@ module ImGui
       LibImGui.ImDrawList_AddConvexPolyFilled(self, points, num_points, col)
     end
 
-    def add_bezier_cubic(p1 : ImVec2, p2 : ImVec2, p3 : ImVec2, p4 : ImVec2, col : UInt32, thickness : Float32, num_segments : Int32 = 0) : Void
-      LibImGui.ImDrawList_AddBezierCubic(self, p1, p2, p3, p4, col, thickness, num_segments)
-    end
-
-    def add_bezier_quadratic(p1 : ImVec2, p2 : ImVec2, p3 : ImVec2, col : UInt32, thickness : Float32, num_segments : Int32 = 0) : Void
-      LibImGui.ImDrawList_AddBezierQuadratic(self, p1, p2, p3, col, thickness, num_segments)
+    def add_concave_poly_filled(points : ImVec2*, num_points : Int32, col : UInt32) : Void
+      LibImGui.ImDrawList_AddConcavePolyFilled(self, points, num_points, col)
     end
 
     def add_image(user_texture_id : ImTextureID, p_min : ImVec2, p_max : ImVec2, uv_min : ImVec2 = ImVec2.new(0, 0), uv_max : ImVec2 = ImVec2.new(1, 1), col : UInt32 = 4294967295) : Void
@@ -3958,6 +3962,10 @@ module ImGui
       LibImGui.ImDrawList_PathFillConvex(self, col)
     end
 
+    def path_fill_concave(col : UInt32) : Void
+      LibImGui.ImDrawList_PathFillConcave(self, col)
+    end
+
     def path_stroke(col : UInt32, flags : ImDrawFlags = ImDrawFlags.new(0), thickness : Float32 = 1.0) : Void
       LibImGui.ImDrawList_PathStroke(self, col, flags, thickness)
     end
@@ -3970,8 +3978,8 @@ module ImGui
       LibImGui.ImDrawList_PathArcToFast(self, center, radius, a_min_of_12, a_max_of_12)
     end
 
-    def path_elliptical_arc_to(center : ImVec2, radius_x : Float32, radius_y : Float32, rot : Float32, a_min : Float32, a_max : Float32, num_segments : Int32 = 0) : Void
-      LibImGui.ImDrawList_PathEllipticalArcTo(self, center, radius_x, radius_y, rot, a_min, a_max, num_segments)
+    def path_elliptical_arc_to(center : ImVec2, radius : ImVec2, rot : Float32, a_min : Float32, a_max : Float32, num_segments : Int32 = 0) : Void
+      LibImGui.ImDrawList_PathEllipticalArcTo(self, center, radius, rot, a_min, a_max, num_segments)
     end
 
     def path_bezier_cubic_curve_to(p2 : ImVec2, p3 : ImVec2, p4 : ImVec2, num_segments : Int32 = 0) : Void
@@ -5118,10 +5126,5 @@ module ImGui
   end
 
   alias TopLevel::ImGuiPlatformImeData = ImGui::ImGuiPlatformImeData
-
-  def self.get_key_index(key : ImGuiKey) : ImGuiKey
-    LibImGui.GetKeyIndex(key)
-  end
-
   alias ImGuiContext = LibImGui::ImGuiContext
 end

@@ -1,6 +1,6 @@
 module ImGui
-  VERSION               = "1.90.4"
-  VERSION_NUM           = 19040
+  VERSION               = "1.90.5"
+  VERSION_NUM           = 19050
   PAYLOAD_TYPE_COLOR_3F = "_COL3F"
   PAYLOAD_TYPE_COLOR_4F = "_COL4F"
 
@@ -575,12 +575,14 @@ module ImGui
     GrabMinSize             = 20
     GrabRounding            = 21
     TabRounding             = 22
-    TabBarBorderSize        = 23
-    ButtonTextAlign         = 24
-    SelectableTextAlign     = 25
-    SeparatorTextBorderSize = 26
-    SeparatorTextAlign      = 27
-    SeparatorTextPadding    = 28
+    TabBorderSize           = 23
+    TabBarBorderSize        = 24
+    TableAngledHeadersAngle = 25
+    ButtonTextAlign         = 26
+    SelectableTextAlign     = 27
+    SeparatorTextBorderSize = 28
+    SeparatorTextAlign      = 29
+    SeparatorTextPadding    = 30
   end
   alias TopLevel::ImGuiStyleVar = ImGui::ImGuiStyleVar
 
@@ -1057,11 +1059,10 @@ module ImGui
 
   # :nodoc:
   enum ImGuiInputSource
-    None      = 0
-    Mouse     = 1
-    Keyboard  = 2
-    Gamepad   = 3
-    Clipboard = 4
+    None     = 0
+    Mouse    = 1
+    Keyboard = 2
+    Gamepad  = 3
   end
 
   # :nodoc:
@@ -1154,6 +1155,7 @@ module ImGui
     Activate            = 1 << 12
     NoSelect            = 1 << 13
     NoSetNavHighlight   = 1 << 14
+    NoClearActiveId     = 1 << 15
   end
 
   # :nodoc:

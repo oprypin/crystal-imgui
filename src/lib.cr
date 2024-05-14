@@ -789,14 +789,15 @@ lib LibImGui
   fun ImDrawList_AddCircleFilled = ImDrawList_AddCircleFilled(self : ImDrawList*, center : ImGui::ImVec2, radius : LibC::Float, col : UInt32, num_segments : LibC::Int)
   fun ImDrawList_AddNgon = ImDrawList_AddNgon(self : ImDrawList*, center : ImGui::ImVec2, radius : LibC::Float, col : UInt32, num_segments : LibC::Int, thickness : LibC::Float)
   fun ImDrawList_AddNgonFilled = ImDrawList_AddNgonFilled(self : ImDrawList*, center : ImGui::ImVec2, radius : LibC::Float, col : UInt32, num_segments : LibC::Int)
-  fun ImDrawList_AddEllipse = ImDrawList_AddEllipse(self : ImDrawList*, center : ImGui::ImVec2, radius_x : LibC::Float, radius_y : LibC::Float, col : UInt32, rot : LibC::Float, num_segments : LibC::Int, thickness : LibC::Float)
-  fun ImDrawList_AddEllipseFilled = ImDrawList_AddEllipseFilled(self : ImDrawList*, center : ImGui::ImVec2, radius_x : LibC::Float, radius_y : LibC::Float, col : UInt32, rot : LibC::Float, num_segments : LibC::Int)
+  fun ImDrawList_AddEllipse = ImDrawList_AddEllipse(self : ImDrawList*, center : ImGui::ImVec2, radius : ImGui::ImVec2, col : UInt32, rot : LibC::Float, num_segments : LibC::Int, thickness : LibC::Float)
+  fun ImDrawList_AddEllipseFilled = ImDrawList_AddEllipseFilled(self : ImDrawList*, center : ImGui::ImVec2, radius : ImGui::ImVec2, col : UInt32, rot : LibC::Float, num_segments : LibC::Int)
   fun ImDrawList_AddText_Vec2 = ImDrawList_AddText_Vec2(self : ImDrawList*, pos : ImGui::ImVec2, col : UInt32, text_begin : LibC::Char*, text_end : LibC::Char*)
   fun ImDrawList_AddText_FontPtr = ImDrawList_AddText_FontPtr(self : ImDrawList*, font : ImFont*, font_size : LibC::Float, pos : ImGui::ImVec2, col : UInt32, text_begin : LibC::Char*, text_end : LibC::Char*, wrap_width : LibC::Float, cpu_fine_clip_rect : ImGui::ImVec4*)
-  fun ImDrawList_AddPolyline = ImDrawList_AddPolyline(self : ImDrawList*, points : ImGui::ImVec2*, num_points : LibC::Int, col : UInt32, flags : ImGui::ImDrawFlags, thickness : LibC::Float)
-  fun ImDrawList_AddConvexPolyFilled = ImDrawList_AddConvexPolyFilled(self : ImDrawList*, points : ImGui::ImVec2*, num_points : LibC::Int, col : UInt32)
   fun ImDrawList_AddBezierCubic = ImDrawList_AddBezierCubic(self : ImDrawList*, p1 : ImGui::ImVec2, p2 : ImGui::ImVec2, p3 : ImGui::ImVec2, p4 : ImGui::ImVec2, col : UInt32, thickness : LibC::Float, num_segments : LibC::Int)
   fun ImDrawList_AddBezierQuadratic = ImDrawList_AddBezierQuadratic(self : ImDrawList*, p1 : ImGui::ImVec2, p2 : ImGui::ImVec2, p3 : ImGui::ImVec2, col : UInt32, thickness : LibC::Float, num_segments : LibC::Int)
+  fun ImDrawList_AddPolyline = ImDrawList_AddPolyline(self : ImDrawList*, points : ImGui::ImVec2*, num_points : LibC::Int, col : UInt32, flags : ImGui::ImDrawFlags, thickness : LibC::Float)
+  fun ImDrawList_AddConvexPolyFilled = ImDrawList_AddConvexPolyFilled(self : ImDrawList*, points : ImGui::ImVec2*, num_points : LibC::Int, col : UInt32)
+  fun ImDrawList_AddConcavePolyFilled = ImDrawList_AddConcavePolyFilled(self : ImDrawList*, points : ImGui::ImVec2*, num_points : LibC::Int, col : UInt32)
   fun ImDrawList_AddImage = ImDrawList_AddImage(self : ImDrawList*, user_texture_id : ImTextureID, p_min : ImGui::ImVec2, p_max : ImGui::ImVec2, uv_min : ImGui::ImVec2, uv_max : ImGui::ImVec2, col : UInt32)
   fun ImDrawList_AddImageQuad = ImDrawList_AddImageQuad(self : ImDrawList*, user_texture_id : ImTextureID, p1 : ImGui::ImVec2, p2 : ImGui::ImVec2, p3 : ImGui::ImVec2, p4 : ImGui::ImVec2, uv1 : ImGui::ImVec2, uv2 : ImGui::ImVec2, uv3 : ImGui::ImVec2, uv4 : ImGui::ImVec2, col : UInt32)
   fun ImDrawList_AddImageRounded = ImDrawList_AddImageRounded(self : ImDrawList*, user_texture_id : ImTextureID, p_min : ImGui::ImVec2, p_max : ImGui::ImVec2, uv_min : ImGui::ImVec2, uv_max : ImGui::ImVec2, col : UInt32, rounding : LibC::Float, flags : ImGui::ImDrawFlags)
@@ -804,10 +805,11 @@ lib LibImGui
   fun ImDrawList_PathLineTo = ImDrawList_PathLineTo(self : ImDrawList*, pos : ImGui::ImVec2)
   fun ImDrawList_PathLineToMergeDuplicate = ImDrawList_PathLineToMergeDuplicate(self : ImDrawList*, pos : ImGui::ImVec2)
   fun ImDrawList_PathFillConvex = ImDrawList_PathFillConvex(self : ImDrawList*, col : UInt32)
+  fun ImDrawList_PathFillConcave = ImDrawList_PathFillConcave(self : ImDrawList*, col : UInt32)
   fun ImDrawList_PathStroke = ImDrawList_PathStroke(self : ImDrawList*, col : UInt32, flags : ImGui::ImDrawFlags, thickness : LibC::Float)
   fun ImDrawList_PathArcTo = ImDrawList_PathArcTo(self : ImDrawList*, center : ImGui::ImVec2, radius : LibC::Float, a_min : LibC::Float, a_max : LibC::Float, num_segments : LibC::Int)
   fun ImDrawList_PathArcToFast = ImDrawList_PathArcToFast(self : ImDrawList*, center : ImGui::ImVec2, radius : LibC::Float, a_min_of_12 : LibC::Int, a_max_of_12 : LibC::Int)
-  fun ImDrawList_PathEllipticalArcTo = ImDrawList_PathEllipticalArcTo(self : ImDrawList*, center : ImGui::ImVec2, radius_x : LibC::Float, radius_y : LibC::Float, rot : LibC::Float, a_min : LibC::Float, a_max : LibC::Float, num_segments : LibC::Int)
+  fun ImDrawList_PathEllipticalArcTo = ImDrawList_PathEllipticalArcTo(self : ImDrawList*, center : ImGui::ImVec2, radius : ImGui::ImVec2, rot : LibC::Float, a_min : LibC::Float, a_max : LibC::Float, num_segments : LibC::Int)
   fun ImDrawList_PathBezierCubicCurveTo = ImDrawList_PathBezierCubicCurveTo(self : ImDrawList*, p2 : ImGui::ImVec2, p3 : ImGui::ImVec2, p4 : ImGui::ImVec2, num_segments : LibC::Int)
   fun ImDrawList_PathBezierQuadraticCurveTo = ImDrawList_PathBezierQuadraticCurveTo(self : ImDrawList*, p2 : ImGui::ImVec2, p3 : ImGui::ImVec2, num_segments : LibC::Int)
   fun ImDrawList_PathRect = ImDrawList_PathRect(self : ImDrawList*, rect_min : ImGui::ImVec2, rect_max : ImGui::ImVec2, rounding : LibC::Float, flags : ImGui::ImDrawFlags)
@@ -1019,7 +1021,6 @@ lib LibImGui
   end
 
   fun ImGuiPlatformImeData_ImGuiPlatformImeData = ImGuiPlatformImeData_ImGuiPlatformImeData : ImGuiPlatformImeData*
-  fun GetKeyIndex = igGetKeyIndex(key : ImGui::ImGuiKey) : ImGui::ImGuiKey
   fun ImHashData = igImHashData(data : Void*, data_size : LibC::SizeT, seed : ImGuiID) : ImGuiID
   fun ImHashStr = igImHashStr(data : LibC::Char*, data_size : LibC::SizeT, seed : ImGuiID) : ImGuiID
   fun ImQsort = igImQsort(base : Void*, count : LibC::SizeT, size_of_element : LibC::SizeT, compare_func : (Void, Void) -> LibC::Int)
@@ -1105,6 +1106,7 @@ lib LibImGui
   fun ImTriangleClosestPoint = igImTriangleClosestPoint(pOut : ImGui::ImVec2*, a : ImGui::ImVec2, b : ImGui::ImVec2, c : ImGui::ImVec2, p : ImGui::ImVec2)
   fun ImTriangleBarycentricCoords = igImTriangleBarycentricCoords(a : ImGui::ImVec2, b : ImGui::ImVec2, c : ImGui::ImVec2, p : ImGui::ImVec2, out_u : LibC::Float*, out_v : LibC::Float*, out_w : LibC::Float*)
   fun ImTriangleArea = igImTriangleArea(a : ImGui::ImVec2, b : ImGui::ImVec2, c : ImGui::ImVec2) : LibC::Float
+  fun ImTriangleIsClockwise = igImTriangleIsClockwise(a : ImGui::ImVec2, b : ImGui::ImVec2, c : ImGui::ImVec2) : Bool
   type ImVec1 = Void*
   fun ImVec1_ImVec1_Nil = ImVec1_ImVec1_Nil : ImVec1*
   fun ImVec1_ImVec1_Float = ImVec1_ImVec1_Float(_x : LibC::Float) : ImVec1*
