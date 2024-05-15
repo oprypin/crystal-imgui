@@ -1,6 +1,8 @@
 require "json"
 require "./tools/diff_util"
 
+WITH_DOCS = ARGV.delete("--with-docs")
+
 enum Context
   Lib
   Ext
@@ -42,6 +44,7 @@ macro with_location(url = true, &block)
   end
 
   def comment
+    return nil if !WITH_DOCS
     return nil if self.location?.try(&.file) != "imgui.h"
     first_comment = IMGUI_H[self.location.line - 1].partition("// ").last
     unless first_comment.strip.empty?

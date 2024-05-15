@@ -37,7 +37,7 @@ jobs:
       - name: Validate freshness of generated files
         if: matrix.crystal == 'latest'
         run: |
-          git diff --exit-code
+          git diff --color --exit-code
       - name: Install shards
         run: |
           shards install --skip-postinstall
@@ -46,9 +46,6 @@ jobs:
         run: |
           cmake -DCMAKE_CXX_FLAGS='-DIMGUI_USE_WCHAR32' .
           cmake --build . -j4
-      - name: Build docs
-        run: |
-          tools/build_docs.sh
       - name: Set up environment
         if: runner.os != 'Windows'
         working-directory: ./cimgui
@@ -67,11 +64,15 @@ jobs:
       - name: Build demo
         run: |
           crystal build --cross-compile examples/demo_sfml.cr
-      - name: Check formatting
-        if: matrix.crystal == 'latest'
+      - name: Re-generate sources with docs
+        if: runner.os == 'Linux'
         run: |
-          crystal tool format --check
-      - name: Upload to GitHub Pages
+          crystal generate.cr --with-docs
+      - name: Build docs
+        if: runner.os == 'Linux'
+        run: |
+          tools/build_docs.sh
+      - name: Upload docs to GitHub Pages
         if: runner.os == 'Linux'
         uses: actions/upload-pages-artifact@v2
         with:
