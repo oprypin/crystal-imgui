@@ -64,7 +64,7 @@ module ImGui
   end
 
   private def self.to_void_id(x : Int)
-    Pointer(Void).new(x)
+    Pointer(Void).new(x.to_u64)
   end
 
   # Include this module to get access to ImGui types directly
@@ -280,7 +280,7 @@ module ImGui
   make_plot(:plot_histogram, label : String, values_count : Int32, values_offset : Int32 = 0, overlay_text : String? = nil, scale_min : Float32 = Float32::MAX, scale_max : Float32 = Float32::MAX, graph_size : ImVec2 = ImVec2.new(0, 0))
 
   def self.get_id(int_id : Int) : ImGuiID
-    get_id(Pointer(Void).new(int_id))
+    get_id(Pointer(Void).new(int_id.to_u64))
   end
 
   private macro make_list_box(name, *args)
