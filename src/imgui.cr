@@ -1,7 +1,7 @@
 module ImGui
   LibImGui.SetAllocatorFunctions(->(size, data) {
     GC.malloc(size)
-  }, ->(ptr, data) {}, nil)
+  }, ->(ptr, data) { }, nil)
 
   private module ClassType(T)
     macro included

@@ -6,7 +6,7 @@ module ImGuiDemo
   struct StaticValue(T)
     @@values = {} of Symbol => Void*
 
-    def initialize(@key : Symbol)
+    def initialize(@key : Symbol, &)
       @@values[@key] ||= Box.box(yield)
     end
 

@@ -127,7 +127,7 @@ module ImGui
     LibImGui.Begin(name, p_open, flags)
   end
   # Calls `begin`, conditionally yields to the block, then calls `end`.
-  pointer_wrapper def self.window(name : String, p_open : Bool* = Pointer(Bool).null, flags : ImGuiWindowFlags = ImGuiWindowFlags.new(0)) : Nil
+  pointer_wrapper def self.window(name : String, p_open : Bool* = Pointer(Bool).null, flags : ImGuiWindowFlags = ImGuiWindowFlags.new(0), &) : Nil
     yield if self.begin(name, p_open, flags)
     self.end
   end
@@ -141,7 +141,7 @@ module ImGui
   end
 
   # Calls `begin_child`, conditionally yields to the block, then calls `end_child`.
-  def self.child(str_id : String, size : ImVec2 = ImVec2.new(0, 0), child_flags : ImGuiChildFlags = ImGuiChildFlags.new(0), window_flags : ImGuiWindowFlags = ImGuiWindowFlags.new(0)) : Nil
+  def self.child(str_id : String, size : ImVec2 = ImVec2.new(0, 0), child_flags : ImGuiChildFlags = ImGuiChildFlags.new(0), window_flags : ImGuiWindowFlags = ImGuiWindowFlags.new(0), &) : Nil
     yield if self.begin_child(str_id, size, child_flags, window_flags)
     self.end_child
   end
@@ -151,7 +151,7 @@ module ImGui
   end
 
   # Calls `begin_child`, conditionally yields to the block, then calls `end_child`.
-  def self.child(id : ImGuiID, size : ImVec2 = ImVec2.new(0, 0), child_flags : ImGuiChildFlags = ImGuiChildFlags.new(0), window_flags : ImGuiWindowFlags = ImGuiWindowFlags.new(0)) : Nil
+  def self.child(id : ImGuiID, size : ImVec2 = ImVec2.new(0, 0), child_flags : ImGuiChildFlags = ImGuiChildFlags.new(0), window_flags : ImGuiWindowFlags = ImGuiWindowFlags.new(0), &) : Nil
     yield if self.begin_child(id, size, child_flags, window_flags)
     self.end_child
   end
@@ -332,7 +332,7 @@ module ImGui
   end
 
   # Calls `push_font`, yields to the block, then calls `pop_font`.
-  def self.with_font(font : ImFont) : Nil
+  def self.with_font(font : ImFont, &) : Nil
     self.push_font(font)
     yield
     self.pop_font
@@ -347,7 +347,7 @@ module ImGui
   end
 
   # Calls `push_style_color`, yields to the block, then calls `pop_style_color`.
-  def self.with_style_color(idx : ImGuiCol, col : UInt32) : Nil
+  def self.with_style_color(idx : ImGuiCol, col : UInt32, &) : Nil
     self.push_style_color(idx, col)
     yield
     self.pop_style_color
@@ -358,7 +358,7 @@ module ImGui
   end
 
   # Calls `push_style_color`, yields to the block, then calls `pop_style_color`.
-  def self.with_style_color(idx : ImGuiCol, col : ImVec4) : Nil
+  def self.with_style_color(idx : ImGuiCol, col : ImVec4, &) : Nil
     self.push_style_color(idx, col)
     yield
     self.pop_style_color
@@ -373,7 +373,7 @@ module ImGui
   end
 
   # Calls `push_style_var`, yields to the block, then calls `pop_style_var`.
-  def self.with_style_var(idx : ImGuiStyleVar, val : Float32) : Nil
+  def self.with_style_var(idx : ImGuiStyleVar, val : Float32, &) : Nil
     self.push_style_var(idx, val)
     yield
     self.pop_style_var
@@ -384,7 +384,7 @@ module ImGui
   end
 
   # Calls `push_style_var`, yields to the block, then calls `pop_style_var`.
-  def self.with_style_var(idx : ImGuiStyleVar, val : ImVec2) : Nil
+  def self.with_style_var(idx : ImGuiStyleVar, val : ImVec2, &) : Nil
     self.push_style_var(idx, val)
     yield
     self.pop_style_var
@@ -399,7 +399,7 @@ module ImGui
   end
 
   # Calls `push_tab_stop`, yields to the block, then calls `pop_tab_stop`.
-  def self.with_tab_stop(tab_stop : Bool) : Nil
+  def self.with_tab_stop(tab_stop : Bool, &) : Nil
     self.push_tab_stop(tab_stop)
     yield
     self.pop_tab_stop
@@ -414,7 +414,7 @@ module ImGui
   end
 
   # Calls `push_button_repeat`, yields to the block, then calls `pop_button_repeat`.
-  def self.with_button_repeat(repeat : Bool) : Nil
+  def self.with_button_repeat(repeat : Bool, &) : Nil
     self.push_button_repeat(repeat)
     yield
     self.pop_button_repeat
@@ -429,7 +429,7 @@ module ImGui
   end
 
   # Calls `push_item_width`, yields to the block, then calls `pop_item_width`.
-  def self.with_item_width(item_width : Float32) : Nil
+  def self.with_item_width(item_width : Float32, &) : Nil
     self.push_item_width(item_width)
     yield
     self.pop_item_width
@@ -452,7 +452,7 @@ module ImGui
   end
 
   # Calls `push_text_wrap_pos`, yields to the block, then calls `pop_text_wrap_pos`.
-  def self.with_text_wrap_pos(wrap_local_pos_x : Float32 = 0.0) : Nil
+  def self.with_text_wrap_pos(wrap_local_pos_x : Float32 = 0.0, &) : Nil
     self.push_text_wrap_pos(wrap_local_pos_x)
     yield
     self.pop_text_wrap_pos
@@ -565,7 +565,7 @@ module ImGui
   end
 
   # Calls `begin_group`, yields to the block, then calls `end_group`.
-  def self.group : Nil
+  def self.group(&) : Nil
     self.begin_group
     yield
     self.end_group
@@ -600,7 +600,7 @@ module ImGui
   end
 
   # Calls `push_id`, yields to the block, then calls `pop_id`.
-  def self.with_id(str_id : String) : Nil
+  def self.with_id(str_id : String, &) : Nil
     self.push_id(str_id)
     yield
     self.pop_id
@@ -611,7 +611,7 @@ module ImGui
   end
 
   # Calls `push_id`, yields to the block, then calls `pop_id`.
-  def self.with_id(str_id : Bytes | String) : Nil
+  def self.with_id(str_id : Bytes | String, &) : Nil
     self.push_id(str_id)
     yield
     self.pop_id
@@ -622,7 +622,7 @@ module ImGui
   end
 
   # Calls `push_id`, yields to the block, then calls `pop_id`.
-  def self.with_id(ptr_id : Reference | ClassType | Int | Void*) : Nil
+  def self.with_id(ptr_id : Reference | ClassType | Int | Void*, &) : Nil
     self.push_id(ptr_id)
     yield
     self.pop_id
@@ -633,7 +633,7 @@ module ImGui
   end
 
   # Calls `push_id`, yields to the block, then calls `pop_id`.
-  def self.with_id(int_id : Int32) : Nil
+  def self.with_id(int_id : Int32, &) : Nil
     self.push_id(int_id)
     yield
     self.pop_id
@@ -740,7 +740,7 @@ module ImGui
   end
 
   # Calls `begin_combo`, conditionally yields to the block, then conditionally calls `end_combo`.
-  def self.combo(label : String, preview_value : String, flags : ImGuiComboFlags = ImGuiComboFlags.new(0)) : Nil
+  def self.combo(label : String, preview_value : String, flags : ImGuiComboFlags = ImGuiComboFlags.new(0), &) : Nil
     return unless self.begin_combo(label, preview_value, flags)
     yield
     self.end_combo
@@ -967,7 +967,7 @@ module ImGui
   end
 
   # Calls `tree_node`, conditionally yields to the block, then conditionally calls `tree_pop`.
-  def self.tree_node(label : String) : Nil
+  def self.tree_node(label : String, &) : Nil
     return unless self.tree_node(label)
     yield
     self.tree_pop
@@ -978,7 +978,7 @@ module ImGui
   end
 
   # Calls `tree_node`, conditionally yields to the block, then conditionally calls `tree_pop`.
-  def self.tree_node(str_id : String, fmt : String, *args) : Nil
+  def self.tree_node(str_id : String, fmt : String, *args, &) : Nil
     return unless self.tree_node(str_id, fmt, *args)
     yield
     self.tree_pop
@@ -989,7 +989,7 @@ module ImGui
   end
 
   # Calls `tree_node`, conditionally yields to the block, then conditionally calls `tree_pop`.
-  def self.tree_node(ptr_id : Reference | ClassType | Int | Void*, fmt : String, *args) : Nil
+  def self.tree_node(ptr_id : Reference | ClassType | Int | Void*, fmt : String, *args, &) : Nil
     return unless self.tree_node(ptr_id, fmt, *args)
     yield
     self.tree_pop
@@ -1000,7 +1000,7 @@ module ImGui
   end
 
   # Calls `tree_node_ex`, conditionally yields to the block, then conditionally calls `tree_pop`.
-  def self.tree_node_ex(label : String, flags : ImGuiTreeNodeFlags = ImGuiTreeNodeFlags.new(0)) : Nil
+  def self.tree_node_ex(label : String, flags : ImGuiTreeNodeFlags = ImGuiTreeNodeFlags.new(0), &) : Nil
     return unless self.tree_node_ex(label, flags)
     yield
     self.tree_pop
@@ -1011,7 +1011,7 @@ module ImGui
   end
 
   # Calls `tree_node_ex`, conditionally yields to the block, then conditionally calls `tree_pop`.
-  def self.tree_node_ex(str_id : String, flags : ImGuiTreeNodeFlags, fmt : String, *args) : Nil
+  def self.tree_node_ex(str_id : String, flags : ImGuiTreeNodeFlags, fmt : String, *args, &) : Nil
     return unless self.tree_node_ex(str_id, flags, fmt, *args)
     yield
     self.tree_pop
@@ -1022,7 +1022,7 @@ module ImGui
   end
 
   # Calls `tree_node_ex`, conditionally yields to the block, then conditionally calls `tree_pop`.
-  def self.tree_node_ex(ptr_id : Reference | ClassType | Int | Void*, flags : ImGuiTreeNodeFlags, fmt : String, *args) : Nil
+  def self.tree_node_ex(ptr_id : Reference | ClassType | Int | Void*, flags : ImGuiTreeNodeFlags, fmt : String, *args, &) : Nil
     return unless self.tree_node_ex(ptr_id, flags, fmt, *args)
     yield
     self.tree_pop
@@ -1033,7 +1033,7 @@ module ImGui
   end
 
   # Calls `tree_push`, yields to the block, then calls `tree_pop`.
-  def self.with_tree(str_id : String) : Nil
+  def self.with_tree(str_id : String, &) : Nil
     self.tree_push(str_id)
     yield
     self.tree_pop
@@ -1044,7 +1044,7 @@ module ImGui
   end
 
   # Calls `tree_push`, yields to the block, then calls `tree_pop`.
-  def self.with_tree(ptr_id : Reference | ClassType | Int | Void*) : Nil
+  def self.with_tree(ptr_id : Reference | ClassType | Int | Void*, &) : Nil
     self.tree_push(ptr_id)
     yield
     self.tree_pop
@@ -1081,7 +1081,7 @@ module ImGui
   end
 
   # Calls `begin_list_box`, conditionally yields to the block, then conditionally calls `end_list_box`.
-  def self.list_box(label : String, size : ImVec2 = ImVec2.new(0, 0)) : Nil
+  def self.list_box(label : String, size : ImVec2 = ImVec2.new(0, 0), &) : Nil
     return unless self.begin_list_box(label, size)
     yield
     self.end_list_box
@@ -1135,7 +1135,7 @@ module ImGui
   end
 
   # Calls `begin_menu_bar`, conditionally yields to the block, then conditionally calls `end_menu_bar`.
-  def self.menu_bar : Nil
+  def self.menu_bar(&) : Nil
     return unless self.begin_menu_bar
     yield
     self.end_menu_bar
@@ -1150,7 +1150,7 @@ module ImGui
   end
 
   # Calls `begin_main_menu_bar`, conditionally yields to the block, then conditionally calls `end_main_menu_bar`.
-  def self.main_menu_bar : Nil
+  def self.main_menu_bar(&) : Nil
     return unless self.begin_main_menu_bar
     yield
     self.end_main_menu_bar
@@ -1165,7 +1165,7 @@ module ImGui
   end
 
   # Calls `begin_menu`, conditionally yields to the block, then conditionally calls `end_menu`.
-  def self.menu(label : String, enabled : Bool = true) : Nil
+  def self.menu(label : String, enabled : Bool = true, &) : Nil
     return unless self.begin_menu(label, enabled)
     yield
     self.end_menu
@@ -1187,7 +1187,7 @@ module ImGui
   end
 
   # Calls `begin_tooltip`, conditionally yields to the block, then calls `end_tooltip`.
-  def self.tooltip : Nil
+  def self.tooltip(&) : Nil
     yield if self.begin_tooltip
     self.end_tooltip
   end
@@ -1213,7 +1213,7 @@ module ImGui
   end
 
   # Calls `begin_popup`, conditionally yields to the block, then conditionally calls `end_popup`.
-  def self.popup(str_id : String, flags : ImGuiWindowFlags = ImGuiWindowFlags.new(0)) : Nil
+  def self.popup(str_id : String, flags : ImGuiWindowFlags = ImGuiWindowFlags.new(0), &) : Nil
     return unless self.begin_popup(str_id, flags)
     yield
     self.end_popup
@@ -1223,7 +1223,7 @@ module ImGui
     LibImGui.BeginPopupModal(name, p_open, flags)
   end
   # Calls `begin_popup_modal`, conditionally yields to the block, then conditionally calls `end_popup`.
-  pointer_wrapper def self.popup_modal(name : String, p_open : Bool* = Pointer(Bool).null, flags : ImGuiWindowFlags = ImGuiWindowFlags.new(0)) : Nil
+  pointer_wrapper def self.popup_modal(name : String, p_open : Bool* = Pointer(Bool).null, flags : ImGuiWindowFlags = ImGuiWindowFlags.new(0), &) : Nil
     return unless self.begin_popup_modal(name, p_open, flags)
     yield
     self.end_popup
@@ -1254,7 +1254,7 @@ module ImGui
   end
 
   # Calls `begin_popup_context_item`, conditionally yields to the block, then conditionally calls `end_popup`.
-  def self.popup_context_item(str_id : String? = nil, popup_flags : ImGuiPopupFlags = ImGuiPopupFlags.new(1)) : Nil
+  def self.popup_context_item(str_id : String? = nil, popup_flags : ImGuiPopupFlags = ImGuiPopupFlags.new(1), &) : Nil
     return unless self.begin_popup_context_item(str_id, popup_flags)
     yield
     self.end_popup
@@ -1265,7 +1265,7 @@ module ImGui
   end
 
   # Calls `begin_popup_context_window`, conditionally yields to the block, then conditionally calls `end_popup`.
-  def self.popup_context_window(str_id : String? = nil, popup_flags : ImGuiPopupFlags = ImGuiPopupFlags.new(1)) : Nil
+  def self.popup_context_window(str_id : String? = nil, popup_flags : ImGuiPopupFlags = ImGuiPopupFlags.new(1), &) : Nil
     return unless self.begin_popup_context_window(str_id, popup_flags)
     yield
     self.end_popup
@@ -1276,7 +1276,7 @@ module ImGui
   end
 
   # Calls `begin_popup_context_void`, conditionally yields to the block, then conditionally calls `end_popup`.
-  def self.popup_context_void(str_id : String? = nil, popup_flags : ImGuiPopupFlags = ImGuiPopupFlags.new(1)) : Nil
+  def self.popup_context_void(str_id : String? = nil, popup_flags : ImGuiPopupFlags = ImGuiPopupFlags.new(1), &) : Nil
     return unless self.begin_popup_context_void(str_id, popup_flags)
     yield
     self.end_popup
@@ -1291,7 +1291,7 @@ module ImGui
   end
 
   # Calls `begin_table`, conditionally yields to the block, then conditionally calls `end_table`.
-  def self.table(str_id : String, column : Int32, flags : ImGuiTableFlags = ImGuiTableFlags.new(0), outer_size : ImVec2 = ImVec2.new(0.0, 0.0), inner_width : Float32 = 0.0) : Nil
+  def self.table(str_id : String, column : Int32, flags : ImGuiTableFlags = ImGuiTableFlags.new(0), outer_size : ImVec2 = ImVec2.new(0.0, 0.0), inner_width : Float32 = 0.0, &) : Nil
     return unless self.begin_table(str_id, column, flags, outer_size, inner_width)
     yield
     self.end_table
@@ -1404,7 +1404,7 @@ module ImGui
   end
 
   # Calls `begin_tab_bar`, conditionally yields to the block, then conditionally calls `end_tab_bar`.
-  def self.tab_bar(str_id : String, flags : ImGuiTabBarFlags = ImGuiTabBarFlags.new(0)) : Nil
+  def self.tab_bar(str_id : String, flags : ImGuiTabBarFlags = ImGuiTabBarFlags.new(0), &) : Nil
     return unless self.begin_tab_bar(str_id, flags)
     yield
     self.end_tab_bar
@@ -1418,7 +1418,7 @@ module ImGui
     LibImGui.BeginTabItem(label, p_open, flags)
   end
   # Calls `begin_tab_item`, conditionally yields to the block, then conditionally calls `end_tab_item`.
-  pointer_wrapper def self.tab_item(label : String, p_open : Bool* = Pointer(Bool).null, flags : ImGuiTabItemFlags = ImGuiTabItemFlags.new(0)) : Nil
+  pointer_wrapper def self.tab_item(label : String, p_open : Bool* = Pointer(Bool).null, flags : ImGuiTabItemFlags = ImGuiTabItemFlags.new(0), &) : Nil
     return unless self.begin_tab_item(label, p_open, flags)
     yield
     self.end_tab_item
@@ -1465,7 +1465,7 @@ module ImGui
   end
 
   # Calls `begin_drag_drop_source`, conditionally yields to the block, then conditionally calls `end_drag_drop_source`.
-  def self.drag_drop_source(flags : ImGuiDragDropFlags = ImGuiDragDropFlags.new(0)) : Nil
+  def self.drag_drop_source(flags : ImGuiDragDropFlags = ImGuiDragDropFlags.new(0), &) : Nil
     return unless self.begin_drag_drop_source(flags)
     yield
     self.end_drag_drop_source
@@ -1484,7 +1484,7 @@ module ImGui
   end
 
   # Calls `begin_drag_drop_target`, conditionally yields to the block, then conditionally calls `end_drag_drop_target`.
-  def self.drag_drop_target : Nil
+  def self.drag_drop_target(&) : Nil
     return unless self.begin_drag_drop_target
     yield
     self.end_drag_drop_target
@@ -1509,7 +1509,7 @@ module ImGui
   end
 
   # Calls `begin_disabled`, yields to the block, then calls `end_disabled`.
-  def self.disabled(disabled : Bool = true) : Nil
+  def self.disabled(disabled : Bool = true, &) : Nil
     self.begin_disabled(disabled)
     yield
     self.end_disabled
@@ -1524,7 +1524,7 @@ module ImGui
   end
 
   # Calls `push_clip_rect`, yields to the block, then calls `pop_clip_rect`.
-  def self.with_clip_rect(clip_rect_min : ImVec2, clip_rect_max : ImVec2, intersect_with_current_clip_rect : Bool) : Nil
+  def self.with_clip_rect(clip_rect_min : ImVec2, clip_rect_max : ImVec2, intersect_with_current_clip_rect : Bool, &) : Nil
     self.push_clip_rect(clip_rect_min, clip_rect_max, intersect_with_current_clip_rect)
     yield
     self.pop_clip_rect

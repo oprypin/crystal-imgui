@@ -3399,7 +3399,7 @@ module ImGuiDemo
     def initialize(
       @id : Int32,
       @name : String,
-      @quantity : Int32
+      @quantity : Int32,
     )
     end
 
@@ -3444,7 +3444,7 @@ module ImGuiDemo
     end
   end
 
-  def self.with_style_compact
+  def self.with_style_compact(&)
     style = ImGui.get_style
     ImGui.push_style_var(ImGuiStyleVar::FramePadding, ImVec2.new(style.frame_padding.x, (style.frame_padding.y * 0.60f32).to_i))
     ImGui.push_style_var(ImGuiStyleVar::ItemSpacing, ImVec2.new(style.item_spacing.x, (style.item_spacing.y * 0.60f32).to_i))
@@ -3560,7 +3560,7 @@ module ImGuiDemo
       @type : String,
       @size : Int32,
       @child_idx : Int32,
-      @child_count : Int32
+      @child_count : Int32,
     )
     end
 
