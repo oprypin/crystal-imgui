@@ -25,7 +25,7 @@ jobs:
         with:
           crystal: ${{matrix.crystal}}
       - name: Download source
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           submodules: recursive
           fetch-depth: 0
@@ -74,7 +74,7 @@ jobs:
           tools/build_docs.sh
       - name: Upload docs to GitHub Pages
         if: runner.os == 'Linux'
-        uses: actions/upload-pages-artifact@v2
+        uses: actions/upload-pages-artifact@v4
         with:
           path: docs
   deploy-docs:
@@ -87,7 +87,7 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v2
+        uses: actions/deploy-pages@v4
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
